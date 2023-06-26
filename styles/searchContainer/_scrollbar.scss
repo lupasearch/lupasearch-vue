@@ -1,0 +1,24 @@
+@use "../base/general";
+
+.lupa-terms-list,
+.lupa-search-result-facet-hierarchy-values,
+.lupa-child-category-list {
+  /* width */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: general.$white;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: general.$secondary;
+    border-radius: 6px;
+    &:hover {
+      background: general.$primary;
+    }
+  }
+}

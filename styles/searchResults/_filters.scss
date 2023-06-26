@@ -1,0 +1,97 @@
+@use "../base/searchResults";
+
+.lupa-search-result-current-filters {
+  font-family: searchResults.$facets-font-family;
+}
+
+.lupa-current-filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: searchResults.$filters-title-font-size;
+  line-height: searchResults.$filters-title-line-height;
+  font-weight: searchResults.$filters-title-font-weight;
+  padding: searchResults.$filters-title-padding;
+  color: searchResults.$filters-title-color;
+}
+
+.lupa-current-filter-list {
+  margin: searchResults.$filters-content-margin;
+  padding: searchResults.$filters-content-padding;
+}
+
+.lupa-search-result-current-filters {
+  margin: searchResults.$filters-margin;
+}
+
+.lupa-clear-all-filters {
+  cursor: pointer;
+  color: searchResults.$filters-clear-all-color;
+  padding: searchResults.$filters-clear-all-padding;
+  margin: searchResults.$filters-clear-all-margin;
+  font-size: searchResults.$filters-clear-all-font-size;
+
+  &:hover {
+    color: searchResults.$filters-clear-all-color-hover;
+  }
+}
+
+.lupa-search-result-filter-value {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: searchResults.$filter-item-margin;
+  font-size: searchResults.$filter-item-font-size;
+}
+
+.lupa-current-filter-action {
+  padding: searchResults.$filter-item-action-padding;
+  font-size: searchResults.$filter-item-clear-size;
+  color: searchResults.$filter-item-clear-color;
+  cursor: pointer;
+  &:hover {
+    color: searchResults.$filter-item-clear-color-hover;
+  }
+}
+.lupa-current-filter-label,
+.lupa-current-filter-value {
+  margin: searchResults.$filter-item-label-margin;
+}
+
+.lupa-current-filter-label {
+  color: searchResults.$facet-text-color;
+}
+
+.lupa-current-filter-value {
+  color: searchResults.$filter-item-value-color;
+}
+
+.lupa-filter-title-caret {
+  &::after {
+    content: searchResults.$facet-label-caret-content;
+    font-family: searchResults.$facet-label-caret-font-family;
+    color: searchResults.$facet-label-caret-color;
+    font-size: 14px;
+    display: block;
+    font-weight: 400;
+    overflow: hidden;
+    text-align: center;
+  }
+  &.open::after {
+    transform: rotate(180deg);
+  }
+}
+
+.lupa-filter-count {
+  font-size: searchResults.$filter-count-font-size;
+  color: searchResults.$filter-count-color;
+}
+
+.lupa-toolbar-filters,
+.lupa-toolbar-filters-desktop {
+  margin-right: 12px;
+
+  .filter-values {
+    display: flex;
+  }
+}

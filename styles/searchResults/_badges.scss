@@ -1,0 +1,103 @@
+@use "../base/searchResults";
+
+#lupa-search-results-badges {
+  position: relative;
+}
+#lupa-badges {
+  display: flex;
+  position: absolute;
+  font-family: searchResults.$badge-font-family;
+  top: searchResults.$badge-position-top;
+  z-index: searchResults.$badge-z-index;
+  .tl {
+    left: -10px;
+  }
+  .tr {
+    right: -10px;
+  }
+}
+.lupa-badge {
+  width: searchResults.$badge-size;
+  height: searchResults.$badge-size;
+  font-size: searchResults.$badge-font-size;
+  margin: searchResults.$badge-margin;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.lupa-text-badges {
+  display: flex;
+}
+
+.lupa-image-badges {
+  display: flex;
+  img {
+    width: 100%;
+  }
+}
+
+.lupa-text-badge {
+  color: searchResults.$text-badge-color;
+  background: searchResults.$text-badge-background-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#lupa-badges {
+  flex-direction: column;
+  top: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.lupa-discount-badge {
+  background: #e0232f;
+  color: #ffffff;
+}
+
+.lupa-preorder-badge {
+  background: #4b81eb;
+  color: #ffffff;
+}
+
+.lupa-generated-badges {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.lupa-dynamic-badge {
+  cursor: pointer;
+  pointer-events: all;
+  display: flex;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 4px;
+  margin-bottom: 4px;
+  margin-right: auto;
+  white-space: nowrap;
+
+  .lupa-badge-title {
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    img {
+      max-height: 20px;
+    }
+  }
+  .lupa-badge-full-text {
+    display: none;
+    margin-left: 10px;
+  }
+  &:hover {
+    .lupa-badge-full-text {
+      display: inline-block;
+    }
+  }
+}

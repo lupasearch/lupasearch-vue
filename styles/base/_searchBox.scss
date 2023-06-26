@@ -1,0 +1,145 @@
+@use "general";
+
+// Grid
+
+$size-s: general.$size-s !default;
+
+// Panel
+
+$panel-border: general.$border !default;
+$panel-background: general.$color-bg !default;
+$panel-shadow: none !default;
+$panel-font-family: general.$font-family-base !default;
+
+$panel-left-min-width: 50px;
+$panel-left-max-width: 35%;
+$panel-right-min-width: 250px;
+$panel-right-max-width: 1fr;
+
+$panel-grid-template: "left right" !default;
+
+// Suggestions
+
+$suggestion-item-padding: 4px 20px !default;
+$suggestion-item-line-height: 24px !default;
+
+$suggestion-item-color: general.$text-color-primary !default;
+$suggestion-item-color-hover: general.$text-color-hover !default;
+
+$suggestion-item-highlight-color: general.$text-color-primary !default;
+$suggestion-item-highlight-color-hover: general.$text-color-hover !default;
+
+$suggestion-item-bg-color: general.$white !default;
+$suggestion-item-bg-color-hover: general.$color-bg-hover !default;
+
+$suggestion-font-size: general.$font-size-base !default;
+
+// Suggestion facets
+
+$suggestion-value-margin: 7px !default;
+
+$suggestion-facet-font-size: 10px !default;
+$suggestion-facet-label-margin: 2px !default;
+
+$suggestion-facet-value-font-weight: bold !default;
+
+// Input
+
+$input-color: general.$text-color-primary !default;
+$input-border: general.$border !default;
+$input-font-size: general.$font-size-base !default;
+$input-line-height: 1.5 !default;
+$input-padding: 0 16px !default;
+$input-height: 48px !default;
+
+// Products
+
+$product-item-color: general.$text-color-primary !default;
+
+$product-item-padding: 10px !default;
+
+$product-item-font-size: general.$font-size-base !default;
+$product-item-line-height: 15px !default;
+
+$product-item-bg-color: general.$color-bg !default;
+$product-item-bg-color-hover: general.$color-bg-hover !default;
+
+$product-image-width: 70px !default;
+$product-image-height: 70px !default;
+
+$product-image-section-width: $product-image-width + 15px !default;
+
+// Product elements
+
+// Title
+
+$product-title-font-size: general.$font-size-base !default;
+$product-title-line-height: 15px !default;
+$product-title-color: general.$text-color-primary !default;
+$product-title-color-hover: general.$text-color-primary !default;
+
+// Description
+
+$product-description-height-line-height: 14px !default;
+$product-description-height: $product-description-height-line-height * 3 !default;
+
+// Custom
+
+$product-custom-font-size: general.$font-size-base !default;
+$product-custom-line-height: 15px !default;
+$product-custom-color: general.$text-color-primary !default;
+$product-custom-color-hover: general.$text-color-primary !default;
+
+// Price
+
+$product-price-font-size: general.$font-size-base !default;
+$product-price-line-height: 15px !default;
+$product-price-color: general.$text-color-primary !default;
+$product-price-color-hover: general.$text-color-primary !default;
+
+// Regular Price
+
+$product-regular-price-font-size: general.$font-size-base !default;
+$product-regular-price-font-weight: normal !default;
+
+$product-regular-price-line-height: 15px !default;
+$product-regular-price-color: general.$text-color-primary !default;
+$product-regular-price-color-hover: general.$text-color-primary !default;
+
+// More results
+
+$search-box-more-results-color: general.$text-color-primary !default;
+$search-box-more-results-color-hover: general.$text-color-primary !default;
+
+$search-box-more-results-bg-color: general.$white !default;
+$search-box-more-results-bg-color-hover: general.$color-bg-hover !default;
+
+$search-box-more-results-padding: 5px 10px !default;
+
+$search-box-more-results-font-size: general.$font-size-base !default;
+$search-box-more-results-line-height: 24px !default;
+
+// History
+
+$search-box-history-bg-color-hover: general.$color-bg-hover !default;
+
+// Item
+
+$search-box-history-item-text-padding: 4px 20px !default;
+$search-box-history-item-color: general.$text-color-primary !default;
+$search-box-history-item-color-hover: general.$text-color-primary !default;
+$search-box-history-item-font-size: general.$font-size-base !default;
+$search-box-history-item-line-height: 24px !default;
+
+// Clear
+$search-box-history-item-clear-padding: 4px 20px !default;
+$search-box-history-item-clear-color: general.$text-color-primary !default;
+$search-box-history-item-clear-color-hover: general.$text-color-primary !default;
+
+// Clear all
+$search-box-history-clear-all-padding: 4px 20px !default;
+
+$search-box-history-item-clear-all-color: general.$text-color-primary !default;
+$search-box-history-item-clear-all-color-hover: general.$text-color-primary !default;
+$search-box-history-item-clear-all-font-size: general.$font-size-base !default;
+$search-box-history-item-clear-all-line-height: 24px !default;

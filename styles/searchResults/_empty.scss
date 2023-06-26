@@ -1,0 +1,13 @@
+@use "../base/searchResults";
+
+.lupa-empty-results {
+  text-align: center;
+  width: 100%;
+  font-size: searchResults.$empty-results-font-size;
+  font-family: searchResults.$search-results-font-family;
+  color: searchResults.$empty-results-color;
+  .lupa-empty-page-action {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}

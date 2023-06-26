@@ -1,0 +1,67 @@
+@use "../base/searchBox";
+
+:root {
+  --lupa-available-height: 100%;
+}
+
+@mixin searchBox {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  border: searchBox.$panel-border;
+  background: searchBox.$panel-background;
+  box-shadow: searchBox.$panel-shadow;
+  z-index: 5000;
+  border-radius: 0;
+  font-family: searchBox.$panel-font-family;
+  box-sizing: border-box;
+  &:empty {
+    display: none;
+  }
+  @media (max-width: searchBox.$size-s) {
+    max-height: var(--lupa-available-height);
+    overflow-y: auto;
+  }
+}
+
+#lupa-search-box-panel {
+  @include searchBox;
+}
+
+.lupa-main-panel {
+  display: grid;
+  grid-template: searchBox.$panel-grid-template;
+  grid-template-columns:
+    minmax(searchBox.$panel-left-min-width, searchBox.$panel-left-max-width)
+    minmax(searchBox.$panel-right-min-width, searchBox.$panel-right-max-width);
+  @media (max-width: searchBox.$size-s) {
+    display: block;
+  }
+}
+
+.lupa-panel-suggestion-index {
+  grid-area: left;
+  word-break: break-word;
+  @media (min-width: searchBox.$size-s) {
+    border-right: searchBox.$panel-border;
+  }
+}
+
+.lupa-panel-document-index {
+  grid-area: right;
+  word-break: break-word;
+}
+
+.lupa-more-results {
+  cursor: pointer;
+  border-top: searchBox.$panel-border;
+  padding: searchBox.$search-box-more-results-padding;
+  color: searchBox.$search-box-more-results-color;
+  background-color: searchBox.$search-box-more-results-bg-color;
+  font-size: searchBox.$search-box-more-results-font-size;
+  line-height: searchBox.$search-box-more-results-line-height;
+  &:hover {
+    background-color: searchBox.$search-box-more-results-bg-color-hover;
+    color: searchBox.$search-box-more-results-color-hover;
+  }
+}

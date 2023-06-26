@@ -1,0 +1,182 @@
+@use "../base/searchBox";
+@use "../base/searchResults";
+@use "../clients/lupa/lupaConfig";
+@use "../base/general";
+
+.lupa-search-container {
+  @media (max-width: searchResults.$size-md) {
+    #lupa-search-results-badges > #lupa-badges {
+      top: 16px;
+    }
+  }
+
+  @media (max-width: searchBox.$size-s) {
+    max-height: var(--lupa-full-height);
+
+    #lupa-search-results-badges > #lupa-badges {
+      top: 0;
+    }
+
+    .lupa-search-result-wrapper {
+      padding: 0 0 0 16px;
+    }
+
+    .search-content {
+      padding: 0 8px;
+    }
+
+    .lupa-search-result-product-card {
+      padding: 8px;
+    }
+
+    .lupa-search-result-product-contents {
+      padding: 8px;
+    }
+
+    .lupa-search-result-product-image-section {
+      padding: 0;
+    }
+
+    #lupa-search-box-panel {
+      overflow: visible;
+    }
+
+    #lupa-search-box-suggestions,
+    .lupa-search-box-history-panel {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-left: -20px;
+      margin-right: -20px;
+      padding-left: 20px;
+      padding-bottom: 5px;
+      &:before,
+      &:after {
+        position: absolute;
+        content: "";
+        background: linear-gradient(
+          270deg,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0) 84.72%
+        );
+        height: 60px;
+        width: 36px;
+      }
+      &:before {
+        left: 0;
+        background: linear-gradient(
+          90deg,
+          #ffffff 0%,
+          rgba(255, 255, 255, 0) 84.72%
+        );
+      }
+      &:after {
+        right: 0;
+      }
+    }
+
+    .lupa-close-search-container {
+      padding: 0;
+      margin-left: 8px;
+      width: 48px;
+    }
+
+    .lupa-close-label {
+      font-size: 0;
+      &:before {
+        margin-right: 0;
+      }
+    }
+
+    .lupa-search-result-filters {
+      max-width: 100%;
+      padding-right: 0;
+    }
+
+    .lupa-search-result-facet-display {
+      padding: 0;
+    }
+
+    .lupa-search-result-facet-label,
+    .lupa-facet-content {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .lupa-terms-list {
+      max-height: unset;
+    }
+
+    .lupa-current-filter-title {
+      display: none;
+    }
+
+    .lupa-stats-slider-wrapper .vue-slider-dot {
+      width: 24px !important;
+      height: 24px !important;
+    }
+
+    .lupa-final,
+    .lupa-discount {
+      font-size: 19px;
+    }
+
+    .lupa-regular {
+      font-size: 14px;
+    }
+
+    .lupa-search-results-summary {
+      display: initial;
+    }
+
+    .search-content {
+      .lupa-result-page-title,
+      #lupa-search-results-did-you-mean {
+        display: none;
+      }
+    }
+
+    .lupa-container-title-summary-mobile {
+      display: initial;
+    }
+
+    #lupa-search-results-toolbar.lupa-filter-no-results {
+      display: none;
+    }
+
+    .lupa-mobile-toggle {
+      background: lupaConfig.$background-dark;
+      color: general.$white;
+      border-radius: 24px;
+      padding: 9px 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lupa-top-mobile-filter-wrapper {
+      margin-top: 16px;
+    }
+
+    .lupa-mobile-toggle-filter-count {
+      background: general.$white;
+      color: lupaConfig.$background-dark;
+      font-size: 12px;
+      width: 18px;
+      height: 18px;
+      margin-left: 4px;
+    }
+
+    .lupa-toolbar-right {
+      width: 100%;
+    }
+
+    .lupa-select-label {
+      display: none;
+    }
+
+    #lupa-search-results-toolbar.lupa-toolbar-bottom {
+      justify-content: center;
+    }
+  }
+}

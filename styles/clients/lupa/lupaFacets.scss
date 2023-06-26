@@ -1,0 +1,159 @@
+@use "./lupaConfig.scss";
+
+.lupa-search-result-filters {
+  padding-right: 24px;
+  flex: 40%;
+}
+
+.lupa-filter-title-text {
+  margin-bottom: 24px;
+}
+
+.lupa-search-result-facet-display {
+  border: none;
+  &:first-child {
+    border: none;
+  }
+}
+
+.lupa-facet-label-text {
+  font-weight: 700;
+  font-size: lupaConfig.$base-font-size;
+  line-height: 24px;
+}
+
+.lupa-facet-label-caret {
+  &::after {
+    @include lupaConfig.material-icon;
+    font-size: 22px;
+    content: "\F0140";
+  }
+}
+
+.lupa-term-label {
+  font-weight: 300;
+  font-size: lupaConfig.$base-font-size;
+  line-height: 1.15;
+}
+
+.lupa-stats-facet-summary {
+  margin-top: 16px;
+  font-size: lupaConfig.$base-font-size;
+  font-weight: 300;
+}
+
+.lupa-current-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.lupa-search-result-current-filters {
+  border-bottom: lupaConfig.$border;
+}
+
+.lupa-search-result-filter-value {
+  flex-direction: row-reverse;
+  display: flex;
+  justify-content: flex-end;
+  background-color: lupaConfig.$primary;
+  padding: 9px;
+  border-radius: 24px;
+  margin: 0 8px 8px 0;
+  .lupa-current-filter-label {
+    display: none;
+  }
+  .lupa-current-filter-value {
+    color: lupaConfig.$white;
+    font-weight: 300;
+    font-size: 14px;
+  }
+  .lupa-current-filter-action {
+    display: flex;
+    font-size: 0;
+    &::before {
+      color: lupaConfig.$white;
+      margin-left: 9px;
+      width: 16px;
+      @include lupaConfig.material-icon;
+      font-size: 20px;
+      content: "\F0159";
+    }
+  }
+}
+
+.lupa-clear-all-filters {
+  font-weight: 300;
+  font-size: lupaConfig.$base-font-size;
+  line-height: 22px;
+  color: #464646;
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  &:before {
+    @include lupaConfig.material-icon();
+    content: "\F0156";
+    margin-right: 10px;
+    font-size: 20px;
+  }
+}
+
+@mixin checkmark {
+  border: none;
+  border-left: 2px solid lupaConfig.$white;
+  border-bottom: 2px solid lupaConfig.$white;
+  display: inline-block;
+  transform: rotate(-45deg);
+  height: 7px;
+  width: 12px;
+  border-radius: 0;
+}
+
+.lupa-term-checkbox {
+  border-radius: 2px;
+  border: 2px solid #464646;
+  &.checked {
+    border-color: lupaConfig.$primary;
+    background: lupaConfig.$secondary;
+  }
+  &.checked:after {
+    @include checkmark;
+    top: -2px;
+    content: " ";
+    position: relative;
+  }
+}
+
+.lupa-term-checkbox-label {
+  font-size: lupaConfig.$base-font-size;
+  font-weight: 300;
+}
+
+.lupa-search-box-wrapper {
+  input {
+    border-radius: 24px;
+  }
+}
+
+.lupa-mobile-toggle-filter-count {
+  display: inline-flex;
+  color: lupaConfig.$white;
+  background: lupaConfig.$primary;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.lupa-category-top-mobile-filters {
+  .lupa-category-back {
+    border: lupaConfig.$border;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 0;
+    &::before {
+      content: "<";
+      display: inline-block;
+    }
+  }
+}

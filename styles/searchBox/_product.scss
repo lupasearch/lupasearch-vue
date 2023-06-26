@@ -1,0 +1,85 @@
+@use "../base/searchBox";
+
+.lupa-search-box-product {
+  padding: searchBox.$product-item-padding;
+  font-size: searchBox.$product-item-font-size;
+  display: flex;
+  cursor: pointer;
+  text-decoration: inherit;
+  color: inherit;
+  &:hover,
+  &.lupa-search-box-product-highlighted {
+    text-decoration: none;
+    background-color: searchBox.$product-item-bg-color-hover;
+    .lupa-search-box-product-title {
+      color: searchBox.$product-title-color-hover;
+    }
+    .lupa-search-box-product-custom {
+      color: searchBox.$product-custom-color-hover;
+    }
+    .lupa-search-box-product-price {
+      color: searchBox.$product-price-color-hover;
+    }
+    .lupa-search-box-product-regular-price {
+      color: searchBox.$product-regular-price-color-hover;
+    }
+  }
+}
+
+.lupa-search-box-product-details-section {
+  font-family: searchBox.$panel-font-family;
+}
+
+.lupa-search-box-product-details-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.lupa-search-box-product-image-section {
+  min-width: searchBox.$product-image-section-width;
+  flex: 0 1;
+}
+
+.lupa-search-box-image-wrapper,
+.lupa-search-box-image {
+  width: searchBox.$product-image-width;
+  height: searchBox.$product-image-height;
+}
+
+.lupa-search-box-image {
+  object-fit: contain;
+}
+
+.lupa-search-box-product-title {
+  font-size: searchBox.$product-title-font-size;
+  line-height: searchBox.$product-title-line-height;
+  color: searchBox.$product-title-color;
+}
+
+.lupa-search-box-product-custom {
+  font-size: searchBox.$product-custom-font-size;
+  line-height: searchBox.$product-custom-line-height;
+  color: searchBox.$product-custom-color;
+}
+
+.lupa-search-box-product-price {
+  font-size: searchBox.$product-price-font-size;
+  line-height: searchBox.$product-price-line-height;
+  color: searchBox.$product-price-color;
+}
+
+.lupa-search-box-product-regular-price {
+  font-size: searchBox.$product-regular-price-font-size;
+  line-height: searchBox.$product-regular-price-line-height;
+  color: searchBox.$product-regular-price-color;
+  font-weight: searchBox.$product-regular-price-font-weight;
+}
+
+.lupa-search-box-product-description {
+  max-height: searchBox.$product-description-height;
+  line-height: searchBox.$product-description-height-line-height;
+  color: searchBox.$product-title-color;
+  overflow: hidden;
+}

@@ -1,0 +1,106 @@
+@use "../base/general";
+@use "../clients/lupa/lupaConfig";
+
+.lupa-result-page-title,
+.lupa-similar-queries-label {
+  font-size: 18px;
+  color: general.$text-color-primary;
+}
+
+.lupa-search-results-summary,
+.lupa-similar-query-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: lupaConfig.$text-color-faded-alt;
+}
+
+.lupa-similar-query-value {
+  font-size: 14px;
+}
+
+#lupa-search-results-did-you-mean,
+.lupa-result-page-title {
+  margin-bottom: 12px;
+}
+
+#lupa-select {
+  display: flex;
+  align-items: center;
+  &:after {
+    @include lupaConfig.material-icon;
+    content: "\e5c5";
+    font-size: 25px;
+    position: absolute;
+    right: 20px;
+    pointer-events: none;
+  }
+}
+
+.lupa-select-label {
+  position: initial;
+  margin-right: 8px;
+  color: lupaConfig.$text-color-faded-alt;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+#lupa-search-results-page-size,
+#lupa-search-results-sort {
+  .lupa-select-dropdown {
+    height: 40px;
+    padding: 11px 47px 6px 16px;
+    width: auto;
+    border-radius: 4px;
+  }
+}
+
+.lupa-search-results-sort {
+  margin: 0 0 0 16px;
+}
+
+#lupa-search-results-toolbar {
+  padding-right: 12px;
+}
+
+.lupa-empty-results {
+  font-weight: 400;
+  font-size: 14px;
+  color: general.$text-color-primary;
+  text-align: left;
+}
+
+.lupa-page-number {
+  font-weight: 400;
+  font-size: 16px;
+  min-width: 40px;
+  min-height: 40px;
+  &.lupa-page-number-selected,
+  &:hover {
+    background-color: lupaConfig.$background;
+    font-weight: 400;
+  }
+}
+
+.lupa-page-arrow:first-child {
+  &::before {
+    content: "\e5e0";
+    font-size: 14px;
+  }
+}
+
+.lupa-page-arrow {
+  &::before {
+    content: "\e5e1";
+    font-size: 14px;
+  }
+}
+
+#lupa-search-results-toolbar.lupa-toolbar-bottom {
+  justify-content: flex-start;
+}
+
+#lupa-search-results-products {
+  .lupa-search-result-current-filters {
+    display: none;
+  }
+}

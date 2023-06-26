@@ -1,0 +1,132 @@
+@use "../base/general";
+@use "../clients/lupa/lupaConfig.scss";
+
+.lupa-facets-title {
+  display: none;
+}
+
+.lupa-search-result-filters {
+  max-width: 325px;
+}
+
+.lupa-facet-label-caret {
+  &:after {
+    content: "\e5cf";
+    font-size: 25px;
+  }
+}
+
+.lupa-facet-level {
+  margin-left: 25px;
+}
+
+.lupa-term-label {
+  font-weight: 400;
+}
+
+.lupa-term-filter,
+.lupa-stats-to > input,
+.lupa-stats-from > input {
+  border-radius: 24px;
+  &:focus {
+    outline: 1px solid general.$primary;
+  }
+}
+
+.lupa-stats-facet-summary-input {
+  justify-content: space-between;
+  span {
+    color: general.$text-color-faded;
+  }
+}
+
+.lupa-stats-to > input,
+.lupa-stats-from > input {
+  color: general.$text-color-faded;
+  width: 80px;
+  padding: 6px;
+  text-align: center;
+  font-weight: 400;
+}
+
+.lupa-term-checkbox-label {
+  padding-left: 11px;
+}
+
+.lupa-term-count {
+  font-weight: 400;
+  color: general.$text-color-faded;
+}
+
+.lupa-terms-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.lupa-stats-range-label {
+  display: none;
+}
+
+.lupa-show-more-facet-results {
+  justify-content: flex-start;
+  color: general.$primary;
+  &:hover {
+    color: general.$primary;
+  }
+}
+
+.lupa-facet-content {
+  border-bottom: general.$border;
+  margin-bottom: 10px;
+}
+
+.lupa-search-result-current-filters {
+  margin-bottom: 12px;
+}
+
+.lupa-search-result-filter-value {
+  background-color: general.$background;
+  padding: 9px 12px;
+  .lupa-current-filter-value {
+    color: general.$text-color-primary;
+  }
+  .lupa-current-filter-action {
+    &:before {
+      color: general.$text-color-primary;
+      content: "\e5c9";
+    }
+    &:hover {
+      cursor: pointer;
+      &:before {
+        color: general.$primary;
+      }
+    }
+  }
+}
+
+.lupa-clear-all-filters {
+  font-weight: 400;
+  margin-bottom: 20px;
+  margin-top: 8px;
+  &:before {
+    content: "\e5cd";
+    font-size: 25px;
+  }
+  &:hover {
+    color: general.$primary;
+  }
+}
+
+
+.lupa-sidebar-top {
+  margin: 24px 0 16px;
+}
+
+.lupa-filter-toggle-mobile {
+  &::after {
+    @include lupaConfig.material-icon;
+    color: general.$text-color-primary;
+    font-size: 25px;
+    content: "\e5cd";
+  }
+}

@@ -1,0 +1,13 @@
+@use "../base/general";
+
+.lupa-search-container-overlay {
+  all: initial;
+  height: var(--lupa-full-height);
+  width: 100%;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  background: general.$grey-overlay;
+}

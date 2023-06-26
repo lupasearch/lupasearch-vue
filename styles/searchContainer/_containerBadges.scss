@@ -1,0 +1,27 @@
+@use "../clients/lupa/lupaConfig";
+
+.lupa-search-container {
+  #lupa-badges {
+    top: 16px;
+    align-items: flex-start;
+
+    .lupa-discount-badge,
+    .lupa-custom-badge {
+      border-radius: 0px 4px 4px 0px;
+      height: 21px;
+      margin-bottom: 4px;
+      padding: 0 12px;
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+    }
+
+    .lupa-discount-badge {
+      background-color: lupaConfig.$discount-color;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+@use "../base/searchBox";
+
+.lupa-search-box-history-item {
+  cursor: pointer;
+}
+
+.lupa-search-box-history-item-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.lupa-search-box-history-item-text {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  line-height: searchBox.$search-box-history-item-line-height;
+  font-size: searchBox.$search-box-history-item-font-size;
+  padding: searchBox.$search-box-history-item-text-padding;
+  color: searchBox.$search-box-history-item-color;
+  &:hover,
+  &.lupa-search-box-history-item-highlighted {
+    background-color: searchBox.$search-box-history-bg-color-hover;
+    color: searchBox.$search-box-history-item-color-hover;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.lupa-search-box-history-item-clear {
+  display: flex;
+  align-items: center;
+  padding: searchBox.$search-box-history-item-clear-padding;
+  color: searchBox.$search-box-history-item-clear-color;
+  font-size: searchBox.$search-box-history-item-font-size * 1.5;
+  &:hover {
+    color: searchBox.$search-box-history-item-clear-color-hover;
+    background-color: searchBox.$search-box-history-bg-color-hover;
+  }
+}
+
+.lupa-search-box-history-clear-all {
+  text-align: center;
+  cursor: pointer;
+  border-top: searchBox.$panel-border;
+  padding: searchBox.$search-box-history-clear-all-padding;
+  line-height: searchBox.$search-box-history-item-clear-all-line-height;
+  font-size: searchBox.$search-box-history-item-clear-all-font-size;
+  color: searchBox.$search-box-history-item-clear-all-color;
+  &:hover {
+    background-color: searchBox.$search-box-history-bg-color-hover;
+    color: searchBox.$search-box-history-item-clear-all-color-hover;
+  }
+}

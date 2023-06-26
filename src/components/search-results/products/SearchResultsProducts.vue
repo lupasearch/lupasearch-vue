@@ -1,0 +1,186 @@
+<script lang="ts" setup>
+import { useParamsStore } from '@/stores/params'
+import { useSearchResultStore } from '@/stores/searchResult'
+import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
+import type {
+  ResultCurrentFilterOptions,
+  SearchResultsProductOptions,
+  SearchResultsSimilarQueriesLabels
+} from '@/types/search-results/SearchResultsOptions'
+import type { Document } from '@getlupa/client-sdk/Types'
+import type { SearchResultsProductCardOptions } from '@/types/search-results/SearchResultsProductCardOptions'
+import { pick } from '@/utils/picker.utils'
+import { getProductKey } from '@/utils/string.utils'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { QUERY_PARAMS } from '@/constants/queryParams.const'
+import FiltersTopDropdown from '../filters/FiltersTopDropdown.vue'
+import SearchResultsToolbar from './SearchResultsToolbar.vue'
+import CurrentFilters from '../filters/CurrentFilters.vue'
+import SearchResultsProductCard from './product-card/SearchResultsProductCard.vue'
+import SearchResultsSimilarQueries from './similar-queries/SearchResultsSimilarQueries.vue'
+import AdditionalPanels from '../additional-panels/AdditionalPanels.vue'
+import Spinner from '@/components/common/Spinner.vue'
+
+const props = defineProps<{
+  options: SearchResultsProductOptions
+}>()
+
+const searchResultStore = useSearchResultStore()
+const paramStore = useParamsStore()
+
+const {
+  hasResults,
+  currentQueryText,
+  isPageEmpty,
+  isMobileSidebarVisible,
+  columnCount,
+  searchResult,
+  layout,
+  loading
+} = storeToRefs(searchResultStore)
+
+const productCardOptions = computed((): SearchResultsProductCardOptions => {
+  return pick(props.options, [
+    'isInStock',
+    'badges',
+    'links',
+    'elements',
+    'labels',
+    'queryKey',
+    'idKey',
+    'titleKey',
+    'routingBehavior'
+  ])
+})
+
+const similarQueriesLabels = computed((): SearchResultsSimilarQueriesLabels => {
+  return props.options.labels
+})
+
+const showTopFilters = computed((): boolean => {
+  return props.options.filters?.facets?.style?.type === 'top-dropdown'
+})
+
+const showMobileFilters = computed((): boolean => {
+  return props.options.searchTitlePosition !== 'search-results-top'
+})
+
+const currentFilterToolbarVisible = computed((): boolean => {
+  return Boolean(
+    props.options.filters?.currentFilters?.visibility?.mobileToolbar ||
+      props.options.filters?.currentFilters?.visibility?.desktopToolbar
+  )
+})
+
+const currentFilterOptions = computed((): ResultCurrentFilterOptions | undefined => {
+  return currentFilterToolbarVisible.value ? props.options.filters?.currentFilters : undefined
+})
+
+const currentFiltersClass = computed((): string => {
+  if (!currentFilterToolbarVisible.value) {
+    return ''
+  }
+  if (
+    props.options.filters?.currentFilters?.visibility?.mobileToolbar &&
+    props.options.filters?.currentFilters?.visibility?.desktopToolbar
+  ) {
+    return 'lupa-toolbar-filters'
+  }
+
+  return props.options.filters?.currentFilters?.visibility?.mobileToolbar
+    ? 'lupa-filters-mobile'
+    : 'lupa-toolbar-filters-desktop'
+})
+
+const desktopFiltersExpanded = computed((): boolean => {
+  return props.options?.filters?.currentFilters?.desktopToolbar?.activeFiltersExpanded ?? false
+})
+
+const columnSize = computed((): string => {
+  if (layout.value === ResultsLayoutEnum.LIST) {
+    return 'width: 100%'
+  }
+  return `width: ${100 / columnCount.value}%`
+})
+
+const getProductKeyAction = (index: number, product: Document): string => {
+  return getProductKey(`${index}`, product, props.options.idKey)
+}
+
+const goToFirstPage = (): void => {
+  paramStore.appendParams({
+    params: [{ name: QUERY_PARAMS.PAGE, value: '1' }]
+  })
+}
+</script>
+<template>
+  <div id="lupa-search-results-products">
+    <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
+    <template v-if="hasResults">
+      <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
+      <SearchResultsToolbar
+        class="lupa-toolbar-mobile"
+        v-if="showMobileFilters"
+        :options="options"
+        pagination-location="top"
+      />
+      <CurrentFilters
+        :class="currentFiltersClass"
+        data-cy="lupa-search-result-filters-mobile-toolbar"
+        v-if="currentFilterOptions"
+        :options="currentFilterOptions"
+        :expandable="!desktopFiltersExpanded"
+      />
+    </template>
+    <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
+    <template v-if="hasResults">
+      <SearchResultsToolbar class="lupa-toolbar-top" :options="options" pagination-location="top" />
+      <div class="lupa-products" data-cy="lupa-products">
+        <SearchResultsProductCard
+          v-for="(product, index) in searchResult.items"
+          :style="columnSize"
+          :key="getProductKeyAction(index, product)"
+          :product="product"
+          :options="productCardOptions"
+        />
+      </div>
+      <div
+        class="lupa-empty-results"
+        data-cy="lupa-no-results-in-page"
+        v-if="isPageEmpty && options.labels.noItemsInPage"
+      >
+        {{ options.labels.noItemsInPage }}
+        <span
+          v-if="options.labels.backToFirstPage"
+          class="lupa-empty-page-action"
+          @click="goToFirstPage"
+        >
+          {{ options.labels.backToFirstPage }}</span
+        >
+      </div>
+      <SearchResultsToolbar
+        class="lupa-toolbar-bottom"
+        :options="options"
+        pagination-location="bottom"
+      />
+      <AdditionalPanels :options="options" location="bottom" :sdkOptions="options.options" />
+    </template>
+    <div
+      class="lupa-empty-results"
+      data-cy="lupa-no-results"
+      v-else-if="!loading && currentQueryText"
+    >
+      {{ options.labels.emptyResults }} <span>{{ currentQueryText }}</span>
+    </div>
+
+    <div v-if="searchResult.similarQueries">
+      <SearchResultsSimilarQueries
+        :labels="similarQueriesLabels"
+        :columnSize="columnSize"
+        :productCardOptions="productCardOptions"
+      />
+    </div>
+    <slot name="append" />
+  </div>
+</template>

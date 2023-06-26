@@ -1,0 +1,81 @@
+@use "../base/searchResults";
+
+.lupa-result-page-title {
+  font-size: searchResults.$search-results-title-font-size;
+  margin: searchResults.$search-results-title-margin;
+  font-family: searchResults.$search-results-font-family;
+}
+
+.lupa-search-result-filters {
+  padding: searchResults.$filter-section-padding;
+}
+
+#lupa-search-results,
+.top-layout-wrapper {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.search-content {
+  width: 100%;
+}
+
+.lupa-search-result-filters {
+  flex: 25%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+#lupa-search-results-products {
+  position: relative;
+  padding: searchResults.$result-section-padding;
+  width: 100%;
+}
+
+.lupa-products {
+  display: flex;
+  align-self: flex-start;
+  flex-wrap: wrap;
+  margin: searchResults.$result-section-margin;
+}
+
+.lupa-loader {
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  height: calc(100% - 0px);
+  opacity: 0.5;
+  position: absolute;
+  z-index: 555;
+}
+
+.lupa-search-result-product-card {
+  box-sizing: border-box;
+}
+
+#lupa-search-results-did-you-mean {
+  font-family: searchResults.$search-results-font-family;
+}
+
+.lupa-suggested-search-text {
+  font-weight: bold;
+}
+.lupa-highlighted-search-text {
+  font-weight: bold;
+  font-style: italic;
+}
+
+#lupa-search-results-did-you-mean {
+  margin-bottom: 10px;
+}
+.lupa-did-you-mean {
+  text-decoration: none;
+}
+.lupa-did-you-mean:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,0 +1,51 @@
+@use "../base/searchBox";
+
+@mixin highlighted-suggestion {
+  cursor: pointer;
+  color: searchBox.$suggestion-item-color-hover;
+  background-color: searchBox.$suggestion-item-bg-color-hover;
+  strong {
+    color: searchBox.$suggestion-item-highlight-color-hover;
+  }
+}
+
+.lupa-suggestion {
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: searchBox.$suggestion-item-color;
+  background-color: searchBox.$suggestion-item-bg-color;
+  padding: searchBox.$suggestion-item-padding;
+  font-size: searchBox.$suggestion-font-size;
+  line-height: searchBox.$suggestion-item-line-height;
+
+  strong {
+    color: searchBox.$suggestion-item-highlight-color;
+  }
+}
+
+.lupa-suggestion-value {
+  margin-right: searchBox.$suggestion-value-margin;
+}
+
+.lupa-suggestion-facet {
+  font-size: searchBox.$suggestion-facet-font-size;
+}
+
+.lupa-suggestion-facet-label {
+  margin-right: searchBox.$suggestion-facet-label-margin;
+}
+
+.lupa-suggestion-facet-value {
+  font-weight: searchBox.$suggestion-facet-value-font-weight;
+}
+
+.lupa-suggestion-highlighted,
+.lupa-suggestion:hover {
+  @include highlighted-suggestion;
+}
+
+.lupa-suggestion:hover {
+  text-decoration: underline;
+}

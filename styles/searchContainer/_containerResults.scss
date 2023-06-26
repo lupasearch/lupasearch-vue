@@ -1,0 +1,33 @@
+@use '../_spinner.scss';
+
+.lupa-spinner-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.lupa-search-container {
+  .lupa-search-result-wrapper {
+    padding: 0 20px;
+  }
+  #lupa-search-results-products {
+    padding: 0;
+  }
+
+  #lupa-search-results-layout-selection {
+    display: none;
+  }
+
+  .lupa-mobile-filter-sidebar {
+    z-index: 10000;
+  }
+
+  .lupa-container-title-summary-mobile {
+    display: none;
+  }
+  .lupa-similar-query-label {
+    span {
+      margin-right: 1.5px;
+      display: inline-block;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+@use "../base/searchResults";
+
+#lupa-search-results-similar-queries {
+  margin-top: searchResults.$similar-queries-margin-top;
+}
+
+.lupa-similar-queries-label {
+  font-size: searchResults.$similar-queries-label-font-size;
+  font-family: searchResults.$search-results-font-family;
+  font-weight: searchResults.$similar-queries-label-font-weight;
+  line-height: 1.1;
+  margin-top: searchResults.$similar-queries-label-margin-top;
+  margin-bottom: searchResults.$similar-queries-label-margin-bottom;
+}
+
+.lupa-similar-query-label {
+  margin-bottom: searchResults.$similar-query-label-margin-bottom;
+  font-weight: searchResults.$similar-query-label-font-weight;
+  line-height: 1.5;
+  color: searchResults.$similar-query-label-color;
+  font-family: searchResults.$search-results-font-family;
+}
+
+.lupa-similar-query-value {
+  font-size: searchResults.$similar-query-value-font-size;
+}
+
+.lupa-similar-query-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.lupa-similar-query-crossed {
+  text-decoration: line-through;
+}

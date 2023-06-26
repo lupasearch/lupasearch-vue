@@ -1,0 +1,54 @@
+@use "../base/searchResults";
+
+.lupa-category-filter {
+  padding: searchResults.$category-filter-padding;
+  font-family: searchResults.$category-filter-font-family;
+  margin: searchResults.$category-filter-margin;
+}
+
+.lupa-category-back {
+  padding: searchResults.$category-filter-back-padding;
+  a {
+    color: searchResults.$category-filter-back-color;
+    font-size: searchResults.$category-filter-back-font-size;
+    line-height: searchResults.$category-filter-back-line-height;
+    font-weight: searchResults.$category-filter-back-font-weight;
+    text-decoration: none !important;
+    &:hover {
+      color: searchResults.$category-filter-back-color-hover;
+    }
+  }
+}
+
+.lupa-current-category,
+.lupa-child-category-item {
+  padding: searchResults.$category-filter-item-padding;
+  a {
+    text-decoration: none !important;
+    color: searchResults.$category-filter-item-color;
+    font-size: searchResults.$category-filter-item-font-size;
+    line-height: searchResults.$category-filter-item-font-size;
+    &:hover {
+      color: searchResults.$category-filter-item-color-hover;
+    }
+  }
+}
+
+.lupa-child-category-item-active,
+.lupa-current-category-active {
+  color: searchResults.$category-filter-item-color-hover;
+}
+
+.lupa-child-category-list {
+  padding: searchResults.$category-filter-item-list-padding;
+}
+
+.lupa-category-overview {
+  margin: searchResults.$category-overview-margin;
+}
+
+.lupa-category-title {
+  font-weight: searchResults.$category-overview-title-font-weight;
+  font-size: searchResults.$category-overview-title-font-size;
+  margin: searchResults.$category-overview-title-margin;
+}

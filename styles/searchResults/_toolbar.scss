@@ -1,0 +1,101 @@
+@use "../base/searchResults";
+
+.lupa-search-results-summary {
+  display: flex;
+  align-items: center;
+}
+
+#lupa-search-results-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 0 40px;
+}
+
+.lupa-toolbar-left {
+  display: flex;
+}
+
+.lupa-toolbar-right {
+  display: flex;
+  flex-direction: row;
+}
+
+#lupa-search-results-page-select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#lupa-search-results-layout-selection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  div {
+    margin: searchResults.$layout-selection-margin;
+  }
+}
+
+.lupa-search-results-summary {
+  color: searchResults.$item-count-summary-text-color;
+  font-family: searchResults.$search-results-font-family;
+  font-size: searchResults.$item-count-summary-font-size;
+}
+
+#lupa-search-results-page-size {
+  margin: searchResults.$pagination-select-margin;
+  .lupa-select-dropdown {
+    width: searchResults.$pagination-select-width;
+  }
+}
+
+.lupa-search-results-sort {
+  margin: searchResults.$sort-select-margin;
+}
+
+.lupa-filter-clear {
+  cursor: pointer;
+}
+
+// Pagination
+
+#lupa-search-results-page-select {
+  font-family: searchResults.$pagination-font-family;
+}
+
+.lupa-page-number-separator {
+  margin: searchResults.$pagination-page-margin;
+}
+
+.lupa-page-number {
+  cursor: pointer;
+  color: searchResults.$pagination-page-color;
+  font-size: searchResults.$pagination-page-font-size;
+  padding: searchResults.$pagination-page-padding;
+  margin: searchResults.$pagination-page-margin;
+
+  &:hover {
+    color: searchResults.$pagination-page-color-hover;
+  }
+  &.lupa-page-number-selected {
+    color: searchResults.$pagination-selected-page-color;
+    font-weight: searchResults.$pagination-selected-page-font-weight;
+  }
+}
+
+.lupa-page-arrow {
+  cursor: pointer;
+  font-weight: searchResults.$pagination-arrow-font-weight;
+  margin: searchResults.$pagination-arrow-margin;
+  padding: searchResults.$pagination-arrow-padding;
+  &:before {
+    line-height: searchResults.$pagination-arrow-line-height;
+    color: searchResults.$pagination-arrow-color;
+    content: searchResults.$pagination-prev-arrow-content;
+    font-family: searchResults.$pagination-arrow-font-family;
+    font-size: searchResults.$pagination-arrow-size;
+  }
+  &:hover:before {
+    color: searchResults.$pagination-arrow-color-hover;
+  }
+}

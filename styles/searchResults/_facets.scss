@@ -1,0 +1,201 @@
+@use "../base/searchResults";
+
+.lupa-search-result-facets {
+  font-family: searchResults.$facets-font-family;
+}
+
+.lupa-facets-title {
+  font-size: searchResults.$facet-title-font-size;
+  line-height: searchResults.$facet-title-line-height;
+  font-weight: searchResults.$facet-title-font-weight;
+  padding: searchResults.$facet-title-padding;
+  color: searchResults.$facet-title-color;
+}
+
+// Label
+
+.lupa-search-result-facet-display {
+  border-bottom: searchResults.$facet-border;
+  &:first-child {
+    border-top: searchResults.$facet-border;
+  }
+}
+
+.lupa-search-result-facet-label {
+  justify-content: space-between;
+  display: flex;
+
+  font-size: searchResults.$facet-label-font-size;
+  line-height: searchResults.$facet-label-line-height;
+  font-weight: searchResults.$facet-label-font-weight;
+  padding: searchResults.$facet-label-padding;
+  color: searchResults.$facet-label-color;
+
+  cursor: pointer;
+  &:hover {
+    color: searchResults.$facet-label-color-hover;
+  }
+
+  &.open {
+    padding: searchResults.$facet-label-padding-open;
+  }
+}
+
+// Caret
+
+.lupa-facet-label-caret {
+  &::after {
+    content: searchResults.$facet-label-caret-content;
+    font-family: searchResults.$facet-label-caret-font-family;
+    color: searchResults.$facet-label-caret-color;
+    display: block;
+    font-weight: 400;
+    overflow: hidden;
+    text-align: center;
+  }
+  &.open::after {
+    transform: rotate(180deg);
+  }
+}
+
+// General content
+
+.lupa-facet-content {
+  padding: searchResults.$facet-content-padding;
+}
+
+// Term values
+
+.lupa-facet-term {
+  padding: searchResults.$facet-term-padding;
+  margin: searchResults.$facet-term-margin;
+}
+
+.lupa-term-checkbox-label {
+  width: 100%;
+  padding-left: searchResults.$facet-term-label-padding;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lupa-facet-term {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: searchResults.$facet-term-font-size;
+  color: searchResults.$facet-term-color;
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  &.checked {
+    font-weight: bold;
+  }
+}
+
+.lupa-term-count {
+  color: searchResults.$facet-term-count-color;
+}
+
+.lupa-term-checkbox {
+  display: inline-block;
+  height: searchResults.$facet-term-checkbox-size;
+  width: searchResults.$facet-term-checkbox-size;
+  box-sizing: border-box;
+  border: 2px solid searchResults.$facet-term-checkbox-color;
+  border-radius: searchResults.$facet-term-checkbox-radius;
+  content: "";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &.checked::after {
+    border: 3px solid searchResults.$facet-term-checkbox-color;
+    border-radius: searchResults.$facet-term-checkbox-radius;
+    display: inline-block;
+    content: "";
+  }
+}
+
+.lupa-show-more-facet-results {
+  justify-content: center;
+}
+
+// Term text filter
+
+.lupa-term-filter {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: searchResults.$facet-term-filter-border;
+}
+
+// Terms - show more
+
+.lupa-show-more-facet-results {
+  color: searchResults.$facet-term-show-more-color;
+  font-size: searchResults.$facet-term-show-more-font-size;
+  &:hover {
+    color: searchResults.$facet-term-show-more-color-hover;
+  }
+}
+
+// Range slider
+
+.lupa-stats-facet-summary {
+  text-align: center;
+  font-size: searchResults.$facet-range-summary-font-size;
+}
+
+.lupa-stats-slider-wrapper {
+  margin: searchResults.$facet-range-margin;
+  padding: searchResults.$facet-range-padding;
+
+  .vue-slider-rail {
+    background-color: searchResults.$facet-range-rail-color;
+  }
+
+  .vue-slider-process {
+    background-color: searchResults.$facet-range-rail-color-active;
+  }
+
+  .vue-slider-dot {
+    background: searchResults.$facet-range-dot-color;
+    border-radius: 50%;
+    border: searchResults.$facet-range-dot-border;
+    z-index: 3;
+    cursor: pointer;
+    &:hover {
+      background: searchResults.$facet-range-dot-color-hover;
+    }
+  }
+}
+
+// Range inputs
+
+.lupa-stats-range-label {
+  font-size: searchResults.$facet-range-input-label-font-size;
+  margin: searchResults.$facet-range-input-label-margin;
+}
+
+.lupa-stats-facet-summary-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  input {
+    width: 100%;
+    padding: searchResults.$facet-range-input-padding;
+    box-sizing: border-box;
+    border: searchResults.$facet-term-filter-border;
+  }
+  .lupa-stats-from,
+  .lupa-stats-to {
+    display: flex;
+    align-items: center;
+  }
+  .lupa-stats-separator {
+    margin: searchResults.$facet-range-separator-margin;
+  }
+  span {
+    padding: searchResults.$facet-range-currency-padding;
+  }
+}

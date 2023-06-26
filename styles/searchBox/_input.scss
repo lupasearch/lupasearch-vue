@@ -1,0 +1,20 @@
+@use "../base/searchBox";
+
+.lupa-search-box-input-field,
+.lupa-hint {
+  color: searchBox.$input-color;
+  height: searchBox.$input-height;
+  padding: searchBox.$input-padding;
+  line-height: searchBox.$input-line-height;
+  font-size: searchBox.$input-font-size;
+  font-family: searchBox.$panel-font-family;
+}
+
+.lupa-search-box-input-field {
+  border: searchBox.$input-border;
+  color: searchBox.$input-color;
+}
+
+.lupa-hint {
+  border: 1px solid transparent;
+}

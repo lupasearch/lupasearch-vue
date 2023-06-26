@@ -1,0 +1,46 @@
+@use "./lupaConfig.scss";
+
+.lupa-search-box-product-title {
+  font-weight: 300;
+}
+
+#lupa-search-box-input {
+  &::after {
+    @include lupaConfig.material-icon();
+    content: "\F0349";
+    font-size: 24px;
+    position: absolute;
+    right: 16px;
+    top: 12px;
+  }
+}
+
+.lupa-suggestion {
+  font-weight: 300;
+}
+
+.lupa-search-box-product-details-section {
+  justify-content: space-between;
+}
+
+.lupa-search-box-product-regular-price {
+  text-decoration: line-through;
+  color: lupaConfig.$text-color-faded;
+}
+
+.lupa-more-results {
+  font-size: lupaConfig.$base-font-size;
+  font-weight: 300;
+}
+
+#lupa-search-box-panel {
+  box-shadow: lupaConfig.$panel-shadow;
+  border-radius: 24px;
+  border: none;
+  overflow: hidden;
+}
+
+.lupa-suggestion-facet-label,
+.lupa-suggestion-facet-value {
+  line-height: 13px;
+}

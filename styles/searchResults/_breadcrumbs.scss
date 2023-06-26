@@ -1,0 +1,27 @@
+@use "../base/searchResults" as searchResults;
+
+#lupa-search-results-breadcrumbs {
+  margin: searchResults.$breadcrumbs-margin;
+
+  font-size: searchResults.$breadcrumbs-font-size;
+
+  @media (min-width: searchResults.$size-s) {
+    max-width: searchResults.$breadcrumbs-max-width;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  @media (max-width: searchResults.$size-s) {
+    display: none;
+  }
+
+  .lupa-search-results-breadcrumb-link {
+    text-decoration: none;
+    color: searchResults.$breadcrumbs-color;
+  }
+
+  .lupa-search-results-breadcrumb-link:hover {
+    text-decoration: underline;
+    color: searchResults.$breadcrumbs-color-hover;
+  }
+}

@@ -1,0 +1,37 @@
+@use "../base/searchResults";
+
+.lupa-search-result-facet-list.lupa-top-dropdown {
+  display: flex;
+  flex-wrap: wrap;
+  .lupa-search-result-facet-display {
+    margin: searchResults.$facet-dropdown-margin;
+    border-bottom: none;
+    border-top: none;
+  }
+  .lupa-facet-content {
+    position: absolute;
+    background: searchResults.$facet-dropdown-background;
+    z-index: searchResults.$facet-dropdown-z-index;
+    border: searchResults.$facet-border;
+    min-width: searchResults.$facet-dropdown-min-width;
+  }
+  .lupa-terms-list {
+    overflow-y: auto;
+    max-height: searchResults.$facet-dropdown-max-height;
+    margin: searchResults.$facet-dropdown-list-margin;
+  }
+  .lupa-search-result-facet-label {
+    border: searchResults.$facet-border;
+    &.lupa-has-filter {
+      border-width: searchResults.$facet-dropdown-active-border-width;
+    }
+  }
+  .lupa-single-facet-clear {
+    cursor: pointer;
+    text-align: center;
+    margin: searchResults.$facet-dropdown-clear-margin;
+    padding: searchResults.$facet-dropdown-clear-padding;
+    font-size: searchResults.$facet-dropdown-clear-padding;
+    border-top: searchResults.$facet-border;
+  }
+}

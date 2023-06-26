@@ -1,0 +1,173 @@
+@use "../base/general";
+@use "../clients/lupa/lupaConfig";
+
+.lupa-search-container {
+  position: relative;
+  max-height: 80%;
+  overflow: auto;
+  background: general.$white;
+  border-bottom: 1px solid general.$white;
+  box-shadow: general.$box-shadow;
+
+  .lupa-search-box-container {
+    background: general.$white;
+    display: flex;
+    padding: 20px 20px 0;
+    font-family: general.$font-family-base;
+
+    &.sticky {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+  }
+
+  #lupa-search-box {
+    width: 100%;
+  }
+
+  .lupa-search-box-input-field {
+    position: relative !important;
+    background: transparent !important;
+  }
+
+  .lupa-close-search-container {
+    background: general.$background;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 24px;
+    border-radius: 24px;
+    padding: 11px 16px;
+    cursor: pointer;
+    &:hover {
+      color: general.$primary;
+    }
+  }
+
+  .lupa-close-label {
+    font-size: 16px;
+    line-height: 25px;
+    display: flex;
+    align-items: center;
+    &:before {
+      @include lupaConfig.material-icon();
+      content: "\e5cd";
+      margin-right: 10px;
+      font-size: 25px;
+    }
+  }
+
+  #lupa-search-box-input-container {
+    display: flex;
+  }
+
+  #lupa-search-box-input {
+    flex-grow: 1;
+    &::after {
+      display: none;
+    }
+
+    .lupa-search-box-input-field {
+      &:focus {
+        outline: 1px solid general.$primary;
+      }
+    }
+  }
+
+  .lupa-hint,
+  .lupa-search-box-input-field {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 48px;
+  }
+
+  .lupa-hint {
+    width: calc(100% - 48px);
+    position: absolute !important;
+    pointer-events: none;
+    color: general.$text-color-faded;
+    background: transparent;
+  }
+
+  .lupa-input-clear {
+    position: relative;
+    z-index: 100;
+  }
+
+  .lupa-input-clear-content {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+
+    &:after {
+      @include lupaConfig.material-icon();
+      content: "\e8b6";
+      margin-right: 10px;
+      font-size: 25px;
+      position: absolute;
+      top: 12px;
+      left: 16px;
+    }
+    &.lupa-input-clear-filled {
+      cursor: pointer;
+      &:hover {
+        color: general.$primary;
+      }
+      &:after {
+        @include lupaConfig.material-icon();
+        content: "\e5cd";
+        margin-right: 10px;
+        font-size: 25px;
+        position: absolute;
+        top: 12px;
+        left: 16px;
+      }
+    }
+  }
+
+  #lupa-search-results-breadcrumbs {
+    display: none;
+  }
+
+  #lupa-search-box {
+    margin-bottom: 15px;
+  }
+
+  #lupa-search-box-panel {
+    position: inherit;
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+  }
+
+  .lupa-more-results {
+    display: none;
+  }
+
+  .lupa-main-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lupa-panel-suggestion-index {
+    border: none;
+  }
+
+  .lupa-search-box-history-clear-all {
+    display: none;
+  }
+
+  #lupa-search-box-suggestions,
+  .lupa-search-box-history-panel {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    max-height: 50px;
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,38 @@
+@use "../base/searchResults";
+
+#lupa-select {
+  position: relative;
+  font-family: searchResults.$select-font-family;
+  color: searchResults.$select-color;
+  text-indent: 0.01em;
+}
+
+.lupa-select-dropdown {
+  cursor: pointer;
+  padding: searchResults.$pagination-select-padding;
+  font-family: searchResults.$select-font-family;
+  background: searchResults.$select-background;
+  background-clip: padding-box;
+  border: searchResults.$select-border;
+  border-radius: searchResults.$select-border-radius;
+  font-size: searchResults.$select-font-size;
+  height: searchResults.$select-height;
+  line-height: searchResults.$select-line-height;
+  vertical-align: baseline;
+  box-sizing: border-box;
+  appearance: none;
+  &:focus {
+    outline: none;
+    box-shadow: searchResults.$select-focus-shadow;
+  }
+}
+
+.lupa-select-label {
+  font-family: searchResults.$select-font-family;
+  font-size: searchResults.$pagination-select-font-size;
+  line-height: 1;
+  position: absolute;
+  pointer-events: none;
+  top: 8px;
+  left: 8px;
+}

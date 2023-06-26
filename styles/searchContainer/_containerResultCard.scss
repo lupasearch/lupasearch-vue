@@ -1,0 +1,58 @@
+@use "../base/general";
+@use "../clients/lupa/lupaConfig";
+
+.lupa-search-result-product-contents {
+  box-shadow: none;
+  padding: 0 16px 12px;
+}
+
+.lupa-search-result-product-card {
+  margin-bottom: 20px;
+}
+
+.lupa-search-results-image-wrapper {
+  padding-bottom: 90%;
+}
+
+.lupa-search-result-product-image-section {
+  padding: 12px 0 0;
+}
+
+.lupa-custom-emphasis {
+  font-weight: 600;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.lupa-search-results-product-title-text {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.lupa-final,
+.lupa-discount {
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+.lupa-regular {
+  margin-left: 0;
+}
+
+.lupa-final {
+  color: general.$text-color-primary;
+}
+
+.lupa-discount {
+  color: lupaConfig.$discount-color;
+}
+
+.lupa-search-box-custom-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lupa-search-box-custom-text {
+  font-size: 13px;
+}

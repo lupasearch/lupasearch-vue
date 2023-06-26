@@ -1,0 +1,39 @@
+$size-s: 767px !default;
+
+.lupa-results-additional-panels {
+  margin-bottom: 40px;
+  background: #fff;
+}
+
+.lupa-results-additional-panel {
+  font-weight: 400;
+  line-height: 1.5;
+  border: 1px solid #e1e1e1;
+
+  .lupa-results-additional-panel-items {
+    display: flex;
+    flex-flow: wrap row;
+
+    @media (max-width: $size-s) {
+      flex-direction: column;
+    }
+  }
+}
+
+.lupa-search-result-product-card {
+  box-sizing: border-box;
+  width: 50%;
+}
+
+.lupa-search-results-image-wrapper {
+  padding-bottom: unset;
+  height: auto;
+}
+
+.lupa-search-results-image {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  max-height: inherit;
+  position: relative;
+}

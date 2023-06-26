@@ -1,0 +1,57 @@
+@use "./lupaConfig.scss";
+
+.lupa-search-result-product-card {
+  border-radius: 4px;
+  margin-bottom: 36px;
+  border: none;
+}
+
+.lupa-search-result-product-contents {
+  border: lupaConfig.$border;
+  box-shadow: lupaConfig.$card-shadow;
+  border-radius: 4px;
+  padding: 16px;
+  &:hover {
+    border-color: lupaConfig.$primary;
+  }
+}
+
+.lupa-search-results-product-title-text {
+  font-weight: 300;
+  line-height: 29px;
+}
+
+.lupa-search-results-image-wrapper {
+  padding-bottom: 100%;
+}
+
+@mixin price-emphasis {
+  display: inline;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 27px;
+}
+
+.lupa-discount {
+  @include price-emphasis;
+  color: lupaConfig.$primary;
+}
+
+.lupa-custom-id {
+  opacity: 0.5;
+}
+.lupa-custom-brand {
+  opacity: 0.5;
+  color: lupaConfig.$primary;
+}
+
+.lupa-final {
+  @include price-emphasis;
+}
+
+.lupa-regular {
+  text-decoration: line-through;
+  color: lupaConfig.$text-color-faded;
+  display: inline-block;
+  margin-left: 4px;
+}

@@ -1,0 +1,47 @@
+// Base colors
+
+$white: #ffffff !default;
+$black: #000000 !default;
+
+$background: #fafafa !default;
+
+$grey-100: #eeeeee !default;
+$grey-200: #cccccc !default;
+$grey-300: #aaaaaa !default;
+$grey-400: #999999 !default;
+$grey-500: #777777 !default;
+$grey-600: #555555 !default;
+$grey-700: #333333 !default;
+$grey-800: #111111 !default;
+
+$link: #1979c3 !default;
+$link-hover: #135d96 !default;
+
+$grey-transparent: rgba(0, 0, 0, 0.05) !default;
+$grey-overlay: rgba(0, 0, 0, 0.5) !default;
+$box-shadow: 4px 4px 4px rgba(22, 22, 22, 0.14) !default;
+
+// Fonts
+$font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-size-base: 14px;
+
+// Functionality colors
+
+$primary: $black !default;
+$secondary: $grey-700 !default;
+
+$color-bg: $white;
+$color-bg-hover: $grey-transparent !default;
+
+$border: 1px solid $black !default;
+
+$text-color-primary: $black !default;
+$text-color-hover: $primary !default;
+$text-color-faded: $grey-transparent !default;
+
+// Grid
+
+$size-md: 1024px !default;
+$size-s: 767px !default;
+$size-xs: 479px !default;
+$size-xxs: 350px !default;

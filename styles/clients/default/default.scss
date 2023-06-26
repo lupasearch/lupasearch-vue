@@ -1,0 +1,48 @@
+$primary: #fcb040;
+$secondary: rgb(190, 127, 9);
+$text-color: #333;
+$border-color: #bdbdbd;
+$border-color-secondary: #e0e0e0;
+$background-hover: #f5f5f5;
+$light-accent: #f2f2f2;
+$dark-accent: #888;
+$black: #000;
+$white: #fff;
+$text-color-faded: #4f4f4f;
+$icon-font-family: "luma-icons";
+
+$size-s: 767px !default;
+
+$font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+$border: 1px solid $border-color;
+
+@use "../../base/general" with (
+  $primary: $primary,
+  $secondary: $secondary,
+  $text-color-primary: $text-color,
+  $border: $border,
+  $font-family-base: $font-family
+);
+
+@use "../../base/searchBox" with (
+  $panel-grid-template: "suggestions docs" "suggestions blog"
+);
+
+@use "../../base/searchResults" with (
+  $select-background: $white
+);
+@use "../../lupaIndex";
+@use "./defaultBlog";
+
+.lupa-panel-suggestion-index {
+  grid-area: suggestions;
+}
+
+.lupa-panel-document-index {
+  grid-area: docs;
+}
+
+.lupa-blog {
+  grid-area: blog;
+}

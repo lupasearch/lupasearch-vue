@@ -1,0 +1,390 @@
+@use "general";
+
+$size-md: general.$size-md;
+$size-s: general.$size-s;
+$size-xs: general.$size-xs;
+$size-xxs: general.$size-xxs;
+
+// Search results
+
+$product-item-padding: 10px;
+$product-item-bg-color-hover: rgba(0, 0, 0, 0.05);
+
+$product-image-width: 100px;
+$product-image-height: 100px;
+
+$product-image-section-width: $product-image-width + 15px;
+
+$product-description-height: 200px;
+
+// Filters/Facets
+
+$filter-section-padding: 0 4.6% 0 0;
+
+$facets-font-family: general.$font-family-base !default;
+$facet-border: general.$border !default;
+$facet-text-color: general.$text-color-primary !default;
+
+// Current filters
+
+$filters-margin: 0 0 15px !default;
+$filter-count-font-size: 14px !default;
+$filter-count-color: general.$text-color-primary !default;
+
+// Filters title
+
+$filters-title-font-size: 16px !default;
+$filters-title-line-height: 1.1 !default;
+$filters-title-font-weight: 700 !default;
+$filters-title-padding: 0 !default;
+$filters-title-color: $facet-text-color !default;
+
+// Filters content
+
+$filters-content-margin: 16px 0 0 !default;
+$filters-content-padding: 0 10px 5px !default;
+
+$filter-item-margin: 10.5px 0 !default;
+$filter-item-action-padding: 0 5px 0 0 !default;
+
+$filter-item-label-margin: 0 0 0 5px !default;
+
+$filter-item-clear-size: 17px !default;
+$filter-item-font-size: 14px !default;
+
+$filter-item-clear-color: general.$secondary !default;
+$filter-item-clear-color-hover: general.$primary !default;
+$filter-item-label-color: $facet-text-color !default;
+$filter-item-value-color: general.$grey-200 !default;
+
+// Filters clear all
+
+$filters-clear-all-padding: 0 10.5px !default;
+$filters-clear-all-margin: 0 0 31.5px !default;
+
+$filters-clear-all-color: general.$link !default;
+$filters-clear-all-color-hover: general.$link-hover !default;
+
+$filters-clear-all-font-size: $filter-item-font-size !default;
+
+// Facet title
+
+$facet-title-font-size: 16px !default;
+$facet-title-line-height: 1.1 !default;
+$facet-title-font-weight: 700 !default;
+$facet-title-padding: 0 0 10px !default;
+$facet-title-color: $facet-text-color !default;
+
+// Facet label
+
+$facet-label-font-size: 14px !default;
+$facet-label-line-height: 21px !default;
+$facet-label-font-weight: 700 !default;
+$facet-label-color: $facet-text-color !default;
+$facet-label-color-hover: general.$text-color-hover !default;
+$facet-label-padding: 10.5px !default;
+$facet-label-padding-open: 10.5px 10.5px 0 !default;
+
+// Caret
+
+$facet-label-caret-content: "⌄" !default;
+$facet-label-caret-font-family: $facets-font-family !default;
+$facet-label-caret-color: $facet-text-color !default;
+$facet-label-caret-color-hover: general.$text-color-hover !default;
+
+$facet-content-padding: 5px 10px 20px !default;
+
+// Term facet
+
+$facet-term-margin: 7px 0 0 !default;
+$facet-term-padding: 4px 5px !default;
+$facet-term-label-padding: 8px !default;
+
+$facet-term-font-size: 14px !default;
+
+$facet-term-color: $facet-text-color !default;
+$facet-term-background-color: transparent !default;
+$facet-term-background-color-hover: general.$color-bg-hover !default;
+
+$facet-term-count-color: general.$grey-400 !default;
+
+$facet-term-checkbox-size: 14px !default;
+$facet-term-checkbox-radius: 0px !default;
+$facet-term-checkbox-color: general.$secondary !default;
+
+// Terms - show more
+
+$facet-term-show-more-color: general.$text-color-primary !default;
+$facet-term-show-more-color-hover: general.$text-color-primary !default;
+
+$facet-term-show-more-font-size: 14px !default;
+
+$facet-term-show-more-padding: 5px 10px !default;
+
+// Terms - filter
+
+$facet-term-filter-border: $facet-border !default;
+
+// Range slider
+
+$slider-color: general.$secondary !default;
+
+$facet-range-summary-font-size: 14px !default;
+
+$facet-range-margin: 10px 0 0 !default;
+$facet-range-padding: 0 8px !default;
+
+$facet-range-dot-color: general.$color-bg !default;
+$facet-range-dot-border: 3px solid $slider-color !default;
+
+$facet-range-dot-color-hover: general.$grey-100 !default;
+
+$facet-range-rail-color: general.$grey-100 !default;
+$facet-range-rail-color-active: $slider-color !default;
+
+// Range slider inputs
+
+$facet-range-input-label-font-size: 12px !default;
+$facet-range-input-label-margin: 0 0 5px !default;
+
+$facet-range-input-padding: 8px !default;
+$facet-range-separator-margin: 0 10px !default;
+
+$facet-range-currency-padding: 0 5px !default;
+
+// Filters dropdown
+
+$facet-dropdown-margin: 0 10px 0 0;
+$facet-dropdown-background: general.$white;
+$facet-dropdown-z-index: 10;
+$facet-dropdown-min-width: 220px;
+$facet-dropdown-max-height: 300px;
+$facet-dropdown-list-margin: 2px 0 0;
+$facet-dropdown-active-border-width: 2px;
+
+$facet-dropdown-clear-margin: 3px 0 0;
+$facet-dropdown-clear-padding: 5px 0 3px;
+$facet-dropdown-font-size: 16px;
+
+// Result page
+
+$search-results-font-family: general.$font-family-base !default;
+
+$result-section-padding: 0 0 0 4.6% !default;
+
+$result-section-margin: 0 0 31.5px -16px !default;
+
+// Title
+
+$search-results-title-font-size: 32px !default;
+$search-results-title-margin: 0 0 38px !default;
+
+// Toolbar
+
+// Layout selection
+
+$layout-selection-margin: 0 16px 0 0 !default;
+
+// Summary
+
+$item-count-summary-text-color: general.$text-color-primary !default;
+$item-count-summary-font-size: 14px !default;
+
+// Select
+
+$select-font-family: $search-results-font-family !default;
+$select-color: general.$text-color-primary !default;
+$select-background: null !default;
+$select-border: general.$border !default;
+$select-font-size: 14px;
+$select-height: 48px;
+$select-line-height: 1.5;
+$select-label-position: 8px;
+$select-border-radius: 0;
+$select-focus-shadow: 0 0 3px 1px general.$grey-100 !default;
+
+// Pagination select
+
+$pagination-select-margin: 0 !default;
+$pagination-select-width: 125px !default;
+$pagination-select-font-size: 12px !default;
+$pagination-select-padding: 20px 25px 4px 8px !default;
+
+// Pagination
+
+$pagination-page-color: general.$secondary !default;
+$pagination-page-color-hover: general.$text-color-primary !default;
+
+$pagination-font-family: $search-results-font-family !default;
+$pagination-page-font-size: 12px !default;
+$pagination-page-padding: 0 5.25px !default;
+$pagination-page-margin: 0 12px 0 0 !default;
+
+$pagination-selected-page-color: general.$text-color-primary !default;
+$pagination-selected-page-font-weight: 700 !default;
+
+$pagination-prev-arrow-content: "" !default;
+$pagination-next-arrow-content: "" !default;
+$pagination-arrow-font-family: $pagination-font-family !default;
+$pagination-arrow-size: 11px !default;
+$pagination-arrow-font-weight: 700 !default;
+$pagination-arrow-color: general.$text-color-primary !default;
+$pagination-arrow-color-hover: general.$secondary !default;
+$pagination-arrow-margin: 0 12px 0 0 !default;
+$pagination-arrow-padding: 0 8px !default;
+$pagination-arrow-line-height: 31.5px !default;
+
+// Sort
+
+$sort-select-margin: 0 0 0 8px !default;
+
+// Product card
+
+$product-card-min-height: 250px !default;
+$product-card-border: general.$border !default;
+
+$product-card-padding: 0 16px !default;
+$product-card-margin: 0 !default;
+
+$product-card-font-family: $search-results-font-family !default;
+
+$product-card-elements-font-size: 12px !default;
+
+// Card image
+
+$product-card-image-max-width: 240px !default;
+$product-card-image-max-height: 300px !default;
+
+$product-card-image-section-border: none !default;
+
+$product-card-image-section-padding: 12px 8px !default;
+$product-card-image-section-margin: 0 !default;
+
+// Title
+
+$product-card-title-font-size: 14px !default;
+$product-card-title-margin: 0 0 12px !default;
+
+$product-card-title-color: general.$text-color-primary !default;
+$product-card-title-color-link-hover: general.$secondary !default;
+$product-card-title-line-height: 21px !default;
+
+// Price
+
+$product-card-regular-price-font-size: 16px !default;
+$product-card-regular-price-font-weight: 700 !default;
+$product-card-regular-price-padding: 10px 8px 0 5px !default;
+
+//  Rating
+
+$product-card-rating-margin: 0 0 15.75px !default;
+$product-card-rating-label-color: general.$text-color-primary !default;
+$product-card-rating-label-color-hover: general.$secondary !default;
+
+// List layout
+
+$product-card-list-layout-content-padding: 15px !default;
+$product-card-list-layout-min-height: 50px !default;
+
+// Empty results
+
+$empty-results-color: general.$text-color-primary !default;
+$empty-results-font-size: 14px !default;
+
+// Responsive
+
+$mobile-sidebar-z-index: 555 !default;
+$mobile-sidebar-background: general.$white !default;
+$mobile-sidebar-fade-background: rgba(0, 0, 0, 0.6) !default;
+
+$mobile-filter-toolbar-margin: -20px 0 20px !default;
+$mobile-filter-toolbar-padding: 15px 0 !default;
+
+// Sidebar top
+
+$mobile-sidebar-border: general.$border !default;
+$mobile-sidebar-height: 48px !default;
+$mobile-sidebar-padding: 0 13.5px 0 0 !default;
+
+$mobile-sidebar-toggle-size: 16px !default;
+$mobile-sidebar-toggle-color: general.$grey-100 !default;
+$mobile-sidebar-toggle-content: "✖" !default;
+$mobile-sidebar-toggle-font-family: general.$font-family-base !default;
+
+// Mobile toggle
+
+$mobile-sidebar-toggle-width: 208px;
+$mobile-sidebar-toggle-width-xs: 139px;
+$mobile-sidebar-toggle-width-xxs: 100px;
+
+$mobile-sidebar-toggle-padding: 15px 0;
+$mobile-sidebar-toggle-line-height: 16px;
+
+// Badges
+
+$badge-z-index: 1 !default;
+$badge-font-family: general.$font-family-base !default;
+
+$badge-size: 48px !default;
+$badge-size-md: $badge-size * calc(2 / 3) !default;
+
+$badge-font-size: 14px !default;
+$badge-font-size-md: 11px !default;
+
+$badge-margin: 0 8px 0 0 !default;
+$badge-position-top: -(calc($badge-size / 2)) !default;
+$badge-position-top-md: -(calc($badge-size-md / 2)) !default;
+
+$text-badge-background-color: general.$secondary !default;
+$text-badge-color: general.$white !default;
+
+// Breadcrumbs
+
+$breadcrumbs-max-width: 1228px !default;
+$breadcrumbs-margin: 0 0 24px !default;
+$breadcrumbs-font-size: 12px !default;
+
+$breadcrumbs-color: general.$link !default;
+$breadcrumbs-color-hover: general.$link-hover !default;
+
+// Similar queries
+
+$similar-queries-margin-top: 20px !default;
+
+$similar-queries-label-font-size: 20px !default;
+$similar-queries-label-font-weight: 700 !default;
+$similar-queries-label-margin-top: 0 !default;
+$similar-queries-label-margin-bottom: 8px !default;
+
+$similar-query-label-font-weight: 400 !default;
+$similar-query-label-color: #4f4f4f !default;
+$similar-query-label-margin-bottom: 48px !default;
+
+$similar-query-value-font-size: 16px !default;
+
+// Category filter
+
+$category-filter-padding: 0 !default;
+$category-filter-font-family: $facets-font-family !default;
+$category-filter-margin: 0 0 25px !default;
+
+$category-filter-back-padding: 13px 0 !default;
+$category-filter-back-color: $facet-label-color !default;
+$category-filter-back-color-hover: $facet-label-color-hover !default;
+$category-filter-back-font-size: 16px !default;
+$category-filter-back-line-height: 20px !default;
+$category-filter-back-font-weight: 700 !default;
+
+$category-filter-item-padding: 10px 0 10px 25px !default;
+$category-filter-item-color: $facet-label-color !default;
+$category-filter-item-color-hover: $facet-label-color-hover !default;
+$category-filter-item-font-size: 16px !default;
+$category-filter-item-font-size-line-height: 20px !default;
+
+$category-filter-item-list-padding: 0 0 0 10px !default;
+
+$category-overview-margin: 30px 0 50px !default;
+
+$category-overview-title-margin: 0 0 15px !default;
+$category-overview-title-font-size: 14px !default;
+$category-overview-title-font-weight: 600 !default;

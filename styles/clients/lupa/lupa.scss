@@ -1,0 +1,72 @@
+@use "./lupaConfig.scss";
+
+@use "../../base/general" with (
+  $primary: lupaConfig.$primary,
+  $secondary: lupaConfig.$secondary,
+  $text-color-primary: lupaConfig.$text-color,
+  $text-color-faded: lupaConfig.$text-color-faded,
+  $border: lupaConfig.$border,
+  $background: lupaConfig.$background,
+  $font-family-base: lupaConfig.$font-family,
+  $link: lupaConfig.$link,
+  $link-hover: darken(lupaConfig.$link, 10%),
+  $grey-100: lighten(lupaConfig.$primary, 10%),
+  $grey-200: lupaConfig.$primary
+);
+
+@use "../../base/searchBox" with (
+  $panel-grid-template: "suggestions docs",
+  $panel-shadow: lupaConfig.$shadow,
+  $product-title-font-size: lupaConfig.$base-font-size,
+  $product-price-font-size: 16px,
+  $product-price-color: lupaConfig.$primary,
+  $search-box-more-results-color-hover: lupaConfig.$primary,
+  $suggestion-font-size: lupaConfig.$base-font-size,
+  $search-box-history-item-font-size: lupaConfig.$base-font-size,
+  $input-font-size: lupaConfig.$base-font-size,
+  $suggestion-facet-font-size: 13px
+);
+
+@use "../../base/searchResults" with (
+  $select-background: lupaConfig.$white,
+  $product-card-elements-font-size: lupaConfig.$base-font-size,
+  $product-card-title-font-size: lupaConfig.$base-font-size,
+  $product-card-image-max-height: 195px,
+  $product-card-margin: 0,
+  $product-card-padding: 12px,
+  $result-section-padding: 0 0 0 1.6%,
+  $search-results-title-font-size: 16px,
+  $facet-term-checkbox-size: 18px,
+  $facet-term-margin: 16px 0 0,
+  $facet-range-dot-border: 0px solid lupaConfig.$primary,
+  $facet-range-dot-color: lupaConfig.$primary,
+  $facet-range-dot-color-hover: lupaConfig.$primary,
+  $facet-range-rail-color: rgba(60, 83, 244, 0.3),
+  $facet-term-count-color: lupaConfig.$text-color,
+  $filters-content-margin: 0,
+  $filters-margin: 0 0 25px
+);
+
+@use "../../lupaIndex";
+@use "./lupaSearchBox.scss";
+@use "./lupaToolbar.scss";
+@use "./lupaProductCard.scss";
+@use "./lupaFacets.scss";
+@use "./lupaRecommendations.scss";
+
+.lupa-panel-suggestion-index {
+  grid-area: suggestions;
+}
+
+.lupa-panel-document-index {
+  grid-area: docs;
+}
+
+#lupa-search-results-products {
+  background: lupaConfig.$white;
+  padding-top: 36px;
+}
+
+.wrapper {
+  background: lupaConfig.$background-hover;
+}
