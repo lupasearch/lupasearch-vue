@@ -75,11 +75,3 @@ const goToResults = ({
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-.lupa-similar-query-label {
-  span {
-    margin-right: 1.5px;
-    display: inline-block;
-  }
-}
-</style>

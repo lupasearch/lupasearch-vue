@@ -1,2 +1,4 @@
-@use "./searchBox/searchBoxIndex";
-@use "./searchResults/searchResultsIndex";
+@use './searchBox/searchBoxIndex';
+@use './searchResults/searchResultsIndex';
+@use './spinner';
+@use './recommendations';

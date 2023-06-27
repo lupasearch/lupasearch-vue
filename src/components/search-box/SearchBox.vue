@@ -314,11 +314,3 @@ const handleProductClick = (): void => {
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-#lupa-search-box {
-  width: 100%;
-}
-.lupa-search-box-wrapper {
-  position: relative;
-}
-</style>

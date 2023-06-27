@@ -10,6 +10,8 @@ import lupaSearchSdk from '@getlupa/client-sdk'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { addParamsToLabel } from '@/utils/string.utils'
+import SearchResultsProductCard from '../products/product-card/SearchResultsProductCard.vue'
+import { SearchResultsProductCardOptions } from '@/types/search-results/SearchResultsProductCardOptions'
 
 const props = defineProps<{
   panel: SearchResultsAdditionalPanelOptions

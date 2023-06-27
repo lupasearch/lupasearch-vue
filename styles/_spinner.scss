@@ -1,5 +1,9 @@
-@use "./base/general";
+@use './base/general';
 
+.lupa-spinner-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
 .lupa-spinner {
   color: general.$grey-600;
   display: flex;
@@ -14,7 +18,7 @@
   animation: lupa-spinner 1.2s linear infinite;
 }
 .lupa-spinner div:after {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   top: 3px;

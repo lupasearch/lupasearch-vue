@@ -1,0 +1,21 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Lupa-Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: c-hive/gha-yarn-cache@v2
+      - run: yarn install
+      - run: yarn build
+

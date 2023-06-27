@@ -127,8 +127,3 @@ defineExpose({ fetch })
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-.lupa-search-result-product-card {
-  width: 100%;
-}
-</style>

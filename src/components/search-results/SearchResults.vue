@@ -158,6 +158,7 @@ const handleUrlChange = (params?: URLSearchParams): void => {
     props.options.sort,
     defaultSearchResultPageSize.value
   )
+  console.log(publicQuery)
   searchResultStore.setLoading(true)
   query(getPublicQuery(publicQuery, initialFilters.value, props.isProductList))
 }
@@ -183,6 +184,7 @@ const handleMounted = (): void => {
 watch(searchString, () => handleParamsChange())
 
 const handleParamsChange = (): void => {
+  console.log('params change')
   handleUrlChange()
   props.options.callbacks?.onUrlQueryChange?.({
     queryKey: props.options.queryKey,

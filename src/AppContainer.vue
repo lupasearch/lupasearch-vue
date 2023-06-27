@@ -29,26 +29,25 @@ const containerOptions = computed((): SearchContainerOptions => {
 
 onMounted(() => {
   lupaSearch.searchContainer(containerOptions.value)
-  console.log(containerOptions.value)
-  // setTimeout(() => {
-  //   lupaSearch.searchContainer({
-  //     ...containerOptions.value,
-  //     searchBox: {
-  //       ...containerOptions.value.searchBox,
-  //       labels: {
-  //         ...containerOptions.value.searchBox.labels,
-  //         placeholder: 'Updated'
-  //       }
-  //     },
-  //     searchResults: {
-  //       ...containerOptions.value.searchResults,
-  //       labels: {
-  //         ...containerOptions.value.searchResults.labels,
-  //         pageSize: 'Atnaujintas psl dydis'
-  //       }
-  //     }
-  //   })
-  // }, 5000)
+  setTimeout(() => {
+    lupaSearch.searchContainer({
+      ...containerOptions.value,
+      searchBox: {
+        ...containerOptions.value.searchBox,
+        labels: {
+          ...containerOptions.value.searchBox.labels,
+          placeholder: 'Updated'
+        }
+      },
+      searchResults: {
+        ...containerOptions.value.searchResults,
+        labels: {
+          ...containerOptions.value.searchResults.labels,
+          pageSize: 'Atnaujintas psl dydis'
+        }
+      }
+    })
+  }, 5000)
 })
 </script>
 

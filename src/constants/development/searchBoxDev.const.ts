@@ -22,7 +22,7 @@ export const SEARCH_BOX_CONFIGURATION = {
     close: 'Close'
   },
   links: {
-    searchResults: ''
+    searchResults: '/catalogsearch/result'
   },
   searchTitlePosition: 'search-results-top',
   panels: [

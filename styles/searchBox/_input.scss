@@ -1,4 +1,9 @@
-@use "../base/searchBox";
+@use '../base/searchBox';
+
+.lupa-search-box-input-field {
+  position: relative !important;
+  background: transparent !important;
+}
 
 .lupa-search-box-input-field,
 .lupa-hint {
@@ -8,6 +13,7 @@
   line-height: searchBox.$input-line-height;
   font-size: searchBox.$input-font-size;
   font-family: searchBox.$panel-font-family;
+  width: 100%;
 }
 
 .lupa-search-box-input-field {
@@ -16,5 +22,12 @@
 }
 
 .lupa-hint {
+  opacity: 0.5;
+  position: absolute !important;
+  pointer-events: none;
   border: 1px solid transparent;
+}
+
+.lupa-input-clear {
+  display: none;
 }

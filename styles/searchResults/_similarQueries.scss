@@ -1,4 +1,4 @@
-@use "../base/searchResults";
+@use '../base/searchResults';
 
 #lupa-search-results-similar-queries {
   margin-top: searchResults.$similar-queries-margin-top;
@@ -32,4 +32,18 @@
 
 .lupa-similar-query-crossed {
   text-decoration: line-through;
+}
+
+#lupa-similar-query-text-component {
+  span {
+    margin-right: 2px;
+    display: inline-block;
+  }
+}
+
+.lupa-similar-query-label {
+  span {
+    margin-right: 1.5px;
+    display: inline-block;
+  }
 }

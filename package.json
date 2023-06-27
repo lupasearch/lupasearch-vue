@@ -1,5 +1,5 @@
 {
-  "name": "lupasearch-client",
+  "name": "@getlupa/vue",
   "version": "0.0.0",
   "main": "dist/lupaSearch.js",
   "module": "dist/index.mjs",
@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite & yarn css:watch",
     "css:watch": "rollup --config build/rollupContainerDev.config.js --bundleConfigAsCjs --watch",
-    "build": "run-p type-check build-only",
+    "build": "yarn build-only && yarn css",
+    "css": "rollup --config build/lupaStyle.config.js --bundleConfigAsCjs",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",

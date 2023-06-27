@@ -33,14 +33,3 @@ const maxLines = computed((): number => {
     {{ description }}
   </div>
 </template>
-<style lang="scss">
-@use './styles/base/searchResults';
-
-.lupa-search-results-product-description {
-  max-height: searchResults.$product-description-height;
-
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-}
-</style>

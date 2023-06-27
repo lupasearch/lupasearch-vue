@@ -5,11 +5,3 @@
     </div>
   </div>
 </template>
-<style lang="scss">
-@import './styles/_spinner.scss';
-
-.lupa-spinner-wrapper {
-  width: 100%;
-  overflow: hidden;
-}
-</style>

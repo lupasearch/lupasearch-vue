@@ -178,13 +178,3 @@ export default {
     />
   </div>
 </template>
-<style lang="scss">
-#lupa-search-box-panel {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-}
-.lupa-more-results {
-  text-align: center;
-}
-</style>

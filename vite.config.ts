@@ -11,6 +11,8 @@ export default defineConfig({
   },
   plugins: [vue(), dts()],
   build: {
+    minify: false,
+    target: 'es6',
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'LupaSearch',

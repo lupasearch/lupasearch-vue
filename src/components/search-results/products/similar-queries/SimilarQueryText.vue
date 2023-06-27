@@ -40,11 +40,3 @@ const getStyle = (text: string): string => {
     ({{ count }})
   </span>
 </template>
-<style lang="scss" scoped>
-#lupa-similar-query-text-component {
-  span {
-    margin-right: 2px;
-    display: inline-block;
-  }
-}
-</style>

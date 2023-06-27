@@ -7,9 +7,9 @@ import type { SearchResultsOptionLabels } from './SearchResultsOptions'
 export type SearchResultsProductCardOptions = {
   labels: SearchResultsOptionLabels
   routingBehavior?: RoutingBehavior
-  isInStock: (doc: Document) => boolean
-  badges: SearchResultBadgeOptions
-  links: {
+  isInStock?: (doc: Document) => boolean
+  badges?: SearchResultBadgeOptions
+  links?: {
     details: string
   }
   elements: DocumentElement[]

@@ -113,21 +113,3 @@ defineExpose({ focus })
     </div>
   </div>
 </template>
-<style>
-.lupa-search-box-input-field,
-.lupa-hint {
-  width: 100%;
-}
-.lupa-search-box-input-field {
-  position: relative !important;
-  background: transparent !important;
-}
-.lupa-hint {
-  opacity: 0.5;
-  position: absolute !important;
-  pointer-events: none;
-}
-.lupa-input-clear {
-  display: none;
-}
-</style>

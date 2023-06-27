@@ -1,4 +1,4 @@
-@use "../base/searchBox";
+@use '../base/searchBox';
 
 :root {
   --lupa-available-height: 100%;
@@ -64,4 +64,20 @@
     background-color: searchBox.$search-box-more-results-bg-color-hover;
     color: searchBox.$search-box-more-results-color-hover;
   }
+}
+
+#lupa-search-box-panel {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.lupa-more-results {
+  text-align: center;
+}
+
+#lupa-search-box {
+  width: 100%;
+}
+.lupa-search-box-wrapper {
+  position: relative;
 }

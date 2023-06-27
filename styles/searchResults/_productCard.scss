@@ -1,4 +1,4 @@
-@use "../base/searchResults";
+@use '../base/searchResults';
 
 .lupa-search-result-product-card {
   height: auto;
@@ -163,3 +163,10 @@
   }
 }
 
+.lupa-search-results-product-description {
+  max-height: searchResults.$product-description-height;
+
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
