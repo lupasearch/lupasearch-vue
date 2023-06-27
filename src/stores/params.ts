@@ -113,7 +113,6 @@ export const useParamsStore = defineStore('params', () => {
     searchText: string
     facet?: InputSuggestionFacet
   }) => {
-    console.log('sr', searchText)
     if (!searchResultsLink.value || linksMatch(searchResultsLink.value, window.location.pathname)) {
       const singleFacetParam = facet ? getFacetParam(facet.key, [facet.title]) : undefined
       const facetParam = singleFacetParam

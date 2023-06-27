@@ -1,14 +1,15 @@
-import type { SdkOptions } from '@/types/General'
-import type { DocumentElement } from '@/types/DocumentElement'
-import type { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
-import type { BadgeGenerateSeed } from '@/types/search-results/BadgeOptions'
+import {
+  SdkOptions,
+  SearchResultsSortOptions,
+  BadgeGenerateSeed,
+  DocumentElement
+} from '@getlupa/vue'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
-    environment: 'production',
-    customBaseUrl: 'http://localhost:8080/v1/'
+    environment: 'production'
   } as SdkOptions,
-  queryKey: 'lohywq8d066a',
+  queryKey: 'jnovl7k0kkvd',
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
@@ -137,50 +138,6 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   isInStock: (doc: any): boolean => {
     return Boolean(doc)
   },
-  badges: {
-    anchor: 'tl',
-    elements: [
-      {
-        key: 'regular_price',
-        type: 'customHtml',
-        className: 'lupa-dynamic-badge lupa-discount-badge',
-        html: (doc: any): string => {
-          const discountPercentage = Math.round(
-            ((parseFloat(doc.regular_price) - parseFloat(doc.discount_price)) /
-              parseFloat(doc.regular_price)) *
-              100
-          )
-          return `<span class="lupa-badge-title">-${discountPercentage}%</span><span class="lupa-badge-full-text">Nuolaida</span>`
-        },
-        display: (doc: any) => parseFloat(doc.discount_price) < parseFloat(doc.regular_price)
-      },
-      {
-        key: 'is_preorder',
-        type: 'customHtml',
-        className: 'lupa-dynamic-badge lupa-preorder-badge',
-        html: (): string => {
-          return `<span class="lupa-badge-title">Greitai</span><span class="lupa-badge-full-text">Pasirodys prekyboje</span>`
-        },
-        display: (doc: any) => Boolean(doc.is_preorder)
-      }
-    ],
-    generate: {
-      key: 'label',
-      keyMap: {
-        id: 'key',
-        backgroundColor: 'background_color',
-        color: 'prod_color',
-        titleText: 'head_text',
-        additionalText: 'text'
-      },
-      image: (badge: BadgeGenerateSeed) => {
-        return !badge.titleText ? 'https://www.pegasas.lt/heart-c5Y.svg' : undefined
-      },
-      showTitle: (badge: BadgeGenerateSeed) => {
-        return true
-      }
-    }
-  } as any,
   links: {
     details: '{url}'
   },
@@ -194,23 +151,23 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/638px-Placeholder_view_vector.svg.png'
     },
     {
-      type: 'title',
-      key: 'name',
-      isHtml: false,
-      link: false,
-      maxLines: 2
-    },
-    {
-      type: 'custom',
-      key: 'id',
-      className: 'lupa-custom-id',
-      action: (doc: any) => console.log('id click', doc)
-    },
-    {
       type: 'custom',
       key: 'brand',
       className: 'lupa-custom-brand',
       action: (doc: any) => console.log('brand click', doc)
+    },
+    {
+      type: 'title',
+      key: 'name',
+      isHtml: false,
+      link: false,
+      className: "bold",
+      maxLines: 2
+    },
+    {
+      type: 'description',
+      key: 'description',
+      maxLines: 3
     },
     {
       type: 'customHtml',

@@ -53,7 +53,7 @@ const goToResults = ({
             >
               <SimilarQueryText :label="label" :similarQuery="similarQuery" />
             </span>
-            <span v-else>{{ label }} </span>
+            <span v-else>{{ label }}&nbsp;</span>
           </span>
         </template>
         <template v-else>

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { SdkOptions } from '@/types/General'
-import type { SearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
+import { SdkOptions } from '@getlupa/vue'
+import { SearchBoxPanel } from '@getlupa/vue/dist/src/types/search-box/SearchBoxPanel'
 
 export const SEARCH_BOX_CONFIGURATION = {
   options: {
@@ -11,7 +10,7 @@ export const SEARCH_BOX_CONFIGURATION = {
   inputAttributes: {
     name: 'q'
   },
-  debounce: 200,
+  debounce: 0,
   labels: {
     placeholder: 'Search for products...',
     noResults: 'There are no results found.',
@@ -28,13 +27,13 @@ export const SEARCH_BOX_CONFIGURATION = {
   panels: [
     {
       type: 'suggestion',
-      queryKey: 'ocmyudu2q6f3',
+      queryKey: '0qe99gfdyrrp',
       highlight: true,
       limit: 10
     },
     {
       type: 'document',
-      queryKey: '0zcly1frbyyi',
+      queryKey: 'jnovl7k0kkvd',
       limit: 5,
       searchBySuggestion: true,
       links: {
@@ -46,20 +45,20 @@ export const SEARCH_BOX_CONFIGURATION = {
         {
           type: 'image',
           placeholder:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/638px-Placeholder_view_vector.svg.png'
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/638px-Placeholder_view_vector.svg.png',
+          key: 'image'
         },
         {
           type: 'title',
-          key: 'product_name'
+          key: 'name'
         },
         {
-          type: 'regularPrice',
-          key: 'regular_price',
-          display: (doc: any) => doc.discount_price < doc.regular_price
+          type: 'custom',
+          key: 'brand'
         },
         {
           type: 'price',
-          key: 'discount_price'
+          key: 'price'
         }
       ]
     }

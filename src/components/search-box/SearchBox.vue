@@ -136,7 +136,6 @@ const handleInput = (value: string): void => {
   suggestedValue.value = defaultSuggestedValue
   trackSearchQuery(value)
   if (props.isSearchContainer) {
-    console.log('goint to results')
     goToResultsDebounced({
       searchText: value
     })

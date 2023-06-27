@@ -1,6 +1,4 @@
-import type { SearchBoxOptions } from '@/types/search-box/SearchBoxOptions'
-import type { SearchContainerOptions } from '@/types/search-container/SearchContainerOptions'
-import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
+import { SearchContainerOptions, SearchBoxOptions, SearchResultsOptions } from '@getlupa/vue'
 import { SEARCH_BOX_CONFIGURATION } from './searchBoxDev.const'
 import { SEARCH_RESULTS_CONFIGURATION } from './searchResultsDev.const'
 

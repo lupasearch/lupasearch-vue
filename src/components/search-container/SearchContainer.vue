@@ -41,7 +41,6 @@ const innerClick = (): void => {
 }
 
 const reloadOptions = (): void => {
-  console.log('reloading options', fullSearchResultsOptions.value)
   setTimeout(() => {
     optionsStore.setSearchResultOptions({ options: fullSearchResultsOptions.value })
   })

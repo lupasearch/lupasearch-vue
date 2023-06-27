@@ -37,7 +37,6 @@ const removeAll = () => {
 }
 
 const goToResults = ({ query }: { query: string }) => {
-  console.log('go to results', query)
   emit('go-to-results', { query })
 }
 

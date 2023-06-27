@@ -1,10 +1,10 @@
-import type { ProductRecommendationOptions } from '@/types/recommendations/RecommendationsOptions'
+import { ProductRecommendationOptions } from '@getlupa/vue'
 import { SEARCH_RESULTS_CONFIGURATION } from './searchResultsDev.const'
 
 export const RECOMMENDATIONS_OPTIONS: ProductRecommendationOptions = {
   ...SEARCH_RESULTS_CONFIGURATION,
   containerSelector: '',
-  queryKey: 'lohywq8d066a',
+  queryKey: 'jnovl7k0kkvd',
   itemId: '2',
   abTesting: {
     enabled: true,

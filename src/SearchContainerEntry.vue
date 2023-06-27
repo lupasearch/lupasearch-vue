@@ -54,7 +54,6 @@ const mountOpenListeners = (): void => {
 }
 
 onMounted(() => {
-  console.log('mounted')
   mountOpenListeners()
   checkExistingQuery()
   isOpen.value = Boolean(containerOptions.value?.options?.isOpenInitially)

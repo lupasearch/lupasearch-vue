@@ -1,13 +1,15 @@
-import type { SdkOptions } from '@/types/General'
-import type { DocumentElement } from '@/types/DocumentElement'
-import type { SearchResultBadgeOptions } from '@/types/search-results/SearchResultsProductCardOptions'
-import type { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
+import {
+  SdkOptions,
+  SearchResultsSortOptions,
+  BadgeGenerateSeed,
+  DocumentElement
+} from '@getlupa/vue'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
     environment: 'production'
   } as SdkOptions,
-  queryKey: '0zcly1frbyyi',
+  queryKey: 'jnovl7k0kkvd',
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
@@ -19,7 +21,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     noItemsInPage: 'There are no results in this page',
     backToFirstPage: 'Go back to the first page',
     mobileFilterButton: 'Filter',
-    htmlTitleTemplate: "Search Query: '{1}'",
+    htmlTitleTemplate: "Search Query: '{1}' zeeawaw",
     noResultsSuggestion: 'No results found for this query: {1}',
     didYouMean: 'Did you mean to search: {1}',
     similarQuery: 'Search results for phrase {1}',
@@ -31,8 +33,8 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   },
   grid: {
     columns: {
-      xl: 3,
-      l: 3,
+      xl: 5,
+      l: 4,
       md: 3,
       sm: 3,
       xs: 2
@@ -89,7 +91,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   filters: {
     currentFilters: {
       visibility: {
-        mobileSidebar: true,
+        mobileSidebar: false,
         mobileToolbar: true,
         desktopToolbar: false,
         desktopSidebar: true
@@ -100,10 +102,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       },
       mobileSidebar: {
         showFilterCount: false,
-        activeFiltersExpanded: false
+        activeFiltersExpanded: true
       },
       desktopToolbar: {
-        activeFiltersExpanded: false
+        activeFiltersExpanded: true
       }
     },
     facets: {
@@ -133,10 +135,9 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       showDocumentCount: true
     }
   },
-  isInStock: (): boolean => {
-    return true
+  isInStock: (doc: any): boolean => {
+    return Boolean(doc)
   },
-  badges: {} as SearchResultBadgeOptions,
   links: {
     details: '{url}'
   },
@@ -145,45 +146,56 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   elements: [
     {
       type: 'image',
+      key: 'image',
       placeholder:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/638px-Placeholder_view_vector.svg.png'
     },
     {
+      type: 'custom',
+      key: 'brand',
+      className: 'lupa-custom-brand',
+      action: (doc: any) => console.log('brand click', doc)
+    },
+    {
       type: 'title',
-      key: 'product_name',
+      key: 'name',
       isHtml: false,
       link: false,
+      className: 'bold',
       maxLines: 2
     },
     {
-      type: 'custom',
-      key: 'id',
-      className: 'lupa-custom-id'
-    },
-    {
-      type: 'custom',
-      key: 'brand',
-      className: 'lupa-custom-brand'
+      type: 'description',
+      key: 'description',
+      maxLines: 3
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.discount_price < doc.regular_price,
+      display: (doc: Record<string, string>) => doc.price < doc.price,
       html: (doc: Record<string, string>) => {
-        const discountPrice = parseFloat(doc.discount_price)?.toFixed(2)?.replace('.', ',')
-        const regularPrice = parseFloat(doc.regular_price)?.toFixed(2)?.replace('.', ',')
+        const discountPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
+        const regularPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
         const discount = `<span class="lupa-discount">${discountPrice} €</span>`
         const regular = `<span class="lupa-regular">${regularPrice} €</span>`
         return discount + regular
-      }
+      },
+      action: (doc: any) => console.log('price 1 click', doc)
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.discount_price >= doc.regular_price,
+      display: (doc: Record<string, string>) => doc.price >= doc.price,
       html: (doc: Record<string, string>) => {
-        const price = parseFloat(doc.regular_price)?.toFixed(2)?.replace('.', ',')
+        const price = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
         return `<span class="lupa-final">${price} €</span>`
-      }
+      },
+      action: (doc: any) => console.log('price 2 click', doc)
     }
   ] as DocumentElement[],
-  breadcrumbs: [{ label: 'Main', link: '/' }, { label: 'Search: {1}' }]
+  breadcrumbs: [{ label: 'Main', link: '/link-to-someplace/' }, { label: 'Search: {1}' }],
+  dynamicData: {
+    enabled: true,
+    handler: async (ids: string[]) => {
+      console.log('requesting dynamic data for ids', ids)
+    }
+  }
 }

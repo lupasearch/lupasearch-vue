@@ -52,7 +52,7 @@ const goToResults = ({
   >
     <div v-if="searchResult.suggestedSearchText" data-cy="suggested-search-text-label">
       <span v-for="(label, index) in labels.noResultsSuggestion.split(' ')" :key="index">
-        <span :class="getStyle(label)">{{ insertValue(label) }} </span>
+        <span :class="getStyle(label)">{{ insertValue(label) }}&nbsp;</span>
       </span>
     </div>
     <div v-if="didYouMeanValue" data-cy="did-you-mean-label">
@@ -62,9 +62,9 @@ const goToResults = ({
           class="lupa-did-you-mean lupa-highlighted-search-text"
           data-cy="did-you-mean-value"
           @click="goToResults({ searchText: didYouMeanValue })"
-          >{{ didYouMeanValue }}</span
+          >{{ didYouMeanValue }}&nbsp;</span
         >
-        <span v-else>{{ label }} </span>
+        <span v-else>{{ label }}&nbsp;</span>
       </span>
     </div>
   </div>
