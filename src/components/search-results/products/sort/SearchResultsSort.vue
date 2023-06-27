@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useParamsStore } from '@/stores/params'
 import type {
@@ -33,6 +33,8 @@ const setSortValue = (): void => {
   const optionToSelect = sortItems.value.find((x) => x.key === sort.value)?.key
   selectedKey.value = optionToSelect ?? defaultSortValue.value?.key
 }
+
+watch(sort, () => setSortValue())
 
 onMounted(() => {
   setSortValue()

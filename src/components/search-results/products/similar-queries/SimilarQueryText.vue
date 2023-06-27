@@ -35,8 +35,8 @@ const getStyle = (text: string): string => {
       :class="getStyle(text)"
       :data-cy="getStyle(text)"
     >
-      {{ text }}
-    </span>
+      {{ text }}&nbsp;</span
+    >
     ({{ count }})
   </span>
 </template>
