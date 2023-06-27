@@ -79,6 +79,13 @@ const setupTracking = (options: TrackingOptions): void => {
   store.setTrackingOptions({ options })
 }
 
+const LupaSearch = {
+  install: (app, options) => {
+    const pinia = createPinia()
+    app.use(pinia)
+  }
+}
+
 export {
   SearchBox,
   SearchResults,
@@ -88,7 +95,8 @@ export {
   DocumentElementType,
   SearchBoxPanelType,
   BadgeType,
-  setupTracking
+  setupTracking,
+  LupaSearch
 }
 
 export type {

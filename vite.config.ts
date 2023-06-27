@@ -17,12 +17,12 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'LupaSearch',
       fileName: 'lupaSearch',
-      formats: ['es', 'umd', 'iife', 'cjs']
+      formats: ['es', 'cjs']
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['vue'],
+      external: ['vue', 'vue-slider-component'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
