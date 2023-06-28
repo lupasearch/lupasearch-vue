@@ -1,4 +1,4 @@
-@use "../base/searchResults";
+@use '../base/searchResults';
 
 .lupa-search-result-facets {
   font-family: searchResults.$facets-font-family;
@@ -104,7 +104,7 @@
   box-sizing: border-box;
   border: 2px solid searchResults.$facet-term-checkbox-color;
   border-radius: searchResults.$facet-term-checkbox-radius;
-  content: "";
+  content: '';
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,7 +112,7 @@
     border: 3px solid searchResults.$facet-term-checkbox-color;
     border-radius: searchResults.$facet-term-checkbox-radius;
     display: inline-block;
-    content: "";
+    content: '';
   }
 }
 
@@ -150,15 +150,15 @@
   margin: searchResults.$facet-range-margin;
   padding: searchResults.$facet-range-padding;
 
-  .vue-slider-rail {
+  .slider-connects {
     background-color: searchResults.$facet-range-rail-color;
   }
 
-  .vue-slider-process {
+  .slider-connect {
     background-color: searchResults.$facet-range-rail-color-active;
   }
 
-  .vue-slider-dot {
+  .slider-handle {
     background: searchResults.$facet-range-dot-color;
     border-radius: 50%;
     border: searchResults.$facet-range-dot-border;
