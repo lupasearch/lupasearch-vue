@@ -8,7 +8,7 @@ import FacetDisplay from './FacetDisplay.vue'
 const props = defineProps<{
   options: ResultFacetOptions
   facets: FacetResult[]
-  currentFilters: FilterGroup
+  currentFilters?: FilterGroup
   facetStyle?: FacetStyle
   clearable?: boolean
 }>()

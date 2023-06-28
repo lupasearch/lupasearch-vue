@@ -9,7 +9,7 @@ import { computed } from 'vue'
 const props = defineProps<{
   item: Document
   options: TitleDocumentElement
-  link: string
+  link?: string
 }>()
 
 const optionsStore = useOptionsStore()

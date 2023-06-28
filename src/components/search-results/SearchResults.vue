@@ -9,8 +9,7 @@ import { useSearchResultStore } from '@/stores/searchResult'
 import { useTrackingStore } from '@/stores/tracking'
 import type {
   SearchResultsDidYouMeanLabels,
-  SearchResultsOptions,
-  SearchResultsProductOptions
+  SearchResultsOptions
 } from '@/types/search-results/SearchResultsOptions'
 import { setDocumentTitle } from '@/utils/document.utils'
 import { parseParams } from '@/utils/params.utils'

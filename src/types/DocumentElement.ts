@@ -31,22 +31,22 @@ export type ImageDocumentElement<T = any> = DocumentElementBase<T> & {
 
 export type TitleDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.TITLE
-  maxLines: number
+  maxLines?: number
   link?: boolean
   key: string
 }
 
 export type DescriptionDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.DESCRIPTION
-  maxLines: number
+  maxLines?: number
   key: string
-  className: string
+  className?: string
 }
 
 export type CustomDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.CUSTOM
   maxLines?: number
-  className: string
+  className?: string
   key: string
   label?: string
   action?: (document: T) => Promise<unknown> | undefined
@@ -65,7 +65,7 @@ export type RegularPriceDocumentElement<T = any> = DocumentElementBase<T> & {
 export type RatingElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.RATING
   labels: RatingLabels
-  links: RatingLinks
+  links?: RatingLinks
   totalKey: string
   getRatingPercentage?: (doc: T) => number
   key: string

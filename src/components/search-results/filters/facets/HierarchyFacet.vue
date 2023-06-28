@@ -4,7 +4,6 @@ import HierarchyFacetLevel from './HierarchyFacetLevel.vue'
 import type {
   FacetGroupHierarchy,
   FilterGroupItemTypeHierarchy,
-  FilterGroupItemTypeTerms,
   HierarchyTree
 } from '@getlupa/client-sdk/Types'
 import { computed, ref } from 'vue'
@@ -14,11 +13,11 @@ import { recursiveFilter } from '@/utils/filter.utils'
 const props = defineProps<{
   options: ResultFacetOptions
   facet: FacetGroupHierarchy
-  currentFilters: FilterGroupItemTypeTerms
+  currentFilters: FilterGroupItemTypeHierarchy
 }>()
 
-const currentFilters = computed(() => props.currentFilters ?? [])
-const facet = computed(() => props.facet ?? {})
+const currentFilters = computed(() => props.currentFilters ?? { terms: [] })
+const facet = computed(() => props.facet ?? { items: [], key: '' })
 
 const showAll = ref(false)
 const termFilter = ref('')

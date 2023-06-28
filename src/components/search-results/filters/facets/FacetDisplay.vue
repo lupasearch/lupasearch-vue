@@ -23,11 +23,11 @@ import type { FacetAction } from '@/types/search-results/FacetAction'
 const props = defineProps<{
   options: ResultFacetOptions
   facet: FacetResult
-  currentFilters: FilterGroup
-  clearable: boolean
+  currentFilters?: FilterGroup
+  clearable?: boolean
 }>()
 
-const facet = computed(() => props.facet ?? [])
+const facet = computed(() => props.facet ?? { type: '', key: '' })
 const currentFilters = computed(() => props.currentFilters ?? {})
 
 const searchResultStore = useSearchResultStore()

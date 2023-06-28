@@ -197,7 +197,7 @@ const handleNavigation = (event?: Event): void => {
           position="image"
           class="lupa-image-badges"
         />
-        <div v-if="labels.outOfStock && !isInStock" class="lupa-out-of-stock">
+        <div v-if="labels?.outOfStock && !isInStock" class="lupa-out-of-stock">
           {{ labels.outOfStock }}
         </div>
       </a>

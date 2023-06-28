@@ -8,8 +8,8 @@ import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
   options: SearchBoxInputOptions
-  canClose: boolean
-  emitInputOnFocus: boolean
+  canClose?: boolean
+  emitInputOnFocus?: boolean
   suggestedValue: InputSuggestion
 }>()
 
@@ -22,7 +22,9 @@ const emit = defineEmits(['input', 'focus'])
 const mainInput = ref(null)
 
 const emitInputOnFocus = computed(() => props.emitInputOnFocus ?? true)
-const suggestedValue = computed(() => props.suggestedValue ?? { value: '', override: false })
+const suggestedValue = computed(
+  () => props.suggestedValue ?? { value: '', override: false, item: { suggestion: '' } }
+)
 
 const labels = computed(() => props.options.labels)
 const input = ref('')

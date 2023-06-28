@@ -11,8 +11,8 @@ const props = defineProps<{
 }>()
 
 const level = computed(() => props.level ?? 0)
-const treeItem = computed(() => props.item ?? [])
-const currentFilters = computed(() => props.currentFilters ?? [])
+const treeItem = computed(() => props.item ?? { key: '', children: [] })
+const currentFilters = computed(() => props.currentFilters ?? { terms: [] })
 
 const emit = defineEmits(['select'])
 
@@ -37,7 +37,7 @@ const handleFacetClick = (item: HierarchyTree): void => {
         <span class="lupa-term-checkbox" :class="{ checked: isChecked }"> </span>
       </div>
       <div class="lupa-term-checkbox-label">
-        <span class="lupa-term-label">{{ item.title }}</span>
+        <span class="lupa-term-label">{{ item.title }}{{ ' ' }}</span>
         <span v-if="options.showDocumentCount" class="lupa-term-count">({{ item.count }})</span>
       </div>
     </div>
