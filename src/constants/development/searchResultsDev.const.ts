@@ -1,9 +1,7 @@
-import {
-  SdkOptions,
-  SearchResultsSortOptions,
-  BadgeGenerateSeed,
-  DocumentElement
-} from '@getlupa/vue'
+import { DocumentElement } from '@/types/DocumentElement'
+import { SdkOptions } from '@/types/General'
+import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
+import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
@@ -29,7 +27,9 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     aiSuggestions: 'Other suggestions:'
   },
   toolbar: {
-    totalCount: true
+    layoutSelector: false,
+    itemSummary: true,
+    clearFilters: false
   },
   grid: {
     columns: {
@@ -65,27 +65,22 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     {
       key: 'nameDesc',
       label: 'Name (Descending)',
-      config: [{ product_name: 'desc' }]
+      config: [{ name: 'desc' }]
     },
     {
       key: 'nameAsc',
       label: 'Name (Ascending)',
-      config: [{ product_name: 'asc' }]
+      config: [{ name: 'asc' }]
     },
     {
       key: 'priceDesc',
       label: 'Price (High to Low)',
-      config: [{ discount_price: 'desc' }]
+      config: [{ price: 'desc' }]
     },
     {
       key: 'priceAsc',
       label: 'Price (Low to High)',
-      config: [{ discount_price: 'asc' }]
-    },
-    {
-      key: 'discountDesc',
-      label: 'Biggest Discount',
-      config: [{ discount: 'desc' }]
+      config: [{ price: 'asc' }]
     }
   ] as SearchResultsSortOptions[],
   filters: {
@@ -132,7 +127,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         minValues: 10
       },
       facetValueCountLimit: 15,
-      showDocumentCount: true
+      showDocumentCount: true,
+      style: {
+        type: 'sidebar' as FacetStyle
+      }
     }
   },
   isInStock: (doc: any): boolean => {
@@ -161,7 +159,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       key: 'name',
       isHtml: false,
       link: false,
-      className: "bold",
+      className: 'bold',
       maxLines: 2
     },
     {

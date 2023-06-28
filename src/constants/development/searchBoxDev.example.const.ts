@@ -1,5 +1,5 @@
-import { SdkOptions } from '@getlupa/vue'
-import { SearchBoxPanel } from '@getlupa/vue/dist/src/types/search-box/SearchBoxPanel'
+import { SdkOptions } from '@/types/General'
+import { SearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 
 export const SEARCH_BOX_CONFIGURATION = {
   options: {
