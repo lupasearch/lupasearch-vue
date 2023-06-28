@@ -4,11 +4,11 @@ import { FACET_TERM_RANGE_SEPARATOR } from '@/constants/queryParams.const'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { rangeFilterToString } from '@/utils/filter.utils'
 import { getDisplayValue, getNormalizedString } from '@/utils/string.utils'
-import {
-  type FacetGroup,
-  type FacetGroupItem,
-  type FilterGroupItemTypeRange,
-  type FilterGroupItemTypeTerms
+import type {
+  FacetGroup,
+  FacetGroupItem,
+  FilterGroupItemTypeRange,
+  FilterGroupItemTypeTerms
 } from '@getlupa/client-sdk/Types'
 import { computed, ref } from 'vue'
 

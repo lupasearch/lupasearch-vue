@@ -137,13 +137,25 @@ const goToFirstPage = (): void => {
     <template v-if="hasResults">
       <SearchResultsToolbar class="lupa-toolbar-top" :options="options" pagination-location="top" />
       <div class="lupa-products" data-cy="lupa-products">
-        <SearchResultsProductCard
-          v-for="(product, index) in searchResult.items"
-          :style="columnSize"
-          :key="getProductKeyAction(index, product)"
-          :product="product"
-          :options="productCardOptions"
-        />
+        <template v-if="$slots.productCard">
+          <slot
+            name="productCard"
+            v-for="(product, index) in searchResult.items"
+            :style="columnSize"
+            :key="getProductKeyAction(index, product)"
+            :product="product"
+            :options="productCardOptions"
+          />
+        </template>
+        <template v-else>
+          <SearchResultsProductCard
+            v-for="(product, index) in searchResult.items"
+            :style="columnSize"
+            :key="getProductKeyAction(index, product)"
+            :product="product"
+            :options="productCardOptions"
+          />
+        </template>
       </div>
       <div
         class="lupa-empty-results"

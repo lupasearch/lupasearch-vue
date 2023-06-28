@@ -243,6 +243,9 @@ const handleParamsChange = (): void => {
           <template #append>
             <slot />
           </template>
+          <template v-if="$slots.productCard" #productCard="props">
+            <slot name="productCard" v-bind="props" />
+          </template>
         </SearchResultsProducts>
       </div>
     </template>

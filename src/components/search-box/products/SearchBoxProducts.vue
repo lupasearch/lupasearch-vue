@@ -28,15 +28,30 @@ const highlightedIndex = computed((): number => {
 
 <template>
   <div id="lupa-search-box-products">
-    <SearchBoxProduct
-      v-for="(item, index) in items"
-      :key="index"
-      :item="item"
-      :panelOptions="panelOptions"
-      :labels="labels"
-      :highlighted="index === highlightedIndex"
-      :inputValue="inputValue"
-      @product-click="$emit('product-click')"
-    />
+    <template v-if="$slots.productCard">
+      <slot
+        name="productCard"
+        v-for="(item, index) in items"
+        :key="index"
+        :item="item"
+        :panelOptions="panelOptions"
+        :labels="labels"
+        :highlighted="index === highlightedIndex"
+        :inputValue="inputValue"
+        @product-click="$emit('product-click')"
+      />
+    </template>
+    <template v-else>
+      <SearchBoxProduct
+        v-for="(item, index) in items"
+        :key="index"
+        :item="item"
+        :panelOptions="panelOptions"
+        :labels="labels"
+        :highlighted="index === highlightedIndex"
+        :inputValue="inputValue"
+        @product-click="$emit('product-click')"
+      />
+    </template>
   </div>
 </template>

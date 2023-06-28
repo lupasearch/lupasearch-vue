@@ -158,7 +158,11 @@ export default {
           @fetched="(data: any) => $emit('fetched', data)"
           @itemSelect="(item: any) => $emit('itemSelect', item)"
           @product-click="$emit('product-click')"
-        ></component>
+        >
+          <template v-if="$slots.productCard" #productCard="props">
+            <slot name="productCard" v-bind="props" />
+          </template>
+        </component>
       </div>
     </div>
     <SearchBoxMoreResults

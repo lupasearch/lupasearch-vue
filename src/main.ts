@@ -3,6 +3,7 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
+import AppSlots from './AppSlots.vue'
 import AppProductList from './AppProductList.vue'
 import AppContainer from './AppContainer.vue'
 import AppRecommender from './AppRecommender.vue'
@@ -11,6 +12,7 @@ import AppRecommender from './AppRecommender.vue'
 // const Main = AppRecommender
 // const Main = AppContainer
 // const Main = AppProductList
+// const Main = AppSlots
 const Main = App
 
 const app = createApp(Main)

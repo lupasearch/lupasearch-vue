@@ -8,6 +8,7 @@ import { useSearchBoxStore } from '@/stores/searchBox'
 import { useTrackingStore } from '@/stores/tracking'
 import type {
   SearchBoxInputOptions,
+  SearchBoxOptionLabels,
   SearchBoxOptions,
   SearchBoxPanelOptions
 } from '@/types/search-box/SearchBoxOptions'
@@ -20,7 +21,7 @@ import type {
 } from '@/types/search-box/Common'
 import { storeToRefs } from 'pinia'
 import { pick } from '@/utils/picker.utils'
-import { SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel'
+import { DocumentSearchBoxPanel, SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel'
 import type { Document, Suggestion } from '@getlupa/client-sdk/Types'
 import { debounce } from '@/utils/debounce.utils'
 import { bindSearchTriggers, unbindSearchTriggers } from '@/utils/event.utils'
@@ -286,6 +287,19 @@ const resetValues = (): void => {
 const handleProductClick = (): void => {
   opened.value = false
 }
+const slotProps = (
+  props: any
+): {
+  key: string
+  item: Document
+  labels?: SearchBoxOptionLabels
+  highlighted: boolean
+  panelOptions: DocumentSearchBoxPanel
+} => {
+  return {
+    ...props
+  }
+}
 </script>
 <template>
   <div id="lupa-search-box">
@@ -309,7 +323,11 @@ const handleProductClick = (): void => {
         @itemSelect="handleItemSelect"
         @go-to-results="handleSearch"
         @product-click="handleProductClick"
-      />
+      >
+        <template v-if="$slots.productCard" #productCard="props">
+          <slot name="productCard" v-bind="slotProps(props)" />
+        </template>
+      </SearchBoxMainPanel>
     </div>
   </div>
 </template>

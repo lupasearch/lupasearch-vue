@@ -77,5 +77,9 @@ const getItemsDebounced = debounce(getItems, props.debounce)
     :labels="labels"
     :inputValue="inputValue"
     @product-click="$emit('product-click')"
-  />
+  >
+    <template v-if="$slots.productCard" #productCard="props">
+      <slot name="productCard" v-bind="props" />
+    </template>
+  </SearchBoxProducts>
 </template>
