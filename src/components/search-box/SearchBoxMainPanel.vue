@@ -74,6 +74,7 @@ onBeforeUnmount(() => {
   highlightChange({ action: 'clear' })
   window.removeEventListener('resize', appHeight)
   window.removeEventListener('keydown', handleNavigation)
+  searchBoxStore.resetHighlightIndex()
 })
 
 const handleNavigation = (e: KeyboardEvent): void => {

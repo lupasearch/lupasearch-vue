@@ -8,7 +8,7 @@ import { normalizeFloat } from '@/utils/string.utils'
 import type { FacetGroupTypeStats, FilterGroupItemTypeRange } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import VueSlider from 'vue-slider-component'
+// import VueSlider from 'vue-slider-component'
 
 const props = defineProps<{
   options: ResultFacetOptions

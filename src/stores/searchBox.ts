@@ -144,6 +144,10 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     highlightedIndex.value = newIndex >= 0 ? newIndex % totalCount.value : totalCount.value - 1
   }
 
+  const resetHighlightIndex = () => {
+    highlightedIndex.value = -1
+  }
+
   const saveInputValue = ({ input }: { input: string }) => {
     inputValue.value = input
   }
@@ -167,6 +171,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     queryDocuments,
     highlightChange,
     saveInputValue,
-    saveOptions
+    saveOptions,
+    resetHighlightIndex
   }
 })
