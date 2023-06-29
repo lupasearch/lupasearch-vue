@@ -46,7 +46,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         top: true,
         bottom: false
       },
-      sizes: [12, 24, 36, 72]
+      sizes: [15, 30, 45, 60]
     },
     pageSelection: {
       position: {

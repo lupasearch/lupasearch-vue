@@ -179,6 +179,10 @@ const handleMounted = (): void => {
   paramStore.setDefaultLimit(defaultSearchResultPageSize.value)
 }
 
+const handleCreated = (): void => {
+  handleUrlChange()
+}
+
 watch(searchString, () => handleParamsChange())
 
 const handleParamsChange = (): void => {
@@ -188,6 +192,8 @@ const handleParamsChange = (): void => {
     urlQueryString: searchString.value
   })
 }
+
+handleCreated()
 </script>
 <template>
   <div
