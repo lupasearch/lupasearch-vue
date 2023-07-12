@@ -15,6 +15,7 @@ import { setDocumentTitle } from '@/utils/document.utils'
 import { parseParams } from '@/utils/params.utils'
 import { pick } from '@/utils/picker.utils'
 import { createPublicQuery, getPublicQuery } from '@/utils/query.utils'
+import { getSearchParams } from '@/utils/ssr.utils'
 import type { FilterGroup, PublicQuery, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -32,6 +33,7 @@ const props = defineProps<{
   initialFilters?: FilterGroup
   isProductList?: boolean
   isContainer?: boolean
+  initialData?: SearchQueryResult
 }>()
 
 const searchResultStore = useSearchResultStore()
@@ -151,7 +153,7 @@ const handleResize = (): void => {
 }
 
 const handleUrlChange = (params?: URLSearchParams): void => {
-  const searchParams = params || new URLSearchParams(window.location.search)
+  const searchParams = getSearchParams(props.options.ssr?.url, params)
   const publicQuery = createPublicQuery(
     parseParams(searchParams),
     props.options.sort,
@@ -172,7 +174,7 @@ const handleMounted = (): void => {
     }
   }
   const params = new URLSearchParams(window.location.search)
-  if (!params.has(QUERY_PARAMS.QUERY)) {
+  if (!params.has(QUERY_PARAMS.QUERY) && !props.initialData) {
     handleUrlChange(params)
   }
   paramStore.add(parseParams(params))
@@ -188,6 +190,16 @@ const handleParamsChange = (): void => {
     urlQueryString: searchString.value
   })
 }
+
+const handleCreated = () => {
+  const initialData = props.initialData
+  if (initialData) {
+    handleResults({ queryKey: props.options.queryKey, results: initialData })
+    searchResultStore.add({ ...initialData })
+  }
+}
+
+handleCreated()
 </script>
 <template>
   <div

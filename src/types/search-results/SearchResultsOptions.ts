@@ -1,3 +1,4 @@
+import { SearchQueryResult } from '@getlupa/client-sdk/Types'
 import type { SdkOptions } from '../General'
 import type { CategoryFilterOptions } from '../product-list/ProductListOptions'
 import type { SearchResultsAdditionalPanelOptions } from './SearchResultsAdditionalPanelOptions'
@@ -13,7 +14,13 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     callbacks?: SearchResultEventCallbacks
     categories?: CategoryFilterOptions
     dynamicData?: DynamicData
+    ssr?: SsrOptions
   }
+
+export type SsrOptions = {
+  baseUrl?: string
+  url?: string
+}
 
 export type SearchTitlePosition = 'page-top' | 'search-results-top'
 

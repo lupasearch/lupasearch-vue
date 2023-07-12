@@ -47,7 +47,8 @@ import type {
   FacetFilterQuery,
   SearchResultsFilterOptions,
   ResultFacetOptions,
-  DynamicData
+  DynamicData,
+  SsrOptions
 } from './types/search-results/SearchResultsOptions'
 import type { AnchorPosition } from './types/search-results/SearchResultsProductCardOptions'
 import type {
@@ -60,6 +61,7 @@ import SearchResults from './components/search-results/SearchResults.vue'
 import ProductList from './components/product-list/ProductList.vue'
 import SearchContainer from './components/search-container/SearchContainer.vue'
 import Recommendations from './components/recommendations/Recommendations.vue'
+import { getInitialSearchResults } from './utils/ssr.utils'
 
 let piniaInstance: Pinia | null = null
 
@@ -96,7 +98,8 @@ export {
   SearchBoxPanelType,
   BadgeType,
   setupTracking,
-  LupaSearch
+  LupaSearch,
+  getInitialSearchResults
 }
 
 export type {
@@ -138,5 +141,6 @@ export type {
   SingleStarRatingElement,
   DynamicData,
   ProductRecommendationOptions,
-  RecommendationABTestingOptions
+  RecommendationABTestingOptions,
+  SsrOptions
 }

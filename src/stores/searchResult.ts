@@ -89,10 +89,12 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         pageSize: searchResult.value.limit || 0
       }
     }
-    setDocumentTitle(
-      optionsStore.searchResultOptions?.labels?.htmlTitleTemplate,
-      newSearchResult.searchText
-    )
+    if (typeof document !== 'undefined') {
+      setDocumentTitle(
+        optionsStore.searchResultOptions?.labels?.htmlTitleTemplate,
+        newSearchResult.searchText
+      )
+    }
     searchResult.value = newSearchResult
 
     return { searchResult: newSearchResult }
