@@ -10,6 +10,7 @@ import { appendParam, getRemovableParams, parseParams, removeParams } from '@/ut
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import { linksMatch } from '@/utils/link.utils'
 import { getFacetParam } from '@/utils/filter.toggle.utils'
+import { SsrOptions } from '..'
 
 export const useParamsStore = defineStore('params', () => {
   const params: Ref<QueryParams> = ref({})
@@ -43,11 +44,11 @@ export const useParamsStore = defineStore('params', () => {
     return params.value.filters ?? {}
   })
 
-  const add = (newParams: QueryParams) => {
+  const add = (newParams: QueryParams, ssr?: SsrOptions) => {
     if (!newParams) {
       return { params: params.value }
     }
-    const url = getPageUrl()
+    const url = getPageUrl(undefined, ssr)
     params.value = newParams
     searchString.value = url.search
   }

@@ -194,8 +194,16 @@ const handleParamsChange = (): void => {
 const handleCreated = () => {
   const initialData = props.initialData
   if (initialData) {
-    handleResults({ queryKey: props.options.queryKey, results: initialData })
+    const searchParams = getSearchParams(
+      props.options.ssr?.url,
+      undefined,
+      props.options.ssr?.baseUrl
+    )
+    optionStore.setSearchResultOptions({ options: props.options })
     searchResultStore.add({ ...initialData })
+    paramStore.add(parseParams(searchParams), props.options.ssr)
+    paramStore.setDefaultLimit(defaultSearchResultPageSize.value)
+    handleResults({ queryKey: props.options.queryKey, results: initialData })
   }
 }
 

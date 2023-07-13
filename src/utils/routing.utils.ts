@@ -1,6 +1,6 @@
 import { LUPA_ROUTING_EVENT } from '@/constants/global.const'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
-import type { RoutingBehavior } from '..'
+import type { RoutingBehavior, SsrOptions } from '..'
 import { generateResultLink } from './link.utils'
 
 export const emitRoutingEvent = (url: string): void => {
@@ -30,7 +30,13 @@ export const redirectToResultsPage = (
   }
 }
 
-export const getPageUrl = (pathnameOverride?: string): URL => {
-  const pathname = pathnameOverride || window.location.pathname
-  return new URL(window.location.origin + pathname + window.location.search)
+export const getPageUrl = (pathnameOverride?: string, ssr?: SsrOptions): URL => {
+  // If window is defined, we're in a browser environment
+  if (typeof window !== 'undefined') {
+    const pathname = pathnameOverride || window.location.pathname
+    const origin = window.location.origin
+    const search = window.location.search
+    return new URL(origin + pathname + search)
+  }
+  return new URL(ssr.url, ssr.baseUrl)
 }
