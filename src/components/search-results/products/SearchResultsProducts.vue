@@ -21,13 +21,16 @@ import SearchResultsProductCard from './product-card/SearchResultsProductCard.vu
 import SearchResultsSimilarQueries from './similar-queries/SearchResultsSimilarQueries.vue'
 import AdditionalPanels from '../additional-panels/AdditionalPanels.vue'
 import Spinner from '@/components/common/Spinner.vue'
+import { useOptionsStore } from '@/stores/options'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
+  ssr?: boolean
 }>()
 
 const searchResultStore = useSearchResultStore()
 const paramStore = useParamsStore()
+const optionsStore = useOptionsStore()
 
 const {
   hasResults,
@@ -98,11 +101,17 @@ const desktopFiltersExpanded = computed((): boolean => {
 })
 
 const columnSize = computed((): string => {
+  // Programic grid disabled when ssr is on
+  if (props.ssr) {
+    return ''
+  }
   if (layout.value === ResultsLayoutEnum.LIST) {
     return 'width: 100%'
   }
   return `width: ${100 / columnCount.value}%`
 })
+
+const hasSimilarQueries = computed(() => searchResult.value.similarQueries?.length)
 
 const getProductKeyAction = (index: number, product: Document): string => {
   return getProductKey(`${index}`, product, props.options.idKey)
@@ -186,7 +195,7 @@ const goToFirstPage = (): void => {
       {{ options.labels.emptyResults }} <span>{{ currentQueryText }}</span>
     </div>
 
-    <div v-if="searchResult.similarQueries">
+    <div v-if="hasSimilarQueries">
       <SearchResultsSimilarQueries
         :labels="similarQueriesLabels"
         :columnSize="columnSize"

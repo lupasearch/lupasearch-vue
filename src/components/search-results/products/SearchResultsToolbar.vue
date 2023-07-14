@@ -20,7 +20,9 @@ const props = defineProps<{
   paginationLocation: 'top' | 'bottom'
 }>()
 
-const optionsValue = computed(() => props.options ?? { labels: {} })
+const optionsValue = computed(
+  () => props.options ?? ({ labels: {} } as SearchResultsProductOptions)
+)
 
 const paramStore = useParamsStore()
 const searchResultStore = useSearchResultStore()

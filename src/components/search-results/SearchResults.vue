@@ -51,6 +51,10 @@ const { defaultSearchResultPageSize } = storeToRefs(optionStore)
 
 const searchResultsFilters = ref(null)
 
+const ssrSetupDone = ref(false)
+
+const ssrEnabled = computed(() => Boolean(props.options.ssr))
+
 const didYouMeanLabels = computed((): SearchResultsDidYouMeanLabels => {
   return pick(props.options.labels, ['noResultsSuggestion', 'didYouMean'])
 })
@@ -69,6 +73,9 @@ const isTitleResultTopPosition = computed((): boolean => {
 onMounted(() => {
   window.addEventListener('resize', handleResize)
   optionStore.setSearchResultOptions({ options: props.options })
+  if (props.initialData) {
+    searchResultStore.add({ ...props.initialData })
+  }
   handleMounted()
   optionStore.setInitialFilters({ initialFilters: initialFilters.value })
   props.options.callbacks?.onMounted?.()
@@ -184,6 +191,16 @@ const handleMounted = (): void => {
 watch(searchString, () => handleParamsChange())
 
 const handleParamsChange = (): void => {
+  const searchParams = getSearchParams(
+    props.options.ssr?.url,
+    undefined,
+    props.options.ssr?.baseUrl
+  )
+  // Skip first change detection if there are query params on ssr
+  if (searchParams.has(QUERY_PARAMS.QUERY) && props.initialData && !ssrSetupDone.value) {
+    ssrSetupDone.value = true
+    return
+  }
   handleUrlChange()
   props.options.callbacks?.onUrlQueryChange?.({
     queryKey: props.options.queryKey,
@@ -194,6 +211,14 @@ const handleParamsChange = (): void => {
 const handleCreated = () => {
   const initialData = props.initialData
   if (initialData) {
+    if (typeof window !== 'undefined') {
+      optionStore.setSearchResultOptions({ options: props.options })
+      if (props.initialData) {
+        searchResultStore.add({ ...props.initialData })
+      }
+      handleMounted()
+      return
+    }
     const searchParams = getSearchParams(
       props.options.ssr?.url,
       undefined,
@@ -240,8 +265,7 @@ handleCreated()
         <div class="search-content">
           <SearchResultsDidYouMean :labels="didYouMeanLabels" />
           <SearchResultsTitle :options="options" :is-product-list="isProductList ?? false" />
-
-          <SearchResultsProducts :options="options">
+          <SearchResultsProducts :options="options" :ssr="ssrEnabled">
             <template #append>
               <slot />
             </template>
@@ -259,7 +283,7 @@ handleCreated()
           :options="options.filters ?? {}"
           ref="searchResultsFilters"
         />
-        <SearchResultsProducts :options="options">
+        <SearchResultsProducts :options="options" :ssr="ssrEnabled">
           <template #append>
             <slot />
           </template>

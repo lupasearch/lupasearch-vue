@@ -37,7 +37,7 @@ const { searchResultsRoutingBehavior, searchResultOptions, trackingOptions } =
 
 const { query } = storeToRefs(paramsStore)
 
-const isInStock = ref(false)
+const isInStock = ref(true)
 
 const listLayoutClass = computed((): string => {
   return layout.value === ResultsLayoutEnum.LIST && !props.isAdditionalPanel
@@ -91,6 +91,8 @@ const id = computed((): string => {
 const title = computed((): string => {
   return props.options.titleKey ? (props.product[props.options.titleKey] as string) : ''
 })
+
+const ssr = computed(() => Boolean(optionsStore.searchResultOptions.ssr))
 
 const clickTrackingType = computed((): AnalyticsEventType => {
   if (clickTrackingSettings.value.eventType) {
@@ -169,6 +171,10 @@ const handleProductEvent = (item: { type: ReportableEventType }): void => {
 
 const handleNavigation = (event?: Event): void => {
   handleRoutingEvent(link.value, event, hasEventRouting.value)
+}
+
+if (ssr.value) {
+  checkIfIsInStock()
 }
 </script>
 <template>
