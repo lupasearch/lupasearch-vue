@@ -51,7 +51,7 @@ const { defaultSearchResultPageSize } = storeToRefs(optionStore)
 
 const searchResultsFilters = ref(null)
 
-const ssrSetupDone = ref(false)
+const mounted = ref(false)
 
 const ssrEnabled = computed(() => Boolean(props.options.ssr))
 
@@ -79,6 +79,7 @@ onMounted(() => {
   handleMounted()
   optionStore.setInitialFilters({ initialFilters: initialFilters.value })
   props.options.callbacks?.onMounted?.()
+  mounted.value = true
 })
 
 onBeforeUnmount(() => {
@@ -191,14 +192,9 @@ const handleMounted = (): void => {
 watch(searchString, () => handleParamsChange())
 
 const handleParamsChange = (): void => {
-  const searchParams = getSearchParams(
-    props.options.ssr?.url,
-    undefined,
-    props.options.ssr?.baseUrl
-  )
+  console.log('search', searchString.value, mounted.value)
   // Skip first change detection if there are query params on ssr
-  if (searchParams.has(QUERY_PARAMS.QUERY) && props.initialData && !ssrSetupDone.value) {
-    ssrSetupDone.value = true
+  if (props.initialData && !mounted.value) {
     return
   }
   handleUrlChange()
