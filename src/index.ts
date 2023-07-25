@@ -99,6 +99,7 @@ export {
   BadgeType,
   setupTracking,
   LupaSearch,
+  initPinia,
   getInitialSearchResults
 }
 
