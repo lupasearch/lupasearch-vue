@@ -59,6 +59,18 @@ export const SEARCH_BOX_CONFIGURATION = {
         {
           type: 'price',
           key: 'price'
+        },
+        {
+          type: 'addToCart',
+          labels: {
+            addToCart: 'Į krepšelį'
+          },
+          display: (doc: any) => {
+            return true
+          },
+          action: async (doc: any) => {
+            console.log('adding', doc)
+          }
         }
       ]
     }

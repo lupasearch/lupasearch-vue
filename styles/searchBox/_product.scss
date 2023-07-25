@@ -1,4 +1,4 @@
-@use "../base/searchBox";
+@use '../base/searchBox';
 
 .lupa-search-box-product {
   padding: searchBox.$product-item-padding;
@@ -82,4 +82,12 @@
   line-height: searchBox.$product-description-height-line-height;
   color: searchBox.$product-title-color;
   overflow: hidden;
+}
+
+.lupa-search-box-product-add-to-cart-section {
+  flex-grow: 1;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
