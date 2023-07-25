@@ -1,4 +1,5 @@
 import type { DocumentElement } from '../DocumentElement'
+import type { Document } from '@getlupa/client-sdk/Types'
 
 export enum SearchBoxPanelType {
   SUGGESTION = 'suggestion',
@@ -23,6 +24,7 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   idKey?: string
   customClassName?: string
   searchBySuggestion?: boolean
+  isInStock?: (doc: Document) => boolean
 }
 
 export type SuggestionSearchBoxPanel = SearchBoxPanelBase & {

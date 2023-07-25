@@ -10,6 +10,7 @@ const props = defineProps<{
   item: Document
   element: DocumentElement
   labels?: SearchBoxOptionLabels
+  isInStock?: boolean
 }>()
 
 const dynamicDataStore = useDynamicDataStore()
@@ -32,6 +33,8 @@ const elementComponent = computed((): string => {
       return 'search-box-product-custom'
     case DocumentElementType.CUSTOM_HTML:
       return 'search-box-product-custom-html'
+    case DocumentElementType.ADDTOCART:
+      return 'search-box-product-add-to-cart'
   }
   return 'search-box-product-title'
 })
@@ -63,6 +66,7 @@ import SearchBoxProductPrice from './SearchBoxProductPrice.vue'
 import SearchBoxProductRegularPrice from './SearchBoxProductRegularPrice.vue'
 import SearchBoxProductCustom from './SearchBoxProductCustom.vue'
 import SearchBoxProductCustomHtml from './SearchBoxProductCustomHtml.vue'
+import SearchBoxProductAddToCart from './SearchBoxProductAddToCart.vue'
 
 export default {
   components: {
@@ -72,7 +76,8 @@ export default {
     SearchBoxProductPrice,
     SearchBoxProductRegularPrice,
     SearchBoxProductCustom,
-    SearchBoxProductCustomHtml
+    SearchBoxProductCustomHtml,
+    SearchBoxProductAddToCart
   }
 }
 </script>
@@ -84,6 +89,7 @@ export default {
     :options="element"
     :labels="labels"
     :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData }"
+    :inStock="isInStock"
   >
   </component>
 </template>
