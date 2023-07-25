@@ -1,6 +1,6 @@
 {
   "name": "@getlupa/vue",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "main": "dist/lupaSearch.js",
   "module": "dist/lupaSearch.mjs",
   "types": "dist/src/index.d.ts",
@@ -40,6 +40,7 @@
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.4.0",
     "@vue/tsconfig": "^0.4.0",
+    "@vueform/slider": "^2.1.7",
     "eslint": "^8.39.0",
     "eslint-plugin-vue": "^9.11.0",
     "happy-dom": "^9.20.3",
@@ -63,7 +64,6 @@
     "vitest": "^0.32.2",
     "vue": "^3.3.4",
     "vue-tsc": "^1.6.5",
-    "vue3-carousel": "^0.3.1",
-    "@vueform/slider": "^2.1.7"
+    "vue3-carousel": "^0.3.1"
   }
 }
