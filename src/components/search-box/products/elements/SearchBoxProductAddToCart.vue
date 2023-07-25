@@ -31,8 +31,8 @@ const handleClick = async (): Promise<void> => {
 </script>
 
 <template>
-  <div class="lupa-search-results-add-to-cart-wrapper">
-    <div class="lupa-search-results-product-addtocart">
+  <div class="lupa-search-box-add-to-cart-wrapper">
+    <div class="lupa-search-box-product-addtocart">
       <button
         @click.stop.prevent="handleClick"
         :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
