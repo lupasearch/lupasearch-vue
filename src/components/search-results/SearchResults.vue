@@ -229,6 +229,8 @@ const handleCreated = () => {
 }
 
 handleCreated()
+
+defineExpose({ handleMounted, handleUrlChange })
 </script>
 <template>
   <div
