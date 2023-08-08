@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import type { SearchResultsFilterOptions } from '@/types/search-results/SearchResultsOptions'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import CurrentFilters from './CurrentFilters.vue'
 import CategoryFilter from '@/components/product-list/CategoryFilter.vue'
 import Facets from './facets/Facets.vue'
+
+const categoryFilters = ref(null)
 
 const props = defineProps<{ options: SearchResultsFilterOptions; expandable?: boolean }>()
 
@@ -19,6 +21,14 @@ const currentFiltersVisible = computed((): boolean => {
 const showCurrentFilters = computed((): boolean => {
   return currentFiltersVisible.value ? Boolean(props.options.facets) : false
 })
+
+const fetch = () => {
+  if (categoryFilters.value) {
+    ;(categoryFilters.value as any)?.fetch()
+  }
+}
+
+defineExpose({ fetch })
 </script>
 
 <template>

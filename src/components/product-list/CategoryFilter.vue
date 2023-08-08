@@ -96,6 +96,8 @@ const handleNavigationBack = (event?: Event): void => {
   }
   handleRoutingEvent(backUrlLink.value, event, hasEventRouting.value)
 }
+
+defineExpose({ fetch })
 </script>
 <template>
   <div class="lupa-category-filter" data-cy="lupa-category-filter">
