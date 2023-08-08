@@ -25,18 +25,18 @@ import type {
   RecommendationABTestingOptions
 } from './types/recommendations/RecommendationsOptions'
 import type { SearchBoxOptions } from './types/search-box/SearchBoxOptions'
-import type { SearchBoxPanelType } from './types/search-box/SearchBoxPanel'
+import { SearchBoxPanelType } from './types/search-box/SearchBoxPanel'
 import type {
   SearchContainerOptions,
   SearchContainerConfigOptions
 } from './types/search-container/SearchContainerOptions'
 import type {
-  BadgeType,
   SearchResultBadgeType,
   SearchResultBadgeElement,
   BadgeGenerateSeed,
   BadgeGenerateOptions,
-  BadgeOptions
+  BadgeOptions,
+  BadgeType
 } from './types/search-results/BadgeOptions'
 import type { RoutingBehavior } from './types/search-results/RoutingBehavior'
 import type {
