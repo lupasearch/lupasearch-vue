@@ -35,9 +35,11 @@ import type {
   SearchResultBadgeElement,
   BadgeGenerateSeed,
   BadgeGenerateOptions,
-  BadgeOptions,
-  BadgeType
+  BadgeOptions
 } from './types/search-results/BadgeOptions'
+
+import { BadgeType } from './types/search-results/BadgeOptions'
+
 import type { RoutingBehavior } from './types/search-results/RoutingBehavior'
 import type {
   SearchResultsOptions,
