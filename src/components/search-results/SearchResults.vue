@@ -72,12 +72,10 @@ const isTitleResultTopPosition = computed((): boolean => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
-  optionStore.setSearchResultOptions({ options: props.options })
   if (props.initialData) {
     searchResultStore.add({ ...props.initialData })
   }
   handleMounted()
-  optionStore.setInitialFilters({ initialFilters: initialFilters.value })
   props.options.callbacks?.onMounted?.()
   mounted.value = true
 })
@@ -172,6 +170,9 @@ const handleUrlChange = (params?: URLSearchParams): void => {
 }
 
 const handleMounted = (): void => {
+  optionStore.setSearchResultOptions({ options: props.options })
+  optionStore.setInitialFilters({ initialFilters: initialFilters.value })
+
   handleResize()
   if (props.isProductList) {
     const pageTitle = props.options.labels.htmlTitleTemplate
