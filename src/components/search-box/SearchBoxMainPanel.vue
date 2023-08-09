@@ -2,7 +2,7 @@
 import { useSearchBoxStore } from '@/stores/searchBox'
 import SearchBoxMoreResults from './SearchBoxMoreResults.vue'
 import SearchBoxHistoryPanel from './history/SearchBoxHistoryPanel.vue'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
 import { type SearchBoxPanel, SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel'
@@ -67,7 +67,9 @@ const highlightChange = ({ action }: { action: 'up' | 'down' | 'clear' }) => {
 onMounted(() => {
   window.addEventListener('resize', appHeight)
   window.addEventListener('keydown', handleNavigation)
-  appHeight()
+  setTimeout(() => {
+    appHeight()
+  })
 })
 
 onBeforeUnmount(() => {
@@ -137,49 +139,50 @@ export default {
 }
 </script>
 <template>
-  <div v-if="displayResults" id="lupa-search-box-panel" ref="panelContainer">
-    <div class="lupa-main-panel" data-cy="lupa-main-panel">
-      <div
-        v-for="(panel, index) in displayPanels"
-        :key="index"
-        :class="[
-          'lupa-panel-' + panel.type + '-index',
-          panel.customClassName ? panel.customClassName : ''
-        ]"
-        :data-cy="'lupa-panel-' + panel.type + '-index'"
-      >
-        <component
-          v-if="panel.queryKey"
-          :is="getComponent(panel.type)"
-          :panel="panel"
-          :options="sdkOptions"
-          :debounce="options.debounce"
-          :inputValue="getInput(panel)"
-          :labels="labels"
-          @fetched="(data: any) => $emit('fetched', data)"
-          @itemSelect="(item: any) => $emit('itemSelect', item)"
-          @product-click="$emit('product-click')"
+  <div ref="panelContainer">
+    <div v-if="displayResults" id="lupa-search-box-panel">
+      <div class="lupa-main-panel" data-cy="lupa-main-panel">
+        <div
+          v-for="(panel, index) in displayPanels"
+          :key="index"
+          :class="[
+            'lupa-panel-' + panel.type + '-index',
+            panel.customClassName ? panel.customClassName : ''
+          ]"
+          :data-cy="'lupa-panel-' + panel.type + '-index'"
         >
-          <template v-if="$slots.productCard" #productCard="props">
-            <slot name="productCard" v-bind="props" />
-          </template>
-        </component>
+          <component
+            v-if="panel.queryKey"
+            :is="getComponent(panel.type)"
+            :panel="panel"
+            :options="sdkOptions"
+            :debounce="options.debounce"
+            :inputValue="getInput(panel)"
+            :labels="labels"
+            @fetched="(data: any) => $emit('fetched', data)"
+            @itemSelect="(item: any) => $emit('itemSelect', item)"
+            @product-click="$emit('product-click')"
+          >
+            <template v-if="$slots.productCard" #productCard="props">
+              <slot name="productCard" v-bind="props" />
+            </template>
+          </component>
+        </div>
       </div>
+      <SearchBoxMoreResults
+        :labels="labels"
+        :showTotalCount="options.showTotalCount ?? false"
+        @go-to-results="$emit('go-to-results')"
+      ></SearchBoxMoreResults>
     </div>
-    <SearchBoxMoreResults
-      :labels="labels"
-      :showTotalCount="options.showTotalCount ?? false"
-      @go-to-results="$emit('go-to-results')"
-    ></SearchBoxMoreResults>
-  </div>
-  <div id="lupa-search-box-panel" ref="panel" v-else-if="displayHistory">
-    <SearchBoxHistoryPanel
-      ref="panel"
-      :options="options.history"
-      :history="history"
-      @go-to-results="handleGoToResults"
-      @remove="remove"
-      @remove-all="removeAll"
-    />
+    <div id="lupa-search-box-panel" v-else-if="displayHistory">
+      <SearchBoxHistoryPanel
+        :options="options.history"
+        :history="history"
+        @go-to-results="handleGoToResults"
+        @remove="remove"
+        @remove-all="removeAll"
+      />
+    </div>
   </div>
 </template>
