@@ -193,7 +193,6 @@ const handleMounted = (): void => {
 watch(searchString, () => handleParamsChange())
 
 const handleParamsChange = (): void => {
-  console.log('search', searchString.value, mounted.value)
   // Skip first change detection if there are query params on ssr
   if (props.initialData && !mounted.value) {
     return
