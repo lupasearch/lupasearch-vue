@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { BadgeGenerateSeed, BadgeOptions } from '@/types/search-results/BadgeOptions'
 import { computed } from 'vue'
+import SearchResultGeneratedBadge from './SearchResultGeneratedBadge.vue';
 
 const props = defineProps<{ options: BadgeOptions }>()
 

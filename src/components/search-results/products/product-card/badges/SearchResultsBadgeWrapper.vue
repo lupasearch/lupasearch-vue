@@ -72,7 +72,7 @@ export default {
         :key="index"
         :badge="badge"
       />
-      <SearchResultGeneratedBadges v-if="position === 'card'" :options="options" />
+      <SearchResultGeneratedBadges v-if="positionValue === 'card'" :options="options" />
     </div>
   </div>
 </template>
