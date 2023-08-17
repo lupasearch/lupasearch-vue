@@ -5,9 +5,10 @@ import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSo
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
-    environment: 'production'
+    environment: 'production',
+    customBaseUrl: 'http://localhost:8080/v1/',
   } as SdkOptions,
-  queryKey: 'jnovl7k0kkvd',
+  queryKey: 'zvoifv82aqji',
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
@@ -150,7 +151,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'custom',
-      key: 'brand',
+      key: 'autorius',
       className: 'lupa-custom-brand',
       action: (doc: any) => console.log('brand click', doc)
     },
@@ -160,19 +161,14 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       isHtml: false,
       link: false,
       className: 'bold',
-      maxLines: 2
-    },
-    {
-      type: 'description',
-      key: 'description',
       maxLines: 3
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.price < doc.price,
+      display: (doc: Record<string, string>) => doc.discount_price < doc.regular_price,
       html: (doc: Record<string, string>) => {
-        const discountPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
-        const regularPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
+        const discountPrice = parseFloat(doc.discount_price)?.toFixed(2)?.replace('.', ',')
+        const regularPrice = parseFloat(doc.regular_price)?.toFixed(2)?.replace('.', ',')
         const discount = `<span class="lupa-discount">${discountPrice} €</span>`
         const regular = `<span class="lupa-regular">${regularPrice} €</span>`
         return discount + regular
@@ -181,9 +177,9 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.price >= doc.price,
+      display: (doc: Record<string, string>) => doc.discount_price >= doc.regular_price,
       html: (doc: Record<string, string>) => {
-        const price = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
+        const price = parseFloat(doc.discount_price)?.toFixed(2)?.replace('.', ',')
         return `<span class="lupa-final">${price} €</span>`
       },
       action: (doc: any) => console.log('price 2 click', doc)
