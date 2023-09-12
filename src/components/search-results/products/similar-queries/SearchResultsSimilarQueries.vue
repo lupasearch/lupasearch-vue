@@ -8,7 +8,6 @@ import { escapeHtml, getProductKey } from '@/utils/string.utils'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import SimilarQueryText from './SimilarQueryText.vue'
 import SearchResultsProductCard from '../product-card/SearchResultsProductCard.vue'
 
 const props = defineProps<{

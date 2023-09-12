@@ -133,7 +133,7 @@ const handleKeyDown = (e: KeyboardEvent): void => {
 
 const handleInput = (value: string): void => {
   opened.value = true
-  inputValue.value = value.replace(/\s+$/, '')
+  inputValue.value = value?.replace(/\s+$/, '') ?? ''
   suggestedValue.value = defaultSuggestedValue
   trackSearchQuery(value)
   if (props.isSearchContainer) {
