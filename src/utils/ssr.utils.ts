@@ -1,5 +1,5 @@
 import lupaSearchSdk from '@getlupa/client-sdk'
-import { SearchResultsOptions, SearchResultsSortOptions } from '..'
+import { SearchResultsOptions } from '..'
 import { parseParams } from './params.utils'
 import { createPublicQuery, getPublicQuery } from './query.utils'
 import { FilterGroup } from '@getlupa/client-sdk/Types'
