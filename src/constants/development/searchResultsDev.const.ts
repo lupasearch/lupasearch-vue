@@ -195,5 +195,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     handler: async (ids: string[]) => {
       console.log('requesting dynamic data for ids', ids)
     }
+  },
+  callbacks: {
+    onSortChange: (key: string) => {
+      console.log('sort changed', key)
+    }
   }
 }

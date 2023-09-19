@@ -42,12 +42,17 @@ export type CallbackContext = {
   productId?: string
 }
 
+export type SortCallbackContext = {
+  selectedSortKey: string
+}
+
 export type SearchResultEventCallbacks = {
   onSearchResults?: (context: CallbackContext) => unknown
   onAdditionalPanelResults?: (context: CallbackContext) => unknown
   onCategoryFilterResults?: (context: CallbackContext) => unknown
   onProductClick?: (context: CallbackContext) => unknown
   onUrlQueryChange?: (context: CallbackContext) => unknown
+  onSortChange?: (context: SortCallbackContext) => unknown
   onMounted?: () => unknown
 }
 

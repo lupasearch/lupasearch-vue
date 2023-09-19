@@ -7,9 +7,11 @@ import type {
   SortOptions
 } from '@/types/search-results/SearchResultsSort'
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
+import { SearchResultEventCallbacks } from '@/types/search-results/SearchResultsOptions'
 
 const props = defineProps<{
   options: SortOptions
+  callbacks?: SearchResultEventCallbacks
 }>()
 
 const paramStore = useParamsStore()
@@ -45,6 +47,7 @@ const handleSelect = (): void => {
   if (!value) {
     return
   }
+  props.callbacks?.onSortChange({ selectedSortKey: value })
   paramStore.appendParams({
     params: [{ name: QUERY_PARAMS.SORT, value }],
     paramsToRemove: [QUERY_PARAMS.PAGE]
