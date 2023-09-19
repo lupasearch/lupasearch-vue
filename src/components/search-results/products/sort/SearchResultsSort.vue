@@ -47,7 +47,7 @@ const handleSelect = (): void => {
   if (!value) {
     return
   }
-  props.callbacks?.onSortChange({ selectedSortKey: value })
+  props.callbacks?.onSortChange?.({ selectedSortKey: value })
   paramStore.appendParams({
     params: [{ name: QUERY_PARAMS.SORT, value }],
     paramsToRemove: [QUERY_PARAMS.PAGE]
