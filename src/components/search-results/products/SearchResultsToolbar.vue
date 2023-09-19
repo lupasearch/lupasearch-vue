@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SearchResultsProductOptions } from '@/types/search-results/SearchResultsOptions'
+import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
 import SearchResultsLayoutSelection from './SearchResultsLayoutSelection.vue'
 import SearchResultsMobileToggle from './SearchResultsMobileToggle.vue'
 import SearchResultsSummary from './SearchResultsSummary.vue'
@@ -16,13 +16,11 @@ import { useOptionsStore } from '@/stores/options'
 import { getPageCount } from '@/utils/picker.utils'
 
 const props = defineProps<{
-  options: SearchResultsProductOptions
+  options: SearchResultsOptions
   paginationLocation: 'top' | 'bottom'
 }>()
 
-const optionsValue = computed(
-  () => props.options ?? ({ labels: {} } as SearchResultsProductOptions)
-)
+const optionsValue = computed(() => props.options ?? ({ labels: {} } as SearchResultsOptions))
 
 const paramStore = useParamsStore()
 const searchResultStore = useSearchResultStore()
@@ -108,6 +106,8 @@ const hasResults = computed((): boolean => {
   return searchResult.value.total > 0
 })
 
+const callbacks = computed(() => props.options.callbacks ?? {})
+
 const handleClearAll = (): void => {
   paramStore.removeAllFilters()
 }
@@ -146,7 +146,7 @@ const handleClearAll = (): void => {
         v-if="paginationDisplay.pageSize"
       />
       <div v-else></div>
-      <SearchResultsSort :options="sortOptions" v-if="sortOptions" />
+      <SearchResultsSort v-if="sortOptions" :options="sortOptions" :callbacks="callbacks" />
       <div v-else></div>
     </div>
   </div>
