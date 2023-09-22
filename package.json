@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "vite & yarn css:watch",
     "css:watch": "rollup --config build/rollupContainerDev.config.js --bundleConfigAsCjs --watch",
-    "build": "yarn build-only && yarn css && yarn css:container",
+    "build": "yarn build-only && yarn css && yarn css:container && yarn css:chat",
     "css": "rollup --config build/lupaStyle.config.js --bundleConfigAsCjs",
     "css:container": "rollup --config build/lupaContainerStyle.config.js --bundleConfigAsCjs",
+    "css:chat": "rollup --config build/lupaChatStyle.config.js --bundleConfigAsCjs",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
