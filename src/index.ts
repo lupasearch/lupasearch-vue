@@ -64,7 +64,10 @@ import SearchResults from './components/search-results/SearchResults.vue'
 import ProductList from './components/product-list/ProductList.vue'
 import SearchContainer from './components/search-container/SearchContainer.vue'
 import Recommendations from './components/recommendations/Recommendations.vue'
+import ChatContainer from './components/chat/ChatContainer.vue'
+
 import { getInitialSearchResults } from './utils/ssr.utils'
+import { ChatOptions } from './types/chat/ChatOptions'
 
 let piniaInstance: Pinia | null = null
 
@@ -97,6 +100,7 @@ export {
   ProductList,
   Recommendations,
   SearchContainer,
+  ChatContainer,
   DocumentElementType,
   SearchBoxPanelType,
   BadgeType,
@@ -147,5 +151,6 @@ export type {
   DynamicData,
   ProductRecommendationOptions,
   RecommendationABTestingOptions,
-  SsrOptions
+  SsrOptions,
+  ChatOptions
 }
