@@ -29,7 +29,8 @@ const suggestSearchChatPhrases = async (
   const { environment, customBaseUrl } = options
   const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/`, {
     ...defaultConfig,
-    body: JSON.stringify(request)
+    body: JSON.stringify(request),
+    headers: options.customHeaders ?? {}
   })
   if (res.status < 400) {
     const data = await res.json()
@@ -46,7 +47,8 @@ const suggestPhraseAlternatives = async (
   const { environment, customBaseUrl } = options
   const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/phraseAlternatives`, {
     ...defaultConfig,
-    body: JSON.stringify({ phrases })
+    body: JSON.stringify({ phrases }),
+    headers: options.customHeaders ?? {}
   })
   if (res.status < 400) {
     const data = await res.json()
@@ -63,7 +65,8 @@ const suggestSimplifiedPhrases = async (
   const { environment, customBaseUrl } = options
   const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/simplify`, {
     ...defaultConfig,
-    body: JSON.stringify({ phrases })
+    body: JSON.stringify({ phrases }),
+    headers: options.customHeaders ?? {}
   })
   if (res.status < 400) {
     const data = await res.json()
@@ -85,7 +88,8 @@ const suggestBestProductMatches = async (
   const { environment, customBaseUrl } = options
   const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/bestProducts`, {
     ...defaultConfig,
-    body: JSON.stringify({ initialQuery, messageHistory, productStrings })
+    body: JSON.stringify({ initialQuery, messageHistory, productStrings }),
+    headers: options.customHeaders ?? {}
   })
   if (res.status < 400) {
     const data = await res.json()
