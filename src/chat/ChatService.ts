@@ -40,6 +40,7 @@ const suggestSearchChatPhrases = async (
       return { ...data, success: true }
     }
     const errors = await res.json()
+    options?.onError?.(errors)
     return { success: false, errors }
   } catch (e) {
     options?.onError?.(e)
@@ -63,6 +64,7 @@ const suggestPhraseAlternatives = async (
       return { ...data, success: true }
     }
     const errors = await res.json()
+    options?.onError?.(errors)
     return { success: false, errors }
   } catch (e) {
     options?.onError?.(e)
@@ -86,6 +88,7 @@ const suggestSimplifiedPhrases = async (
       return { ...data, success: true }
     }
     const errors = await res.json()
+    options?.onError?.(errors)
     return { success: false, errors }
   } catch (e) {
     options?.onError?.(e)
@@ -113,6 +116,7 @@ const suggestBestProductMatches = async (
       return { ...data, success: true }
     }
     const errors = await res.json()
+    options?.onError?.(errors)
     return { success: false, errors }
   } catch (e) {
     options?.onError?.(e)
