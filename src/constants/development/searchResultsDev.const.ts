@@ -2,13 +2,12 @@ import { DocumentElement } from '@/types/DocumentElement'
 import { SdkOptions } from '@/types/General'
 import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
-
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
     environment: 'production',
     customBaseUrl: 'http://localhost:8080/v1/',
   } as SdkOptions,
-  queryKey: 'zvoifv82aqji',
+  queryKey: '4dkrq76dkt00',
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
@@ -141,23 +140,24 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     details: '{url}'
   },
   idKey: 'id',
-  titleKey: 'name',
+  titleKey: 'product_name',
   elements: [
     {
       type: 'image',
-      key: 'image',
+      key: 'image_url',
+      baseUrl: "https://www.assorti.lt/",
       placeholder:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/638px-Placeholder_view_vector.svg.png'
     },
     {
       type: 'custom',
-      key: 'autorius',
+      key: 'brand_name',
       className: 'lupa-custom-brand',
       action: (doc: any) => console.log('brand click', doc)
     },
     {
       type: 'title',
-      key: 'name',
+      key: 'product_name',
       isHtml: false,
       link: false,
       className: 'bold',
@@ -165,9 +165,9 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.discount_price < doc.regular_price,
+      display: (doc: Record<string, string>) => doc.price < doc.regular_price,
       html: (doc: Record<string, string>) => {
-        const discountPrice = parseFloat(doc.discount_price)?.toFixed(2)?.replace('.', ',')
+        const discountPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
         const regularPrice = parseFloat(doc.regular_price)?.toFixed(2)?.replace('.', ',')
         const discount = `<span class="lupa-discount">${discountPrice} €</span>`
         const regular = `<span class="lupa-regular">${regularPrice} €</span>`
@@ -177,9 +177,9 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.discount_price >= doc.regular_price,
+      display: (doc: Record<string, string>) => doc.price >= doc.regular_price,
       html: (doc: Record<string, string>) => {
-        const price = parseFloat(doc.discount_price)?.toFixed(2)?.replace('.', ',')
+        const price = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
         return `<span class="lupa-final">${price} €</span>`
       },
       action: (doc: any) => console.log('price 2 click', doc)
@@ -190,11 +190,6 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     enabled: true,
     handler: async (ids: string[]) => {
       console.log('requesting dynamic data for ids', ids)
-    }
-  },
-  callbacks: {
-    onSortChange: (key: string) => {
-      console.log('sort changed', key)
     }
   }
 }

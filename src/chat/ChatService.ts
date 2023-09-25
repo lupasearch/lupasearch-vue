@@ -15,6 +15,8 @@ const defaultConfig = {
   headers: { 'Content-Type': 'application/json' }
 }
 
+const headers = defaultConfig.headers
+
 const getApiUrl = (environment: Environment, customBaseUrl?: string) => {
   if (customBaseUrl) {
     return customBaseUrl
@@ -27,17 +29,22 @@ const suggestSearchChatPhrases = async (
   request: SearchChatRequest
 ): Promise<Partial<SearchChatResponse> & { success: boolean; errors: any }> => {
   const { environment, customBaseUrl } = options
-  const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/`, {
-    ...defaultConfig,
-    body: JSON.stringify(request),
-    headers: options.customHeaders ?? {}
-  })
-  if (res.status < 400) {
-    const data = await res.json()
-    return { ...data, success: true }
+  try {
+    const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/`, {
+      ...defaultConfig,
+      body: JSON.stringify(request),
+      headers: { ...headers, ...(options.customHeaders ?? {}) }
+    })
+    if (res.status < 400) {
+      const data = await res.json()
+      return { ...data, success: true }
+    }
+    const errors = await res.json()
+    return { success: false, errors }
+  } catch (e) {
+    options?.onError?.(e)
+    return { success: false, errors: [e] }
   }
-  const errors = await res.json()
-  return { success: false, errors }
 }
 
 const suggestPhraseAlternatives = async (
@@ -45,17 +52,22 @@ const suggestPhraseAlternatives = async (
   { phrases }: { phrases: string[] }
 ): Promise<Partial<SearchChatResponse> & { success: boolean; errors: any }> => {
   const { environment, customBaseUrl } = options
-  const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/phraseAlternatives`, {
-    ...defaultConfig,
-    body: JSON.stringify({ phrases }),
-    headers: options.customHeaders ?? {}
-  })
-  if (res.status < 400) {
-    const data = await res.json()
-    return { ...data, success: true }
+  try {
+    const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/phraseAlternatives`, {
+      ...defaultConfig,
+      body: JSON.stringify({ phrases }),
+      headers: { ...headers, ...(options.customHeaders ?? {}) }
+    })
+    if (res.status < 400) {
+      const data = await res.json()
+      return { ...data, success: true }
+    }
+    const errors = await res.json()
+    return { success: false, errors }
+  } catch (e) {
+    options?.onError?.(e)
+    return { success: false, errors: [e] }
   }
-  const errors = await res.json()
-  return { success: false, errors }
 }
 
 const suggestSimplifiedPhrases = async (
@@ -63,18 +75,22 @@ const suggestSimplifiedPhrases = async (
   { phrases }: { phrases: string[] }
 ): Promise<Partial<SearchChatResponse> & { success: boolean; errors: any }> => {
   const { environment, customBaseUrl } = options
-  const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/simplify`, {
-    ...defaultConfig,
-    body: JSON.stringify({ phrases }),
-    headers: options.customHeaders ?? {}
-  })
-  if (res.status < 400) {
-    const data = await res.json()
-    console.log(data)
-    return { ...data, success: true }
+  try {
+    const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/simplify`, {
+      ...defaultConfig,
+      body: JSON.stringify({ phrases }),
+      headers: { ...headers, ...(options.customHeaders ?? {}) }
+    })
+    if (res.status < 400) {
+      const data = await res.json()
+      return { ...data, success: true }
+    }
+    const errors = await res.json()
+    return { success: false, errors }
+  } catch (e) {
+    options?.onError?.(e)
+    return { success: false, errors: [e] }
   }
-  const errors = await res.json()
-  return { success: false, errors }
 }
 
 const suggestBestProductMatches = async (
@@ -86,18 +102,22 @@ const suggestBestProductMatches = async (
   }: { initialQuery: string; productStrings: string[]; messageHistory: ChatMessage[] }
 ): Promise<{ products?: string[]; success: boolean; errors: any }> => {
   const { environment, customBaseUrl } = options
-  const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/bestProducts`, {
-    ...defaultConfig,
-    body: JSON.stringify({ initialQuery, messageHistory, productStrings }),
-    headers: options.customHeaders ?? {}
-  })
-  if (res.status < 400) {
-    const data = await res.json()
-    console.log(data)
-    return { ...data, success: true }
+  try {
+    const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/bestProducts`, {
+      ...defaultConfig,
+      body: JSON.stringify({ initialQuery, messageHistory, productStrings }),
+      headers: { ...headers, ...(options.customHeaders ?? {}) }
+    })
+    if (res.status < 400) {
+      const data = await res.json()
+      return { ...data, success: true }
+    }
+    const errors = await res.json()
+    return { success: false, errors }
+  } catch (e) {
+    options?.onError?.(e)
+    return { success: false, errors: [e] }
   }
-  const errors = await res.json()
-  return { success: false, errors }
 }
 
 const prepareChatHistory = (chatLog: ChatContent[]) => {
