@@ -110,7 +110,7 @@ const handleResults = async ({
   const hasResults = Boolean(
     results.total > 0 || results.similarQueries?.length || results.didYouMean?.options
   )
-  props.options.callbacks?.onSearchResults?.({ queryKey, hasResults })
+  props.options.callbacks?.onSearchResults?.({ queryKey, hasResults, params: paramStore.params })
   if (!hasResults) {
     return
   }

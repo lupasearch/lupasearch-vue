@@ -18,6 +18,7 @@ const paramStore = useParamsStore()
 const { sort } = storeToRefs(paramStore)
 
 const selectedKey = ref('')
+const previousKey = ref('')
 
 const sortItems = computed((): SearchResultsSortOptions[] => {
   if (props.options.options && props.options.options.length) {
@@ -34,6 +35,7 @@ const defaultSortValue = computed((): SearchResultsSortOptions => {
 const setSortValue = (): void => {
   const optionToSelect = sortItems.value.find((x) => x.key === sort.value)?.key
   selectedKey.value = optionToSelect ?? defaultSortValue.value?.key
+  previousKey.value = selectedKey.value
 }
 
 watch(sort, () => setSortValue())
@@ -47,11 +49,12 @@ const handleSelect = (): void => {
   if (!value) {
     return
   }
-  props.callbacks?.onSortChange?.({ selectedSortKey: value })
+  props.callbacks?.onSortChange?.({ selectedSortKey: value, previousSortKey: previousKey.value })
   paramStore.appendParams({
     params: [{ name: QUERY_PARAMS.SORT, value }],
     paramsToRemove: [QUERY_PARAMS.PAGE]
   })
+  previousKey.value = selectedKey.value
 }
 </script>
 <template>

@@ -44,10 +44,15 @@ export type CallbackContext = {
 
 export type SortCallbackContext = {
   selectedSortKey: string
+  previousSortKey?: string
+}
+
+export type ResultCallbackContext = CallbackContext & {
+  params: Record<string, any>
 }
 
 export type SearchResultEventCallbacks = {
-  onSearchResults?: (context: CallbackContext) => unknown
+  onSearchResults?: (context: ResultCallbackContext) => unknown
   onAdditionalPanelResults?: (context: CallbackContext) => unknown
   onCategoryFilterResults?: (context: CallbackContext) => unknown
   onProductClick?: (context: CallbackContext) => unknown
