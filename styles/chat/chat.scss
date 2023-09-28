@@ -229,6 +229,17 @@ body {
   margin-left: 15px;
 }
 
+.lupa-chat-text-response {
+  font-family: general.$font-family-base;
+  font-weight: 300;
+  margin-bottom: 40px;
+  min-height: 80px;
+
+  div.br {
+    margin-bottom: 8px;
+  }
+}
+
 .lupa-chat-product-card {
   width: 20%;
 }

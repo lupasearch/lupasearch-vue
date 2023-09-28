@@ -26,6 +26,14 @@ const submitChatInput = async (input: string) => {
   }
   try {
     loading.value = true
+    const key = Date.now().toString()
+    let chatLog: ChatContent = {
+      key,
+      userInput: input,
+      allPhrases: [],
+      suggestedPhrases: []
+    }
+    chatContent.value.push(chatLog)
     const request: SearchChatRequest = {
       userPrompt: input,
       messageHistory: history.value ?? [],
@@ -40,13 +48,15 @@ const submitChatInput = async (input: string) => {
       return
     }
     const validPhrases = phrases.filter((p) => p?.trim().length > 0)
-    const chatLog: ChatContent = {
-      key: Date.now().toString(),
-      userInput: input,
-      allPhrases: [...validPhrases],
-      suggestedPhrases: phrases
-    }
-    chatContent.value.push(chatLog)
+    chatContent.value = chatContent.value.map((c) =>
+      c.key === key
+        ? {
+            ...c,
+            allPhrases: [...validPhrases],
+            suggestedPhrases: phrases
+          }
+        : c
+    )
   } finally {
     loading.value = false
   }

@@ -145,10 +145,38 @@ const prepareChatHistory = (chatLog: ChatContent[]) => {
   return history
 }
 
+const getTextResponseChunkStream = (
+  options: SdkOptions,
+  { initialQuery, messageHistory }: { initialQuery: string; messageHistory: ChatMessage[] },
+  onChunkReceived: (chunk: string) => void
+) => {
+  fetch(`${getApiUrl(options.environment, options.customBaseUrl)}chat/text`, {
+    ...defaultConfig,
+    body: JSON.stringify({ initialQuery, messageHistory }),
+    headers: { ...headers, ...(options.customHeaders ?? {}) }
+  })
+    .then((response) => {
+      const reader = response.body.getReader()
+      return reader.read().then(function processStream({ done, value }) {
+        if (done) {
+          return ''
+        }
+        const result = new TextDecoder('utf-8').decode(value)
+        const sanitezedResult = result.replace('\n', '<div class="br"></div>')
+        onChunkReceived(sanitezedResult)
+        return reader.read().then(processStream)
+      })
+    })
+    .catch((error) => {
+      console.error(`Fetch Error: ${error}`)
+    })
+}
+
 export default {
   suggestSearchChatPhrases,
   suggestPhraseAlternatives,
   suggestSimplifiedPhrases,
   suggestBestProductMatches,
-  prepareChatHistory
+  prepareChatHistory,
+  getTextResponseChunkStream
 }

@@ -2,10 +2,8 @@
 import { ChatContent } from '@/types/chat/ChatLog'
 import ChatContentEntry from './ChatContentEntry.vue'
 import { ChatOptions } from '@/types/chat/ChatOptions'
-import { computed, ref } from 'vue'
-import { Document } from '@getlupa/client-sdk/Types'
-import ChatService from '@/chat/ChatService'
 import { ChatMessage } from '@/types/chat/SearchChatRequest'
+import ChatTextEntry from './ChatTextEntry.vue'
 
 const props = defineProps<{
   content: ChatContent[]
@@ -24,7 +22,9 @@ const bestItemsLoaded = (items: string[], key: string) => {
     <ul>
       <li v-for="entry of content" :key="entry.key">
         <h4 class="lupa-chat-section-title">{{ entry.userInput }}</h4>
+        <ChatTextEntry :content="entry.userInput" :history="history" :options="options" />
         <ChatContentEntry
+          v-if="entry.suggestedPhrases?.length"
           :entry="entry"
           :options="options"
           :history="history"
