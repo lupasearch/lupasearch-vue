@@ -40,6 +40,10 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     })
   )
 
+  const hasAnyResults = computed(() => {
+    return panelItemCounts.value?.some((p) => p.count > 0)
+  })
+
   const totalCount = computed(() =>
     resultsVisible.value
       ? panelItemCounts.value?.reduce((a, c) => a + c.count, 0) ?? 0
@@ -97,6 +101,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
         [queryKey]: flattenSuggestions(result.items, publicQuery.searchText ?? '')
       }
       inputValue.value = publicQuery.searchText
+      emitSearchResultsCallback()
       return {
         suggestions: result.items
       }
@@ -106,6 +111,19 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
         options.onError(err)
       }
       return { suggestions: undefined }
+    }
+  }
+
+  const emitSearchResultsCallback = () => {
+    if (options.value.callbacks?.onSearchBoxResults) {
+      options.value.callbacks.onSearchBoxResults({
+        hasAnyResults: hasAnyResults.value,
+        docResults: docResults.value,
+        suggestionResults: suggestionResults.value,
+        totalCount: totalCount.value,
+        panelItemCounts: panelItemCounts.value,
+        inputValue: inputValue.value
+      })
     }
   }
 
@@ -126,6 +144,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       }
       highlightChange({ action: 'clear' })
       docResults.value = { ...docResults.value, [queryKey]: result }
+      emitSearchResultsCallback()
       return { queryKey, result }
     } catch (err) {
       console.error(err)
@@ -167,6 +186,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     totalCount,
     highlightedItem,
     highlightedDocument,
+    hasAnyResults,
     querySuggestions,
     queryDocuments,
     highlightChange,

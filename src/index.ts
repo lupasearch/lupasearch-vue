@@ -24,7 +24,11 @@ import type {
   ProductRecommendationOptions,
   RecommendationABTestingOptions
 } from './types/recommendations/RecommendationsOptions'
-import type { SearchBoxOptions } from './types/search-box/SearchBoxOptions'
+import type {
+  SearchBoxEventCallbacks,
+  SearchBoxOptions,
+  SearchBoxResultCallbackContext
+} from './types/search-box/SearchBoxOptions'
 import { SearchBoxPanelType } from './types/search-box/SearchBoxPanel'
 import type {
   SearchContainerOptions,
@@ -154,5 +158,7 @@ export type {
   ProductRecommendationOptions,
   RecommendationABTestingOptions,
   SsrOptions,
-  ChatOptions
+  ChatOptions,
+  SearchBoxEventCallbacks,
+  SearchBoxResultCallbackContext
 }

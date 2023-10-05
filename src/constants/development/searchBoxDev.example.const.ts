@@ -24,6 +24,13 @@ export const SEARCH_BOX_CONFIGURATION = {
     searchResults: '/catalogsearch/result'
   },
   searchTitlePosition: 'search-results-top',
+  hideMoreResultsButtonOnNoResults: true,
+  showNoResultsPanel: true,
+  callbacks: {
+    onSearchBoxResults: (context) => {
+      console.log('searchBoxResults', context)
+    }
+  },
   panels: [
     {
       type: 'suggestion',

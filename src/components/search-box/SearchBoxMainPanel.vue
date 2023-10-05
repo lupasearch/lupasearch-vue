@@ -2,7 +2,8 @@
 import { useSearchBoxStore } from '@/stores/searchBox'
 import SearchBoxMoreResults from './SearchBoxMoreResults.vue'
 import SearchBoxHistoryPanel from './history/SearchBoxHistoryPanel.vue'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import SearchBoxNoResults from './SearchBoxNoResults.vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
 import { type SearchBoxPanel, SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel'
@@ -24,7 +25,7 @@ const panels = computed(() => props.options.panels)
 const sdkOptions = computed(() => props.options.options)
 
 const searchBoxStore = useSearchBoxStore()
-const { suggestionResults } = storeToRefs(searchBoxStore)
+const { suggestionResults, hasAnyResults } = storeToRefs(searchBoxStore)
 
 const emit = defineEmits([
   'go-to-results',
@@ -169,7 +170,9 @@ export default {
           </component>
         </div>
       </div>
+      <SearchBoxNoResults v-if="!hasAnyResults && options.showNoResultsPanel" :labels="labels" />
       <SearchBoxMoreResults
+        v-if="hasAnyResults || !options.hideMoreResultsButtonOnNoResults"
         :labels="labels"
         :showTotalCount="options.showTotalCount ?? false"
         @go-to-results="$emit('go-to-results')"

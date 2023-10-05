@@ -70,7 +70,9 @@ const panelOptions = computed(
       'links',
       'options',
       'debounce',
-      'showTotalCount'
+      'showTotalCount',
+      'hideMoreResultsButtonOnNoResults',
+      'showNoResultsPanel'
     ])
 )
 

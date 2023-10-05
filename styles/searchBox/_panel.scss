@@ -66,6 +66,13 @@
   }
 }
 
+.lupa-search-box-no-results {
+  text-align: center;
+  color: searchBox.$search-box-more-results-color;
+  font-size: searchBox.$search-box-more-results-font-size;
+  line-height: searchBox.$search-box-more-results-line-height;
+}
+
 #lupa-search-box-panel {
   display: flex;
   justify-content: space-between;
