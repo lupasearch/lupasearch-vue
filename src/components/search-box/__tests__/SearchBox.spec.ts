@@ -55,7 +55,9 @@ describe('SearchBox.vue', () => {
       links: DEFAULT_SEARCH_BOX_OPTIONS.links,
       options: DEFAULT_SEARCH_BOX_OPTIONS.options as SdkOptions,
       debounce: DEFAULT_SEARCH_BOX_OPTIONS.debounce,
-      showTotalCount: DEFAULT_SEARCH_BOX_OPTIONS.showTotalCount
+      showTotalCount: DEFAULT_SEARCH_BOX_OPTIONS.showTotalCount,
+      hideMoreResultsButtonOnNoResults: undefined,
+      showNoResultsPanel: undefined
     })
   })
 
