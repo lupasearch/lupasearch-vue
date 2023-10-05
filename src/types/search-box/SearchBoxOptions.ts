@@ -56,4 +56,5 @@ export type SearchBoxPanelOptions = SearchBoxInputOptions & {
   showTotalCount?: boolean
   showNoResultsPanel?: boolean
   hideMoreResultsButtonOnNoResults?: boolean
+  expandOnSinglePanel?: boolean
 }

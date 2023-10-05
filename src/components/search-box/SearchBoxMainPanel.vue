@@ -25,7 +25,7 @@ const panels = computed(() => props.options.panels)
 const sdkOptions = computed(() => props.options.options)
 
 const searchBoxStore = useSearchBoxStore()
-const { suggestionResults, hasAnyResults } = storeToRefs(searchBoxStore)
+const { suggestionResults, hasAnyResults, panelItemCounts } = storeToRefs(searchBoxStore)
 
 const emit = defineEmits([
   'go-to-results',
@@ -127,6 +127,14 @@ const appHeight = (): void => {
     `${window.innerHeight - panel.getBoundingClientRect().y - 10}px`
   )
 }
+
+const numberOfVisiblePanels = computed(() => {
+  return panelItemCounts.value.filter((v) => v.count > 0).length
+})
+
+const expandOnSinglePanel = computed(() => {
+  return numberOfVisiblePanels.value === 1 && props.options.expandOnSinglePanel
+})
 </script>
 <script lang="ts">
 import SearchBoxSuggestionsWrapper from './suggestions/SearchBoxSuggestionsWrapper.vue'
@@ -142,7 +150,11 @@ export default {
 <template>
   <div ref="panelContainer">
     <div v-if="displayResults" id="lupa-search-box-panel">
-      <div class="lupa-main-panel" data-cy="lupa-main-panel">
+      <div
+        class="lupa-main-panel"
+        :style="expandOnSinglePanel ? { display: 'block' } : {}"
+        data-cy="lupa-main-panel"
+      >
         <div
           v-for="(panel, index) in displayPanels"
           :key="index"
