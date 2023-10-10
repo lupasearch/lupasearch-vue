@@ -72,7 +72,8 @@ const panelOptions = computed(
       'debounce',
       'showTotalCount',
       'hideMoreResultsButtonOnNoResults',
-      'showNoResultsPanel'
+      'showNoResultsPanel',
+      'expandOnSinglePanel'
     ])
 )
 

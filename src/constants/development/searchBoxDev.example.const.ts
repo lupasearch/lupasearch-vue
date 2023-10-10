@@ -26,6 +26,7 @@ export const SEARCH_BOX_CONFIGURATION = {
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,
   showNoResultsPanel: true,
+  expandOnSinglePanel: true,
   callbacks: {
     onSearchBoxResults: (context) => {
       console.log('searchBoxResults', context)
