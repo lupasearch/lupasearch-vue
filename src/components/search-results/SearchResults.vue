@@ -70,7 +70,14 @@ const isTitleResultTopPosition = computed((): boolean => {
   return props.options.searchTitlePosition === 'search-results-top'
 })
 
+// Code for handling browser back button navigation
+const handlePopState = () => {
+  const searchParams = getSearchParams(props.options.ssr?.url)
+  paramStore.add(parseParams(searchParams))
+}
+
 onMounted(() => {
+  window.addEventListener('popstate', handlePopState)
   window.addEventListener('resize', handleResize)
   if (props.initialData) {
     searchResultStore.add({ ...props.initialData })
@@ -82,6 +89,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
+  window.removeEventListener('popstate', handlePopState)
 })
 
 const trackItemListView = (title: string, items: Record<string, unknown>[] = []): void => {
