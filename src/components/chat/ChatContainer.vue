@@ -41,7 +41,8 @@ const submitChatInput = async (input: string) => {
     }
     const { phrases, success } = await ChatService.suggestSearchChatPhrases(
       props.options.sdkOptions,
-      request
+      request,
+      props.options.chatSettings
     )
     if (!success || !phrases.length) {
       error.value = 'Something went wrong'

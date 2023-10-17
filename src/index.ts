@@ -72,7 +72,7 @@ import Recommendations from './components/recommendations/Recommendations.vue'
 import ChatContainer from './components/chat/ChatContainer.vue'
 
 import { getInitialSearchResults } from './utils/ssr.utils'
-import { ChatOptions } from './types/chat/ChatOptions'
+import { ChatOptions, ChatSettings } from './types/chat/ChatOptions'
 
 let piniaInstance: Pinia | null = null
 
@@ -159,6 +159,7 @@ export type {
   RecommendationABTestingOptions,
   SsrOptions,
   ChatOptions,
+  ChatSettings,
   SearchBoxEventCallbacks,
   SearchBoxResultCallbackContext
 }

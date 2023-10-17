@@ -86,9 +86,13 @@ const getSearchResults = async (phrase: string, limit = 5) => {
 }
 
 const getPhraseAlternatives = async () => {
-  const { phrases } = await ChatService.suggestPhraseAlternatives(props.options.sdkOptions, {
-    phrases: [props.phrase]
-  })
+  const { phrases } = await ChatService.suggestPhraseAlternatives(
+    props.options.sdkOptions,
+    {
+      phrases: [props.phrase]
+    },
+    props.options.chatSettings
+  )
   return phrases ?? []
 }
 </script>

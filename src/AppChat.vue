@@ -11,6 +11,9 @@ const options: ChatOptions = {
   sdkOptions: {
     customBaseUrl: 'http://localhost:8080/v1/',
     environment: 'production'
+  },
+  chatSettings: {
+    model: "open-ai-gpt4"
   }
 }
 </script>

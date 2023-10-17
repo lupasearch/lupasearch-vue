@@ -23,13 +23,13 @@ onMounted(() => {
       initialQuery: props.content,
       messageHistory: props.history ?? []
     },
-    processChunk
+    processChunk,
+    props.options.chatSettings
   )
 })
 </script>
 <template>
   <div class="lupa-chat-text-response">
-    <p v-html="content">
-    </p>
+    <p v-html="content"></p>
   </div>
 </template>

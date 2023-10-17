@@ -43,11 +43,15 @@ const loadFinalRecommendations = async () => {
     const productResultStrings = loadedResults.value.map(
       (result) => result[titleKey.value]?.toString() ?? ''
     ) as string[]
-    const { products } = await ChatService.suggestBestProductMatches(props.options.sdkOptions, {
-      initialQuery: props.entry.userInput,
-      productStrings: productResultStrings,
-      messageHistory: props.history ?? []
-    })
+    const { products } = await ChatService.suggestBestProductMatches(
+      props.options.sdkOptions,
+      {
+        initialQuery: props.entry.userInput,
+        productStrings: productResultStrings,
+        messageHistory: props.history ?? []
+      },
+      props.options.chatSettings
+    )
     bestMatches.value = products
     emit('loaded', products)
   } finally {
