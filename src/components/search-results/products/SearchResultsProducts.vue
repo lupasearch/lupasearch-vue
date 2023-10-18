@@ -5,7 +5,8 @@ import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 import type {
   ResultCurrentFilterOptions,
   SearchResultsProductOptions,
-  SearchResultsSimilarQueriesLabels
+  SearchResultsSimilarQueriesLabels,
+  SearchResultsSimilarResultsLabels
 } from '@/types/search-results/SearchResultsOptions'
 import type { Document } from '@getlupa/client-sdk/Types'
 import type { SearchResultsProductCardOptions } from '@/types/search-results/SearchResultsProductCardOptions'
@@ -22,6 +23,7 @@ import SearchResultsSimilarQueries from './similar-queries/SearchResultsSimilarQ
 import AdditionalPanels from '../additional-panels/AdditionalPanels.vue'
 import Spinner from '@/components/common/Spinner.vue'
 import { useOptionsStore } from '@/stores/options'
+import SearchResultsSimilarResults from './similar-results/SearchResultsSimilarResults.vue'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
@@ -58,6 +60,10 @@ const productCardOptions = computed((): SearchResultsProductCardOptions => {
 })
 
 const similarQueriesLabels = computed((): SearchResultsSimilarQueriesLabels => {
+  return props.options.labels
+})
+
+const similarResultsLabels = computed((): SearchResultsSimilarResultsLabels => {
   return props.options.labels
 })
 
@@ -111,7 +117,9 @@ const columnSize = computed((): string => {
   return `width: ${100 / columnCount.value}%`
 })
 
-const hasSimilarQueries = computed(() => searchResult.value.similarQueries?.length)
+const hasSimilarQueries = computed(() => Boolean(searchResult.value.similarQueries?.length))
+
+const hasSimilarResults = computed(() => Boolean(searchResult.value.similarResults?.items?.length))
 
 const getProductKeyAction = (index: number, product: Document): string => {
   return getProductKey(`${index}`, product, props.options.idKey)
@@ -198,6 +206,13 @@ const goToFirstPage = (): void => {
     <div v-if="hasSimilarQueries">
       <SearchResultsSimilarQueries
         :labels="similarQueriesLabels"
+        :columnSize="columnSize"
+        :productCardOptions="productCardOptions"
+      />
+    </div>
+    <div v-if="hasSimilarResults">
+      <SearchResultsSimilarResults
+        :labels="similarResultsLabels"
         :columnSize="columnSize"
         :productCardOptions="productCardOptions"
       />

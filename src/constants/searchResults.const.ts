@@ -23,7 +23,8 @@ export const DEFAULT_OPTIONS_RESULTS = {
     noResultsSuggestion: 'No results found for this query: {1}',
     didYouMean: 'Did you mean to search: {1}',
     similarQuery: 'Search results for phrase {1}',
-    similarQueries: 'Similar queries:'
+    similarQueries: 'Similar queries:',
+    similarResultsLabel: "Related to your query:"
   },
   grid: {
     columns: {

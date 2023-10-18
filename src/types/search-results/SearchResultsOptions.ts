@@ -35,6 +35,10 @@ export type SearchResultsSimilarQueriesLabels = {
   aiSuggestions?: string
 }
 
+export type SearchResultsSimilarResultsLabels = {
+  similarResultsLabel: string
+}
+
 export type CallbackContext = {
   queryKey: string
   hasResults?: boolean
@@ -63,7 +67,8 @@ export type SearchResultEventCallbacks = {
 
 export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
   SearchResultsDidYouMeanLabels &
-  SearchResultsSimilarQueriesLabels & {
+  SearchResultsSimilarQueriesLabels &
+  SearchResultsSimilarResultsLabels & {
     sortBy: string
     currency: string
     priceSeparator?: string
