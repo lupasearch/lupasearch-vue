@@ -27,7 +27,8 @@ import type {
 import type {
   SearchBoxEventCallbacks,
   SearchBoxOptions,
-  SearchBoxResultCallbackContext
+  SearchBoxResultCallbackContext,
+  SearchBoxResultsNavigateContext
 } from './types/search-box/SearchBoxOptions'
 import { SearchBoxPanelType } from './types/search-box/SearchBoxPanel'
 import type {
@@ -73,6 +74,7 @@ import ChatContainer from './components/chat/ChatContainer.vue'
 
 import { getInitialSearchResults } from './utils/ssr.utils'
 import { ChatOptions, ChatSettings } from './types/chat/ChatOptions'
+import { QueryParams } from './types/search-results/QueryParams'
 
 let piniaInstance: Pinia | null = null
 
@@ -161,5 +163,7 @@ export type {
   ChatOptions,
   ChatSettings,
   SearchBoxEventCallbacks,
-  SearchBoxResultCallbackContext
+  SearchBoxResultCallbackContext,
+  QueryParams,
+  SearchBoxResultsNavigateContext
 }

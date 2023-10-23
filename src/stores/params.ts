@@ -44,6 +44,14 @@ export const useParamsStore = defineStore('params', () => {
     return params.value.filters ?? {}
   })
 
+  const navigate = (url: URL) => {
+    window.history.pushState('', 'Append params', url.pathname + url.search)
+    const params = parseParams(url.searchParams) as QueryParams & { query: string }
+    optionsStore?.searchBoxOptions?.callbacks?.onSearchResultsNavigate?.({
+      params
+    })
+  }
+
   const add = (newParams: QueryParams, ssr?: SsrOptions) => {
     if (!newParams) {
       return { params: params.value }
@@ -57,7 +65,7 @@ export const useParamsStore = defineStore('params', () => {
     const url = getPageUrl()
     const paramsToRemove = Array.from(url.searchParams.keys()).filter(isFacetKey)
     removeParams(url, paramsToRemove)
-    window.history.pushState('', 'Append params', url.pathname + url.search)
+    navigate(url)
     params.value = parseParams(url.searchParams)
     searchString.value = url.search
   }
@@ -72,7 +80,7 @@ export const useParamsStore = defineStore('params', () => {
     const url = getPageUrl()
     paramsToRemove = getRemovableParams(url, paramsToRemove)
     removeParams(url, paramsToRemove)
-    window.history.pushState('', 'Append params', url.pathname + url.search)
+    navigate(url)
     if (!save) {
       return
     }
@@ -157,7 +165,7 @@ export const useParamsStore = defineStore('params', () => {
     paramsToRemove = getRemovableParams(url, paramsToRemove)
     removeParams(url, paramsToRemove)
     newParams.forEach((p) => appendParam(url, p, encode))
-    window.history.pushState('', 'Append params', url.pathname + url.search)
+    navigate(url)
     if (!save) {
       return
     }

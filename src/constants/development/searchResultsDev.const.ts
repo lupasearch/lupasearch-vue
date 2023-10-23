@@ -2,12 +2,12 @@ import { DocumentElement } from '@/types/DocumentElement'
 import { SdkOptions } from '@/types/General'
 import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
+
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
     environment: 'production',
-    customBaseUrl: 'http://localhost:8080/v1/',
   } as SdkOptions,
-  queryKey: '4dkrq76dkt00',
+  queryKey: 'jnovl7k0kkvd',
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
@@ -24,7 +24,8 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     didYouMean: 'Did you mean to search: {1}',
     similarQuery: 'Search results for phrase {1}',
     similarQueries: 'Similar queries:',
-    aiSuggestions: 'Other suggestions:'
+    aiSuggestions: 'Other suggestions:',
+    similarResultsLabel: "Related to your query:"
   },
   toolbar: {
     layoutSelector: false,
@@ -140,35 +141,39 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     details: '{url}'
   },
   idKey: 'id',
-  titleKey: 'product_name',
+  titleKey: 'name',
   elements: [
     {
       type: 'image',
-      key: 'image_url',
-      baseUrl: "https://www.assorti.lt/",
+      key: 'image',
       placeholder:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/638px-Placeholder_view_vector.svg.png'
     },
     {
       type: 'custom',
-      key: 'brand_name',
+      key: 'id',
       className: 'lupa-custom-brand',
       action: (doc: any) => console.log('brand click', doc)
     },
     {
       type: 'title',
-      key: 'product_name',
+      key: 'name',
       isHtml: false,
       link: false,
       className: 'bold',
+      maxLines: 2
+    },
+    {
+      type: 'description',
+      key: 'description',
       maxLines: 3
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.price < doc.regular_price,
+      display: (doc: Record<string, string>) => doc.price < doc.price,
       html: (doc: Record<string, string>) => {
         const discountPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
-        const regularPrice = parseFloat(doc.regular_price)?.toFixed(2)?.replace('.', ',')
+        const regularPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
         const discount = `<span class="lupa-discount">${discountPrice} €</span>`
         const regular = `<span class="lupa-regular">${regularPrice} €</span>`
         return discount + regular
@@ -177,7 +182,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.price >= doc.regular_price,
+      display: (doc: Record<string, string>) => doc.price >= doc.price,
       html: (doc: Record<string, string>) => {
         const price = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
         return `<span class="lupa-final">${price} €</span>`

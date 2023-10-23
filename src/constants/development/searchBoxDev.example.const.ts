@@ -30,6 +30,9 @@ export const SEARCH_BOX_CONFIGURATION = {
   callbacks: {
     onSearchBoxResults: (context) => {
       console.log('searchBoxResults', context)
+    },
+    onSearchResultsNavigate: (context) => {
+      console.log('searchBoxNavigate', context)
     }
   },
   panels: [

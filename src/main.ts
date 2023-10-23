@@ -14,8 +14,8 @@ import AppChat from './AppChat.vue'
 // const Main = AppContainer
 // const Main = AppProductList
 // const Main = AppSlots
-// const Main = App
-const Main = AppChat
+const Main = App
+// const Main = AppChat
 
 const app = createApp(Main)
 

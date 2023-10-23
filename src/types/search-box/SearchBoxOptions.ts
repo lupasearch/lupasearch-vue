@@ -5,6 +5,7 @@ import type { DynamicData } from '../search-results/SearchResultsOptions'
 import type { SearchBoxHistory } from './SearchBoxHistory'
 import type { SearchBoxPanel } from './SearchBoxPanel'
 import { DisplaySuggestion } from './Common'
+import { QueryParams } from '../search-results/QueryParams'
 
 export type SearchBoxOptions = SearchBoxPanelOptions & {
   inputSelector: string
@@ -44,8 +45,13 @@ export type SearchBoxResultCallbackContext = {
   inputValue?: string
 }
 
+export type SearchBoxResultsNavigateContext = {
+  params: QueryParams & { query: string }
+}
+
 export type SearchBoxEventCallbacks = {
   onSearchBoxResults?: (context: SearchBoxResultCallbackContext) => unknown
+  onSearchResultsNavigate?: (context: SearchBoxResultsNavigateContext) => unknown
 }
 
 export type SearchBoxPanelOptions = SearchBoxInputOptions & {
