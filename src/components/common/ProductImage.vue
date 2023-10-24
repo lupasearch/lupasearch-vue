@@ -47,9 +47,22 @@ const replaceWithPlaceholder = (e: Event): void => {
     targetImage.src = placeholder.value
   }
 }
+
+const imageAlt = computed(() => {
+  const alt = props.options.alt
+  if (alt) {
+    return alt(props.item)
+  }
+  return ''
+})
 </script>
 <template>
   <div :class="wrapperClass ?? ''">
-    <img :class="imageClass ?? ''" :src="finalUrl" @error="replaceWithPlaceholder" />
+    <img
+      :class="imageClass ?? ''"
+      :src="finalUrl"
+      v-bind="{ alt: imageAlt ? imageAlt : undefined }"
+      @error="replaceWithPlaceholder"
+    />
   </div>
 </template>

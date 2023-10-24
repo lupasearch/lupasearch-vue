@@ -27,6 +27,7 @@ export type ImageDocumentElement<T = any> = DocumentElementBase<T> & {
   baseUrl?: string
   key: string
   customUrl?: (document: T) => string
+  alt?: (document: T) => string
 }
 
 export type TitleDocumentElement<T = any> = DocumentElementBase<T> & {
