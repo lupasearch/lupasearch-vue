@@ -4,6 +4,7 @@ import type { CategoryFilterOptions } from '../product-list/ProductListOptions'
 import type { SearchResultsAdditionalPanelOptions } from './SearchResultsAdditionalPanelOptions'
 import type { SearchResultsProductCardOptions } from './SearchResultsProductCardOptions'
 import type { SearchResultsSortOptions } from './SearchResultsSort'
+import { RedirectionOptions } from '../redirections/RedirectionOptions'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -15,6 +16,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     categories?: CategoryFilterOptions
     dynamicData?: DynamicData
     ssr?: SsrOptions
+    redirections?: RedirectionOptions
   }
 
 export type SsrOptions = {
