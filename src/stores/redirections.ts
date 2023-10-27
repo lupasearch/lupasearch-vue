@@ -4,11 +4,15 @@ import { RedirectionRules, SdkError } from '@getlupa/client-sdk/Types'
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { SdkOptions } from '@/types/General'
+import { inputMatches } from '@/utils/string.utils'
+import { RoutingBehavior } from '@/types/search-results/RoutingBehavior'
+import { emitRoutingEvent } from '@/utils/routing.utils'
 
 const CACHE_KEY = 'lupasearch-client-redirections'
 
 export const useRedirectionStore = defineStore('redirections', () => {
   const redirections: Ref<RedirectionRules> = ref({ rules: [] })
+  const redirectionOptions: Ref<RedirectionOptions> = ref({ enabled: false, queryKey: '' })
 
   const saveToLocalStorage = () => {
     try {
@@ -38,23 +42,49 @@ export const useRedirectionStore = defineStore('redirections', () => {
   }
 
   const initiate = async (config?: RedirectionOptions, options?: SdkOptions) => {
+    redirectionOptions.value = config
     if (!config?.enabled) {
       return
     }
     const loaded = tryLoadFromLocalStorage(config)
-    if (loaded) {
+    if (loaded || redirections.value?.rules?.length > 0) {
       return
     }
-    const result = await lupaSearchSdk.loadRedirectionRules(config.queryKey, options)
-    if (!(result as SdkError).success) {
+    try {
+      const result = await lupaSearchSdk.loadRedirectionRules(config.queryKey, options)
+      if (!(result as SdkError).success) {
+        return
+      }
+      redirections.value = result as RedirectionRules
+      saveToLocalStorage()
+    } catch {
+      // Something went wrong, do nothing
+    }
+  }
+
+  const redirectOnKeywordIfConfigured = (
+    input: string,
+    routingBehavior: RoutingBehavior = 'direct-link'
+  ) => {
+    if (!redirections.value?.rules?.length) {
       return
     }
-    redirections.value = result as RedirectionRules
-    saveToLocalStorage()
+    const redirectTo = redirections.value.rules.find((r) => inputMatches(input, r.sources))
+
+    const url = redirectionOptions.value.urlTransfromer
+      ? redirectionOptions.value.urlTransfromer(redirectTo?.target)
+      : redirectTo?.target
+
+    if (routingBehavior === 'event') {
+      emitRoutingEvent(url)
+    } else {
+      window.location.assign(url)
+    }
   }
 
   return {
     redirections,
+    redirectOnKeywordIfConfigured,
     initiate
   }
 })

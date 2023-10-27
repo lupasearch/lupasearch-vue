@@ -25,6 +25,7 @@ import { DocumentSearchBoxPanel, SearchBoxPanelType } from '@/types/search-box/S
 import type { Document, Suggestion } from '@getlupa/client-sdk/Types'
 import { debounce } from '@/utils/debounce.utils'
 import { bindSearchTriggers, unbindSearchTriggers } from '@/utils/event.utils'
+import { useRedirectionStore } from '@/stores/redirections'
 
 const defaultSuggestedValue = {
   item: { suggestion: '' },
@@ -42,6 +43,7 @@ const paramsStore = useParamsStore()
 const searchBoxStore = useSearchBoxStore()
 const optionsStore = useOptionsStore()
 const trackingStore = useTrackingStore()
+const redirectionStore = useRedirectionStore()
 
 const inputValue = ref('')
 const suggestedValue: Ref<InputSuggestion> = ref(defaultSuggestedValue)
@@ -90,6 +92,7 @@ onMounted(() => {
   paramsStore.setSearchResultsLink(props.options.links.searchResults)
   searchBoxStore.saveOptions({ newOptions: props.options })
   optionsStore.setSearchBoxOptions({ options: props.options })
+  redirectionStore.initiate(props.options.redirections)
   bindSearchTriggers(searchTriggers.value, handleCurrentValueSearch)
   if (props.isSearchContainer && searchBoxInput.value) {
     ;(searchBoxInput.value as HTMLInputElement)?.focus()

@@ -7,6 +7,7 @@ import { useOptionsStore } from '@/stores/options'
 import { useParamsStore } from '@/stores/params'
 import { useSearchResultStore } from '@/stores/searchResult'
 import { useTrackingStore } from '@/stores/tracking'
+import { useRedirectionStore } from '@/stores/redirections'
 import type {
   SearchResultsDidYouMeanLabels,
   SearchResultsOptions
@@ -42,6 +43,7 @@ const paramStore = useParamsStore()
 const trackingStore = useTrackingStore()
 const dynamicDataStore = useDynamicDataStore()
 const screenStore = useScreenStore()
+const redirectionStore = useRedirectionStore()
 
 const initialFilters = computed(() => props.initialFilters ?? {})
 
@@ -77,6 +79,7 @@ const handlePopState = () => {
 }
 
 onMounted(() => {
+  redirectionStore.initiate(props.options.redirections, props.options.options)
   window.addEventListener('popstate', handlePopState)
   window.addEventListener('resize', handleResize)
   if (props.initialData) {

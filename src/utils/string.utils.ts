@@ -102,3 +102,8 @@ export const escapeHtml = (value?: string): string => {
 
   return output
 }
+
+export const inputMatches = (input: string, possibleValues: string[]): boolean => {
+  const normalizedInput = getNormalizedString(input)
+  return possibleValues.some((v) => getNormalizedString(v).startsWith(normalizedInput))
+}
