@@ -95,7 +95,7 @@ const setupTracking = (options: TrackingOptions): void => {
 }
 
 const LupaSearch = {
-  install: (app, options) => {
+  install: (app) => {
     const pinia = createPinia()
     app.use(pinia)
   }
