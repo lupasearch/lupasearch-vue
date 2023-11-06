@@ -92,7 +92,7 @@ onMounted(() => {
   paramsStore.setSearchResultsLink(props.options.links.searchResults)
   searchBoxStore.saveOptions({ newOptions: props.options })
   optionsStore.setSearchBoxOptions({ options: props.options })
-  redirectionStore.initiate(props.options.redirections)
+  redirectionStore.initiate(props.options.redirections, props.options.options)
   bindSearchTriggers(searchTriggers.value, handleCurrentValueSearch)
   if (props.isSearchContainer && searchBoxInput.value) {
     ;(searchBoxInput.value as HTMLInputElement)?.focus()

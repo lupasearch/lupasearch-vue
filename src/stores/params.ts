@@ -11,6 +11,7 @@ import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import { linksMatch } from '@/utils/link.utils'
 import { getFacetParam } from '@/utils/filter.toggle.utils'
 import { SsrOptions } from '..'
+import { useRedirectionStore } from './redirections'
 
 export const useParamsStore = defineStore('params', () => {
   const params: Ref<QueryParams> = ref({})
@@ -20,6 +21,7 @@ export const useParamsStore = defineStore('params', () => {
   const searchString = ref('')
 
   const optionsStore = useOptionsStore()
+  const redirectionStore = useRedirectionStore()
 
   const query = computed(() => params.value[QUERY_PARAMS_PARSED.QUERY] as string)
 
@@ -122,6 +124,13 @@ export const useParamsStore = defineStore('params', () => {
     searchText: string
     facet?: InputSuggestionFacet
   }) => {
+    const redirectionApplied = redirectionStore.redirectOnKeywordIfConfigured(
+      searchText,
+      optionsStore.boxRoutingBehavior
+    )
+    if (redirectionApplied) {
+      return
+    }
     if (!searchResultsLink.value || linksMatch(searchResultsLink.value, window.location.pathname)) {
       const singleFacetParam = facet ? getFacetParam(facet.key, [facet.title]) : undefined
       const facetParam = singleFacetParam

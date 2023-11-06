@@ -42,6 +42,9 @@ export const useRedirectionStore = defineStore('redirections', () => {
   }
 
   const initiate = async (config?: RedirectionOptions, options?: SdkOptions) => {
+    if (redirectionOptions.value?.enabled) {
+      return
+    }
     redirectionOptions.value = config
     if (!config?.enabled) {
       return
@@ -52,7 +55,7 @@ export const useRedirectionStore = defineStore('redirections', () => {
     }
     try {
       const result = await lupaSearchSdk.loadRedirectionRules(config.queryKey, options)
-      if (!(result as SdkError).success) {
+      if (!(result as RedirectionRules)?.rules?.length) {
         return
       }
       redirections.value = result as RedirectionRules
@@ -65,14 +68,16 @@ export const useRedirectionStore = defineStore('redirections', () => {
   const redirectOnKeywordIfConfigured = (
     input: string,
     routingBehavior: RoutingBehavior = 'direct-link'
-  ) => {
+  ): boolean => {
     if (!redirections.value?.rules?.length) {
-      return
+      return false
     }
     const redirectTo = redirections.value.rules.find((r) => inputMatches(input, r.sources))
-
-    const url = redirectionOptions.value.urlTransfromer
-      ? redirectionOptions.value.urlTransfromer(redirectTo?.target)
+    if (!redirectTo) {
+      return false
+    }
+    const url = redirectionOptions.value?.urlTransfromer
+      ? redirectionOptions.value?.urlTransfromer(redirectTo?.target)
       : redirectTo?.target
 
     if (routingBehavior === 'event') {
@@ -80,6 +85,7 @@ export const useRedirectionStore = defineStore('redirections', () => {
     } else {
       window.location.assign(url)
     }
+    return true
   }
 
   return {

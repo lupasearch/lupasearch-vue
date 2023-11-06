@@ -78,10 +78,10 @@ const handlePopState = () => {
   paramStore.add(parseParams(searchParams))
 }
 
-onMounted(() => {
-  redirectionStore.initiate(props.options.redirections, props.options.options)
+onMounted(async () => {
   window.addEventListener('popstate', handlePopState)
   window.addEventListener('resize', handleResize)
+  await redirectionStore.initiate(props.options.redirections, props.options.options)
   if (props.initialData) {
     searchResultStore.add({ ...props.initialData })
   }
@@ -138,6 +138,18 @@ const query = (publicQuery: PublicQuery): void => {
   const context = getLupaTrackingContext()
   const limit = publicQuery.limit || defaultSearchResultPageSize.value
   const query = { ...publicQuery, ...context, limit }
+
+  console.log('query',  publicQuery.searchText)
+
+  const redirectionApplied = redirectionStore.redirectOnKeywordIfConfigured(
+    publicQuery.searchText,
+    optionStore.searchResultsRoutingBehavior
+  )
+
+  if (redirectionApplied) {
+    return
+  }
+
   if (!query.searchText && props.options.disallowEmptyQuery) {
     return
   }
