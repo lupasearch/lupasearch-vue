@@ -196,5 +196,13 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     handler: async (ids: string[]) => {
       console.log('requesting dynamic data for ids', ids)
     }
+  },
+  redirections: {
+    enabled: true,
+    queryKey: 'jnovl7k0kkvd',
+    cacheSeconds: 3600,
+    urlTransfromer: (url: string) => {
+      return `${url}`
+    }
   }
 }

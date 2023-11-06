@@ -7,6 +7,7 @@ import { useOptionsStore } from '@/stores/options'
 import { useParamsStore } from '@/stores/params'
 import { useSearchResultStore } from '@/stores/searchResult'
 import { useTrackingStore } from '@/stores/tracking'
+import { useRedirectionStore } from '@/stores/redirections'
 import type {
   SearchResultsDidYouMeanLabels,
   SearchResultsOptions
@@ -42,6 +43,7 @@ const paramStore = useParamsStore()
 const trackingStore = useTrackingStore()
 const dynamicDataStore = useDynamicDataStore()
 const screenStore = useScreenStore()
+const redirectionStore = useRedirectionStore()
 
 const initialFilters = computed(() => props.initialFilters ?? {})
 
@@ -76,9 +78,10 @@ const handlePopState = () => {
   paramStore.add(parseParams(searchParams))
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('popstate', handlePopState)
   window.addEventListener('resize', handleResize)
+  await redirectionStore.initiate(props.options.redirections, props.options.options)
   if (props.initialData) {
     searchResultStore.add({ ...props.initialData })
   }
@@ -135,6 +138,16 @@ const query = (publicQuery: PublicQuery): void => {
   const context = getLupaTrackingContext()
   const limit = publicQuery.limit || defaultSearchResultPageSize.value
   const query = { ...publicQuery, ...context, limit }
+
+  const redirectionApplied = redirectionStore.redirectOnKeywordIfConfigured(
+    publicQuery.searchText,
+    optionStore.searchResultsRoutingBehavior
+  )
+
+  if (redirectionApplied) {
+    return
+  }
+
   if (!query.searchText && props.options.disallowEmptyQuery) {
     return
   }

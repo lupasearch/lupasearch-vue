@@ -6,6 +6,7 @@ import type { SearchBoxHistory } from './SearchBoxHistory'
 import type { SearchBoxPanel } from './SearchBoxPanel'
 import { DisplaySuggestion } from './Common'
 import { QueryParams } from '../search-results/QueryParams'
+import { RedirectionOptions } from '../redirections/RedirectionOptions'
 
 export type SearchBoxOptions = SearchBoxPanelOptions & {
   inputSelector: string
@@ -13,6 +14,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   routingBehavior?: RoutingBehavior
   dynamicData?: DynamicData
   callbacks?: SearchBoxEventCallbacks
+  redirections?: RedirectionOptions
 }
 
 export type SearchBoxOptionLabels = {
