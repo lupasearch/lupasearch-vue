@@ -139,8 +139,6 @@ const query = (publicQuery: PublicQuery): void => {
   const limit = publicQuery.limit || defaultSearchResultPageSize.value
   const query = { ...publicQuery, ...context, limit }
 
-  console.log('query',  publicQuery.searchText)
-
   const redirectionApplied = redirectionStore.redirectOnKeywordIfConfigured(
     publicQuery.searchText,
     optionStore.searchResultsRoutingBehavior
