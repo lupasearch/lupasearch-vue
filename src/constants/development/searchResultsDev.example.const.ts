@@ -201,7 +201,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     enabled: true,
     queryKey: 'jnovl7k0kkvd',
     cacheSeconds: 3600,
-    urlTransfromer: (url: string) => {
+    urlTransformer: (url: string) => {
       return `${url}`
     }
   }
