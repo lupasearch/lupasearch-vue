@@ -110,3 +110,11 @@ export const inputMatches = (input: string, possibleValues: string[]): boolean =
   const normalizedInput = getNormalizedString(input)
   return possibleValues.some((v) => getNormalizedString(v).startsWith(normalizedInput))
 }
+
+export const inputsAreEqual = (input: string, possibleValues: string[]): boolean => {
+  if (!input) {
+    return false
+  }
+  const normalizedInput = getNormalizedString(input)
+  return possibleValues.some((v) => getNormalizedString(v) === normalizedInput)
+}

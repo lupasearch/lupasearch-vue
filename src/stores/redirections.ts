@@ -4,7 +4,7 @@ import { RedirectionRules, SdkError } from '@getlupa/client-sdk/Types'
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { SdkOptions } from '@/types/General'
-import { inputMatches } from '@/utils/string.utils'
+import { inputMatches, inputsAreEqual } from '@/utils/string.utils'
 import { RoutingBehavior } from '@/types/search-results/RoutingBehavior'
 import { emitRoutingEvent } from '@/utils/routing.utils'
 
@@ -72,7 +72,7 @@ export const useRedirectionStore = defineStore('redirections', () => {
     if (!redirections.value?.rules?.length) {
       return false
     }
-    const redirectTo = redirections.value.rules.find((r) => inputMatches(input, r.sources))
+    const redirectTo = redirections.value.rules.find((r) => inputsAreEqual(input, r.sources))
     if (!redirectTo) {
       return false
     }
