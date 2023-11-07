@@ -76,9 +76,13 @@ export const useRedirectionStore = defineStore('redirections', () => {
     if (!redirectTo) {
       return false
     }
-    const url = redirectionOptions.value?.urlTransfromer
-      ? redirectionOptions.value?.urlTransfromer(redirectTo?.target)
+    const url = redirectionOptions.value?.urlTransformer
+      ? redirectionOptions.value?.urlTransformer(redirectTo?.target)
       : redirectTo?.target
+
+    if (url === undefined || url === null || url === '') {
+      return false
+    }
 
     if (routingBehavior === 'event') {
       emitRoutingEvent(url)

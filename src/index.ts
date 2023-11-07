@@ -75,6 +75,7 @@ import ChatContainer from './components/chat/ChatContainer.vue'
 import { getInitialSearchResults } from './utils/ssr.utils'
 import { ChatOptions, ChatSettings } from './types/chat/ChatOptions'
 import { QueryParams } from './types/search-results/QueryParams'
+import { RedirectionOptions } from './types/redirections/RedirectionOptions'
 
 let piniaInstance: Pinia | null = null
 
@@ -165,5 +166,6 @@ export type {
   SearchBoxEventCallbacks,
   SearchBoxResultCallbackContext,
   QueryParams,
-  SearchBoxResultsNavigateContext
+  SearchBoxResultsNavigateContext,
+  RedirectionOptions
 }
