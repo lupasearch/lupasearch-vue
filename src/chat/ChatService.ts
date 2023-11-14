@@ -1,6 +1,12 @@
 import { Environment } from '@getlupa/client-sdk/Types'
 import { SdkOptions } from '..'
-import { ChatMessage, SearchChatRequest } from '@/types/chat/SearchChatRequest'
+import {
+  ChatMessage,
+  SearchChatBestProductMatchesRequest,
+  SearchChatPraseAlternativesRequest,
+  SearchChatRequest,
+  SearchChatTextRequest
+} from '@/types/chat/SearchChatRequest'
 import { SearchChatResponse } from '@/types/chat/SearchChatResponse'
 import { ChatContent } from '@/types/chat/ChatLog'
 import { ChatSettings } from '@/types/chat/ChatOptions'
@@ -53,7 +59,7 @@ const suggestSearchChatPhrases = async (
 
 const suggestPhraseAlternatives = async (
   options: SdkOptions,
-  { phrases }: { phrases: string[] },
+  request: SearchChatPraseAlternativesRequest,
   chatSettings?: ChatSettings
 ): Promise<Partial<SearchChatResponse> & { success: boolean; errors: any }> => {
   const { environment, customBaseUrl } = options
@@ -63,7 +69,7 @@ const suggestPhraseAlternatives = async (
       `${getApiUrl(environment, customBaseUrl)}chat/phraseAlternatives${model}`,
       {
         ...defaultConfig,
-        body: JSON.stringify({ phrases }),
+        body: JSON.stringify(request),
         headers: { ...headers, ...(options.customHeaders ?? {}) }
       }
     )
@@ -80,39 +86,9 @@ const suggestPhraseAlternatives = async (
   }
 }
 
-const suggestSimplifiedPhrases = async (
-  options: SdkOptions,
-  { phrases }: { phrases: string[] },
-  chatSettings?: ChatSettings
-): Promise<Partial<SearchChatResponse> & { success: boolean; errors: any }> => {
-  const { environment, customBaseUrl } = options
-  const model = chatSettings?.model ? `?model=${chatSettings.model}` : ``
-  try {
-    const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/simplify${model}`, {
-      ...defaultConfig,
-      body: JSON.stringify({ phrases }),
-      headers: { ...headers, ...(options.customHeaders ?? {}) }
-    })
-    if (res.status < 400) {
-      const data = await res.json()
-      return { ...data, success: true }
-    }
-    const errors = await res.json()
-    options?.onError?.(errors)
-    return { success: false, errors }
-  } catch (e) {
-    options?.onError?.(e)
-    return { success: false, errors: [e] }
-  }
-}
-
 const suggestBestProductMatches = async (
   options: SdkOptions,
-  {
-    initialQuery,
-    productStrings,
-    messageHistory
-  }: { initialQuery: string; productStrings: string[]; messageHistory: ChatMessage[] },
+  request: SearchChatBestProductMatchesRequest,
   chatSettings?: ChatSettings
 ): Promise<{ products?: string[]; success: boolean; errors: any }> => {
   const { environment, customBaseUrl } = options
@@ -120,7 +96,7 @@ const suggestBestProductMatches = async (
   try {
     const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/bestProducts${model}`, {
       ...defaultConfig,
-      body: JSON.stringify({ initialQuery, messageHistory, productStrings }),
+      body: JSON.stringify(request),
       headers: { ...headers, ...(options.customHeaders ?? {}) }
     })
     if (res.status < 400) {
@@ -159,14 +135,14 @@ const prepareChatHistory = (chatLog: ChatContent[]) => {
 
 const getTextResponseChunkStream = (
   options: SdkOptions,
-  { initialQuery, messageHistory }: { initialQuery: string; messageHistory: ChatMessage[] },
+  request: SearchChatTextRequest,
   onChunkReceived: (chunk: string) => void,
   chatSettings?: ChatSettings
 ) => {
   const model = chatSettings?.model ? `?model=${chatSettings.model}` : ``
   fetch(`${getApiUrl(options.environment, options.customBaseUrl)}chat/text${model}`, {
     ...defaultConfig,
-    body: JSON.stringify({ initialQuery, messageHistory }),
+    body: JSON.stringify(request),
     headers: { ...headers, ...(options.customHeaders ?? {}) }
   })
     .then((response) => {
@@ -189,7 +165,6 @@ const getTextResponseChunkStream = (
 export default {
   suggestSearchChatPhrases,
   suggestPhraseAlternatives,
-  suggestSimplifiedPhrases,
   suggestBestProductMatches,
   prepareChatHistory,
   getTextResponseChunkStream

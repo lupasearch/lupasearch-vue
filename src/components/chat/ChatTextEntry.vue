@@ -21,7 +21,8 @@ onMounted(() => {
     props.options.sdkOptions,
     {
       initialQuery: props.content,
-      messageHistory: props.history ?? []
+      messageHistory: props.history ?? [],
+      queryKey: props.options.displayOptions.queryKey
     },
     processChunk,
     props.options.chatSettings

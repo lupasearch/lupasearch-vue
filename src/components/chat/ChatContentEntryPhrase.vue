@@ -89,7 +89,8 @@ const getPhraseAlternatives = async () => {
   const { phrases } = await ChatService.suggestPhraseAlternatives(
     props.options.sdkOptions,
     {
-      phrases: [props.phrase]
+      phrases: [props.phrase],
+      queryKey: props.options.displayOptions.queryKey
     },
     props.options.chatSettings
   )

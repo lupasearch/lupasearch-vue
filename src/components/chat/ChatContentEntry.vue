@@ -48,7 +48,8 @@ const loadFinalRecommendations = async () => {
       {
         initialQuery: props.entry.userInput,
         productStrings: productResultStrings,
-        messageHistory: props.history ?? []
+        messageHistory: props.history ?? [],
+        queryKey: props.options.displayOptions.queryKey
       },
       props.options.chatSettings
     )
