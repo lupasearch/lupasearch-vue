@@ -229,7 +229,8 @@ const sendGa4AnalyticsEvent = (data: TrackableEventData, options: AnalyticsOptio
     search_text: data.searchQuery,
     item_title: title,
     item_id: data.itemId,
-    ecommerce: parseEcommerceData(data, data.analytics?.listLabel)
+    ecommerce: parseEcommerceData(data, data.analytics?.listLabel),
+    ...(data.analytics?.additionalParams ?? {})
   }
   window.dataLayer.push({
     event: data.analytics?.type ?? options.parentEventName,

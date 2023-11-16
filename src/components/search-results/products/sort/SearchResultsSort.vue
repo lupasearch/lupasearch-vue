@@ -49,6 +49,7 @@ const handleSelect = (): void => {
   if (!value) {
     return
   }
+  paramStore.setSortSettings({ selectedSortKey: value, previousSortKey: previousKey.value })
   props.callbacks?.onSortChange?.({ selectedSortKey: value, previousSortKey: previousKey.value })
   paramStore.appendParams({
     params: [{ name: QUERY_PARAMS.SORT, value }],

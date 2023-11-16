@@ -10,7 +10,7 @@ import { appendParam, getRemovableParams, parseParams, removeParams } from '@/ut
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import { linksMatch } from '@/utils/link.utils'
 import { getFacetParam } from '@/utils/filter.toggle.utils'
-import { SsrOptions } from '..'
+import { SortCallbackContext, SsrOptions } from '..'
 import { useRedirectionStore } from './redirections'
 
 export const useParamsStore = defineStore('params', () => {
@@ -22,6 +22,11 @@ export const useParamsStore = defineStore('params', () => {
 
   const optionsStore = useOptionsStore()
   const redirectionStore = useRedirectionStore()
+
+  const sortParams = ref({
+    selectedSortKey: '',
+    previousSortKey: ''
+  })
 
   const query = computed(() => params.value[QUERY_PARAMS_PARSED.QUERY] as string)
 
@@ -196,6 +201,13 @@ export const useParamsStore = defineStore('params', () => {
     searchResultsLink.value = newSearchResultsLink
   }
 
+  const setSortSettings = ({ selectedSortKey, previousSortKey }: SortCallbackContext) => {
+    sortParams.value = {
+      selectedSortKey,
+      previousSortKey
+    }
+  }
+
   return {
     params,
     defaultLimit,
@@ -206,6 +218,7 @@ export const useParamsStore = defineStore('params', () => {
     limit,
     sort,
     filters,
+    sortParams,
     add,
     removeAllFilters,
     removeParameters,
@@ -213,6 +226,7 @@ export const useParamsStore = defineStore('params', () => {
     goToResults,
     appendParams,
     setDefaultLimit,
-    setSearchResultsLink
+    setSearchResultsLink,
+    setSortSettings
   }
 })
