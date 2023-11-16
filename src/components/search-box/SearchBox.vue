@@ -301,6 +301,11 @@ const slotProps = (
   labels?: SearchBoxOptionLabels
   highlighted: boolean
   panelOptions: DocumentSearchBoxPanel
+  itemClicked: (props: {
+    item: Document
+    eventType?: 'itemClick' | 'addToCart'
+    event?: Event
+  }) => void
 } => {
   return {
     ...props

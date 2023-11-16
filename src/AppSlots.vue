@@ -39,6 +39,12 @@ const fullSearchResultsOptions = computed((): SearchResultsOptions => {
           <div>
             {{ props.item.name }}
           </div>
+          <button @click="props.itemClicked({ item: props.item, eventType: 'itemClick' })">
+            Click me!
+          </button>
+          <button @click="props.itemClicked({ item: props.item, eventType: 'addToCart' })">
+            Add To Cart!
+          </button>
         </template>
       </SearchBox>
     </div>

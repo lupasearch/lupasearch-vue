@@ -48,7 +48,7 @@ const redirectionStore = useRedirectionStore()
 const initialFilters = computed(() => props.initialFilters ?? {})
 
 const { currentQueryText, hasResults, currentFilterCount } = storeToRefs(searchResultStore)
-const { searchString } = storeToRefs(paramStore)
+const { searchString, sortParams } = storeToRefs(paramStore)
 const { defaultSearchResultPageSize } = storeToRefs(optionStore)
 
 const searchResultsFilters = ref(null)
@@ -103,7 +103,11 @@ const trackItemListView = (title: string, items: Record<string, unknown>[] = [])
         type: 'view_item_list',
         label: title,
         listLabel: title,
-        items
+        items,
+        additionalParams: {
+          previousSortKey: sortParams.value?.previousSortKey,
+          newSortKey: sortParams.value?.selectedSortKey
+        }
       },
       options: { allowEmptySearchQuery: true }
     }
