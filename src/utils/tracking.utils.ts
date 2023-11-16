@@ -256,8 +256,6 @@ export const track = (
   data: TrackableEventData = {},
   options?: Options
 ): void => {
-  JSON.stringify(console.log(data))
-
   if (!isTrackingEnabled()) {
     return
   }
