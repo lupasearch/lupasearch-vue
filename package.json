@@ -1,7 +1,7 @@
 {
   "name": "@getlupa/vue",
   "version": "0.7.4",
-  "main": "dist/lupaSearch.js",
+  "main": "dist/lupaSearch.mjs",
   "module": "dist/lupaSearch.mjs",
   "types": "dist/src/index.d.ts",
   "scripts": {
