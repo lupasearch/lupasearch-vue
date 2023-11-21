@@ -35,12 +35,13 @@ const emit = defineEmits([
   'itemSelect'
 ])
 
-const displayResults = computed(
-  () => props.inputValue?.length > 0 && props.inputValue?.length >= props.options.minInputLength
-)
+const displayResults = computed(() => props.inputValue?.length >= props.options.minInputLength)
 
 const displayHistory = computed(
-  () => Boolean(props.options.history) && props.inputValue?.length < 1
+  () =>
+    Boolean(props.options.history) &&
+    props.inputValue?.length < 1 &&
+    props.options.minInputLength > 0
 )
 
 const displayPanels = computed(() =>
@@ -164,6 +165,12 @@ export default {
           ]"
           :data-cy="'lupa-panel-' + panel.type + '-index'"
         >
+          <div
+            v-if="inputValue.length < 1 && panel.labels?.topResultsTitle"
+            class="lupa-panel-title"
+          >
+            {{ panel.labels?.topResultsTitle }}
+          </div>
           <component
             v-if="panel.queryKey"
             :is="getComponent(panel.type)"

@@ -10,10 +10,15 @@ export type SearchBoxPanelLinks = {
   details: string
 }
 
+export type SearchBoxPanelLabels = {
+  topResultsTitle?: string
+}
+
 export type SearchBoxPanelBase = {
   type: SearchBoxPanelType
   queryKey: string
   limit: number
+  labels?: SearchBoxPanelLabels
 }
 
 export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
