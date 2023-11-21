@@ -136,6 +136,11 @@ const numberOfVisiblePanels = computed(() => {
 const expandOnSinglePanel = computed(() => {
   return numberOfVisiblePanels.value === 1 && props.options.expandOnSinglePanel
 })
+
+const showTopResultsPanelTitle = (queryKey: string) => {
+  const panel = panelItemCounts.value.find((v) => v.queryKey === queryKey)
+  return panel?.count > 0 && panel?.input.length < 1
+}
 </script>
 <script lang="ts">
 import SearchBoxSuggestionsWrapper from './suggestions/SearchBoxSuggestionsWrapper.vue'
@@ -166,7 +171,7 @@ export default {
           :data-cy="'lupa-panel-' + panel.type + '-index'"
         >
           <div
-            v-if="inputValue.length < 1 && panel.labels?.topResultsTitle"
+            v-if="panel.labels?.topResultsTitle && showTopResultsPanelTitle(panel.queryKey)"
             class="lupa-panel-title"
           >
             {{ panel.labels?.topResultsTitle }}

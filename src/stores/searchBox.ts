@@ -18,6 +18,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
   const suggestionResults: Ref<Record<string, DisplaySuggestion[]>> = ref({})
   const highlightedIndex = ref(-1)
   const inputValue = ref('')
+  const resultInputValue = ref('')
 
   const historyStore = useHistoryStore()
 
@@ -29,13 +30,15 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
         return {
           queryKey: p.queryKey,
           count: suggestionResults.value[p.queryKey]?.length ?? 0,
-          panel: p
+          panel: p,
+          input: resultInputValue.value
         }
       }
       return {
         queryKey: p.queryKey,
         count: docResults.value[p.queryKey]?.items?.length ?? 0,
-        panel: p
+        panel: p,
+        input: resultInputValue.value
       }
     })
   )
@@ -101,6 +104,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
         [queryKey]: flattenSuggestions(result.items, publicQuery.searchText ?? '')
       }
       inputValue.value = publicQuery.searchText
+      resultInputValue.value = publicQuery.searchText
       emitSearchResultsCallback()
       return {
         suggestions: result.items
