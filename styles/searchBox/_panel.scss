@@ -88,3 +88,9 @@
 .lupa-search-box-wrapper {
   position: relative;
 }
+
+.lupa-panel-title {
+  padding: searchBox.$search-box-panel-title-padding;
+  font-weight: searchBox.$search-box-panel-title-font-weight;
+  font-size: searchBox.$search-box-panel-title-font-size;
+}

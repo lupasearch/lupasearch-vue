@@ -40,7 +40,10 @@ export const SEARCH_BOX_CONFIGURATION = {
       type: 'suggestion',
       queryKey: '0qe99gfdyrrp',
       highlight: true,
-      limit: 10
+      limit: 10,
+      labels: {
+        topResultsTitle: 'Popular searches:'
+      }
     },
     {
       type: 'document',
