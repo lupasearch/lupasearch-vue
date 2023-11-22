@@ -72,7 +72,7 @@ const handleProductClick = ({
       }
     }
   })
-  if (!link) {
+  if (!link || eventType === 'addToCart') {
     return
   }
   emit('product-click')
