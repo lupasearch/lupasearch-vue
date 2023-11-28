@@ -197,6 +197,9 @@ export type ResultFacetOptions = {
     labels?: {
       from?: string
       to?: string
+      ariaFrom?: string
+      ariaTo?: string
+      sliderDotAriaLabel?: string
     }
   }
   facetValueCountLimit?: number

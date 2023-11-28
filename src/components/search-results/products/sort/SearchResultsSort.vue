@@ -64,6 +64,7 @@ const handleSelect = (): void => {
       <label class="lupa-select-label">{{ options.label }}</label>
       <select
         class="lupa-select-dropdown"
+        :aria-label="options.label"
         data-cy="lupa-sort-select-dropdown"
         v-model="selectedKey"
         @change="handleSelect"

@@ -48,6 +48,8 @@ const inputAttributes = computed(() => ({
   ...(props.options.inputAttributes ?? {})
 }))
 
+const ariaLabel = computed(() => labels.value.searchInputAriaLabel ?? 'Search input')
+
 watch(suggestedValue, () => {
   if (suggestedValue.value.override) {
     input.value = suggestedValue.value.item.suggestion
@@ -96,12 +98,18 @@ defineExpose({ focus })
       ></div>
     </div>
     <div id="lupa-search-box-input">
-      <input class="lupa-hint" :value="showHint ? suggestedValue.item.suggestion : ''" disabled />
+      <input
+        class="lupa-hint"
+        aria-hidden="true"
+        :value="showHint ? suggestedValue.item.suggestion : ''"
+        disabled
+      />
       <input
         v-model="inputValue"
         v-bind="inputAttributes"
         ref="mainInput"
         autocomplete="off"
+        :aria-label="ariaLabel"
         class="lupa-search-box-input-field"
         data-cy="lupa-search-box-input-field"
         type="text"

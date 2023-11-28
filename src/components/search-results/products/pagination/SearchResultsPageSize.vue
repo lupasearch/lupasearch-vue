@@ -28,6 +28,7 @@ const handleSelect = (e: Event): void => {
       <label class="lupa-select-label">{{ label }}</label>
       <select
         class="lupa-select-dropdown"
+        :aria-label="label"
         data-cy="lupa-page-size-select-dropdown"
         @change="handleSelect"
         ref="select"
