@@ -25,7 +25,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     similarQuery: 'Search results for phrase {1}',
     similarQueries: 'Similar queries:',
     aiSuggestions: 'Other suggestions:',
-    similarResultsLabel: "Related to your query:"
+    similarResultsLabel: 'Related to your query:'
   },
   toolbar: {
     layoutSelector: false,
@@ -121,7 +121,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         inputs: true,
         labels: {
           from: 'From:',
-          to: 'To:'
+          to: 'To:',
+          ariaFrom: 'From',
+          ariaTo: 'To',
+          sliderDotAriaLabel: 'Slider dot'
         }
       },
       filterable: {

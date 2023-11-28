@@ -152,6 +152,24 @@ const sliderInputFormat = computed((): string | undefined => {
   return isPrice.value ? `[0-9]+([${separator.value}][0-9]{1,2})?` : undefined
 })
 
+const sliderAria = computed((): object => {
+  return {
+    'aria-label': props.options.stats?.labels?.sliderDotAriaLabel
+      ? `${props.options.stats?.labels?.sliderDotAriaLabel} - ${props.facet?.label}`
+      : `Range slider control dot for ${props.facet?.label}`
+  }
+})
+
+const ariaLabelFrom = computed((): string => {
+  return `${props.facet?.label ?? ''} ${
+    props.options.stats?.labels?.ariaFrom ?? rangeLabelFrom.value
+  }`
+})
+
+const ariaLabelTo = computed((): string => {
+  return `${props.facet?.label ?? ''} ${props.options.stats?.labels?.ariaTo ?? rangeLabelTo.value}`
+})
+
 watch(currentMinValue, () => {
   innerSliderRange.value = []
 })
@@ -201,6 +219,7 @@ const handleDragging = (value: number[]): void => {
             :max="facetMax"
             :min="facetMin"
             :pattern="sliderInputFormat"
+            :aria-label="ariaLabelFrom"
           />
           <span v-if="isPrice">{{ currency }}</span>
         </div>
@@ -218,6 +237,7 @@ const handleDragging = (value: number[]): void => {
             :max="facetMax"
             :min="facetMin"
             :pattern="sliderInputFormat"
+            :aria-label="ariaLabelTo"
           />
           <span v-if="isPrice">{{ currency }}</span>
         </div>
@@ -231,6 +251,7 @@ const handleDragging = (value: number[]): void => {
         :max="facetMax"
         :lazy="true"
         :step="interval"
+        :aria="sliderAria"
         v-model="sliderRange"
         @slide="handleDragging"
         @end="handleChange"

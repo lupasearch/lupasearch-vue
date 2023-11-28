@@ -25,6 +25,7 @@ export type SearchBoxOptionLabels = {
   priceSeparator?: string
   defaultFacetLabel?: string
   close?: string
+  searchInputAriaLabel?: string
 }
 
 export type SearchBoxOptionLinks = {

@@ -18,7 +18,8 @@ export const SEARCH_BOX_CONFIGURATION = {
     currency: '€',
     priceSeparator: ',',
     defaultFacetLabel: 'Brand:',
-    close: 'Close'
+    close: 'Close',
+    searchInputAriaLabel: 'Search for products'
   },
   links: {
     searchResults: '/catalogsearch/result'
