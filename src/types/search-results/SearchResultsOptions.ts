@@ -1,4 +1,3 @@
-import { SearchQueryResult } from '@getlupa/client-sdk/Types'
 import type { SdkOptions } from '../General'
 import type { CategoryFilterOptions } from '../product-list/ProductListOptions'
 import type { SearchResultsAdditionalPanelOptions } from './SearchResultsAdditionalPanelOptions'

@@ -39,6 +39,10 @@ const addToCartElement = computed(() => {
   return props.panelOptions.elements?.find((e) => e.type === DocumentElementType.ADDTOCART)
 })
 
+const customDocumentHtmlAttributes = computed((): Record<string, unknown> => {
+  return props.panelOptions.customDocumentHtmlAttributes?.(props.item) ?? {}
+})
+
 const handleClick = (event?: Event): void => {
   emit('product-click', {
     item: props.item,
@@ -62,8 +66,9 @@ const checkIfIsInStock = async (): Promise<void> => {
   <a
     class="lupa-search-box-product"
     :class="{ 'lupa-search-box-product-highlighted': highlighted }"
-    data-cy="lupa-search-box-product"
     :href="link"
+    v-bind="customDocumentHtmlAttributes"
+    data-cy="lupa-search-box-product"
     @click="handleClick"
   >
     <div class="lupa-search-box-product-image-section">

@@ -3,6 +3,7 @@ import type { DocumentElement } from '../DocumentElement'
 import type { BadgeElement, BadgeGenerateOptions } from './BadgeOptions'
 import type { RoutingBehavior } from './RoutingBehavior'
 import type { SearchResultsOptionLabels } from './SearchResultsOptions'
+import { CustomDocumentHtmlAttributes } from '../General'
 
 export type SearchResultsProductCardOptions = {
   labels: SearchResultsOptionLabels
@@ -16,6 +17,7 @@ export type SearchResultsProductCardOptions = {
   queryKey: string
   idKey?: string
   titleKey?: string
+  customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 
 export type SearchResultBadgeOptions = {

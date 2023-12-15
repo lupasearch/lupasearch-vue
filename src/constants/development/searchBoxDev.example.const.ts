@@ -56,6 +56,12 @@ export const SEARCH_BOX_CONFIGURATION = {
       },
       titleKey: 'name',
       idKey: 'id',
+      customDocumentHtmlAttributes: (doc: any) => {
+        return {
+          'data-id': doc.id,
+          'data-name': doc.name
+        }
+      },
       elements: [
         {
           type: 'image',
