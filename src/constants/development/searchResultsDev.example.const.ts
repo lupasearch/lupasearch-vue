@@ -140,6 +140,12 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   isInStock: (doc: any): boolean => {
     return Boolean(doc)
   },
+  customDocumentHtmlAttributes: (doc: any) => {
+    return {
+      'data-id': doc.id,
+      'data-name': doc.name
+    }
+  },
   links: {
     details: '{url}'
   },

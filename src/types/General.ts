@@ -1,5 +1,7 @@
 import type { AnalyticsOptions } from './AnalyticsOptions'
-import type { Environment as SdkEnvironment } from '@getlupa/client-sdk/Types'
+import type { Environment as SdkEnvironment, Document } from '@getlupa/client-sdk/Types'
+
+export type CustomDocumentHtmlAttributes = (doc: Document) => Record<string, unknown>
 
 export type SdkOptions = {
   environment: SdkEnvironment

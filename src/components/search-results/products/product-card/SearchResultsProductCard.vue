@@ -115,6 +115,10 @@ const trackingListLabel = computed((): string | undefined => {
   return props.options?.labels?.htmlTitleTemplate
 })
 
+const customDocumentHtmlAttributes = computed((): Record<string, unknown> => {
+  return props.options.customDocumentHtmlAttributes?.(props.product) ?? {}
+})
+
 const getGroupElements = (group: string): DocumentElement[] => {
   return props.options.elements?.filter((e) => e.group === group) ?? []
 }
@@ -183,6 +187,7 @@ if (ssr.value) {
     data-cy="lupa-search-result-product-card"
     class="lupa-search-result-product-card"
     :class="!isInStock ? 'lupa-out-of-stock' : ''"
+    v-bind="customDocumentHtmlAttributes"
     @click="handleClick"
   >
     <SearchResultsBadgeWrapper :options="badgesOptions" />

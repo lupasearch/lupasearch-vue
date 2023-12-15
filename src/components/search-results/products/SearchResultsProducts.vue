@@ -55,7 +55,8 @@ const productCardOptions = computed((): SearchResultsProductCardOptions => {
     'queryKey',
     'idKey',
     'titleKey',
-    'routingBehavior'
+    'routingBehavior',
+    'customDocumentHtmlAttributes'
   ])
 })
 
