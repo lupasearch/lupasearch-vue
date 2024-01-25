@@ -28,7 +28,7 @@ const imageUrl = computed(() => {
   if (hasFullImageUrl.value) {
     return imageUrl
   }
-  return joinUrlParts(rootImageUrl.value ?? '', imageUrl)
+  return rootImageUrl.value ? joinUrlParts(rootImageUrl.value ?? '', imageUrl) : imageUrl
 })
 
 const hasImage = computed(() => Boolean(hasFullImageUrl.value || image.value))
