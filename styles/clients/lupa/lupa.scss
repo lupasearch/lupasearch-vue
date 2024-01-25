@@ -1,6 +1,10 @@
+$icon-font-family: 'Material Design Icons' !default;
+
 @use '../../../node_modules/@vueform/slider/themes/default.css';
 
-@use './lupaConfig.scss';
+@use './lupaConfig.scss' with (
+  $icon-font-family: $icon-font-family
+);
 
 @use '../../base/general' with (
   $primary: lupaConfig.$primary,

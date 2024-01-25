@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ImageDocumentElement } from '@/types/DocumentElement'
+import { joinUrlParts } from '@/utils/url.utils'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { computed } from 'vue'
 
@@ -27,7 +28,7 @@ const imageUrl = computed(() => {
   if (hasFullImageUrl.value) {
     return imageUrl
   }
-  return `${rootImageUrl.value ?? ''}/${imageUrl}`
+  return rootImageUrl.value ? joinUrlParts(rootImageUrl.value, imageUrl) : `/${imageUrl}`
 })
 
 const hasImage = computed(() => Boolean(hasFullImageUrl.value || image.value))
