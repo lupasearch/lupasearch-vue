@@ -89,9 +89,9 @@ const currentGte = computed((): number | undefined => {
 })
 
 const currentLte = computed((): number | undefined => {
-  return typeof currentFilters.value.lt === 'string'
-    ? parseFloat(currentFilters.value.lt)
-    : currentFilters.value.lt
+  return typeof currentFilters.value.lte === 'string'
+    ? parseFloat(currentFilters.value.lte)
+    : currentFilters.value.lte
 })
 
 const currentMinValue = computed((): number => {
