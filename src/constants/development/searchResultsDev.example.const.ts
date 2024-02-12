@@ -213,5 +213,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     urlTransformer: (url: string) => {
       return `${url}`
     }
+  },
+  scrollToResults: {
+    enabled: true,
+    timeout: 500,
+    scrollToContainerSelector: '#app'
   }
 }

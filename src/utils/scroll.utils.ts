@@ -1,21 +1,22 @@
-const RESULT_ROOT_ID = 'lupa-search-results'
+import { RESULT_ROOT_SELECTOR } from '@/constants/global.const'
+
 const SHADOW_ROOT_ID = 'lupa-shadow-id'
 
 const CONTAINER_ROOT_ID = 'lupa-search-container'
 
-export const scrollToSearchResults = (timeout = 500): void => {
+export const scrollToSearchResults = (timeout = 500, containerSelector?: string): void => {
   if (timeout) {
-    setTimeout(() => scrollTo(RESULT_ROOT_ID), timeout)
+    setTimeout(() => scrollTo(containerSelector ?? RESULT_ROOT_SELECTOR), timeout)
   } else {
-    scrollTo(RESULT_ROOT_ID)
+    scrollTo(RESULT_ROOT_SELECTOR)
   }
 }
 
-export const scrollTo = (elementId: string): void => {
-  let el = document.getElementById(elementId)
+export const scrollTo = (elementSelector: string): void => {
+  let el = document.querySelector(elementSelector) as HTMLElement
   const shadowRoot = document.getElementById(SHADOW_ROOT_ID)?.shadowRoot
   if (!el) {
-    el = shadowRoot?.getElementById(elementId) ?? null
+    el = shadowRoot?.getElementById(elementSelector) ?? null
   }
   if (!el) {
     return

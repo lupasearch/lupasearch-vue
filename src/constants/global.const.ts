@@ -25,3 +25,5 @@ export const LUPA_ROUTING_EVENT = 'lupaRedirect'
 export const DEFAULT_CONTAINER_STYLE = 'containerStyle.css'
 
 export const RATING_STAR_HTML = '&#x2606;'
+
+export const RESULT_ROOT_SELECTOR = '#lupa-search-results'

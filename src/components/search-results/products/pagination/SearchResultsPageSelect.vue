@@ -7,6 +7,8 @@ import { useScreenStore } from '@/stores/screen'
 import { useParamsStore } from '@/stores/params'
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import { scrollToSearchResults } from '@/utils/scroll.utils'
+import { useOptionsStore } from '@/stores/options'
+import { RESULT_ROOT_SELECTOR } from '@/constants/global.const'
 
 const props = defineProps<{
   lastPageLabel?: string
@@ -19,8 +21,10 @@ const firstPageLabel = computed(() => props.firstPageLabel ?? '<')
 
 const paramStore = useParamsStore()
 const screenStore = useScreenStore()
+const optionsStore = useOptionsStore()
 
 const { isMobileWidth } = storeToRefs(screenStore)
+const { searchResultOptions } = storeToRefs(optionsStore)
 
 const pageOptionsCount = computed((): number => {
   return isMobileWidth.value ? props.options.displayMobile : props.options.display
@@ -65,12 +69,27 @@ const showPagination = computed((): boolean => {
   return pages.value.length > 1
 })
 
+const scrollToResultsOptions = computed(() => ({
+  enabled:
+    searchResultOptions.value.scrollToResults?.enabled === undefined
+      ? true
+      : searchResultOptions.value.scrollToResults?.enabled,
+  container:
+    searchResultOptions.value.scrollToResults?.scrollToContainerSelector ?? RESULT_ROOT_SELECTOR,
+  timeout: searchResultOptions.value.scrollToResults?.timeout ?? 500
+}))
+
 const handlePageChange = (page: number): void => {
   if (page > 0) {
     paramStore.appendParams({
       params: [{ name: QUERY_PARAMS.PAGE, value: page.toString() }]
     })
-    scrollToSearchResults()
+    if (scrollToResultsOptions.value.enabled) {
+      scrollToSearchResults(
+        scrollToResultsOptions.value.timeout,
+        scrollToResultsOptions.value.container
+      )
+    }
   }
 }
 </script>

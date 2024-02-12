@@ -15,6 +15,8 @@ import type { FacetResult } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import FacetList from './FacetList.vue'
+import { useOptionsStore } from '@/stores/options'
+import { RESULT_ROOT_SELECTOR } from '@/constants/global.const'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -24,9 +26,11 @@ const props = defineProps<{
 
 const paramStore = useParamsStore()
 const searchResultStore = useSearchResultStore()
+const optionsStore = useOptionsStore()
 
 const { filters } = storeToRefs(paramStore)
 const { facets } = storeToRefs(searchResultStore)
+const { searchResultOptions } = storeToRefs(optionsStore)
 
 const promotedFacets = computed((): FacetResult[] | undefined => {
   return facets.value?.filter((f) => props.options.promotedFacets?.includes(f.key))
@@ -35,6 +39,16 @@ const promotedFacets = computed((): FacetResult[] | undefined => {
 const regularFacets = computed((): FacetResult[] | undefined => {
   return facets.value?.filter((f) => !props.options.promotedFacets?.includes(f.key))
 })
+
+const scrollToResultsOptions = computed(() => ({
+  enabled:
+    searchResultOptions.value.scrollToResults?.enabled === undefined
+      ? true
+      : searchResultOptions.value.scrollToResults?.enabled,
+  container:
+    searchResultOptions.value.scrollToResults?.scrollToContainerSelector ?? RESULT_ROOT_SELECTOR,
+  timeout: searchResultOptions.value.scrollToResults?.timeout ?? 500
+}))
 
 const handleFacetSelect = (facetAction: FacetAction): void => {
   switch (facetAction.type) {
@@ -48,7 +62,12 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
       toggleHierarchyFilter(paramStore.appendParams as any, facetAction, filters.value)
       break
   }
-  scrollToSearchResults()
+  if (scrollToResultsOptions.value.enabled) {
+    scrollToSearchResults(
+      scrollToResultsOptions.value.timeout,
+      scrollToResultsOptions.value.container
+    )
+  }
 }
 
 const clear = (facet: FacetResult): void => {
