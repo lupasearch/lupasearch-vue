@@ -16,7 +16,14 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     dynamicData?: DynamicData
     ssr?: SsrOptions
     redirections?: RedirectionOptions
+    scrollToResults?: ScrollToResultsOptions
   }
+
+export type ScrollToResultsOptions = {
+  enabled?: boolean
+  scrollToContainerSelector?: string
+  timeout?: number
+}
 
 export type SsrOptions = {
   baseUrl?: string
