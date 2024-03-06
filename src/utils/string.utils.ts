@@ -118,3 +118,38 @@ export const inputsAreEqual = (input: string, possibleValues: string[]): boolean
   const normalizedInput = getNormalizedString(input)
   return possibleValues.some((v) => getNormalizedString(v) === normalizedInput)
 }
+
+const levenshteinDistance = (s = '', t = '') => {
+  if (!s?.length) {
+    return t.length
+  }
+  if (!t?.length) {
+    return s.length
+  }
+  const arr = []
+  for (let i = 0; i <= t.length; i++) {
+    arr[i] = [i]
+    for (let j = 1; j <= s.length; j++) {
+      arr[i][j] =
+        i === 0
+          ? j
+          : Math.min(
+              arr[i - 1][j] + 1,
+              arr[i][j - 1] + 1,
+              arr[i - 1][j - 1] + (s[j - 1] === t[i - 1] ? 0 : 1)
+            )
+    }
+  }
+  return arr[t.length][s.length]
+}
+
+export const findClosestStringValue = <T>(input: string, possibleValues: T[], key: keyof T): T => {
+  const directMatch = possibleValues.find((v) => v[key] === input)
+  if (directMatch) {
+    return directMatch
+  }
+  const distances = possibleValues.map((v) => levenshteinDistance(`${v[key]}`, input))
+  const minDistance = Math.min(...distances)
+  const closestValue = possibleValues.filter((_, i) => distances[i] === minDistance)?.[0]
+  return closestValue
+}
