@@ -10,6 +10,8 @@ import { ChatMessage } from '@/types/chat/SearchChatRequest'
 import ChatSpinner from './ChatSpinner.vue'
 import { findClosestStringValue } from '@/utils/string.utils'
 
+const MAX_SOURCES_FOR_BEST_ITEM_MATCHING = 250
+
 const props = defineProps<{
   entry: ChatContent
   options: ChatOptions
@@ -41,9 +43,9 @@ const titleKey = computed(() => {
 
 const loadFinalRecommendations = async () => {
   try {
-    const productResultStrings = loadedResults.value.map(
-      (result) => result[titleKey.value]?.toString() ?? ''
-    ) as string[]
+    const productResultStrings = loadedResults.value
+      .map((result) => result[titleKey.value]?.toString() ?? '')
+      ?.slice(0, MAX_SOURCES_FOR_BEST_ITEM_MATCHING) as string[]
     const { products } = await ChatService.suggestBestProductMatches(
       props.options.sdkOptions,
       {
