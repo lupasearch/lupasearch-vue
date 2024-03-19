@@ -124,8 +124,10 @@ const handleKeyDown = (e: KeyboardEvent): void => {
   }
   switch (e.key) {
     case 'Tab':
-      e.preventDefault()
-      selectSuggestion({ ...suggestedValue.value, override: true })
+      if (suggestedValue?.value?.item?.suggestion) {
+        e.preventDefault()
+        selectSuggestion({ ...suggestedValue.value, override: true })
+      }
       break
     case 'Enter':
       e.preventDefault()
