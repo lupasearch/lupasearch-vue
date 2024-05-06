@@ -4,7 +4,8 @@ import { CustomDocumentHtmlAttributes } from '../General'
 
 export enum SearchBoxPanelType {
   SUGGESTION = 'suggestion',
-  DOCUMENT = 'document'
+  DOCUMENT = 'document',
+  RELATED_SOURCE = 'related-source'
 }
 
 export type SearchBoxPanelLinks = {
@@ -12,6 +13,7 @@ export type SearchBoxPanelLinks = {
 }
 
 export type SearchBoxPanelLabels = {
+  title?: string
   topResultsTitle?: string
 }
 
@@ -20,6 +22,9 @@ export type SearchBoxPanelBase = {
   queryKey: string
   limit: number
   labels?: SearchBoxPanelLabels
+  visibility?: {
+    showWhenKeyHasNoResults?: string
+  }
 }
 
 export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
@@ -34,10 +39,22 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 
+export type RelatedSourcePanel = Omit<DocumentSearchBoxPanel, 'type'> & {
+  type: SearchBoxPanelType.RELATED_SOURCE
+  // Existing document type panel to extract related field source ids (e.g. authorId, categoryId, etc.)
+  sourceIds: {
+    queryKey: string
+    field: string
+  }
+  target: {
+    queryKey: string
+  }
+}
+
 export type SuggestionSearchBoxPanel = SearchBoxPanelBase & {
   type: SearchBoxPanelType.SUGGESTION
   highlight: boolean
   customClassName?: string
 }
 
-export type SearchBoxPanel = DocumentSearchBoxPanel | SuggestionSearchBoxPanel
+export type SearchBoxPanel = DocumentSearchBoxPanel | SuggestionSearchBoxPanel | RelatedSourcePanel
