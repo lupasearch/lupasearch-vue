@@ -147,7 +147,8 @@ const trackLupaEvent = (queryKey?: string, data: TrackableEventData = {}, option
     itemId: data.itemId ?? '',
     name: data.type,
     userId: getUserKey(),
-    sessionId: getSessionKey()
+    sessionId: getSessionKey(),
+    filters: data.filters
   }
   lupaSearchSdk.track(queryKey, eventData, options)
 }
@@ -264,9 +265,5 @@ export const track = (
     return
   }
   trackAnalyticsEvent(data)
-  // Lupa events are only tracked if search query is set
-  if (!hasSearchQuery) {
-    return
-  }
   trackLupaEvent(queryKey, data, options)
 }

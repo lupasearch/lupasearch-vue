@@ -1,4 +1,9 @@
-import type { Document, Suggestion, ReportableEventType } from '@getlupa/client-sdk/Types'
+import type {
+  Document,
+  Suggestion,
+  ReportableEventType,
+  FilterGroup
+} from '@getlupa/client-sdk/Types'
 import type { AnalyticsEventType } from '../AnalyticsOptions'
 import type { SearchBoxPanelType } from './SearchBoxPanel'
 
@@ -48,6 +53,7 @@ export type TrackableEventData = {
   options?: {
     allowEmptySearchQuery: boolean
   }
+  filters?: FilterGroup
 }
 
 export type HighlightedDocInfo = {

@@ -5,6 +5,7 @@ import type { Options, PublicQuery, SearchQueryResult } from '@getlupa/client-sd
 import { defineStore } from 'pinia'
 import { useOptionsStore } from './options'
 import type { TrackingOptions } from '@/types/General'
+import { useSearchResultStore } from './searchResult'
 
 const getSearchTrackingData = (
   searchText: string,
@@ -21,6 +22,7 @@ const getSearchTrackingData = (
 
 export const useTrackingStore = defineStore('tracking', () => {
   const optionsStore = useOptionsStore()
+  const searchResultStore = useSearchResultStore()
 
   const trackSearch = ({
     queryKey,
@@ -68,7 +70,8 @@ export const useTrackingStore = defineStore('tracking', () => {
       queryKey,
       {
         ...data,
-        analytics: data.analytics ? { ...data.analytics, items: mappedItems } : undefined
+        analytics: data.analytics ? { ...data.analytics, items: mappedItems } : undefined,
+        filters: searchResultStore.hasAnyFilter ? searchResultStore.filters : undefined
       },
       options
     )
