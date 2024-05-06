@@ -22,6 +22,8 @@ const props = defineProps<{
 
 const searchBoxStore = useSearchBoxStore()
 
+const mounted = ref(false)
+
 const emit = defineEmits(['fetched'])
 
 const { docResults } = storeToRefs(searchBoxStore)
@@ -43,18 +45,17 @@ const relatedSourceIds = computed(() => {
   return uniqueFieldValues
 })
 
-const inputValueProp = computed(() => props.inputValue)
+const relatedSourceIdsString = computed(() => relatedSourceIds.value.join(','))
 
 onMounted(() => {
   getItemsDebounced()
+  mounted.value = true
 })
 
-watch(relatedSourceIds, () => {
-  getItemsDebounced()
-})
-
-watch(inputValueProp, () => {
-  getItemsDebounced()
+watch(relatedSourceIdsString, () => {
+  if (mounted) {
+    getItemsDebounced()
+  }
 })
 
 const fetchRelatedItems = async (): Promise<SearchQueryResult> => {
