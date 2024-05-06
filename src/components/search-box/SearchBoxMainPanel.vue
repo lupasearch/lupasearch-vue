@@ -148,6 +148,11 @@ const showTopResultsPanelTitle = (queryKey: string) => {
   return panel?.count > 0 && panel?.input.length < 1
 }
 
+const showPanelTitle = (queryKey: string) => {
+  const panel = panelItemCounts.value.find((v) => v.queryKey === queryKey)
+  return panel?.count > 0
+}
+
 const canShowPanel = (panel: SearchBoxPanelBase) => {
   if (!panel.visibility?.showWhenKeyHasNoResults) {
     return true
@@ -194,7 +199,10 @@ export default {
           >
             {{ panel.labels?.topResultsTitle }}
           </div>
-          <div v-if="panel.labels?.title" class="lupa-panel-title">
+          <div
+            v-if="panel.labels?.title && showPanelTitle(panel.queryKey)"
+            class="lupa-panel-title"
+          >
             {{ panel.labels?.title }}
           </div>
           <component
