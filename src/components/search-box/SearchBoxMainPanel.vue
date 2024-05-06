@@ -6,7 +6,11 @@ import SearchBoxNoResults from './SearchBoxNoResults.vue'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
-import { type SearchBoxPanel, SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel'
+import {
+  type SearchBoxPanel,
+  SearchBoxPanelType,
+  SearchBoxPanelBase
+} from '@/types/search-box/SearchBoxPanel'
 
 const props = defineProps<{
   options: SearchBoxPanelOptions
@@ -112,6 +116,8 @@ const getComponent = (type: SearchBoxPanelType): string => {
   switch (type) {
     case 'suggestion':
       return 'SearchBoxSuggestionsWrapper'
+    case 'related-source':
+      return 'SearchBoxRelatedSourceWrapper'
     default:
       return 'SearchBoxProductsWrapper'
   }
@@ -141,15 +147,27 @@ const showTopResultsPanelTitle = (queryKey: string) => {
   const panel = panelItemCounts.value.find((v) => v.queryKey === queryKey)
   return panel?.count > 0 && panel?.input.length < 1
 }
+
+const canShowPanel = (panel: SearchBoxPanelBase) => {
+  if (!panel.visibility?.showWhenKeyHasNoResults) {
+    return true
+  }
+  const resultCountFromRelatedPanel =
+    panelItemCounts.value.find((v) => v.queryKey === panel.visibility?.showWhenKeyHasNoResults)
+      ?.count ?? 0
+  return resultCountFromRelatedPanel < 1
+}
 </script>
 <script lang="ts">
 import SearchBoxSuggestionsWrapper from './suggestions/SearchBoxSuggestionsWrapper.vue'
 import SearchBoxProductsWrapper from './products/SearchBoxProductsWrapper.vue'
+import SearchBoxRelatedSourceWrapper from './related-source/SearchBoxRelatedSourceWrapper.vue'
 
 export default {
   components: {
     SearchBoxSuggestionsWrapper,
-    SearchBoxProductsWrapper
+    SearchBoxProductsWrapper,
+    SearchBoxRelatedSourceWrapper
   }
 }
 </script>
@@ -172,12 +190,15 @@ export default {
         >
           <div
             v-if="panel.labels?.topResultsTitle && showTopResultsPanelTitle(panel.queryKey)"
-            class="lupa-panel-title"
+            class="lupa-panel-title lupa-panel-title-top-results"
           >
             {{ panel.labels?.topResultsTitle }}
           </div>
+          <div v-if="panel.labels?.title" class="lupa-panel-title">
+            {{ panel.labels?.title }}
+          </div>
           <component
-            v-if="panel.queryKey"
+            v-if="panel.queryKey && canShowPanel(panel)"
             :is="getComponent(panel.type)"
             :panel="panel"
             :options="sdkOptions"
