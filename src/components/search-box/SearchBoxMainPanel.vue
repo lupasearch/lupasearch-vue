@@ -148,9 +148,13 @@ const showTopResultsPanelTitle = (queryKey: string) => {
   return panel?.count > 0 && panel?.input.length < 1
 }
 
-const showPanelTitle = (queryKey: string) => {
-  const panel = panelItemCounts.value.find((v) => v.queryKey === queryKey)
-  return panel?.count > 0
+const showPanelTitle = (panel: SearchBoxPanel) => {
+  if (panel.type === SearchBoxPanelType.RELATED_SOURCE) {
+    const panelCounts = panelItemCounts.value.find((v) => v.queryKey === panel.sourceIds?.queryKey)
+    return panelCounts?.count > 0 && canShowPanel(panel)
+  }
+  const panelCounts = panelItemCounts.value.find((v) => v.queryKey === panel.queryKey)
+  return panelCounts?.count > 0
 }
 
 const canShowPanel = (panel: SearchBoxPanelBase) => {
@@ -199,10 +203,7 @@ export default {
           >
             {{ panel.labels?.topResultsTitle }}
           </div>
-          <div
-            v-if="panel.labels?.title && showPanelTitle(panel.queryKey)"
-            class="lupa-panel-title"
-          >
+          <div v-if="panel.labels?.title && showPanelTitle(panel)" class="lupa-panel-title">
             {{ panel.labels?.title }}
           </div>
           <component
