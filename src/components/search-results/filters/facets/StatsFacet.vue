@@ -144,7 +144,14 @@ const isIntegerRange = computed((): boolean => {
   return Number.isInteger(currentMinValue.value) && Number.isInteger(currentMaxValue.value)
 })
 
+const customInterval = computed((): number | undefined => {
+  return props.options.stats?.interval
+})
+
 const interval = computed((): number => {
+  if (customInterval.value) {
+    return customInterval.value
+  }
   return isIntegerRange.value ? 1 : -1
 })
 
