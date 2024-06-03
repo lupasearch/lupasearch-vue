@@ -200,6 +200,7 @@ export type ResultFacetOptions = {
   stats?: {
     slider?: boolean
     inputs?: boolean
+    interval?: number
     labels?: {
       from?: string
       to?: string
