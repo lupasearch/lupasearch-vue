@@ -15,7 +15,12 @@ export default {
 <script lang="ts" setup>
 import { useSearchResultStore } from '@/stores/searchResult'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
-import type { FacetGroup, FacetResult, FilterGroup } from '@getlupa/client-sdk/Types'
+import type {
+  FacetGroup,
+  FacetGroupTypeStats,
+  FacetResult,
+  FilterGroup
+} from '@getlupa/client-sdk/Types'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { FacetAction } from '@/types/search-results/FacetAction'
@@ -54,7 +59,13 @@ const facetType = computed((): string => {
 
 const hasItems = computed((): boolean => {
   if (facet.value.type === 'stats') {
-    return true
+    const statsFacet = facet.value as FacetGroupTypeStats
+    return (
+      statsFacet.min !== undefined &&
+      statsFacet.max !== undefined &&
+      statsFacet.min !== null &&
+      statsFacet.max !== null
+    )
   }
   const currentFacet = facet.value as FacetGroup
   return currentFacet.items?.length > 0

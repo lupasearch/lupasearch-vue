@@ -43,7 +43,7 @@ describe('FacetDisplay', () => {
   })
 
   it('should render section label for stats facet', () => {
-    const wrapper = getComponent({ type: 'stats' as any, label: 'Price' })
+    const wrapper = getComponent({ type: 'stats' as any, label: 'Price', min: 0, max: 100 })
     expect(wrapper.find('.lupa-facet-label-text').text()).toBe('Price')
   })
 
@@ -57,13 +57,13 @@ describe('FacetDisplay', () => {
   })
 
   it('should not render facet content initially', () => {
-    const wrapper = getComponent({ type: 'stats' as any, label: 'Price' })
+    const wrapper = getComponent({ type: 'stats' as any, label: 'Price', min: 0, max: 100 })
     expect(wrapper.find('.lupa-facet-content').exists()).toBe(false)
     expect(wrapper.find('.lupa-facet-label-caret').classes().includes('open')).toBe(false)
   })
 
   it('should render facet when its opened', async () => {
-    const wrapper = getComponent({ type: 'stats' as any, label: 'Price' })
+    const wrapper = getComponent({ type: 'stats' as any, label: 'Price', min: 0, max: 100 })
     const label = wrapper.find('.lupa-search-result-facet-label')
     await label.trigger('click')
     expect(wrapper.find('.lupa-facet-content').exists()).toBe(true)
@@ -72,10 +72,18 @@ describe('FacetDisplay', () => {
 
   it('should render facet opened by default', async () => {
     const wrapper = getComponent(
-      { type: 'stats' as any, label: 'Price', key: 'opened' },
+      { type: 'stats' as any, label: 'Price', key: 'opened', min: 0, max: 100 },
       { expand: ['opened'] }
     )
     expect(wrapper.find('.lupa-facet-content').exists()).toBe(true)
     expect(wrapper.find('.lupa-facet-label-caret').classes().includes('open')).toBe(true)
+  })
+
+  it('should not render stats facet if it has null values', async () => {
+    const wrapper = getComponent(
+      { type: 'stats' as any, label: 'Price', min: null, max: null },
+      { expand: ['opened'] }
+    )
+    expect(wrapper.find('.lupa-facet-content').exists()).toBe(false)
   })
 })
