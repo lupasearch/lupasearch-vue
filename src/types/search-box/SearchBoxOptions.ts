@@ -26,6 +26,7 @@ export type SearchBoxOptionLabels = {
   defaultFacetLabel?: string
   close?: string
   searchInputAriaLabel?: string
+  closePanel?: string;
 }
 
 export type SearchBoxOptionLinks = {
