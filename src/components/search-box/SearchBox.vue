@@ -118,6 +118,11 @@ const handleMouseClick = (e: MouseEvent): void => {
   suggestedValue.value = defaultSuggestedValue
 }
 
+const close = () => {
+  opened.value = false
+  suggestedValue.value = defaultSuggestedValue
+}
+
 const handleKeyDown = (e: KeyboardEvent): void => {
   if (!opened.value) {
     return
@@ -336,6 +341,7 @@ const slotProps = (
         @itemSelect="handleItemSelect"
         @go-to-results="handleSearch"
         @product-click="handleProductClick"
+        @close="close"
       >
         <template v-if="$slots.productCard" #productCard="props">
           <slot name="productCard" v-bind="slotProps(props)" />

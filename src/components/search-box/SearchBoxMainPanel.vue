@@ -183,6 +183,9 @@ export default {
 <template>
   <div ref="panelContainer">
     <div v-if="displayResults" id="lupa-search-box-panel">
+      <a v-if="labels.closePanel" class="lupa-search-box-close-panel" @click="$emit('close')">
+        {{ labels.closePanel }}
+      </a>
       <div
         class="lupa-main-panel"
         :style="expandOnSinglePanel ? { display: 'block' } : {}"
