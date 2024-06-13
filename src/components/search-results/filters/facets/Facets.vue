@@ -53,13 +53,28 @@ const scrollToResultsOptions = computed(() => ({
 const handleFacetSelect = (facetAction: FacetAction): void => {
   switch (facetAction.type) {
     case 'terms':
-      toggleTermFilter(paramStore.appendParams as any, facetAction, filters.value)
+      toggleTermFilter(
+        paramStore.appendParams as any,
+        facetAction,
+        optionsStore.getQueryParamName,
+        filters.value
+      )
       break
     case 'range':
-      toggleRangeFilter(paramStore.appendParams as any, facetAction, filters.value)
+      toggleRangeFilter(
+        paramStore.appendParams as any,
+        facetAction,
+        optionsStore.getQueryParamName,
+        filters.value
+      )
       break
     case 'hierarchy':
-      toggleHierarchyFilter(paramStore.appendParams as any, facetAction, filters.value)
+      toggleHierarchyFilter(
+        paramStore.appendParams as any,
+        facetAction,
+        optionsStore.getQueryParamName,
+        filters.value
+      )
       break
   }
   if (scrollToResultsOptions.value.enabled) {

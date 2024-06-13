@@ -1,4 +1,6 @@
-export const QUERY_PARAMS = {
+import { LupaQueryParamName, LupaQueryParamValue } from '@/types/General'
+
+export const QUERY_PARAMS: Record<LupaQueryParamName, LupaQueryParamValue> = {
   QUERY: 'q',
   PAGE: 'p',
   LIMIT: 'l',

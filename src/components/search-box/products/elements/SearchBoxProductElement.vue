@@ -15,7 +15,7 @@ const props = defineProps<{
 
 const dynamicDataStore = useDynamicDataStore()
 
-const { loading, dynamicDataIdMap } = storeToRefs(dynamicDataStore)
+const { loading, loadingIds, dynamicDataIdMap } = storeToRefs(dynamicDataStore)
 
 const elementComponent = computed((): string => {
   switch (props.element.type) {
@@ -43,10 +43,6 @@ const displayElement = computed((): boolean => {
   return props.element.display ? props.element.display(props.item) : true
 })
 
-const isLoadingDynamicData = computed((): boolean => {
-  return Boolean(props.element.dynamic && loading.value)
-})
-
 const enhancedItem = computed((): Document => {
   if (!props.item?.id) {
     return props.item
@@ -57,6 +53,10 @@ const enhancedItem = computed((): Document => {
     ...enhancementData
   }
 })
+
+const isLoadingDynamicData = (id?: unknown) => {
+  return Boolean(props.element.dynamic && id && loading.value && loadingIds?.value[id as string])
+}
 </script>
 <script lang="ts">
 import SearchBoxProductImage from './SearchBoxProductImage.vue'
@@ -88,7 +88,7 @@ export default {
     :item="enhancedItem"
     :options="element"
     :labels="labels"
-    :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData }"
+    :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
     :inStock="isInStock"
   >
   </component>

@@ -16,7 +16,7 @@ describe('SearchResultsPageSize', () => {
   beforeEach(() => {
     wrapper = mount(SearchResultsPageSize, {
       global: {
-        plugins: [createTestingPinia({})]
+        plugins: [createTestingPinia({ stubActions: false })]
       },
       props: {
         label: DEFAULT_OPTIONS_RESULTS.labels.pageSize,

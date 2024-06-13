@@ -1,6 +1,7 @@
 import { FACET_PARAMS_TYPE, QUERY_PARAMS } from '@/constants/queryParams.const'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import { encodeParam } from './params.utils'
+import { LupaQueryParamValue } from '@/types/General'
 
 const PATH_REPLACE_REGEXP = /{(.*?)}/gm
 
@@ -20,6 +21,7 @@ export const generateLink = (linkPattern: string, document: Record<string, unkno
 
 export const generateResultLink = (
   link: string,
+  getQueryParamName?: (param: LupaQueryParamValue) => string,
   searchText?: string,
   facet?: InputSuggestionFacet
 ): string => {
@@ -29,7 +31,9 @@ export const generateResultLink = (
   const facetParam = facet
     ? `&${FACET_PARAMS_TYPE.TERMS}${encodeParam(facet.key)}=${encodeParam(facet.title)}`
     : ''
-  const queryParam = `?${QUERY_PARAMS.QUERY}=${encodeParam(searchText)}`
+  const queryParam = `?${
+    getQueryParamName ? getQueryParamName(QUERY_PARAMS.QUERY) : QUERY_PARAMS.QUERY
+  }=${encodeParam(searchText)}`
   return `${link}${queryParam}${facetParam}`
 }
 

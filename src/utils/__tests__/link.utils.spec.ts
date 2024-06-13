@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { InputSuggestionFacet } from '@/types/search-box/Common'
 import { generateLink, generateResultLink, linksMatch } from '../link.utils'
+import { useOptionsStore } from '@/stores/options'
 
 describe('generateLink', () => {
   it('should return original link pattern if it has no replaceable properties', () => {
@@ -44,23 +45,23 @@ describe('generateResultLink', () => {
   })
 
   it('should return just a link if query text is empty', () => {
-    expect(generateResultLink('/just-a-link', '')).toBe('/just-a-link')
+    expect(generateResultLink('/just-a-link', undefined, '')).toBe('/just-a-link')
   })
 
   it('should return link with search query as parameter', () => {
-    expect(generateResultLink('/search', 'books')).toBe('/search?q=books')
+    expect(generateResultLink('/search', undefined, 'books')).toBe('/search?q=books')
   })
 
   it('should keep lt characers not encoded', () => {
-    expect(generateResultLink('/search', 'ąčęą')).toBe('/search?q=ąčęą')
+    expect(generateResultLink('/search', undefined, 'ąčęą')).toBe('/search?q=ąčęą')
   })
 
   it('should keep space', () => {
-    expect(generateResultLink('/search', 'one two')).toBe('/search?q=one two')
+    expect(generateResultLink('/search', undefined, 'one two')).toBe('/search?q=one two')
   })
 
   it('should encode search parameter', () => {
-    expect(generateResultLink('/search', 'bo?o&ks')).toBe('/search?q=bo%3Fo%26ks')
+    expect(generateResultLink('/search', undefined, 'bo?o&ks')).toBe('/search?q=bo%3Fo%26ks')
   })
 
   it('should include facet in link', () => {
@@ -68,7 +69,7 @@ describe('generateResultLink', () => {
       key: 'category',
       title: 'Shoes'
     }
-    expect(generateResultLink('/search', 'boots', facet)).toBe('/search?q=boots&f.category=Shoes')
+    expect(generateResultLink('/search', undefined, 'boots', facet)).toBe('/search?q=boots&f.category=Shoes')
   })
 
   it('should include encoded facet in link', () => {
@@ -76,7 +77,7 @@ describe('generateResultLink', () => {
       key: 'cate_gory',
       title: 'Shoe?s'
     }
-    expect(generateResultLink('/search', 'boots', facet)).toBe(
+    expect(generateResultLink('/search', undefined, 'boots', facet)).toBe(
       '/search?q=boots&f.cate_gory=Shoe%3Fs'
     )
   })

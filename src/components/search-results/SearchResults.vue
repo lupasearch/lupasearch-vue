@@ -75,7 +75,7 @@ const isTitleResultTopPosition = computed((): boolean => {
 // Code for handling browser back button navigation
 const handlePopState = () => {
   const searchParams = getSearchParams(props.options.ssr?.url)
-  paramStore.add(parseParams(searchParams))
+  paramStore.add(parseParams(optionStore.getQueryParamName, searchParams))
 }
 
 onMounted(async () => {
@@ -186,7 +186,7 @@ const handleResize = (): void => {
 const handleUrlChange = (params?: URLSearchParams): void => {
   const searchParams = getSearchParams(props.options.ssr?.url, params)
   const publicQuery = createPublicQuery(
-    parseParams(searchParams),
+    parseParams(optionStore.getQueryParamName, searchParams),
     props.options.sort,
     defaultSearchResultPageSize.value
   )
@@ -208,10 +208,10 @@ const handleMounted = (): void => {
     }
   }
   const params = new URLSearchParams(window.location.search)
-  if (!params.has(QUERY_PARAMS.QUERY) && !props.initialData) {
+  if (!params.has(optionStore.getQueryParamName(QUERY_PARAMS.QUERY)) && !props.initialData) {
     handleUrlChange(params)
   }
-  paramStore.add(parseParams(params))
+  paramStore.add(parseParams(optionStore.getQueryParamName, params))
   paramStore.setDefaultLimit(defaultSearchResultPageSize.value)
 }
 
@@ -247,7 +247,7 @@ const handleCreated = () => {
     )
     optionStore.setSearchResultOptions({ options: props.options })
     searchResultStore.add({ ...initialData })
-    paramStore.add(parseParams(searchParams), props.options.ssr)
+    paramStore.add(parseParams(optionStore.getQueryParamName, searchParams), props.options.ssr)
     paramStore.setDefaultLimit(defaultSearchResultPageSize.value)
     handleResults({ queryKey: props.options.queryKey, results: initialData })
   }

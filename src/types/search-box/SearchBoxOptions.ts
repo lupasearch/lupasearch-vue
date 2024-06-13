@@ -1,5 +1,5 @@
 import { SearchQueryResult } from '@getlupa/client-sdk/Types'
-import type { SdkOptions } from '../General'
+import type { LupaQueryParamValue, SdkOptions } from '../General'
 import type { RoutingBehavior } from '../search-results/RoutingBehavior'
 import type { DynamicData } from '../search-results/SearchResultsOptions'
 import type { SearchBoxHistory } from './SearchBoxHistory'
@@ -15,6 +15,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   dynamicData?: DynamicData
   callbacks?: SearchBoxEventCallbacks
   redirections?: RedirectionOptions
+  queryParameterNames?: Record<LupaQueryParamValue, string>
 }
 
 export type SearchBoxOptionLabels = {
@@ -26,7 +27,7 @@ export type SearchBoxOptionLabels = {
   defaultFacetLabel?: string
   close?: string
   searchInputAriaLabel?: string
-  closePanel?: string;
+  closePanel?: string
 }
 
 export type SearchBoxOptionLinks = {
