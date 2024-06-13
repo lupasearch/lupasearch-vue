@@ -53,7 +53,9 @@ export const useParamsStore = defineStore('params', () => {
 
   const navigate = (url: URL) => {
     window.history.pushState('', 'Append params', url.pathname + url.search)
-    const params = parseParams(url.searchParams) as QueryParams & { query: string }
+    const params = parseParams(optionsStore.getQueryParamName, url.searchParams) as QueryParams & {
+      query: string
+    }
     optionsStore?.searchBoxOptions?.callbacks?.onSearchResultsNavigate?.({
       params
     })
@@ -73,7 +75,7 @@ export const useParamsStore = defineStore('params', () => {
     const paramsToRemove = Array.from(url.searchParams.keys()).filter(isFacetKey)
     removeParams(url, paramsToRemove)
     navigate(url)
-    params.value = parseParams(url.searchParams)
+    params.value = parseParams(optionsStore.getQueryParamName, url.searchParams)
     searchString.value = url.search
   }
 
@@ -85,14 +87,14 @@ export const useParamsStore = defineStore('params', () => {
     save?: boolean
   }) => {
     const url = getPageUrl()
-    paramsToRemove = getRemovableParams(url, paramsToRemove)
+    paramsToRemove = getRemovableParams(url, optionsStore.getQueryParamName, paramsToRemove)
     removeParams(url, paramsToRemove)
     navigate(url)
     if (!save) {
       return
     }
 
-    params.value = parseParams(url.searchParams)
+    params.value = parseParams(optionsStore.getQueryParamName, url.searchParams)
     searchString.value = url.search
   }
 
@@ -149,13 +151,22 @@ export const useParamsStore = defineStore('params', () => {
           ]
         : []
       appendParams({
-        params: [{ name: QUERY_PARAMS.QUERY, value: searchText }, ...facetParam],
+        params: [
+          { name: optionsStore.getQueryParamName(QUERY_PARAMS.QUERY), value: searchText },
+          ...facetParam
+        ],
         paramsToRemove: 'all',
         searchResultsLink: searchResultsLink.value
       })
     } else {
       const routing = optionsStore.boxRoutingBehavior ?? 'direct-link'
-      redirectToResultsPage(searchResultsLink.value, searchText, facet, routing)
+      redirectToResultsPage(
+        searchResultsLink.value,
+        searchText,
+        optionsStore.getQueryParamName,
+        facet,
+        routing
+      )
     }
   }
 
@@ -176,14 +187,14 @@ export const useParamsStore = defineStore('params', () => {
       return { params: params.value }
     }
     const url = getPageUrl(searchResultsLink)
-    paramsToRemove = getRemovableParams(url, paramsToRemove)
+    paramsToRemove = getRemovableParams(url, optionsStore.getQueryParamName, paramsToRemove)
     removeParams(url, paramsToRemove)
     newParams.forEach((p) => appendParam(url, p, encode))
     navigate(url)
     if (!save) {
       return
     }
-    params.value = parseParams(url.searchParams)
+    params.value = parseParams(optionsStore.getQueryParamName, url.searchParams)
     searchString.value = url.search
   }
 

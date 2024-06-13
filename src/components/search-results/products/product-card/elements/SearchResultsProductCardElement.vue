@@ -17,7 +17,7 @@ const props = defineProps<{
 }>()
 
 const dynamicDataStore = useDynamicDataStore()
-const { dynamicDataIdMap, loading } = storeToRefs(dynamicDataStore)
+const { dynamicDataIdMap, loadingIds, loading } = storeToRefs(dynamicDataStore)
 
 const emit = defineEmits(['productEvent'])
 
@@ -47,10 +47,6 @@ const elementComponent = computed((): string => {
   return 'searchResultsProductTitle'
 })
 
-const isLoadingDynamicData = computed((): boolean => {
-  return Boolean(props.element.dynamic && loading.value)
-})
-
 const enhancedItem = computed((): Document => {
   if (!props.item?.id) {
     return props.item
@@ -68,6 +64,10 @@ const displayElement = computed((): boolean => {
 
 const handleProductEvent = (item: { type: string }): void => {
   emit('productEvent', item)
+}
+
+const isLoadingDynamicData = (id?: unknown) => {
+  return Boolean(props.element.dynamic && id && loading.value && loadingIds?.value[id as string])
 }
 </script>
 <script lang="ts">
@@ -107,7 +107,7 @@ export default {
     :labels="labels"
     :inStock="inStock"
     :link="link"
-    :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData }"
+    :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
     @productEvent="handleProductEvent"
   >
   </component>

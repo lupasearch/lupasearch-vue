@@ -4,10 +4,13 @@ import SearchContainer from './components/search-container/SearchContainer.vue'
 import type { SearchContainerOptions } from './types/search-container/SearchContainerOptions'
 import { cloneDeep } from 'lodash'
 import { QUERY_PARAMS } from './constants/queryParams.const'
+import { useOptionsStore } from './stores/options'
 
 const props = defineProps<{
   searchContainerOptions: SearchContainerOptions
 }>()
+
+const optionStore = useOptionsStore()
 
 const isOpen = ref(false)
 
@@ -40,7 +43,7 @@ const checkCloseOnEscape = (e: KeyboardEvent): void => {
 
 const checkExistingQuery = (): void => {
   const url = new URL(window.location.href)
-  const param = url.searchParams.get(QUERY_PARAMS.QUERY)
+  const param = url.searchParams.get(optionStore.getQueryParamName(QUERY_PARAMS.QUERY))
   if (!param) {
     return
   }

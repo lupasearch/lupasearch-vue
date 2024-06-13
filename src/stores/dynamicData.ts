@@ -6,6 +6,7 @@ import type { SearchQueryResult } from '@getlupa/client-sdk/Types'
 export const useDynamicDataStore = defineStore('dynamicData', () => {
   const loading = ref(false)
   const dynamicDataIdMap: Ref<Record<string, Document>> = ref({})
+  const loadingIds: Ref<Record<string, boolean>> = ref({})
 
   const optionsStore = useOptionsStore()
 
@@ -48,11 +49,12 @@ export const useDynamicDataStore = defineStore('dynamicData', () => {
       result.similarQueries?.map((q) => q.items.map((i) => i.id) as string[])?.flat() ?? []
     let requestedIds = [...resultIds, ...similarQueryResultIds]
     if (isCacheEnabled.value) {
-      requestedIds = requestedIds.filter((i) => !loadedIds.value.includes(i))
+      requestedIds = requestedIds.filter((i) => !dynamicDataIdMap.value[`${i}`])
     }
     if (!requestedIds.length) {
       return
     }
+    loadingIds.value = requestedIds.reduce((a, c) => ({ ...a, [c]: true }), {})
     loading.value = true
     try {
       const dynamicData = dynamicSearchResultData.value || dynamicSearchBoxData.value
@@ -62,7 +64,7 @@ export const useDynamicDataStore = defineStore('dynamicData', () => {
       const dynamicDataResult = (await dynamicData?.handler(requestedIds)) ?? []
       const seed: Record<string, Document> = {}
       const dynamicDataIdMapValue = dynamicDataResult.reduce(
-        (a, c) => ({ ...a, [c.id as string]: c }),
+        (a, c) => ({ ...a, [`${c.id}` as string]: c }),
         seed
       ) as Record<string, Document>
       dynamicDataIdMap.value = {
@@ -71,8 +73,9 @@ export const useDynamicDataStore = defineStore('dynamicData', () => {
       }
     } finally {
       loading.value = false
+      loadingIds.value = {}
     }
   }
 
-  return { dynamicDataIdMap, loading, enhanceSearchResultsWithDynamicData }
+  return { dynamicDataIdMap, loading, loadingIds, enhanceSearchResultsWithDynamicData }
 })

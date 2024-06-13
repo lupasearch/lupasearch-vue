@@ -3,6 +3,7 @@ import { SearchResultsOptions } from '..'
 import { parseParams } from './params.utils'
 import { createPublicQuery, getPublicQuery } from './query.utils'
 import { FilterGroup } from '@getlupa/client-sdk/Types'
+import { LupaQueryParamValue } from '@/types/General'
 
 export const getSearchParams = (
   url?: string,
@@ -26,6 +27,7 @@ export const getSearchParams = (
 
 export const getInitialSearchResults = async (
   options: SearchResultsOptions,
+  getQueryParamName: (param: LupaQueryParamValue) => string,
   defaultData?: {
     filters?: FilterGroup
     pageSize?: number
@@ -33,7 +35,7 @@ export const getInitialSearchResults = async (
 ) => {
   const searchParams = getSearchParams(options.ssr?.url, undefined, options.ssr?.baseUrl)
   const publicQuery = createPublicQuery(
-    parseParams(searchParams),
+    parseParams(getQueryParamName, searchParams),
     options.sort,
     defaultData?.pageSize
   )

@@ -4,7 +4,7 @@ import type { SearchBoxOptions } from '@/types/search-box/SearchBoxOptions'
 import { DEFAULT_SEARCH_BOX_OPTIONS } from '@/constants/searchBox.const'
 import { DEFAULT_OPTIONS_RESULTS } from '@/constants/searchResults.const'
 import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
-import type { TrackingOptions } from '@/types/General'
+import type { LupaQueryParamValue, TrackingOptions } from '@/types/General'
 import type { FilterGroup } from '@getlupa/client-sdk/Types'
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_SELECTION } from '@/constants/global.const'
 import { useScreenStore } from './screen'
@@ -79,6 +79,11 @@ export const useOptionsStore = defineStore('options', () => {
     searchResultInitialFilters.value = initialFilters
   }
 
+  const getQueryParamName = (param: LupaQueryParamValue) => {
+    const nameMap = searchBoxOptions.value.queryParameterNames
+    return nameMap?.[param] ?? param
+  }
+
   return {
     searchBoxOptions,
     searchResultOptions,
@@ -93,6 +98,7 @@ export const useOptionsStore = defineStore('options', () => {
     setSearchBoxOptions,
     setTrackingOptions,
     setSearchResultOptions,
-    setInitialFilters
+    setInitialFilters,
+    getQueryParamName
   }
 })

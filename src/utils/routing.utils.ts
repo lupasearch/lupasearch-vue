@@ -2,6 +2,7 @@ import { LUPA_ROUTING_EVENT } from '@/constants/global.const'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import type { RoutingBehavior, SsrOptions } from '..'
 import { generateResultLink } from './link.utils'
+import { LupaQueryParamValue } from '@/types/General'
 
 export const emitRoutingEvent = (url: string): void => {
   const event = new CustomEvent(LUPA_ROUTING_EVENT, { detail: url })
@@ -19,10 +20,11 @@ export const handleRoutingEvent = (link: string, event?: Event, hasEventRouting 
 export const redirectToResultsPage = (
   link: string,
   searchText: string,
+  getQueryParamName: (param: LupaQueryParamValue) => string,
   facet?: InputSuggestionFacet,
   routingBehavior: RoutingBehavior = 'direct-link'
 ): void => {
-  const url = generateResultLink(link, searchText, facet)
+  const url = generateResultLink(link, getQueryParamName, searchText, facet)
   if (routingBehavior === 'event') {
     emitRoutingEvent(url)
   } else {

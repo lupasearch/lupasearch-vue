@@ -8,6 +8,7 @@ import { toggleHierarchyFilter, toggleTermFilter } from '@/utils/filter.toggle.u
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import CurrentFilterDisplay from './CurrentFilterDisplay.vue'
+import { useOptionsStore } from '@/stores/options'
 
 defineProps<{
   options?: ResultCurrentFilterOptions
@@ -17,6 +18,7 @@ defineProps<{
 const isOpen = ref(false)
 
 const paramsStore = useParamsStore()
+const optionStore = useOptionsStore()
 const searchResultStore = useSearchResultStore()
 
 const { filters, displayFilters, currentFilterCount } = storeToRefs(searchResultStore)
@@ -36,6 +38,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
         // TODO: Fix any
         paramsStore.appendParams as any,
         { type: 'terms', value: filter.value, key: filter.key },
+        optionStore.getQueryParamName,
         currentFilters.value
       )
       break
@@ -43,13 +46,17 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
       toggleHierarchyFilter(
         paramsStore.appendParams as any,
         { type: 'hierarchy', value: filter.value, key: filter.key },
+        optionStore.getQueryParamName,
         currentFilters.value,
         true
       )
       break
     case 'range':
       paramsStore.removeParameters({
-        paramsToRemove: [QUERY_PARAMS.PAGE, `${FACET_PARAMS_TYPE.RANGE}${filter.key}`]
+        paramsToRemove: [
+          optionStore.getQueryParamName(QUERY_PARAMS.PAGE),
+          `${FACET_PARAMS_TYPE.RANGE}${filter.key}`
+        ]
       })
       break
   }

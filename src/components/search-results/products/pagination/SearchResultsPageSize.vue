@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
+import { useOptionsStore } from '@/stores/options'
 import { useParamsStore } from '@/stores/params'
 import type { PaginationPageSize } from '@/types/search-results/PaginationOptions'
 import { ref } from 'vue'
@@ -10,14 +11,15 @@ defineProps<{
 }>()
 
 const paramsStore = useParamsStore()
+const optionsStore = useOptionsStore()
 
 const select = ref(null)
 
 const handleSelect = (e: Event): void => {
   const value = (e.target as HTMLSelectElement).value
   paramsStore.appendParams({
-    params: [{ name: QUERY_PARAMS.LIMIT, value: value }],
-    paramsToRemove: [QUERY_PARAMS.PAGE]
+    params: [{ name: optionsStore.getQueryParamName(QUERY_PARAMS.LIMIT), value: value }],
+    paramsToRemove: [optionsStore.getQueryParamName(QUERY_PARAMS.PAGE)]
   })
 }
 </script>

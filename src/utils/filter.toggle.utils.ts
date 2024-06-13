@@ -18,6 +18,7 @@ import type {
   FilterGroupItemTypeTerms
 } from '@getlupa/client-sdk/Types'
 import { getMostSpecificHierarchyTerms, rangeFilterToString } from './filter.utils'
+import { LupaQueryParamValue } from '@/types/General'
 
 type AppendParams = ({
   params,
@@ -47,19 +48,21 @@ export const getFacetParam = (
 export const toggleTermFilter = (
   appendParams: AppendParams,
   facetAction: TermFacetAction,
+  getQueryParamName: (param: LupaQueryParamValue) => string,
   currentFilters?: FilterGroup
 ): void => {
   const currentFilter = currentFilters?.[facetAction.key] as FilterGroupItemTypeTerms
   const newParams = toggleTermParam(currentFilter, facetAction.value)
   appendParams({
     params: [getFacetParam(facetAction.key, newParams)],
-    paramsToRemove: [QUERY_PARAMS.PAGE]
+    paramsToRemove: [getQueryParamName(QUERY_PARAMS.PAGE)]
   })
 }
 
 export const toggleHierarchyFilter = (
   appendParams: AppendParams,
   facetAction: HierarchyFacetAction,
+  getQueryParamName: (param: LupaQueryParamValue) => string,
   currentFilters?: FilterGroup,
   removeAllLevels = false
 ): void => {
@@ -71,13 +74,14 @@ export const toggleHierarchyFilter = (
   )
   appendParams({
     params: [getFacetParam(facetAction.key, newParams, FACET_PARAMS_TYPE.HIERARCHY)],
-    paramsToRemove: [QUERY_PARAMS.PAGE]
+    paramsToRemove: [getQueryParamName(QUERY_PARAMS.PAGE)]
   })
 }
 
 export const toggleRangeFilter = (
   appendParams: AppendParams,
   facetAction: RangeFacetAction,
+  getQueryParamName: (param: LupaQueryParamValue) => string,
   currentFilters?: FilterGroup
 ): void => {
   const currentFilter = rangeFilterToString(
@@ -88,7 +92,7 @@ export const toggleRangeFilter = (
   facetValue = currentFilter === facetValue ? '' : facetValue
   appendParams({
     params: [getFacetParam(facetAction.key, facetValue, FACET_PARAMS_TYPE.RANGE)],
-    paramsToRemove: [QUERY_PARAMS.PAGE],
+    paramsToRemove: [getQueryParamName(QUERY_PARAMS.PAGE)],
     encode: false
   })
 }

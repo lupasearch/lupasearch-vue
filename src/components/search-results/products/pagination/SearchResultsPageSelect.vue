@@ -82,7 +82,7 @@ const scrollToResultsOptions = computed(() => ({
 const handlePageChange = (page: number): void => {
   if (page > 0) {
     paramStore.appendParams({
-      params: [{ name: QUERY_PARAMS.PAGE, value: page.toString() }]
+      params: [{ name: optionsStore.getQueryParamName(QUERY_PARAMS.PAGE), value: page.toString() }]
     })
     if (scrollToResultsOptions.value.enabled) {
       scrollToSearchResults(

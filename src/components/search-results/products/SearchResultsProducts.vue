@@ -32,7 +32,7 @@ const props = defineProps<{
 
 const searchResultStore = useSearchResultStore()
 const paramStore = useParamsStore()
-const optionsStore = useOptionsStore()
+const optionStore = useOptionsStore()
 
 const {
   hasResults,
@@ -128,7 +128,7 @@ const getProductKeyAction = (index: number, product: Document): string => {
 
 const goToFirstPage = (): void => {
   paramStore.appendParams({
-    params: [{ name: QUERY_PARAMS.PAGE, value: '1' }]
+    params: [{ name: optionStore.getQueryParamName(QUERY_PARAMS.PAGE), value: '1' }]
   })
 }
 </script>

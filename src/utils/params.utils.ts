@@ -8,6 +8,7 @@ import {
 import type { QueryParams } from '@/types/search-results/QueryParams'
 import { isFacetKey } from './filter.utils'
 import { reverseKeyValue } from './picker.utils'
+import { LupaQueryParamValue } from '@/types/General'
 
 const parseParam = (key: string, params: URLSearchParams) => {
   const value = params.get(key)
@@ -22,9 +23,18 @@ const parseParam = (key: string, params: URLSearchParams) => {
   }
 }
 
-const parseRegularKeys = (regularKeys: string[], searchParams: URLSearchParams) => {
+const parseRegularKeys = (
+  regularKeys: string[],
+  searchParams: URLSearchParams,
+  getQueryParamName: (param: LupaQueryParamValue) => string
+) => {
   const params = Object.create({})
-  const keys = reverseKeyValue(QUERY_PARAMS)
+  const keys = reverseKeyValue({
+    QUERY: getQueryParamName(QUERY_PARAMS.QUERY),
+    LIMIT: getQueryParamName(QUERY_PARAMS.LIMIT),
+    PAGE: getQueryParamName(QUERY_PARAMS.PAGE),
+    SORT: getQueryParamName(QUERY_PARAMS.SORT)
+  })
   for (const key of regularKeys) {
     const rawKey = keys[key] || key
     params[rawKey] = parseParam(key, searchParams)
@@ -69,18 +79,22 @@ const parseFacetKeys = (facetKeys: string[], searchParams: URLSearchParams) => {
   return params
 }
 
-export const parseParams = (searchParams?: URLSearchParams): QueryParams => {
+export const parseParams = (
+  getQueryParamName: (param: LupaQueryParamValue) => string,
+  searchParams?: URLSearchParams
+): QueryParams => {
   const params = Object.create({})
   if (!searchParams) return params
 
   const paramKeys = Array.from(searchParams.keys())
   const facetKeys = paramKeys.filter((k) => isFacetKey(k))
   const regularKeys = paramKeys.filter((k) => !isFacetKey(k))
-  return {
+  const r = {
     [QUERY_PARAMS_PARSED.QUERY]: '',
-    ...parseRegularKeys(regularKeys, searchParams),
+    ...parseRegularKeys(regularKeys, searchParams, getQueryParamName),
     ...parseFacetKeys(facetKeys, searchParams)
   }
+  return r
 }
 
 export const appendParam = (
@@ -115,11 +129,18 @@ const appendArrayParams = (url: URL, param: { name: string; value: string[] }) =
 
 export const getRemovableParams = (
   url: URL,
+  getQueryParamName: (param: LupaQueryParamValue) => string,
   paramsToRemove?: 'all' | string[]
 ): string[] | undefined => {
   if (paramsToRemove === 'all') {
+    const params = {
+      QUERY: getQueryParamName(QUERY_PARAMS.QUERY),
+      LIMIT: getQueryParamName(QUERY_PARAMS.LIMIT),
+      PAGE: getQueryParamName(QUERY_PARAMS.PAGE),
+      SORT: getQueryParamName(QUERY_PARAMS.SORT)
+    }
     return [
-      ...Object.values(QUERY_PARAMS),
+      ...Object.values(params),
       ...Array.from(url.searchParams.keys()).filter((k) => isFacetKey(k))
     ]
   }
