@@ -26,14 +26,14 @@ const parseParam = (key: string, params: URLSearchParams) => {
 const parseRegularKeys = (
   regularKeys: string[],
   searchParams: URLSearchParams,
-  getQueryParamName: (param: LupaQueryParamValue) => string
+  getQueryParamName?: (param: LupaQueryParamValue) => string
 ) => {
   const params = Object.create({})
   const keys = reverseKeyValue({
-    QUERY: getQueryParamName(QUERY_PARAMS.QUERY),
-    LIMIT: getQueryParamName(QUERY_PARAMS.LIMIT),
-    PAGE: getQueryParamName(QUERY_PARAMS.PAGE),
-    SORT: getQueryParamName(QUERY_PARAMS.SORT)
+    QUERY: getQueryParamName ? getQueryParamName(QUERY_PARAMS.QUERY) : QUERY_PARAMS.QUERY,
+    LIMIT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.LIMIT) : QUERY_PARAMS.LIMIT,
+    PAGE: getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE,
+    SORT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.SORT) : QUERY_PARAMS.SORT
   })
   for (const key of regularKeys) {
     const rawKey = keys[key] || key
@@ -80,7 +80,7 @@ const parseFacetKeys = (facetKeys: string[], searchParams: URLSearchParams) => {
 }
 
 export const parseParams = (
-  getQueryParamName: (param: LupaQueryParamValue) => string,
+  getQueryParamName?: (param: LupaQueryParamValue) => string,
   searchParams?: URLSearchParams
 ): QueryParams => {
   const params = Object.create({})
@@ -129,15 +129,15 @@ const appendArrayParams = (url: URL, param: { name: string; value: string[] }) =
 
 export const getRemovableParams = (
   url: URL,
-  getQueryParamName: (param: LupaQueryParamValue) => string,
+  getQueryParamName?: (param: LupaQueryParamValue) => string,
   paramsToRemove?: 'all' | string[]
 ): string[] | undefined => {
   if (paramsToRemove === 'all') {
     const params = {
-      QUERY: getQueryParamName(QUERY_PARAMS.QUERY),
-      LIMIT: getQueryParamName(QUERY_PARAMS.LIMIT),
-      PAGE: getQueryParamName(QUERY_PARAMS.PAGE),
-      SORT: getQueryParamName(QUERY_PARAMS.SORT)
+      QUERY: getQueryParamName ? getQueryParamName(QUERY_PARAMS.QUERY) : QUERY_PARAMS.QUERY,
+      LIMIT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.LIMIT) : QUERY_PARAMS.LIMIT,
+      PAGE: getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE,
+      SORT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.SORT) : QUERY_PARAMS.SORT
     }
     return [
       ...Object.values(params),
