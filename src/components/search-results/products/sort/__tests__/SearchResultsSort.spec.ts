@@ -7,6 +7,7 @@ import SearchResultsSort from '../SearchResultsSort.vue'
 import { createTestingPinia } from '@pinia/testing'
 import { vi } from 'vitest'
 import { useParamsStore } from '@/stores/params'
+import { useOptionsStore } from '@/stores/options'
 
 const sort = [
   { key: 's1', label: '', config: [] },
@@ -20,7 +21,7 @@ describe('SearchResultsSort', () => {
   beforeEach(() => {
     wrapper = mount(SearchResultsSort, {
       global: {
-        plugins: [createTestingPinia({})]
+        plugins: [createTestingPinia({ stubActions: false })]
       },
       props: {
         options: {
