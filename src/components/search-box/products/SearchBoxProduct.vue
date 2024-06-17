@@ -6,6 +6,8 @@ import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
 import { computed, onMounted, ref } from 'vue'
 import { generateLink } from '@/utils/link.utils'
 import { DocumentElementType, type DocumentElement } from '@/types/DocumentElement'
+import SearchResultsBadgeWrapper from '@/components/search-results/products/product-card/badges/SearchResultsBadgeWrapper.vue'
+import { BadgeOptions } from '@/types/search-results/BadgeOptions'
 
 const isInStock = ref(true)
 
@@ -21,6 +23,10 @@ const emit = defineEmits(['product-click'])
 
 const link = computed((): string => {
   return generateLink(props.panelOptions.links?.details ?? '', props.item)
+})
+
+const badgeOptions = computed((): BadgeOptions => {
+  return { ...props.panelOptions.badges, product: props.item }
 })
 
 const imageElements = computed((): DocumentElement[] => {
@@ -84,15 +90,19 @@ const checkIfIsInStock = async (): Promise<void> => {
     </div>
 
     <div class="lupa-search-box-product-details-section">
-      <SearchBoxProductElement
-        class="lupa-search-box-product-element"
-        v-for="element in detailElements"
-        :item="item"
-        :element="element"
-        :key="element.key"
-        :labels="labels"
-        :link="link"
-      />
+      <template v-for="element in detailElements" :key="element.key">
+        <SearchBoxProductElement
+          class="lupa-search-box-product-element"
+          :item="item"
+          :element="element"
+          :labels="labels"
+          :link="link"
+        >
+          <template #badges v-if="badgeOptions && badgeOptions?.anchorElementKey === element.key">
+            <SearchResultsBadgeWrapper :options="badgeOptions" position="card" />
+          </template>
+        </SearchBoxProductElement>
+      </template>
     </div>
 
     <div v-if="addToCartElement" class="lupa-search-box-product-add-to-cart-section">

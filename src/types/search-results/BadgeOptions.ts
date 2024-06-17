@@ -20,10 +20,11 @@ export type BadgeGenerateOptions<T = Record<string, any>> = {
 }
 
 export type BadgeOptions = {
-  anchor: AnchorPosition
+  anchor?: AnchorPosition
   elements: BadgeElement[]
   generate?: BadgeGenerateOptions
   product?: any
+  anchorElementKey?: string
 }
 
 export type SearchResultBadgeElement<T = any> = {

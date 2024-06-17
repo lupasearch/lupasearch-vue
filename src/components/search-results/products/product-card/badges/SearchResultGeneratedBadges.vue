@@ -9,7 +9,7 @@ const props = defineProps<{ options: BadgeOptions }>()
 const badgeField = computed((): Record<string, any>[] => {
   const fieldHasBadges =
     props.options.generate?.key &&
-    props.options.product[props.options.generate?.key ?? ''] &&
+    props.options.product?.[props.options.generate?.key ?? ''] &&
     Array.isArray(props.options.product[props.options.generate?.key ?? ''])
 
   return fieldHasBadges ? props.options.product[props.options.generate?.key ?? ''] : []
