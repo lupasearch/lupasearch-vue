@@ -82,14 +82,31 @@ export default {
 }
 </script>
 <template>
-  <component
-    v-if="displayElement"
-    :is="elementComponent"
-    :item="enhancedItem"
-    :options="element"
-    :labels="labels"
-    :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
-    :inStock="isInStock"
-  >
-  </component>
+  <template v-if="!$slots.badges">
+    <component
+      v-if="displayElement"
+      :is="elementComponent"
+      :item="enhancedItem"
+      :options="element"
+      :labels="labels"
+      :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
+      :inStock="isInStock"
+    >
+    </component>
+  </template>
+  <template v-else>
+    <div class="lupa-search-box-element-badge-wrapper">
+      <component
+        v-if="displayElement"
+        :is="elementComponent"
+        :item="enhancedItem"
+        :options="element"
+        :labels="labels"
+        :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
+        :inStock="isInStock"
+      >
+      </component>
+      <slot name="badges" />
+    </div>
+  </template>
 </template>
