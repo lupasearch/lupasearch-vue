@@ -19,7 +19,6 @@ const fullSearchResultsOptions = computed((): SearchResultsOptions => {
 })
 
 const fetch = (): void => {
-  console.log(props.searchResultsOptions.hideResultsOnReload);
   if (props.searchResultsOptions.hideResultsOnReload) {
     searchResultsStore.clearSearchResult()
     searchResultsStore.setLoading(true)
