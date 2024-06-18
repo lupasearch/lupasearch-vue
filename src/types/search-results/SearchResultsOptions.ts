@@ -103,6 +103,7 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
     sort: SearchResultsSortOptions[]
     filters?: SearchResultsFilterOptions
     searchTitlePosition?: string
+    hideResultsOnReload?: boolean
     toolbar?: {
       layoutSelector?: boolean
       itemSummary?: boolean

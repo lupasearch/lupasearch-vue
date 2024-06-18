@@ -136,6 +136,10 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     loading.value = state || false
   }
 
+  const clearSearchResult = () => {
+    searchResult.value = {} as SearchQueryResult
+  }
+
   return {
     isMobileSidebarVisible,
     searchResult,
@@ -161,6 +165,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     setColumnCount,
     setAddToCartAmount,
     setLayout,
-    setLoading
+    setLoading,
+    clearSearchResult
   }
 })
