@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { cloneDeep, merge } from 'lodash'
 import { type Ref, ref, computed } from 'vue'
-import type { SearchBoxOptions, SearchResultsOptions } from '.'
+import type { SearchResultsOptions } from '.'
 import { DEFAULT_OPTIONS_RESULTS } from './constants/searchResults.const'
 import SearchResults from './components/search-results/SearchResults.vue'
+import { useSearchResultStore } from './stores/searchResult'
 
 const props = defineProps<{
-  searchResultsOptions: SearchBoxOptions
+  searchResultsOptions: SearchResultsOptions
 }>()
 
+const searchResultsStore = useSearchResultStore()
 const searchResults: Ref<null | any> = ref(null)
 
 const fullSearchResultsOptions = computed((): SearchResultsOptions => {
@@ -17,6 +19,11 @@ const fullSearchResultsOptions = computed((): SearchResultsOptions => {
 })
 
 const fetch = (): void => {
+  console.log(props.searchResultsOptions.hideResultsOnReload);
+  if (props.searchResultsOptions.hideResultsOnReload) {
+    searchResultsStore.clearSearchResult()
+    searchResultsStore.setLoading(true)
+  }
   searchResults.value?.handleUrlChange()
 }
 
