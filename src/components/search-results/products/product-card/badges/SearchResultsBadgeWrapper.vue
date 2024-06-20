@@ -10,10 +10,24 @@ import type { AnchorPosition } from '@/types/search-results/SearchResultsProduct
 
 const props = defineProps<{ position?: 'card' | 'image'; options: BadgeOptions }>()
 
+const dynamicDataStore = useDynamicDataStore()
+const { dynamicDataIdMap } = storeToRefs(dynamicDataStore)
+
 const positionValue = computed(() => props.position ?? 'card')
 
 const anchorPosition = computed((): AnchorPosition => {
   return props.options.anchor
+})
+
+const enhancedProduct = computed((): Document => {
+  if (!props.options.product?.id) {
+    return props.options.product
+  }
+  const enhancementData = dynamicDataIdMap.value?.[props.options.product?.id as string] ?? {}
+  return {
+    ...props.options.product,
+    ...enhancementData
+  }
 })
 
 const badges = computed((): BadgeElement[] => {
@@ -25,8 +39,8 @@ const badges = computed((): BadgeElement[] => {
     .map((x) => {
       return {
         ...x,
-        value: (props.options.product?.[x.key] as string) || 'badge',
-        product: props.options.product
+        value: (enhancedProduct.value?.[x.key] as string) || 'badge',
+        product: enhancedProduct.value
       }
     })
 })
@@ -54,6 +68,8 @@ const getBadgeComponent = (type: string): string => {
 import CustomBadge from './CustomBadge.vue'
 import TextBadge from './TextBadge.vue'
 import ImageBadge from './ImageBadge.vue'
+import { useDynamicDataStore } from '@/stores/dynamicData'
+import { storeToRefs } from 'pinia'
 
 export default {
   components: {

@@ -5,6 +5,7 @@ import SearchResultsBadgeWrapper from '../badges/SearchResultsBadgeWrapper.vue'
 import CustomBadge from '../badges/CustomBadge.vue'
 import TextBadge from '../badges/TextBadge.vue'
 import ImageBadge from '../badges/ImageBadge.vue'
+import { createTestingPinia } from '@pinia/testing'
 
 describe('SearchResultsBadgeWrapper', () => {
   let wrapper: VueWrapper
@@ -19,6 +20,9 @@ describe('SearchResultsBadgeWrapper', () => {
 
   beforeEach(() => {
     wrapper = mount(SearchResultsBadgeWrapper, {
+      global: {
+        plugins: [createTestingPinia({ stubActions: false })]
+      },
       props: {
         options: {
           anchor: 'tr',
