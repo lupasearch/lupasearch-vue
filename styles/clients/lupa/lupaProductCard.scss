@@ -1,4 +1,4 @@
-@use "./lupaConfig.scss";
+@use './lupaConfig.scss';
 
 .lupa-search-result-product-card {
   border-radius: 4px;
@@ -54,4 +54,14 @@
   color: lupaConfig.$text-color-faded;
   display: inline-block;
   margin-left: 4px;
+}
+
+.lupa-fade-enter-active,
+.lupa-fade-leave-active {
+  transition: opacity 0.25s ease-in-out;
+}
+
+.lupa-fade-enter-from,
+.lupa-fade-leave-to {
+  opacity: 0;
 }
