@@ -205,3 +205,14 @@
     padding: searchResults.$facet-range-currency-padding;
   }
 }
+
+.lupa-facets-button-filter {
+  background-color: #fff;
+  border-radius: 24px;
+  padding: 9px 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: searchResults.$facet-term-filter-border;
+}

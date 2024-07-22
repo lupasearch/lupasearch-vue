@@ -9,6 +9,8 @@ const categoryFilters = ref(null)
 
 const props = defineProps<{ options: SearchResultsFilterOptions; expandable?: boolean }>()
 
+const emit = defineEmits(['filter'])
+
 const desktopFiltersVisible = computed((): boolean => {
   // Default is true
   return props.options.currentFilters?.visibility?.desktopSidebar ?? true
@@ -21,6 +23,10 @@ const currentFiltersVisible = computed((): boolean => {
 const showCurrentFilters = computed((): boolean => {
   return currentFiltersVisible.value ? Boolean(props.options.facets) : false
 })
+
+const filter = () => {
+  emit('filter')
+}
 
 const fetch = () => {
   if (categoryFilters.value) {
@@ -39,6 +45,6 @@ defineExpose({ fetch })
       :expandable="expandable ?? false"
     />
     <CategoryFilter v-if="options.categories" :options="options.categories" ref="categoryFilters" />
-    <Facets v-if="options.facets" :options="options.facets" />
+    <Facets v-if="options.facets" :options="options.facets" @filter="filter" />
   </div>
 </template>

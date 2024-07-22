@@ -3,6 +3,12 @@ import type { SearchResultsFilterOptions } from '@/types/search-results/SearchRe
 import Facets from './facets/Facets.vue'
 
 defineProps<{ options: SearchResultsFilterOptions }>()
+
+const emit = defineEmits(['filter'])
+
+const filter = () => {
+  emit('filter')
+}
 </script>
 
 <template>
@@ -12,6 +18,7 @@ defineProps<{ options: SearchResultsFilterOptions }>()
       :options="options.facets"
       :facet-style="options.facets.style?.type"
       :clearable="true"
+      @filter="filter"
     />
   </div>
 </template>

@@ -15,6 +15,7 @@ import type { FacetResult } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import FacetList from './FacetList.vue'
+import FacetsButton from './FacetsButton.vue'
 import { useOptionsStore } from '@/stores/options'
 import { RESULT_ROOT_SELECTOR } from '@/constants/global.const'
 
@@ -31,6 +32,8 @@ const optionsStore = useOptionsStore()
 const { filters } = storeToRefs(paramStore)
 const { facets } = storeToRefs(searchResultStore)
 const { searchResultOptions } = storeToRefs(optionsStore)
+
+const emit = defineEmits(['filter'])
 
 const promotedFacets = computed((): FacetResult[] | undefined => {
   return facets.value?.filter((f) => props.options.promotedFacets?.includes(f.key))
@@ -50,6 +53,10 @@ const scrollToResultsOptions = computed(() => ({
   timeout: searchResultOptions.value.scrollToResults?.timeout ?? 500
 }))
 
+const showFilterButton = computed(() => {
+  return props.options.filterBehavior === 'withFilterButton'
+})
+
 const handleFacetSelect = (facetAction: FacetAction): void => {
   switch (facetAction.type) {
     case 'terms':
@@ -57,7 +64,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         paramStore.appendParams as any,
         facetAction,
         optionsStore.getQueryParamName,
-        filters.value
+        filters.value,
       )
       break
     case 'range':
@@ -65,7 +72,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         paramStore.appendParams as any,
         facetAction,
         optionsStore.getQueryParamName,
-        filters.value
+        filters.value,
       )
       break
     case 'hierarchy':
@@ -73,7 +80,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         paramStore.appendParams as any,
         facetAction,
         optionsStore.getQueryParamName,
-        filters.value
+        filters.value,
       )
       break
   }
@@ -89,6 +96,10 @@ const clear = (facet: FacetResult): void => {
   const param = getFacetKey(facet.key, facet.type as FilterType)
   paramStore.removeParameters({ paramsToRemove: [param] })
 }
+
+const filter = () => {
+  emit('filter')
+}
 </script>
 <template>
   <div class="lupa-search-result-facets">
@@ -102,5 +113,6 @@ const clear = (facet: FacetResult): void => {
       @select="handleFacetSelect"
       @clear="clear"
     />
+    <FacetsButton v-if="showFilterButton" :options="options" @filter="filter" />
   </div>
 </template>
