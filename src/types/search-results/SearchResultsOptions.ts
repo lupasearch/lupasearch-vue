@@ -177,6 +177,8 @@ export type ResultCurrentFilterOptions = {
 
 export type FacetStyle = 'sidebar' | 'top-dropdown'
 
+export type FilterBehavior = 'immediate' | 'withFilterButton'
+
 export type FacetFilterQuery = {
   queryKey: string
 }
@@ -188,8 +190,10 @@ export type ResultFacetOptions = {
     showLess?: string
     facetFilter: string
     facetClear?: string
+    facetFilterButton?: string
   }
   promotedFacets?: string[]
+  filterBehavior?: FilterBehavior
   filterable?: {
     minValues: number
   }

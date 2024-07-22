@@ -45,6 +45,8 @@ const {
   loading
 } = storeToRefs(searchResultStore)
 
+const emit = defineEmits(['filter'])
+
 const productCardOptions = computed((): SearchResultsProductCardOptions => {
   return pick(props.options, [
     'isInStock',
@@ -131,6 +133,10 @@ const goToFirstPage = (): void => {
     params: [{ name: optionStore.getQueryParamName(QUERY_PARAMS.PAGE), value: '1' }]
   })
 }
+
+const filter = () => {
+  emit('filter')
+}
 </script>
 <template>
   <div id="lupa-search-results-products">
@@ -142,6 +148,7 @@ const goToFirstPage = (): void => {
         v-if="showMobileFilters"
         :options="options"
         pagination-location="top"
+        @filter="filter"
       />
       <CurrentFilters
         :class="currentFiltersClass"

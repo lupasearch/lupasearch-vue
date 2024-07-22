@@ -11,6 +11,8 @@ const searchResultStore = useSearchResultStore()
 
 const { currentFilterCount } = storeToRefs(searchResultStore)
 
+const emit = defineEmits(['filter'])
+
 const sidebarTitle = computed((): string => {
   return props.options.facets?.labels?.title ?? ''
 })
@@ -31,6 +33,11 @@ const isActiveFiltersExpanded = computed((): boolean => {
 const handleMobileToggle = (): void => {
   searchResultStore.setSidebarState({ visible: false })
 }
+
+const filter = () => {
+  emit('filter')
+  handleMobileToggle()
+}
 </script>
 
 <template>
@@ -47,7 +54,11 @@ const handleMobileToggle = (): void => {
         <div class="lupa-filter-toggle-mobile" @click="handleMobileToggle"></div>
       </div>
       <div class="lupa-sidebar-filter-options">
-        <SearchResultsFilters :options="options" :expandable="isActiveFiltersExpanded" />
+        <SearchResultsFilters
+          :options="options"
+          :expandable="isActiveFiltersExpanded"
+          @filter="filter"
+        />
       </div>
     </div>
   </div>

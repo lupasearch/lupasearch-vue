@@ -58,7 +58,8 @@ import type {
   ResultFacetOptions,
   DynamicData,
   SsrOptions,
-  ScrollToResultsOptions
+  ScrollToResultsOptions,
+  FilterBehavior
 } from './types/search-results/SearchResultsOptions'
 import type { AnchorPosition } from './types/search-results/SearchResultsProductCardOptions'
 import type {
@@ -169,5 +170,6 @@ export type {
   QueryParams,
   SearchBoxResultsNavigateContext,
   RedirectionOptions,
-  ScrollToResultsOptions
+  ScrollToResultsOptions,
+  FilterBehavior
 }

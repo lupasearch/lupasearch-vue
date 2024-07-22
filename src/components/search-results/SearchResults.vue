@@ -273,7 +273,11 @@ defineExpose({ handleMounted, handleUrlChange })
       </div>
     </template>
     <CategoryTopFilters v-if="isTitleResultTopPosition" :options="options" />
-    <MobileFilterSidebar v-if="options.filters" :options="options.filters" />
+    <MobileFilterSidebar
+      v-if="options.filters"
+      :options="options.filters"
+      @filter="handleParamsChange"
+    />
     <SearchResultsBreadcrumbs
       v-if="currentQueryText || isProductList"
       :breadcrumbs="options.breadcrumbs"
@@ -284,11 +288,12 @@ defineExpose({ handleMounted, handleUrlChange })
           v-if="showFilterSidebar"
           :options="options.filters ?? {}"
           ref="searchResultsFilters"
+          @filter="handleParamsChange"
         />
         <div class="search-content">
           <SearchResultsDidYouMean :labels="didYouMeanLabels" />
           <SearchResultsTitle :options="options" :is-product-list="isProductList ?? false" />
-          <SearchResultsProducts :options="options" :ssr="ssrEnabled">
+          <SearchResultsProducts :options="options" :ssr="ssrEnabled" @filter="handleParamsChange">
             <template #append>
               <slot />
             </template>
@@ -305,8 +310,9 @@ defineExpose({ handleMounted, handleUrlChange })
           v-if="showFilterSidebar"
           :options="options.filters ?? {}"
           ref="searchResultsFilters"
+          @filter="handleParamsChange"
         />
-        <SearchResultsProducts :options="options" :ssr="ssrEnabled">
+        <SearchResultsProducts :options="options" :ssr="ssrEnabled" @filter="handleParamsChange">
           <template #append>
             <slot />
           </template>
