@@ -89,6 +89,10 @@ const currentFilterOptions = computed((): ResultCurrentFilterOptions | undefined
   return currentFilterToolbarVisible.value ? props.options.filters?.currentFilters : undefined
 })
 
+const currentFilterPositionDesktop = computed((): string => {
+  return props.options.filters?.currentFilters?.desktopToolbar?.position || 'pageTop'
+})
+
 const currentFiltersClass = computed((): string => {
   if (!currentFilterToolbarVisible.value) {
     return ''
@@ -151,9 +155,9 @@ const filter = () => {
         @filter="filter"
       />
       <CurrentFilters
+        v-if="currentFilterOptions && currentFilterPositionDesktop === 'pageTop'"
         :class="currentFiltersClass"
         data-cy="lupa-search-result-filters-mobile-toolbar"
-        v-if="currentFilterOptions"
         :options="currentFilterOptions"
         :expandable="!desktopFiltersExpanded"
       />
@@ -161,6 +165,13 @@ const filter = () => {
     <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
     <template v-if="hasResults">
       <SearchResultsToolbar class="lupa-toolbar-top" :options="options" pagination-location="top" />
+      <CurrentFilters
+        v-if="currentFilterOptions && currentFilterPositionDesktop === 'resultsTop'"
+        :class="currentFiltersClass"
+        data-cy="lupa-search-result-filters-mobile-toolbar"
+        :options="currentFilterOptions"
+        :expandable="!desktopFiltersExpanded"
+      />
       <div class="lupa-products" data-cy="lupa-products">
         <template v-if="$slots.productCard">
           <slot

@@ -37,12 +37,18 @@ const descriptionTop = computed((): string | undefined => {
 const summaryLabel = computed((): string => {
   return props.options.labels?.itemCount ?? ''
 })
+
+const searchResultsCountLabel = computed((): string => {
+  return props.options.labels?.searchResultsCount ?? ''
+})
 </script>
 <template>
   <div>
     <h1 class="lupa-result-page-title" data-cy="lupa-result-page-title" v-if="showSearchTitle">
       {{ options.labels.searchResults }}<span v-if="queryText">'{{ queryText }}'</span>
-      <span v-if="showProductCount" class="lupa-results-total-count">({{ totalItems }})</span>
+      <span v-if="showProductCount" class="lupa-results-total-count"
+        >({{ searchResultsCountLabel }}{{ totalItems }})</span
+      >
     </h1>
     <SearchResultsSummary v-if="showSummary" :label="summaryLabel" />
     <div

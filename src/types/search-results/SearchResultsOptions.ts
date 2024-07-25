@@ -81,6 +81,7 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
     currency: string
     priceSeparator?: string
     searchResults?: string
+    searchResultsCount?: string
     itemCount: string
     emptyResults: string
     mobileFilterButton: string
@@ -172,6 +173,7 @@ export type ResultCurrentFilterOptions = {
   }
   desktopToolbar?: {
     activeFiltersExpanded?: boolean
+    position?: 'pageTop' | 'resultsTop'
   }
 }
 
