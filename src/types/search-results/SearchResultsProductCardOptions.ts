@@ -17,6 +17,7 @@ export type SearchResultsProductCardOptions = {
   queryKey: string
   idKey?: string
   titleKey?: string
+  priceKeys?: string[]
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 

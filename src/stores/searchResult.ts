@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, type Ref } from 'vue'
 import lupaSearchSdk from '@getlupa/client-sdk'
 import type { FacetGroup, SearchQueryResult } from '@getlupa/client-sdk/Types'
@@ -22,6 +22,8 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const optionsStore = useOptionsStore()
   const paramsStore = useParamsStore()
 
+  const { searchResultOptions } = storeToRefs(optionsStore)
+
   const facets = computed(() => searchResult.value.facets)
 
   const filters = computed(() => searchResult.value.filters)
@@ -32,8 +34,27 @@ export const useSearchResultStore = defineStore('searchResult', () => {
 
   const hasResults = computed(() => totalItems.value > 0)
 
+  const priceKeys = computed((): string[] => {
+    return searchResultOptions.value?.priceKeys ?? []
+  })
+
+  const currency = computed((): string => {
+    return searchResultOptions.value?.labels?.currency ?? ''
+  })
+
+  const priceSeparator = computed((): string => {
+    return searchResultOptions.value?.labels?.priceSeparator ?? ''
+  })
+
   const labeledFilters = computed(() =>
-    getLabeledFilters(unfoldFilters(filters.value), facets.value)
+    getLabeledFilters(
+      unfoldFilters(filters.value, {
+        keys: priceKeys.value,
+        currency: currency.value,
+        separator: priceSeparator.value
+      }),
+      facets.value
+    )
   )
 
   const displayFilters = computed(() => {

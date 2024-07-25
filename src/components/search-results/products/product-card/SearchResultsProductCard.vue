@@ -202,6 +202,7 @@ if (ssr.value) {
           :labels="labels"
           :inStock="isInStock"
           :link="link"
+          @productEvent="handleProductEvent"
         />
         <SearchResultsBadgeWrapper
           :options="badgesOptions"

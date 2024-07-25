@@ -108,6 +108,7 @@ export type CustomHtmlElement<T = any> = DocumentElementBase<T> & {
   html: (document: T) => string
   className: string
   action?: (document: T) => Promise<unknown> | undefined
+  reportEventOnClick?: string
 }
 
 export type DocumentElement =
