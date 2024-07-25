@@ -49,7 +49,7 @@ const unfoldRangeFilter = (
 ): UnfoldedFilter[] => {
   const gt = filter.gte || filter.gt
   const lt = filter.lte || filter.lt
-  if (key.includes(CURRENCY_KEY_INDICATOR) || price?.keys.includes(key)) {
+  if (key.includes(CURRENCY_KEY_INDICATOR) || price?.keys?.includes(key)) {
     return [
       {
         key,
