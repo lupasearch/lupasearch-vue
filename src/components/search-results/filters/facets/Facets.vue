@@ -64,7 +64,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         paramStore.appendParams as any,
         facetAction,
         optionsStore.getQueryParamName,
-        filters.value,
+        filters.value
       )
       break
     case 'range':
@@ -72,7 +72,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         paramStore.appendParams as any,
         facetAction,
         optionsStore.getQueryParamName,
-        filters.value,
+        filters.value
       )
       break
     case 'hierarchy':
@@ -80,7 +80,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         paramStore.appendParams as any,
         facetAction,
         optionsStore.getQueryParamName,
-        filters.value,
+        filters.value
       )
       break
   }
@@ -113,6 +113,8 @@ const filter = () => {
       @select="handleFacetSelect"
       @clear="clear"
     />
-    <FacetsButton v-if="showFilterButton" :options="options" @filter="filter" />
+    <div class="lupa-facets-filter-button-wrapper">
+      <FacetsButton v-if="showFilterButton" :options="options" @filter="filter" />
+    </div>
   </div>
 </template>

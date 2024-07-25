@@ -38,14 +38,22 @@ const unfoldHierarchyFilter = (
   return filter.terms.reduce((a, c) => [...a, { key, value: c, type: 'hierarchy' }], seed)
 }
 
-const unfoldRangeFilter = (key: string, filter: FilterGroupItemTypeRange): UnfoldedFilter[] => {
+const unfoldRangeFilter = (
+  key: string,
+  filter: FilterGroupItemTypeRange,
+  price: {
+    keys?: string[]
+    currency?: string
+    separator?: string
+  } = {}
+): UnfoldedFilter[] => {
   const gt = filter.gte || filter.gt
   const lt = filter.lte || filter.lt
-  if (key.includes(CURRENCY_KEY_INDICATOR)) {
+  if (key.includes(CURRENCY_KEY_INDICATOR) || price?.keys?.includes(key)) {
     return [
       {
         key,
-        value: formatPriceSummary([gt, lt]),
+        value: formatPriceSummary([gt, lt], price.currency, price.separator),
         type: 'range'
       }
     ]
@@ -53,12 +61,20 @@ const unfoldRangeFilter = (key: string, filter: FilterGroupItemTypeRange): Unfol
   return [{ key, value: `${gt} - ${lt}`, type: 'range' }]
 }
 
-const unfoldFilter = (key: string, filter: FilterGroupItem): UnfoldedFilter[] => {
+const unfoldFilter = (
+  key: string,
+  filter: FilterGroupItem,
+  price: {
+    keys?: string[]
+    currency?: string
+    separator?: string
+  } = {}
+): UnfoldedFilter[] => {
   if (Array.isArray(filter)) {
     return unfoldTermFilter(key, filter)
   }
   if ((filter as FilterGroupItemTypeRange).gte) {
-    return unfoldRangeFilter(key, filter as FilterGroupItemTypeRange)
+    return unfoldRangeFilter(key, filter as FilterGroupItemTypeRange, price)
   }
   if ((filter as FilterGroupItemTypeHierarchy).terms) {
     return unfoldHierarchyFilter(key, filter as FilterGroupItemTypeHierarchy)
@@ -66,12 +82,19 @@ const unfoldFilter = (key: string, filter: FilterGroupItem): UnfoldedFilter[] =>
   return []
 }
 
-export const unfoldFilters = (filters?: FilterGroup): UnfoldedFilter[] => {
+export const unfoldFilters = (
+  filters?: FilterGroup,
+  price: {
+    keys?: string[]
+    currency?: string
+    separator?: string
+  } = {}
+): UnfoldedFilter[] => {
   if (!filters) {
     return []
   }
   const seed: UnfoldedFilter[] = []
-  return Object.entries(filters).reduce((a, c) => [...a, ...unfoldFilter(...c)], seed)
+  return Object.entries(filters).reduce((a, c) => [...a, ...unfoldFilter(...c, price)], seed)
 }
 
 export const getLabeledFilters = (

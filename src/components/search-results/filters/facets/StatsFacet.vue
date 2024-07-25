@@ -38,6 +38,10 @@ const currency = computed((): string => {
   return searchResultOptions.value?.labels.currency
 })
 
+const priceKeys = computed((): string[] => {
+  return searchResultOptions.value?.priceKeys ?? []
+})
+
 const isSliderVisible = computed((): boolean => {
   return Boolean(props.options.stats?.slider ?? true)
 })
@@ -118,7 +122,10 @@ const sliderRange = computed({
 })
 
 const isPrice = computed((): boolean => {
-  return facetValue.value.key?.includes(CURRENCY_KEY_INDICATOR)
+  return (
+    facetValue.value?.key?.includes(CURRENCY_KEY_INDICATOR) ||
+    priceKeys.value?.includes(facetValue.value.key)
+  )
 })
 
 const facetMin = computed((): number => {

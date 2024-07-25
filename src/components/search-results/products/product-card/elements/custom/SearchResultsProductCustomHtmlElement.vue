@@ -5,6 +5,8 @@ import { computed } from 'vue'
 
 const props = defineProps<{ item: Document; options: CustomHtmlElement }>()
 
+const emit = defineEmits(['productEvent'])
+
 const text = computed((): string => {
   return props.options.html(props.item)
 })
@@ -16,6 +18,9 @@ const className = computed((): string => {
 const handleClick = async (): Promise<void> => {
   if (!props.options.action) {
     return
+  }
+  if (props.options.reportEventOnClick) {
+    emit('productEvent', { type: props.options.reportEventOnClick })
   }
   await props.options.action(props.item)
 }
