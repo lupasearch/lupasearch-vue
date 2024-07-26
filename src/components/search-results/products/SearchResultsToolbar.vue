@@ -98,6 +98,14 @@ const searchSummaryLabel = computed((): string => {
     : paginationOptions.value?.labels?.filteredItemCount ?? defaultLabel
 })
 
+const toolbarLeftLabel = computed((): string => {
+  return optionsValue.value.labels.toolbarLeftLabel ?? ''
+})
+
+const toolbarRightLabel = computed((): string => {
+  return optionsValue.value.labels.toolbarRightLabel ?? ''
+})
+
 const showMobileFilterCount = computed((): boolean => {
   return Boolean(optionsValue.value.filters?.currentFilters?.mobileSidebar?.showFilterCount)
 })
@@ -116,6 +124,9 @@ const handleClearAll = (): void => {
 <template>
   <div id="lupa-search-results-toolbar" :class="{ 'lupa-filter-no-results': !hasResults }">
     <div class="lupa-toolbar-left">
+      <div v-if="toolbarLeftLabel" class="lupa-toolbar-right-title">
+        {{ toolbarLeftLabel }}
+      </div>
       <SearchResultsLayoutSelection v-if="showLayoutSelection" />
       <div v-else></div>
 
@@ -136,6 +147,9 @@ const handleClearAll = (): void => {
       <div v-else></div>
     </div>
     <div class="lupa-toolbar-right">
+      <div v-if="toolbarRightLabel" class="lupa-toolbar-right-title">
+        {{ toolbarRightLabel }}
+      </div>
       <SearchResultsMobileToggle
         :label="optionsValue.labels.mobileFilterButton"
         :show-filter-count="showMobileFilterCount"

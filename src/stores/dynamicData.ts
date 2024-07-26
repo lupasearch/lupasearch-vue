@@ -47,7 +47,8 @@ export const useDynamicDataStore = defineStore('dynamicData', () => {
     const resultIds = (result?.items?.map((i) => i.id) as string[]) ?? []
     const similarQueryResultIds =
       result.similarQueries?.map((q) => q.items.map((i) => i.id) as string[])?.flat() ?? []
-    let requestedIds = [...resultIds, ...similarQueryResultIds]
+    const similarResultIds = (result.similarResults?.items.map((i) => i.id) as string[]) ?? []
+    let requestedIds = [...resultIds, ...similarQueryResultIds, ...similarResultIds]
     if (isCacheEnabled.value) {
       requestedIds = requestedIds.filter((i) => !dynamicDataIdMap.value[`${i}`])
     }
