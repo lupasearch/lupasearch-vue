@@ -89,6 +89,8 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
     outOfStock?: string
     noItemsInPage?: string
     backToFirstPage?: string
+    toolbarRightLabel?: string
+    toolbarLeftLabel?: string
   }
 
 export type SearchResultsAdditionalPanels = {

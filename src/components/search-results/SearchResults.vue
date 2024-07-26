@@ -123,7 +123,10 @@ const handleResults = async ({
 }): Promise<void> => {
   trackingStore.trackResults({ queryKey, results })
   const hasResults = Boolean(
-    results.total > 0 || results.similarQueries?.length || results.didYouMean?.options
+    results.total > 0 ||
+      results.similarQueries?.length ||
+      results.didYouMean?.options ||
+      results.similarResults?.items?.length
   )
   props.options.callbacks?.onSearchResults?.({ queryKey, hasResults, params: paramStore.params })
   if (!hasResults) {
