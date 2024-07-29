@@ -39,6 +39,7 @@ export type SearchBoxInputOptions = {
   labels: SearchBoxOptionLabels
   links: SearchBoxOptionLinks
   inputAttributes?: Record<string, string>
+  showSubmitButton?: boolean
 }
 
 export type SearchBoxResultCallbackContext = {
