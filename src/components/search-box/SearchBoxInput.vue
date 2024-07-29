@@ -17,7 +17,7 @@ const paramStore = useParamsStore()
 const searchBoxStore = useSearchBoxStore()
 const { query } = storeToRefs(paramStore)
 
-const emit = defineEmits(['input', 'focus'])
+const emit = defineEmits(['input', 'focus', 'search'])
 
 const mainInput = ref(null)
 
@@ -75,6 +75,10 @@ const handleFocus = (): void => {
   }
 }
 
+const handleSubmit = (): void => {
+  emit('search')
+}
+
 const clear = (): void => {
   emit('input', '')
 }
@@ -117,6 +121,9 @@ defineExpose({ focus })
         @input="handleInput"
         @focus="handleFocus"
       />
+      <button v-if="options.showSubmitButton" @click="handleSubmit">
+        <span class="lupa-search-submit-icon"></span>
+      </button>
     </div>
     <div v-if="canClose" class="lupa-close-search-container" @click="$emit('close')">
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>

@@ -59,7 +59,13 @@ const searchValue = computed((): string => {
 
 const inputOptions = computed(
   (): SearchBoxInputOptions =>
-    pick(props.options, ['minInputLength', 'labels', 'links', 'inputAttributes'])
+    pick(props.options, [
+      'minInputLength',
+      'labels',
+      'links',
+      'inputAttributes',
+      'showSubmitButton'
+    ])
 )
 
 const panelOptions = computed(
@@ -330,6 +336,7 @@ const slotProps = (
         ref="searchBoxInput"
         @input="handleInput"
         @focus="opened = true"
+        @search="handleSearch"
         @close="$emit('close')"
       />
       <SearchBoxMainPanel

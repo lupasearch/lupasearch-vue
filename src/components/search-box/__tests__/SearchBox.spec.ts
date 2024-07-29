@@ -67,7 +67,8 @@ describe('SearchBox.vue', () => {
       minInputLength: DEFAULT_SEARCH_BOX_OPTIONS.minInputLength,
       labels: DEFAULT_SEARCH_BOX_OPTIONS.labels,
       links: DEFAULT_SEARCH_BOX_OPTIONS.links,
-      inputAttributes: DEFAULT_SEARCH_BOX_OPTIONS.inputAttributes
+      inputAttributes: DEFAULT_SEARCH_BOX_OPTIONS.inputAttributes,
+      showSubmitButton: undefined
     })
   })
 
