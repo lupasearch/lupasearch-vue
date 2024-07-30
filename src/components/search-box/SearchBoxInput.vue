@@ -76,7 +76,7 @@ const handleFocus = (): void => {
 }
 
 const handleSubmit = (): void => {
-  emit('search')
+  emit('search', { query: inputValue.value })
 }
 
 const clear = (): void => {
