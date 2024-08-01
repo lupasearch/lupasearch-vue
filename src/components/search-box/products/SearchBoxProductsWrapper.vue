@@ -6,12 +6,15 @@ import { useSearchBoxStore } from '@/stores/searchBox'
 import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
 import type { DocumentSearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import SearchBoxProducts from './SearchBoxProducts.vue'
+import SearchBoxProductsGoToResultsButton from './SearchBoxProductsGoToResultsButton.vue'
 import { debounce } from '@/utils/debounce.utils'
 import { useDynamicDataStore } from '@/stores/dynamicData'
 import type { SdkOptions } from '@/types/General'
+import type { SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
 
 const props = defineProps<{
   panel: DocumentSearchBoxPanel
+  searchBoxOptions: SearchBoxPanelOptions
   inputValue: string
   options: SdkOptions
   labels?: SearchBoxOptionLabels
@@ -23,10 +26,14 @@ const dynamicDataStore = useDynamicDataStore()
 
 const { docResults } = storeToRefs(searchBoxStore)
 
-const emit = defineEmits(['fetched'])
+const emit = defineEmits(['fetched', 'product-click', 'go-to-results'])
 
 const searchResult = computed((): SearchQueryResult | null => {
   return docResults.value[props.panel.queryKey] ?? null
+})
+
+const showGoToResultsButton = computed(() => {
+  return props.panel.showGoToResults
 })
 
 const inputValueProp = computed(() => props.inputValue)
@@ -81,5 +88,11 @@ const getItemsDebounced = debounce(getItems, props.debounce)
     <template v-if="$slots.productCard" #productCard="props">
       <slot name="productCard" v-bind="props" />
     </template>
+    <SearchBoxProductsGoToResultsButton
+      v-if="showGoToResultsButton && searchResult?.items.length"
+      :options="searchBoxOptions"
+      :panel="panel"
+      @goToResults="$emit('go-to-results')"
+    />
   </SearchBoxProducts>
 </template>
