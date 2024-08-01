@@ -16,6 +16,7 @@ export type SearchBoxPanelLinks = {
 export type SearchBoxPanelLabels = {
   title?: string
   topResultsTitle?: string
+  goToResultsTitle?: string
 }
 
 export type SearchBoxPanelBase = {
@@ -36,7 +37,8 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   idKey?: string
   customClassName?: string
   searchBySuggestion?: boolean
-  badges?: SearchBoxBadgeOptions,
+  badges?: SearchBoxBadgeOptions
+  showGoToResults?: boolean
   isInStock?: (doc: Document) => boolean
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }

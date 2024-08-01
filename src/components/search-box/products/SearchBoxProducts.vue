@@ -107,5 +107,6 @@ const handleProductClick = ({
         @product-click="handleProductClick"
       />
     </template>
+    <slot />
   </div>
 </template>

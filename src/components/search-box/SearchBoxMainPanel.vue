@@ -213,6 +213,7 @@ export default {
             v-if="panel.queryKey && canShowPanel(panel)"
             :is="getComponent(panel.type)"
             :panel="panel"
+            :search-box-options="options"
             :options="sdkOptions"
             :debounce="options.debounce"
             :inputValue="getInput(panel)"
@@ -220,6 +221,7 @@ export default {
             @fetched="(data: any) => $emit('fetched', data)"
             @itemSelect="(item: any) => $emit('itemSelect', item)"
             @product-click="$emit('product-click')"
+            @go-to-results="handleGoToResults"
           >
             <template v-if="$slots.productCard" #productCard="props">
               <slot name="productCard" v-bind="props" />

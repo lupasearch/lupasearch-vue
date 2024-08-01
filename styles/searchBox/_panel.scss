@@ -94,3 +94,19 @@
   font-weight: searchBox.$search-box-panel-title-font-weight;
   font-size: searchBox.$search-box-panel-title-font-size;
 }
+
+.lupa-search-box-documents-go-to-results-wrapper {
+  padding: 15px;
+}
+
+.lupa-search-box-documents-go-to-results-button {
+  background-color: #fff;
+  border-radius: 24px;
+  padding: 9px 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: searchBox.$panel-border;
+  cursor: pointer;
+}
