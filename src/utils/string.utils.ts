@@ -6,11 +6,12 @@ export const getNormalizedString = (str?: string | number): string => {
   }
   const transformedStr = typeof str === 'string' ? str : str.toString()
   return transformedStr.normalize === undefined
-    ? transformedStr.toLocaleLowerCase()
+    ? transformedStr.toLocaleLowerCase()?.trim()
     : transformedStr
         .toLocaleLowerCase()
         .normalize('NFKD')
         .replace(/[^\w\s.-_/]/g, '')
+        ?.trim()
 }
 
 export const capitalize = (str?: string): string => {
