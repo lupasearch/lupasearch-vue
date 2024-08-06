@@ -202,6 +202,7 @@ export type ResultFacetOptions = {
     facetClear?: string
     facetFilterButton?: string
   }
+  hideFiltersOnExactMatchForKeys?: string[]
   promotedFacets?: string[]
   filterBehavior?: FilterBehavior
   filterable?: {

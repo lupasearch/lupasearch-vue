@@ -11,6 +11,7 @@ import type {
   FilterGroupItemTypeTerms
 } from '@getlupa/client-sdk/Types'
 import { computed, ref } from 'vue'
+import { useSearchResultStore } from '@/stores/searchResult'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -18,9 +19,11 @@ const props = defineProps<{
   currentFilters?: FilterGroupItemTypeTerms | FilterGroupItemTypeRange[]
 }>()
 
+const searchResultStore = useSearchResultStore()
+
 const facet = computed(() => props.facet ?? { type: 'terms', items: [], key: '' })
 
-const currentFiltersaValue = computed(() => props.currentFilters ?? [])
+const currentFiltersValue = computed(() => props.currentFilters ?? [])
 
 const showAll = ref(false)
 const termFilter = ref('')
@@ -34,7 +37,7 @@ const itemLimit = computed((): number => {
 })
 
 const allValues = computed((): FacetGroupItem[] => {
-  return facet.value?.items ?? []
+  return searchResultStore.filterVisibleFilterValues(facet.value.key, facet.value?.items ?? [])
 })
 
 const displayValues = computed((): FacetGroupItem[] => {
@@ -82,7 +85,7 @@ const toggleShowAll = (): void => {
 }
 
 const isChecked = (item: FacetGroupItem): boolean => {
-  let selectedItems = currentFiltersaValue.value ?? []
+  let selectedItems = currentFiltersValue.value ?? []
   selectedItems =
     isRange.value && selectedItems
       ? [rangeFilterToString(selectedItems as FilterGroupItemTypeRange)]

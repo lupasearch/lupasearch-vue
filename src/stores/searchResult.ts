@@ -1,7 +1,7 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, type Ref } from 'vue'
 import lupaSearchSdk from '@getlupa/client-sdk'
-import type { FacetGroup, SearchQueryResult } from '@getlupa/client-sdk/Types'
+import type { FacetGroup, FacetGroupItem, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { ResultsLayoutEnum, type ResultsLayout } from '@/types/search-results/ResultsLayout'
 import { getLabeledFilters, unfoldFilters } from '@/utils/filter.utils'
 import { useOptionsStore } from './options'
@@ -10,6 +10,7 @@ import { disableBodyScroll, enableBodyScroll } from '@/utils/scroll.utils'
 import { setDocumentTitle } from '@/utils/document.utils'
 import type { ProductGrid } from '@/types/search-results/SearchResultsOptions'
 import { useScreenStore } from './screen'
+import { getNormalizedString } from '@/utils/string.utils'
 
 export const useSearchResultStore = defineStore('searchResult', () => {
   const searchResult: Ref<SearchQueryResult> = ref({} as SearchQueryResult)
@@ -68,6 +69,10 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const currentFilterKeys = computed(() => Object.keys(filters.value ?? {}))
 
   const hasAnyFilter = computed(() => Object.keys(filters.value ?? {}).length > 0)
+
+  const hideFiltersOnExactMatchForKeys = computed(() => {
+    return searchResultOptions.value?.filters?.facets?.hideFiltersOnExactMatchForKeys ?? []
+  })
 
   const itemRange = computed(() => {
     const limit = paramsStore.limit ?? 0
@@ -153,6 +158,21 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     searchResult.value = {} as SearchQueryResult
   }
 
+  const filterVisibleFilterValues = (key: string, items: FacetGroupItem[] = []) => {
+    if (
+      !hideFiltersOnExactMatchForKeys.value?.length ||
+      !hideFiltersOnExactMatchForKeys.value.includes(key) ||
+      !items.length
+    ) {
+      return items
+    }
+    const searchInput = getNormalizedString(currentQueryText.value)
+    const hasExactMatch = items.some((item) => getNormalizedString(item.title) === searchInput)
+    return hasExactMatch
+      ? items.filter((item) => getNormalizedString(item.title) === searchInput)
+      : items
+  }
+
   return {
     isMobileSidebarVisible,
     searchResult,
@@ -172,6 +192,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     hasAnyFilter,
     itemRange,
     isPageEmpty,
+    hideFiltersOnExactMatchForKeys,
     setSidebarState,
     queryFacet,
     add,
@@ -179,6 +200,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     setAddToCartAmount,
     setLayout,
     setLoading,
-    clearSearchResult
+    clearSearchResult,
+    filterVisibleFilterValues
   }
 })
