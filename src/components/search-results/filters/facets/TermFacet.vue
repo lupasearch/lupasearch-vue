@@ -48,14 +48,14 @@ const displayValues = computed((): FacetGroupItem[] => {
 
 const filteredValues = computed((): FacetGroupItem[] => {
   return isFilterable.value
-    ? allValues.value.filter((v) =>
+    ? allValues.value?.filter((v) =>
         getNormalizedString(v.title)?.includes(getNormalizedString(termFilter.value))
       )
-    : allValues.value
+    : allValues.value ?? []
 })
 
 const isFilterable = computed((): boolean => {
-  return allValues.value.length >= (props.options.filterable?.minValues ?? MAX_FACET_VALUES)
+  return allValues.value?.length >= (props.options.filterable?.minValues ?? MAX_FACET_VALUES)
 })
 
 const isRange = computed((): boolean => {

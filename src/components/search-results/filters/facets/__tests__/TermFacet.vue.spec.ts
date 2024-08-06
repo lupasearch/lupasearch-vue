@@ -5,6 +5,7 @@ import { shallowMount } from '@vue/test-utils'
 import TermFacet from '../TermFacet.vue'
 import { merge } from '@/utils/merger.utils'
 import { vi } from 'vitest'
+import { createTestingPinia } from '@pinia/testing'
 
 const baseFacet: FacetGroup = {
   type: 'terms' as unknown as any,
@@ -29,6 +30,9 @@ const baseOptions: ResultFacetOptions = {
 
 const getComponent = (options?: Partial<ResultFacetOptions>, currentFilters: string[] = []) => {
   return shallowMount(TermFacet, {
+    global: {
+      plugins: [createTestingPinia({ stubActions: false })]
+    },
     propsData: {
       options: merge(baseOptions, options ?? {}),
       facet: baseFacet,
