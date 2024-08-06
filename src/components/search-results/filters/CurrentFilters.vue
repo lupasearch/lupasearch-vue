@@ -9,6 +9,7 @@ import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import CurrentFilterDisplay from './CurrentFilterDisplay.vue'
 import { useOptionsStore } from '@/stores/options'
+import { getNormalizedString } from '@/utils/string.utils'
 
 defineProps<{
   options?: ResultCurrentFilterOptions
@@ -21,11 +22,27 @@ const paramsStore = useParamsStore()
 const optionStore = useOptionsStore()
 const searchResultStore = useSearchResultStore()
 
-const { filters, displayFilters, currentFilterCount } = storeToRefs(searchResultStore)
+const {
+  filters,
+  displayFilters,
+  currentFilterCount,
+  hideFiltersOnExactMatchForKeys,
+  currentQueryText
+} = storeToRefs(searchResultStore)
 
 const currentFilters = computed(() => filters.value)
 
-const hasFilters = computed((): boolean => displayFilters.value?.length > 0)
+const currentDisplayFilters = computed(() =>
+  hideFiltersOnExactMatchForKeys.value.length
+    ? displayFilters.value.filter(
+        (f) =>
+          !hideFiltersOnExactMatchForKeys.value?.includes(f.key) &&
+          getNormalizedString(currentQueryText.value) !== getNormalizedString(f.label)
+      )
+    : displayFilters.value
+)
+
+const hasFilters = computed((): boolean => currentDisplayFilters.value?.length > 0)
 
 const handleClearAll = (): void => {
   paramsStore.removeAllFilters()
@@ -79,7 +96,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
     <div class="filter-values" v-if="!expandable || isOpen">
       <div class="lupa-current-filter-list">
         <CurrentFilterDisplay
-          v-for="filter of displayFilters"
+          v-for="filter of currentDisplayFilters"
           :key="filter.key + '_' + filter.value"
           :filter="filter"
           @remove="handleRemove"
