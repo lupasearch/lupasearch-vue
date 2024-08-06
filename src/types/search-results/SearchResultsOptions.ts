@@ -123,6 +123,12 @@ export type ProductGrid = {
     sm: number
     xs: number
   }
+  sizes?: {
+    sm?: number
+    md?: number
+    l?: number
+    xl?: number
+  }
 }
 
 export type SearchResultsPaginationLabels = {
