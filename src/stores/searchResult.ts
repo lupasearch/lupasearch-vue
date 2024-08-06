@@ -6,10 +6,10 @@ import { ResultsLayoutEnum, type ResultsLayout } from '@/types/search-results/Re
 import { getLabeledFilters, unfoldFilters } from '@/utils/filter.utils'
 import { useOptionsStore } from './options'
 import { useParamsStore } from './params'
-import { S_MIN_WIDTH, MD_MIN_WIDTH, L_MIN_WIDTH, XL_MIN_WIDTH } from '@/constants/global.const'
 import { disableBodyScroll, enableBodyScroll } from '@/utils/scroll.utils'
 import { setDocumentTitle } from '@/utils/document.utils'
 import type { ProductGrid } from '@/types/search-results/SearchResultsOptions'
+import { useScreenStore } from './screen'
 
 export const useSearchResultStore = defineStore('searchResult', () => {
   const searchResult: Ref<SearchQueryResult> = ref({} as SearchQueryResult)
@@ -21,6 +21,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
 
   const optionsStore = useOptionsStore()
   const paramsStore = useParamsStore()
+  const screenStore = useScreenStore()
 
   const { searchResultOptions } = storeToRefs(optionsStore)
 
@@ -125,18 +126,9 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     if (!width || !grid) {
       return
     }
-
-    if (width <= S_MIN_WIDTH) {
-      columnCount.value = grid.columns.xs
-    } else if (width > S_MIN_WIDTH && width <= MD_MIN_WIDTH) {
-      columnCount.value = grid.columns.sm
-    } else if (width > MD_MIN_WIDTH && width <= L_MIN_WIDTH) {
-      columnCount.value = grid.columns.md
-    } else if (width > L_MIN_WIDTH && width <= XL_MIN_WIDTH) {
-      columnCount.value = grid.columns.l
-    } else {
-      columnCount.value = grid.columns.xl
-    }
+    const { currentScreenWidth } = storeToRefs(screenStore)
+    const screenWidth = currentScreenWidth.value ?? 'xl'
+    columnCount.value = grid.columns[screenWidth]
   }
 
   const setAddToCartAmount = (newAddToCartAmount: number) => {
