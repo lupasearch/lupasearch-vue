@@ -131,6 +131,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     if (!width || !grid) {
       return
     }
+    screenStore.setScreenWidth({ width })
     const { currentScreenWidth } = storeToRefs(screenStore)
     const screenWidth = currentScreenWidth.value ?? 'xl'
     columnCount.value = grid.columns[screenWidth]

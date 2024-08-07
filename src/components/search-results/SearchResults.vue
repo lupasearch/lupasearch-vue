@@ -182,8 +182,8 @@ const query = (publicQuery: PublicQuery): void => {
 const handleResize = (): void => {
   const doc = document.documentElement
   doc.style.setProperty('--lupa-full-height', `${window.innerHeight}px`)
-  searchResultStore.setColumnCount({ width: window.innerWidth, grid: props.options.grid })
   screenStore.setScreenWidth({ width: window.innerWidth })
+  searchResultStore.setColumnCount({ width: window.innerWidth, grid: props.options.grid })
 }
 
 const handleUrlChange = (params?: URLSearchParams): void => {
