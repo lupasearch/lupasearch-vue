@@ -47,7 +47,9 @@ const searchResultsCountLabel = computed((): string => {
     <h1 class="lupa-result-page-title" data-cy="lupa-result-page-title" v-if="showSearchTitle">
       {{ options.labels.searchResults }}<span v-if="queryText">'{{ queryText }}'</span>
       <span v-if="showProductCount" class="lupa-results-total-count"
-        >({{ searchResultsCountLabel }}{{ totalItems }})</span
+        >({{ searchResultsCountLabel
+        }}<span class="lupa-results-total-count-number">{{ totalItems }}</span
+        >)</span
       >
     </h1>
     <SearchResultsSummary v-if="showSummary" :label="summaryLabel" />

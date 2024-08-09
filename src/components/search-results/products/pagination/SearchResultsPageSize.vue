@@ -3,10 +3,11 @@ import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import { useOptionsStore } from '@/stores/options'
 import { useParamsStore } from '@/stores/params'
 import type { PaginationPageSize } from '@/types/search-results/PaginationOptions'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import type { SearchResultsPaginationLabels } from '@/types/search-results/SearchResultsPagination'
 
-defineProps<{
-  label: string
+const props = defineProps<{
+  labels: SearchResultsPaginationLabels
   options: PaginationPageSize
 }>()
 
@@ -14,6 +15,10 @@ const paramsStore = useParamsStore()
 const optionsStore = useOptionsStore()
 
 const select = ref(null)
+
+const prefixLabel = computed(() => props.labels?.pageSizePrefix ?? '')
+
+const label = computed(() => props.labels?.pageSize ?? '')
 
 const handleSelect = (e: Event): void => {
   const value = (e.target as HTMLSelectElement).value
@@ -35,9 +40,7 @@ const handleSelect = (e: Event): void => {
         @change="handleSelect"
         ref="select"
       >
-        <option v-for="option in options.sizes" :key="option">
-          {{ option }}
-        </option>
+        <option v-for="option in options.sizes" :key="option">{{ prefixLabel }}{{ option }}</option>
       </select>
     </div>
   </div>

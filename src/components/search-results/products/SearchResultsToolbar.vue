@@ -155,9 +155,9 @@ const handleClearAll = (): void => {
         :show-filter-count="showMobileFilterCount"
       />
       <SearchResultsPageSize
-        :options="paginationOptions.pageSize"
-        :label="paginationOptions.labels.pageSize"
         v-if="paginationDisplay.pageSize"
+        :options="paginationOptions.pageSize"
+        :labels="paginationOptions.labels"
       />
       <div v-else></div>
       <SearchResultsSort v-if="sortOptions" :options="sortOptions" :callbacks="callbacks" />
