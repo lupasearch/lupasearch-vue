@@ -34,11 +34,12 @@ const currentFilters = computed(() => filters.value)
 
 const currentDisplayFilters = computed(() =>
   hideFiltersOnExactMatchForKeys.value.length
-    ? displayFilters.value.filter(
-        (f) =>
-          !hideFiltersOnExactMatchForKeys.value?.includes(f.key) &&
-          getNormalizedString(currentQueryText.value) !== getNormalizedString(f.label)
-      )
+    ? displayFilters.value.filter((f) => {
+        return (
+          !hideFiltersOnExactMatchForKeys.value?.includes(f.key) ||
+          getNormalizedString(currentQueryText.value) !== getNormalizedString(f.value)
+        )
+      })
     : displayFilters.value
 )
 
