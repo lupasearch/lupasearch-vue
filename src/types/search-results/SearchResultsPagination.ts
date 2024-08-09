@@ -4,6 +4,7 @@ export type SearchResultsPaginationLabels = {
   showLess?: string
   itemCount: string
   filteredItemCount?: string
+  pageSizePrefix?: string
 }
 
 export type SearchResultsPagination = {

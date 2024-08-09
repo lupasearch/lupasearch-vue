@@ -135,6 +135,7 @@ export type SearchResultsPaginationLabels = {
   pageSize: string
   showMore: string
   showLess?: string
+  pageSizePrefix?: string
 }
 
 export type ResponsiveSearchResultPageSizes = {
@@ -151,6 +152,9 @@ export type SearchResultsPagination = {
   sizeSelection: {
     sizes: SearchResultPageSizes
     position: SearchResultsPaginationPosition
+    labels?: {
+      pageSizePrefix: string
+    }
   }
   pageSelection: {
     position: SearchResultsPaginationPosition
