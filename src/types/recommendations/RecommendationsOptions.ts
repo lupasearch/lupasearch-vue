@@ -13,7 +13,7 @@ export type ProductRecommendationOptions = SearchResultsProductCardOptions & {
 } & {
   containerSelector: string
   queryKey: string
-  itemId: string
+  itemId: string[] | string
   abTesting?: RecommendationABTestingOptions
   carousel?: RecommenderCarouselOptions
 }
