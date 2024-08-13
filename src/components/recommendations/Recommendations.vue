@@ -9,7 +9,6 @@ import { computed, onMounted, ref, type Ref } from 'vue'
 import type { Document } from '@getlupa/client-sdk/Types'
 import type { ProductClickTrackingSettings } from '@/types/AnalyticsOptions'
 import SearchResultsProductCard from '../search-results/products/product-card/SearchResultsProductCard.vue'
-import 'vue3-carousel/dist/carousel.css'
 
 const props = defineProps<{
   options: ProductRecommendationOptions
