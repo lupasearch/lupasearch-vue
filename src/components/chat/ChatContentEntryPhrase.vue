@@ -3,7 +3,7 @@ import lupaSearchSdk from '@getlupa/client-sdk'
 import ChatService from '@/chat/ChatService'
 import { ChatOptions } from '@/types/chat/ChatOptions'
 import { Ref, computed, onMounted, ref } from 'vue'
-import { Document, PublicQuery } from '@getlupa/client-sdk/Types'
+import type { Document, PublicQuery } from '@getlupa/client-sdk/Types'
 import ChatPhraseProductsList from './ChatPhraseProductsList.vue'
 import ChatSpinner from './ChatSpinner.vue'
 
