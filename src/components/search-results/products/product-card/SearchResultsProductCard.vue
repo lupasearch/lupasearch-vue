@@ -22,6 +22,7 @@ const props = defineProps<{
   options: SearchResultsProductCardOptions
   isAdditionalPanel?: boolean
   clickTrackingSettings?: ProductClickTrackingSettings
+  lupaClickTrackingType?: 'itemClick' | 'recommendedItemClick'
 }>()
 
 const clickTrackingSettings = computed(() => props.clickTrackingSettings ?? {})
@@ -137,7 +138,7 @@ const handleClick = (): void => {
     data: {
       itemId: id.value,
       searchQuery: query.value,
-      type: 'itemClick',
+      type: props.lupaClickTrackingType ?? 'itemClick',
       analytics: {
         type: clickTrackingType.value,
         label: trackingLabel.value ?? '',

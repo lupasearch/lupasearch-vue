@@ -1,5 +1,13 @@
 @use '../../../node_modules/vue3-carousel/dist/carousel.css';
+@use '../../base/general';
 
 .lupa-search-product-recommendations-wrapper {
   width: 100%;
+}
+
+.lupa-recommendation-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: general.$font-family-base;
 }

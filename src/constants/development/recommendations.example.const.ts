@@ -9,6 +9,9 @@ export const RECOMMENDATIONS_OPTIONS: ProductRecommendationOptions = {
   abTesting: {
     enabled: false
   },
+  recommendationLabels: {
+    title: 'Similar products'
+  },
   carousel: {
     scrollPerPage: 4,
     itemsToShow: 8,
