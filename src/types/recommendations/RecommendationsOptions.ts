@@ -1,5 +1,6 @@
+import { FilterGroup } from '@getlupa/client-sdk/Types'
 import type { SdkOptions } from '../General'
-import type { SearchResultsProductCardOptions } from '../search-results/SearchResultsProductCardOptions'
+import { SearchResultsProductOptions } from '../search-results/SearchResultsOptions'
 
 export type RecommenderCarouselOptions = {
   itemsToShow?: number
@@ -8,7 +9,7 @@ export type RecommenderCarouselOptions = {
   breakpoints?: Record<number, RecommenderCarouselOptions>
 }
 
-export type ProductRecommendationOptions = SearchResultsProductCardOptions & {
+export type ProductRecommendationOptions = SearchResultsProductOptions & {
   options: SdkOptions
 } & {
   containerSelector: string
@@ -16,6 +17,11 @@ export type ProductRecommendationOptions = SearchResultsProductCardOptions & {
   itemId: string[] | string
   abTesting?: RecommendationABTestingOptions
   carousel?: RecommenderCarouselOptions
+  filters?: FilterGroup
+  layoutType?: 'carousel' | 'grid',
+  recommendationLabels?: {
+    title?: string
+  }
 }
 
 export type RecommendationABTestingOptions = {
