@@ -49,7 +49,7 @@ const layoutType = computed(() => {
 const columnSize = computed((): string => `width: ${100 / columnCount.value}%`)
 
 const title = computed(() => {
-  return props.options.recommendationLabels.title ?? ''
+  return props.options.recommendationLabels?.title ?? ''
 })
 
 onMounted(() => {
@@ -121,7 +121,7 @@ const loadLupaRecommendations = async (): Promise<void> => {
     const result = await lupaSearchSdk.recommend(
       props.options.queryKey,
       props.options.itemId,
-      props.options.filters,
+      props.options.recommendationFilters,
       props.options.options
     )
     if (!result.success) {
