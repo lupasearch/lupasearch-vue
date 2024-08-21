@@ -69,4 +69,5 @@ export type SearchBoxPanelOptions = SearchBoxInputOptions & {
   showNoResultsPanel?: boolean
   hideMoreResultsButtonOnNoResults?: boolean
   expandOnSinglePanel?: boolean
+  forceFullReloadOnParams?: string[]
 }

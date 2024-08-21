@@ -6,7 +6,7 @@ import { QUERY_PARAMS, QUERY_PARAMS_PARSED } from '@/constants/queryParams.const
 import { useOptionsStore } from './options'
 import { getPageUrl, redirectToResultsPage } from '@/utils/routing.utils'
 import { isFacetKey } from '@/utils/filter.utils'
-import { appendParam, getRemovableParams, parseParams, removeParams } from '@/utils/params.utils'
+import { appendParam, getQueryParam, getRemovableParams, parseParams, removeParams } from '@/utils/params.utils'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import { linksMatch } from '@/utils/link.utils'
 import { getFacetParam } from '@/utils/filter.toggle.utils'
@@ -138,7 +138,13 @@ export const useParamsStore = defineStore('params', () => {
     if (redirectionApplied) {
       return
     }
-    if (!searchResultsLink.value || linksMatch(searchResultsLink.value, window.location.pathname)) {
+    const forceFullReload = optionsStore.searchBoxOptions.forceFullReloadOnParams?.some((p) =>
+      getQueryParam(p)
+    )
+    if (
+      (!searchResultsLink.value || linksMatch(searchResultsLink.value, window.location.pathname)) &&
+      !forceFullReload
+    ) {
       const singleFacetParam = facet ? getFacetParam(facet.key, [facet.title]) : undefined
       const facetParam = singleFacetParam
         ? [
