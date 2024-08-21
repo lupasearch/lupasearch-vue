@@ -40,7 +40,9 @@ const handleSelect = (e: Event): void => {
         @change="handleSelect"
         ref="select"
       >
-        <option v-for="option in options.sizes" :key="option">{{ prefixLabel }}{{ option }}</option>
+        <option v-for="option in options.sizes" :key="option" :value="option">
+          {{ prefixLabel }}{{ option }}
+        </option>
       </select>
     </div>
   </div>
