@@ -17,7 +17,7 @@ export type ProductRecommendationOptions = SearchResultsProductOptions & {
   itemId: string[] | string
   abTesting?: RecommendationABTestingOptions
   carousel?: RecommenderCarouselOptions
-  filters?: FilterGroup
+  recommendationFilters?: FilterGroup
   layoutType?: 'carousel' | 'grid',
   recommendationLabels?: {
     title?: string

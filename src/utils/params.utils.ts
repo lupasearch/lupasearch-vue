@@ -169,3 +169,12 @@ export const encodeParam = (param: string): string => {
     .replace(/%C5%BE/g, 'ž')
     .replace(/%20/g, ' ')
 }
+
+export const getQueryParam = (name: string): string | null => {
+  try {
+    const urlParams = new URLSearchParams(window.location.search)
+    return urlParams.get(name)
+  } catch {
+    return null
+  }
+}
