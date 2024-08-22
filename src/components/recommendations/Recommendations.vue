@@ -52,6 +52,10 @@ const title = computed(() => {
   return props.options.recommendationLabels?.title ?? ''
 })
 
+const hasRecommendations = computed(() => {
+  return recommendations.value.length > 0
+})
+
 onMounted(() => {
   loadRecommendations()
   window.addEventListener('resize', handleResize)
@@ -137,7 +141,7 @@ defineExpose({ fetch })
 </script>
 
 <template>
-  <div class="lupa-search-product-recommendations-wrapper">
+  <div v-if="hasRecommendations" class="lupa-search-product-recommendations-wrapper">
     <h2 class="lupa-recommendation-section-title" v-if="title">{{ title }}</h2>
     <div v-if="!loading" class="lupa-recommended-products" data-cy="lupa-recommended-products">
       <Carousel v-if="layoutType === 'carousel'" v-bind="carouselOptions" :wrap-around="true">
