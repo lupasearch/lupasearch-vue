@@ -10,26 +10,8 @@ import {
 import { SearchChatResponse } from '@/types/chat/SearchChatResponse'
 import { ChatContent } from '@/types/chat/ChatLog'
 import { ChatSettings } from '@/types/chat/ChatOptions'
+import { DEFAULT_HEADERS, DEFAULT_REQUEST_CONFIG, getApiUrl } from '@/utils/api.utils'
 // TODO: after prototype is accepted, move to search-sdk project
-
-const Env = {
-  production: 'https://api.lupasearch.com/v1/',
-  staging: 'https://api.staging.lupasearch.com/v1/'
-}
-
-const defaultConfig = {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' }
-}
-
-const headers = defaultConfig.headers
-
-const getApiUrl = (environment: Environment, customBaseUrl?: string) => {
-  if (customBaseUrl) {
-    return customBaseUrl
-  }
-  return Env[environment] || Env['production']
-}
 
 const suggestSearchChatPhrases = async (
   options: SdkOptions,
@@ -40,9 +22,9 @@ const suggestSearchChatPhrases = async (
   const model = chatSettings?.model ? `?model=${chatSettings.model}` : ``
   try {
     const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat${model}`, {
-      ...defaultConfig,
+      ...DEFAULT_REQUEST_CONFIG,
       body: JSON.stringify(request),
-      headers: { ...headers, ...(options.customHeaders ?? {}) }
+      headers: { ...DEFAULT_HEADERS, ...(options.customHeaders ?? {}) }
     })
     if (res.status < 400) {
       const data = await res.json()
@@ -68,9 +50,9 @@ const suggestPhraseAlternatives = async (
     const res = await fetch(
       `${getApiUrl(environment, customBaseUrl)}chat/phraseAlternatives${model}`,
       {
-        ...defaultConfig,
+        ...DEFAULT_REQUEST_CONFIG,
         body: JSON.stringify(request),
-        headers: { ...headers, ...(options.customHeaders ?? {}) }
+        headers: { ...DEFAULT_HEADERS, ...(options.customHeaders ?? {}) }
       }
     )
     if (res.status < 400) {
@@ -95,9 +77,9 @@ const suggestBestProductMatches = async (
   const model = chatSettings?.model ? `?model=${chatSettings.model}` : ``
   try {
     const res = await fetch(`${getApiUrl(environment, customBaseUrl)}chat/bestProducts${model}`, {
-      ...defaultConfig,
+      ...DEFAULT_REQUEST_CONFIG,
       body: JSON.stringify(request),
-      headers: { ...headers, ...(options.customHeaders ?? {}) }
+      headers: { ...DEFAULT_HEADERS, ...(options.customHeaders ?? {}) }
     })
     if (res.status < 400) {
       const data = await res.json()
@@ -141,9 +123,9 @@ const getTextResponseChunkStream = (
 ) => {
   const model = chatSettings?.model ? `?model=${chatSettings.model}` : ``
   fetch(`${getApiUrl(options.environment, options.customBaseUrl)}chat/text${model}`, {
-    ...defaultConfig,
+    ...DEFAULT_REQUEST_CONFIG,
     body: JSON.stringify(request),
-    headers: { ...headers, ...(options.customHeaders ?? {}) }
+    headers: { ...DEFAULT_HEADERS, ...(options.customHeaders ?? {}) }
   })
     .then((response) => {
       const reader = response.body.getReader()

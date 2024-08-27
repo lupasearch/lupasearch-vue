@@ -78,6 +78,11 @@ import { getInitialSearchResults } from './utils/ssr.utils'
 import { ChatOptions, ChatSettings } from './types/chat/ChatOptions'
 import { QueryParams } from './types/search-results/QueryParams'
 import { RedirectionOptions } from './types/redirections/RedirectionOptions'
+import {
+  PluginConfiguration,
+  PluginElementsConfiguration
+} from './types/configurations/PluginConfiguration'
+import { fetchPluginConfiguration } from './manager/PluginConfigurationManagerService'
 
 let piniaInstance: Pinia | null = null
 
@@ -117,7 +122,8 @@ export {
   setupTracking,
   LupaSearch,
   initPinia,
-  getInitialSearchResults
+  getInitialSearchResults,
+  fetchPluginConfiguration
 }
 
 export type {
@@ -171,5 +177,7 @@ export type {
   SearchBoxResultsNavigateContext,
   RedirectionOptions,
   ScrollToResultsOptions,
-  FilterBehavior
+  FilterBehavior,
+  PluginElementsConfiguration,
+  PluginConfiguration
 }
