@@ -20,6 +20,8 @@ const prefixLabel = computed(() => props.labels?.pageSizePrefix ?? '')
 
 const label = computed(() => props.labels?.pageSize ?? '')
 
+const sizes = computed(() => props.options.sizes)
+
 const handleSelect = (e: Event): void => {
   const value = (e.target as HTMLSelectElement).value
   paramsStore.appendParams({
@@ -40,7 +42,7 @@ const handleSelect = (e: Event): void => {
         @change="handleSelect"
         ref="select"
       >
-        <option v-for="option in options.sizes" :key="option" :value="option">
+        <option v-for="option in sizes" :key="option" :value="option">
           {{ prefixLabel }}{{ option }}
         </option>
       </select>

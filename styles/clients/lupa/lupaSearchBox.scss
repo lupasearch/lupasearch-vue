@@ -16,6 +16,27 @@
     right: 16px;
     top: 12px;
   }
+  button {
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    width: 20px;
+    height: 20px;
+    z-index: 100;
+    background: none;
+    border: transparent;
+    .lupa-search-submit-icon {
+      &::after {
+        @include lupaConfig.material-icon();
+        content: '\F0349';
+        font-size: 24px;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+  }
 }
 
 .lupa-suggestion {
@@ -50,7 +71,7 @@
 
 .lupa-search-box-close-panel {
   text-align: right;
-  padding: 15px;
+  padding: 10px 24px;
   position: absolute;
   right: 0;
   cursor: pointer;

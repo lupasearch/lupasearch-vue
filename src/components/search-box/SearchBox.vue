@@ -117,7 +117,7 @@ const handleMouseClick = (e: MouseEvent): void => {
   const hasLupaClass =
     typeof elementClass.includes == 'function' && elementClass.includes('lupa-search-box')
   const isOutsideElement = el && !el.contains(e.target as Node) && !hasLupaClass
-  if (!isOutsideElement) {
+  if (!isOutsideElement || props.options.keepOpen) {
     return
   }
   opened.value = false
