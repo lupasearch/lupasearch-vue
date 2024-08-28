@@ -129,6 +129,7 @@ export type ProductGrid = {
     l?: number
     xl?: number
   }
+  forcedScreenWidth?: number
 }
 
 export type SearchResultsPaginationLabels = {

@@ -16,6 +16,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   callbacks?: SearchBoxEventCallbacks
   redirections?: RedirectionOptions
   queryParameterNames?: Record<LupaQueryParamValue, string>
+  keepOpen?: boolean
 }
 
 export type SearchBoxOptionLabels = {
