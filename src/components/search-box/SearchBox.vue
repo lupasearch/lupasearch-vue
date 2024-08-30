@@ -154,6 +154,7 @@ const handleInput = (value: string): void => {
   opened.value = true
   inputValue.value = value?.replace(/\s+$/, '') ?? ''
   suggestedValue.value = defaultSuggestedValue
+  searchBoxStore.resetHighlightIndex()
   trackSearchQuery(value)
   if (props.isSearchContainer) {
     goToResultsDebounced({
