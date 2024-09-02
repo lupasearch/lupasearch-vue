@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <transition name="lupa-fade">
+    <transition v-if="hasHoverImages" name="lupa-fade">
       <img
         class="lupa-images-hover-image"
         :class="{ [imageClass]: true, 'lupa-images-hover-image': isHover }"
@@ -151,5 +151,13 @@ onBeforeUnmount(() => {
         :key="finalUrl"
       />
     </transition>
+    <img
+      v-else
+      class="lupa-images-main-image"
+      :class="{ [imageClass]: true }"
+      :src="finalMainImageUrl"
+      v-bind="{ alt: imageAlt ? imageAlt : undefined }"
+      @error="replaceWithPlaceholder"
+    />
   </div>
 </template>
