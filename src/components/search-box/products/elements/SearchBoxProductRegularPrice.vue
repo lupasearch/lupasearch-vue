@@ -11,6 +11,10 @@ const props = defineProps<{
   labels?: SearchBoxOptionLabels
 }>()
 
+const className = computed((): string => {
+  return props.options.className
+})
+
 const price = computed((): string => {
   return formatPrice(
     props.item[props.options.key] as string,
@@ -20,5 +24,5 @@ const price = computed((): string => {
 })
 </script>
 <template>
-  <div class="lupa-search-box-product-regular-price">{{ price }}</div>
+  <div :class="className" class="lupa-search-box-product-regular-price">{{ price }}</div>
 </template>

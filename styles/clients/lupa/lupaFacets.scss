@@ -1,8 +1,9 @@
-@use "./lupaConfig.scss";
+@use './lupaConfig.scss';
 
 .lupa-search-result-filters {
   padding-right: 24px;
-  flex: 40%;
+  flex: 30%;
+  min-width: 200px;
 }
 
 .lupa-filter-title-text {
@@ -26,7 +27,7 @@
   &::after {
     @include lupaConfig.material-icon;
     font-size: 22px;
-    content: "\F0140";
+    content: '\F0140';
   }
 }
 
@@ -76,7 +77,7 @@
       width: 16px;
       @include lupaConfig.material-icon;
       font-size: 20px;
-      content: "\F0159";
+      content: '\F0159';
     }
   }
 }
@@ -91,7 +92,7 @@
   margin-top: 16px;
   &:before {
     @include lupaConfig.material-icon();
-    content: "\F0156";
+    content: '\F0156';
     margin-right: 10px;
     font-size: 20px;
   }
@@ -118,7 +119,7 @@
   &.checked:after {
     @include checkmark;
     top: -2px;
-    content: " ";
+    content: ' ';
     position: relative;
   }
 }
@@ -152,8 +153,128 @@
     padding: 10px 5px;
     margin: 10px 0;
     &::before {
-      content: "<";
+      content: '<';
       display: inline-block;
     }
+  }
+}
+
+.lupa-term-filter {
+  border-radius: 8px;
+}
+
+.lupa-search-result-top-filters {
+  margin: 16px 0 6px;
+
+  .lupa-search-result-facet-label {
+    border-radius: 8px;
+    &.lupa-has-filter {
+      border: 1px solid lupaConfig.$primary;
+    }
+    &.open {
+      padding-bottom: 10.5px;
+    }
+  }
+  .lupa-facet-label-caret {
+    margin-left: 8px;
+    line-height: 1;
+  }
+  .lupa-facet-content {
+    margin-top: 4px;
+    border-radius: 8px;
+    box-shadow: lupaConfig.$card-shadow;
+  }
+  .lupa-search-result-facet-list.lupa-top-dropdown .lupa-terms-list {
+    padding: 5px;
+  }
+  .lupa-show-more-facet-results {
+    margin: 5px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid lupaConfig.$border-color;
+  }
+  .lupa-single-facet-clear {
+    margin-top: 10px;
+    border: 1px solid lupaConfig.$border-color;
+    border-radius: 8px;
+    &:hover {
+      background: lupaConfig.$background-hover;
+    }
+  }
+  .lupa-search-result-facet-stats-values {
+    padding: 10px 0;
+  }
+}
+
+.lupa-toolbar-filters {
+  border-top: lupaConfig.$border;
+  padding: 8px 0;
+  &.expandable {
+    .lupa-filter-title-text {
+      margin-bottom: 0;
+    }
+    .filter-values {
+      margin-top: 10px;
+    }
+  }
+  .filter-values {
+    align-items: center;
+  }
+  .lupa-current-filter-list {
+    padding: 0;
+  }
+  .lupa-clear-all-filters {
+    margin: 0;
+  }
+}
+
+@media (max-width: lupaConfig.$size-s) {
+  .lupa-toolbar-filters {
+    padding: 16px;
+    margin-right: 0;
+  }
+  .lupa-mobile-filter-sidebar {
+    .lupa-search-result-filters {
+      padding-right: 0;
+    }
+    .lupa-filter-title-text {
+      margin-bottom: 0;
+    }
+    .filter-values {
+      margin-top: 10px;
+    }
+    .lupa-search-result-current-filters {
+      padding: 16px;
+    }
+    .lupa-search-result-facet-display {
+      border: 1px solid lupaConfig.$border-color;
+      border-radius: 8px;
+      margin: 10px 20px 20px;
+    }
+    .lupa-clear-all-filters {
+      margin-top: 10px;
+    }
+    .lupa-facet-label-text,
+    .lupa-facet-label-caret {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+@media (max-width: lupaConfig.$size-xs) {
+  .lupa-toolbar-filters {
+    .filter-values {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .lupa-clear-all-filters {
+      margin: 14px 0 0;
+    }
+  }
+}
+
+.lupa-filter-title-caret {
+  &::after {
+    content: '\f0140';
   }
 }

@@ -1,4 +1,4 @@
-@use "general";
+@use 'general';
 
 // Grid
 
@@ -16,7 +16,7 @@ $panel-left-max-width: 35%;
 $panel-right-min-width: 250px;
 $panel-right-max-width: 1fr;
 
-$panel-grid-template: "left right" !default;
+$panel-grid-template: 'left right' !default;
 
 // Suggestions
 

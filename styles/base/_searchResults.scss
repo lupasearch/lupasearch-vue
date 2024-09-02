@@ -28,7 +28,7 @@ $facet-text-color: general.$text-color-primary !default;
 // Current filters
 
 $filters-margin: 0 0 15px !default;
-$filter-count-font-size: 14px !default;
+$filter-count-font-size: 16px !default;
 $filter-count-color: general.$text-color-primary !default;
 
 // Filters title
@@ -154,13 +154,13 @@ $facet-range-currency-padding: 0 5px !default;
 
 // Filters dropdown
 
-$facet-dropdown-margin: 0 10px 0 0;
+$facet-dropdown-margin: 0 10px 10px 0;
 $facet-dropdown-background: general.$white;
 $facet-dropdown-z-index: 10;
 $facet-dropdown-min-width: 220px;
 $facet-dropdown-max-height: 300px;
 $facet-dropdown-list-margin: 2px 0 0;
-$facet-dropdown-active-border-width: 2px;
+$facet-dropdown-active-border-width: 1px;
 
 $facet-dropdown-clear-margin: 3px 0 0;
 $facet-dropdown-clear-padding: 5px 0 3px;
@@ -257,13 +257,13 @@ $product-card-image-max-height: 300px !default;
 
 $product-card-image-section-border: none !default;
 
-$product-card-image-section-padding: 12px 8px !default;
+$product-card-image-section-padding: 6px 4px 12px !default;
 $product-card-image-section-margin: 0 !default;
 
 // Title
 
 $product-card-title-font-size: 14px !default;
-$product-card-title-margin: 0 0 12px !default;
+$product-card-title-margin: 0 0 6px !default;
 
 $product-card-title-color: general.$text-color-primary !default;
 $product-card-title-color-link-hover: general.$secondary !default;
@@ -306,8 +306,8 @@ $mobile-sidebar-border: general.$border !default;
 $mobile-sidebar-height: 48px !default;
 $mobile-sidebar-padding: 0 13.5px 0 0 !default;
 
-$mobile-sidebar-toggle-size: 16px !default;
-$mobile-sidebar-toggle-color: general.$grey-100 !default;
+$mobile-sidebar-toggle-size: 24px !default;
+$mobile-sidebar-toggle-color: general.$text-color-primary !default;
 $mobile-sidebar-toggle-content: "✖" !default;
 $mobile-sidebar-toggle-font-family: general.$font-family-base !default;
 

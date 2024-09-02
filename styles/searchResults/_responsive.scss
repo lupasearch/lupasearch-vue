@@ -85,7 +85,7 @@
   font-size: searchResults.$select-font-size;
   color: searchResults.$mobile-sidebar-toggle-color;
   width: searchResults.$mobile-sidebar-toggle-width;
-  border-radius: 0;
+  border-radius: 8px;
   display: none;
   padding: searchResults.$mobile-sidebar-toggle-padding;
   border: searchResults.$mobile-sidebar-border;
@@ -175,6 +175,9 @@
   }
   #lupa-search-results-did-you-mean {
     margin-bottom: 10px;
+  }
+  .lupa-products {
+    margin-left: 0;
   }
 }
 

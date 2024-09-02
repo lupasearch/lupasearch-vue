@@ -11,6 +11,10 @@ const props = defineProps<{
   labels?: SearchResultsOptionLabels
 }>()
 
+const className = computed((): string => {
+  return props.options.className
+})
+
 const price = computed((): string => {
   return formatPrice(
     props.item[props.options.key] as string,
@@ -21,7 +25,11 @@ const price = computed((): string => {
 </script>
 
 <template>
-  <div class="lupa-search-results-product-price" data-cy="lupa-search-results-product-price">
+  <div
+    :class="className"
+    class="lupa-search-results-product-price"
+    data-cy="lupa-search-results-product-price"
+  >
     <strong>{{ price }}</strong>
   </div>
 </template>
