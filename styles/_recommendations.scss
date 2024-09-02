@@ -1,3 +1,18 @@
 .lupa-search-result-product-card {
   width: 100%;
 }
+
+.lupa-recommended-products {
+  .lupa-search-result-product-card {
+    height: 100%;
+  }
+  .lupa-search-result-product-details-section {
+    align-items: flex-start;
+  }
+  .lupa-search-results-product-element {
+    text-align: left;
+  }
+  .carousel__track {
+    margin-top: 10px !important;
+  }
+}

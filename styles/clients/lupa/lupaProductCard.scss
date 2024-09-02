@@ -12,6 +12,7 @@
   box-shadow: lupaConfig.$card-shadow;
   border-radius: 8px;
   padding: 12px;
+  background-color: lupaConfig.$white;
   &:hover {
     border-color: lupaConfig.$primary;
   }
@@ -26,11 +27,16 @@
   padding-bottom: 100%;
 }
 
+.lupa-search-result-product-image-section {
+  max-height: 220px;
+}
+
 @mixin price-emphasis {
   display: inline;
   font-weight: 700;
   font-size: 32px;
   line-height: 27px;
+  margin-top: 8px;
 }
 
 .lupa-discount {
