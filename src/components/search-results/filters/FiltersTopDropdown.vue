@@ -12,7 +12,10 @@ const filter = () => {
 </script>
 
 <template>
-  <div id="lupa-search-result-filters" class="lupa-search-result-filters">
+  <div
+    id="lupa-search-result-filters"
+    class="lupa-search-result-filters lupa-search-result-top-filters"
+  >
     <Facets
       v-if="options.facets"
       :options="options.facets"

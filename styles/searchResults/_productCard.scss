@@ -165,7 +165,8 @@
 
 .lupa-search-results-product-description {
   max-height: searchResults.$product-description-height;
-
+  font-size: searchResults.$product-card-elements-font-size - 2;
+  opacity: 0.75;
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;

@@ -30,6 +30,7 @@ $icon-font-family: 'Material Design Icons' !default;
   $suggestion-font-size: lupaConfig.$base-font-size,
   $search-box-history-item-font-size: lupaConfig.$base-font-size,
   $input-font-size: lupaConfig.$base-font-size,
+  $product-price-color-hover: lupaConfig.$primary,
   $suggestion-facet-font-size: 13px
 );
 
@@ -50,7 +51,9 @@ $icon-font-family: 'Material Design Icons' !default;
   $facet-range-rail-color: rgba(60, 83, 244, 0.3),
   $facet-term-count-color: lupaConfig.$text-color,
   $filters-content-margin: 0,
-  $filters-margin: 0 0 25px
+  $filters-margin: 0 0 25px,
+  $facet-label-caret-font-family: $icon-font-family,
+  $filter-count-color: lupaConfig.$primary
 );
 
 @use '../../lupaIndex';

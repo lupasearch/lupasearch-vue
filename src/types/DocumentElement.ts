@@ -61,11 +61,13 @@ export type CustomDocumentElement<T = any> = DocumentElementBase<T> & {
 
 export type PriceElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.PRICE
+  className?: string
   key: string
 }
 
 export type RegularPriceDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.REGULARPRICE
+  className?: string
   key: string
 }
 

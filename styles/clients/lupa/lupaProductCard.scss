@@ -1,16 +1,17 @@
 @use './lupaConfig.scss';
 
 .lupa-search-result-product-card {
-  border-radius: 4px;
-  margin-bottom: 36px;
+  border-radius: 8px;
+  margin-bottom: 28px;
   border: none;
+  padding: 8px;
 }
 
 .lupa-search-result-product-contents {
-  border: lupaConfig.$border;
+  border: 1px solid #0000001a;
   box-shadow: lupaConfig.$card-shadow;
-  border-radius: 4px;
-  padding: 16px;
+  border-radius: 8px;
+  padding: 12px;
   &:hover {
     border-color: lupaConfig.$primary;
   }
@@ -18,7 +19,7 @@
 
 .lupa-search-results-product-title-text {
   font-weight: 300;
-  line-height: 29px;
+  line-height: 20px;
 }
 
 .lupa-search-results-image-wrapper {
@@ -64,4 +65,17 @@
 .lupa-fade-enter-from,
 .lupa-fade-leave-to {
   opacity: 0;
+}
+
+@media (max-width: 980px) {
+  .lupa-search-result-product-contents {
+    padding: 12px;
+  }
+}
+
+.lupa-search-box-product-addtocart button {
+  background: none;
+  border: 1px solid lupaConfig.$border-color;
+  padding: 8px 16px;
+  border-radius: 8px;
 }

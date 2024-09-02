@@ -2,7 +2,7 @@
 
 #lupa-search-results-toolbar {
   margin: 0 0 12px;
-  padding-right: 1.6%;
+  padding-right: 8px;
 }
 
 #lupa-search-results-toolbar.lupa-toolbar-bottom {
@@ -73,4 +73,19 @@
   display: flex;
   align-items: center;
   margin-right: 8px;
+}
+.lupa-select-dropdown {
+  border-radius: 8px;
+}
+
+#lupa-select {
+  &:after {
+    @include lupaConfig.material-icon();
+    font-size: 22px;
+    content: '\f0140';
+    position: absolute;
+    right: 4px;
+    top: 20px;
+    pointer-events: none;
+  }
 }
