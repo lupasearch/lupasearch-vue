@@ -14,5 +14,13 @@
   }
   .carousel__track {
     margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
+}
+
+.lupa-search-product-recommendations-wrapper {
+  width: 100%;
+  .lupa-products .lupa-search-result-product-card {
+    height: auto;
   }
 }
