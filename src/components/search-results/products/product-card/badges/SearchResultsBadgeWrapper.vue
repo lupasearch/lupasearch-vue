@@ -7,6 +7,7 @@ import {
 import SearchResultGeneratedBadges from './SearchResultGeneratedBadges.vue'
 import { computed } from 'vue'
 import type { AnchorPosition } from '@/types/search-results/SearchResultsProductCardOptions'
+import { processDisplayCondition } from '@/utils/render.utils'
 
 const props = defineProps<{ position?: 'card' | 'image'; options: BadgeOptions }>()
 
@@ -30,12 +31,22 @@ const enhancedProduct = computed((): Document => {
   }
 })
 
+const displayBadge = (element: BadgeElement) => {
+  const item = props.options.product ?? {}
+  if (!element.display) {
+    return true
+  }
+  return typeof element.display === 'function'
+    ? element.display(item)
+    : processDisplayCondition(element.display, item)
+}
+
 const badges = computed((): BadgeElement[] => {
   if (!props.options.elements) {
     return []
   }
   return props.options.elements
-    .filter((e) => !e.display || e.display(props.options.product ?? {}))
+    .filter((e) => displayBadge(e))
     .map((x) => {
       return {
         ...x,

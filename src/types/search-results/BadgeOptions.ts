@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { DisplayCondition } from '../DocumentElement'
 import type { AnchorPosition } from './SearchResultsProductCardOptions'
 
 export type SearchResultBadgeType = 'text' | 'image' | 'customHtml'
@@ -33,10 +34,10 @@ export type SearchResultBadgeElement<T = any> = {
   isHtml?: boolean
   className?: string
   product?: T
-  display?: (document: T) => boolean
+  display?: DisplayCondition | ((document: T) => boolean)
   rootImageUrl?: string
   maxItems?: number
-  html?: (doc: T) => string
+  html?: string | ((doc: T) => string)
   position?: 'card' | 'image'
 }
 
@@ -59,7 +60,7 @@ export type ImageBadgeElement<T = any> = BaseBadgeElement<T> & {
 export type CustomHtmlBadgeElement<T = any> = BaseBadgeElement<T> & {
   type: 'customHtml'
   className?: string
-  html: (doc: T) => string
+  html?: string | ((doc: T) => string)
 }
 
 export type BadgeElement = BaseBadgeElement | TextBadgeElement

@@ -23,7 +23,15 @@ const label = computed((): string => {
 const handleClick = async (): Promise<void> => {
   loading.value = true
 
-  await props.options.action(props.item, addToCartAmount.value)
+  if (props.options.emitEvent) {
+    const event = new CustomEvent(props.options.emitEvent, { detail: { item: props.item } })
+    window.dispatchEvent(event)
+  }
+
+  if (props.options.action) {
+    await props.options.action(props.item, addToCartAmount.value)
+  }
+
   emit('productEvent', { type: 'addToCart' })
 
   loading.value = false

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Document } from '@getlupa/client-sdk/Types'
 import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
-
+import { processDisplayCondition } from '@/utils/render.utils'
 import type { DocumentElement } from '@/types/DocumentElement'
 import { DocumentElementType } from '@/types/DocumentElement'
 import { useDynamicDataStore } from '@/stores/dynamicData'
@@ -59,7 +59,14 @@ const enhancedItem = computed((): Document => {
 })
 
 const displayElement = computed((): boolean => {
-  return props.element.display ? props.element.display(enhancedItem.value) : true
+  const element = props.element
+  const item = enhancedItem.value
+  if (!element.display) {
+    return true
+  }
+  return typeof element.display === 'function'
+    ? element.display(item)
+    : processDisplayCondition(element.display, item)
 })
 
 const handleProductEvent = (item: { type: string }): void => {

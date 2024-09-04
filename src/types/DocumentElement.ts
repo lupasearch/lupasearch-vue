@@ -12,10 +12,22 @@ export enum DocumentElementType {
   CUSTOM_HTML = 'customHtml'
 }
 
+export type DisplayCondition = {
+  condition:
+    | 'exists'
+    | 'equals'
+    | 'notEquals'
+    | 'greaterThan'
+    | 'lessThan'
+    | 'greaterThanOrEquals'
+    | 'lessThanOrEquals'
+  fields: (string | number)[]
+}
+
 export type DocumentElementBase<T = any> = {
   type: DocumentElementType
   key?: string
-  display?: (document: T) => boolean
+  display?: DisplayCondition | ((document: T) => boolean)
   isHtml?: boolean
   group?: string
   dynamic?: boolean
@@ -100,6 +112,7 @@ export type RatingLinks = {
 export type AddToCartElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.ADDTOCART
   action: (document: T, amount: number) => Promise<unknown> | undefined
+  emitEvent: string
   labels: {
     addToCart: string
   }
@@ -107,7 +120,7 @@ export type AddToCartElement<T = any> = DocumentElementBase<T> & {
 
 export type CustomHtmlElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.CUSTOM_HTML
-  html: (document: T) => string
+  html: string | ((document: T) => string)
   className: string
   action?: (document: T) => Promise<unknown> | undefined
   reportEventOnClick?: string

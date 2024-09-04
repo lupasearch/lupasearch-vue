@@ -1,4 +1,4 @@
-import type { DocumentElement } from '../DocumentElement'
+import type { DisplayCondition, DocumentElement } from '../DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { CustomDocumentHtmlAttributes } from '../General'
 import { SearchBoxBadgeOptions } from './SearchBoxBadgeOptions'
@@ -39,7 +39,7 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   searchBySuggestion?: boolean
   badges?: SearchBoxBadgeOptions
   showGoToResults?: boolean
-  isInStock?: (doc: Document) => boolean
+  isInStock?: DisplayCondition | ((doc: Document) => boolean)
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 
