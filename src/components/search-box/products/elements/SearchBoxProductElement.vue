@@ -5,6 +5,7 @@ import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { processDisplayCondition } from '@/utils/render.utils'
 
 const props = defineProps<{
   item: Document
@@ -40,7 +41,14 @@ const elementComponent = computed((): string => {
 })
 
 const displayElement = computed((): boolean => {
-  return props.element.display ? props.element.display(props.item) : true
+  const element = props.element
+  const item = props.item
+  if (!element.display) {
+    return true
+  }
+  return typeof element.display === 'function'
+    ? element.display(item)
+    : processDisplayCondition(element.display, item)
 })
 
 const enhancedItem = computed((): Document => {

@@ -2,6 +2,7 @@
 import type { DescriptionDocumentElement } from '@/types/DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { computed } from 'vue'
+import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps<{ item: Document; options: DescriptionDocumentElement }>()
 
@@ -16,6 +17,10 @@ const isHtml = computed((): boolean => {
 const maxLines = computed((): number => {
   return props.options.maxLines
 })
+
+const sanitizedDescription = computed((): string => {
+  return sanitizeHtml(description.value) as string
+})
 </script>
 
 <template>
@@ -23,7 +28,7 @@ const maxLines = computed((): number => {
     class="lupa-search-results-product-description"
     :style="`-webkit-line-clamp: ${maxLines}`"
     v-if="isHtml"
-    v-html="description"
+    v-html="sanitizedDescription"
   ></div>
   <div
     class="lupa-search-results-product-description"

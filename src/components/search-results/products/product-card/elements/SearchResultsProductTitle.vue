@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import sanitizeHtml from 'sanitize-html'
 import { useOptionsStore } from '@/stores/options'
 import type { TitleDocumentElement } from '@/types/DocumentElement'
 import { handleRoutingEvent } from '@/utils/routing.utils'
 import type { Document } from '@getlupa/client-sdk/Types'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 
 const props = defineProps<{
   item: Document
@@ -31,6 +32,10 @@ const hasEventRouting = computed((): boolean => {
   return searchResultOptions.value.routingBehavior === 'event'
 })
 
+const sanitizedTitle = computed((): string => {
+  return sanitizeHtml(title.value) as string
+})
+
 const handleNavigation = (event?: Event): void => {
   handleRoutingEvent(props.link, event, hasEventRouting.value)
 }
@@ -41,7 +46,7 @@ const handleNavigation = (event?: Event): void => {
     class="lupa-search-results-product-title"
     :style="`-webkit-line-clamp: ${maxLines}`"
     v-if="isHtml"
-    v-html="title"
+    v-html="sanitizedTitle"
   ></div>
   <div
     v-else

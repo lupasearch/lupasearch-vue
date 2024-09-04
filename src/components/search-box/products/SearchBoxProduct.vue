@@ -8,6 +8,7 @@ import { generateLink } from '@/utils/link.utils'
 import { DocumentElementType, type DocumentElement } from '@/types/DocumentElement'
 import SearchResultsBadgeWrapper from '@/components/search-results/products/product-card/badges/SearchResultsBadgeWrapper.vue'
 import { BadgeOptions } from '@/types/search-results/BadgeOptions'
+import { processDisplayCondition } from '@/utils/render.utils'
 
 const isInStock = ref(true)
 
@@ -61,10 +62,14 @@ onMounted((): void => {
   checkIfIsInStock()
 })
 
+const processIsInStock = () => {
+  return typeof props.panelOptions.isInStock === 'function'
+    ? props.panelOptions.isInStock(props.item)
+    : processDisplayCondition(props.panelOptions.isInStock, props.item)
+}
+
 const checkIfIsInStock = async (): Promise<void> => {
-  isInStock.value = props.panelOptions.isInStock
-    ? await props.panelOptions.isInStock(props.item)
-    : true
+  isInStock.value = props.panelOptions.isInStock ? processIsInStock() : true
 }
 </script>
 
