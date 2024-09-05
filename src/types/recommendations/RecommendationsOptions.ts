@@ -1,6 +1,7 @@
 import { FilterGroup } from '@getlupa/client-sdk/Types'
 import type { SdkOptions } from '../General'
 import { SearchResultsProductOptions } from '../search-results/SearchResultsOptions'
+import { DataExtraction } from '../DataExtraction'
 
 export type RecommenderCarouselOptions = {
   itemsToShow?: number
@@ -14,11 +15,11 @@ export type ProductRecommendationOptions = SearchResultsProductOptions & {
 } & {
   containerSelector: string
   queryKey: string
-  itemId: string[] | string
+  itemId: DataExtraction | (string[] | string)
   abTesting?: RecommendationABTestingOptions
   carousel?: RecommenderCarouselOptions
   recommendationFilters?: FilterGroup
-  layoutType?: 'carousel' | 'grid',
+  layoutType?: 'carousel' | 'grid'
   recommendationLabels?: {
     title?: string
   }

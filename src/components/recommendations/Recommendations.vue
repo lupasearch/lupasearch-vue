@@ -12,6 +12,7 @@ import SearchResultsProductCard from '../search-results/products/product-card/Se
 import { useSearchResultStore } from '@/stores/searchResult'
 import { storeToRefs } from 'pinia'
 import { useScreenStore } from '@/stores/screen'
+import { extractValue } from '@/utils/extraction.utils'
 
 const props = defineProps<{
   options: ProductRecommendationOptions
@@ -118,13 +119,19 @@ const loadOriginalRecommendations = async (): Promise<void> => {
   }
 }
 
+const itemId = computed(() => {
+  return typeof props.options.itemId === 'string' || Array.isArray(props.options.itemId)
+    ? props.options.itemId
+    : extractValue<string | string[]>(props.options.itemId)
+})
+
 const loadLupaRecommendations = async (): Promise<void> => {
   recommendationsType.value = 'recommendations_lupasearch'
   try {
     loading.value = true
     const result = await lupaSearchSdk.recommend(
       props.options.queryKey,
-      props.options.itemId,
+      itemId.value,
       props.options.recommendationFilters,
       props.options.options
     )

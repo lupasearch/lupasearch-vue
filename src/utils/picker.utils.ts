@@ -32,3 +32,7 @@ export const pickClosestNumber = (numbers: number[], closestTo: number): number 
 export const getPageCount = (total: number, limit: number): number => {
   return Math.ceil(total / limit) || 0
 }
+
+export const isObject = (value: unknown) => {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}

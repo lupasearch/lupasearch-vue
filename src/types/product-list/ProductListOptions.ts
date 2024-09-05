@@ -1,6 +1,7 @@
 import type { FilterGroup } from '@getlupa/client-sdk/Types'
 import type { RoutingBehavior } from '../search-results/RoutingBehavior'
 import type { SearchResultsOptions } from '../search-results/SearchResultsOptions'
+import { DataExtraction } from '../DataExtraction'
 
 export type CategoryFilterOptions = {
   queryKey?: string
@@ -26,6 +27,6 @@ export type CategoryFilterOptions = {
 }
 
 export type ProductListOptions = SearchResultsOptions & {
-  initialFilters?: FilterGroup
+  initialFilters?: FilterGroup | Record<string, DataExtraction>
   categories?: CategoryFilterOptions
 }
