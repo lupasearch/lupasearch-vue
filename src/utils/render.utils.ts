@@ -23,7 +23,7 @@ export const processDisplayCondition = (
 ): boolean => {
   const { condition, fields } = displayCondition
 
-  if (fields.length === 0) {
+  if (fields?.length === 0) {
     return false // No fields to check
   }
 

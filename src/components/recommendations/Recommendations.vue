@@ -120,7 +120,9 @@ const loadOriginalRecommendations = async (): Promise<void> => {
 }
 
 const itemId = computed(() => {
-  return typeof props.options.itemId === 'string' || Array.isArray(props.options.itemId)
+  return typeof props.options.itemId === 'string' ||
+    typeof props.options.itemId === 'number' ||
+    Array.isArray(props.options.itemId)
     ? props.options.itemId
     : extractValue<string | string[]>(props.options.itemId)
 })
