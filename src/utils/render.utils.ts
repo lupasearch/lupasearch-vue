@@ -14,7 +14,7 @@ const getFieldValue = (doc: Record<string, any>, field: string | number = '') =>
   if (typeof field === 'number') {
     return field // Literal numeric value
   }
-  return field.split('.').reduce((obj, key) => (obj ? obj[key] : undefined), doc)
+  return field?.split('.')?.reduce((obj, key) => (obj ? obj[key] : undefined), doc)
 }
 
 export const processDisplayCondition = (
@@ -23,14 +23,14 @@ export const processDisplayCondition = (
 ): boolean => {
   const { condition, fields } = displayCondition
 
-  if (fields?.length === 0) {
+  if (!fields?.length) {
     return false // No fields to check
   }
 
   switch (condition) {
     case 'exists': {
       // Check if all fields exist in the document
-      return fields.every((field) => getFieldValue(doc, field) !== undefined)
+      return fields?.every((field) => getFieldValue(doc, field) !== undefined)
     }
     case 'equals': {
       if (fields.length < 2) return false // At least two fields needed for comparison

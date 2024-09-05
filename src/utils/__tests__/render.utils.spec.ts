@@ -190,4 +190,10 @@ describe('processDisplayCondition', () => {
     const result = processDisplayCondition(condition, doc)
     expect(result).toBe(false)
   })
+
+  it('should return false if there are no fields defined', () => {
+    const condition: DisplayCondition = { condition: 'exists' } as any
+    const result = processDisplayCondition(condition)
+    expect(result).toBe(false)
+  })
 })
