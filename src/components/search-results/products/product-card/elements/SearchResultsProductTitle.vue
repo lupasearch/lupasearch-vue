@@ -45,9 +45,23 @@ const handleNavigation = (event?: Event): void => {
   <div
     class="lupa-search-results-product-title"
     :style="`-webkit-line-clamp: ${maxLines}`"
-    v-if="isHtml"
+    :title="sanitizedTitle"
+    v-if="isHtml && !options.link"
     v-html="sanitizedTitle"
   ></div>
+  <div
+    v-else-if="isHtml && options.link"
+    class="lupa-search-results-product-title"
+    :style="`-webkit-line-clamp: ${maxLines}`"
+    :title="sanitizedTitle"
+  >
+    <a
+      :href="link"
+      class="lupa-search-results-product-title-text lupa-title-link"
+      v-html="sanitizedTitle"
+      @click="handleNavigation"
+    ></a>
+  </div>
   <div
     v-else
     class="lupa-search-results-product-title"
