@@ -21,7 +21,7 @@ $icon-font-family: 'Material Design Icons' !default;
 );
 
 @use '../../base/searchBox' with (
-  $panel-grid-template: 'suggestions docs',
+  $panel-grid-template: 'left right',
   $panel-shadow: lupaConfig.$shadow,
   $product-title-font-size: lupaConfig.$base-font-size,
   $product-price-font-size: 16px,
@@ -62,14 +62,6 @@ $icon-font-family: 'Material Design Icons' !default;
 @use './lupaProductCard.scss';
 @use './lupaFacets.scss';
 @use './lupaRecommendations.scss';
-
-.lupa-panel-suggestion-index {
-  grid-area: suggestions;
-}
-
-.lupa-panel-document-index {
-  grid-area: docs;
-}
 
 #lupa-search-results-products {
   background: lupaConfig.$white;

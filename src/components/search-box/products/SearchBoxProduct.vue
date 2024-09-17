@@ -5,7 +5,11 @@ import type { DocumentSearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
 import { computed, onMounted, ref } from 'vue'
 import { generateLink } from '@/utils/link.utils'
-import { DocumentElementType, type DocumentElement } from '@/types/DocumentElement'
+import {
+  DocumentElementType,
+  ImageDocumentElement,
+  type DocumentElement
+} from '@/types/DocumentElement'
 import SearchResultsBadgeWrapper from '@/components/search-results/products/product-card/badges/SearchResultsBadgeWrapper.vue'
 import { BadgeOptions } from '@/types/search-results/BadgeOptions'
 import { processDisplayCondition } from '@/utils/render.utils'
@@ -32,6 +36,28 @@ const badgeOptions = computed((): BadgeOptions => {
 
 const imageElements = computed((): DocumentElement[] => {
   return props.panelOptions.elements?.filter((e) => e.type === DocumentElementType.IMAGE) ?? []
+})
+
+const mainImageElement = computed((): ImageDocumentElement | undefined => {
+  return imageElements.value[0] as ImageDocumentElement
+})
+
+const widthOverride = computed(() => {
+  return mainImageElement.value?.dimensions?.width ?? undefined
+})
+
+const heightOverride = computed(() => {
+  return mainImageElement.value?.dimensions?.height ?? undefined
+})
+
+const imageStyleOverride = computed(() => {
+  return mainImageElement.value?.dimensions
+    ? {
+        width: widthOverride.value ? `${widthOverride.value}px` : undefined,
+        height: heightOverride.value ? `${heightOverride.value}px` : undefined,
+        minWidth: widthOverride.value ? `${widthOverride.value + 10}px` : undefined
+      }
+    : {}
 })
 
 const detailElements = computed((): DocumentElement[] => {
@@ -82,7 +108,7 @@ const checkIfIsInStock = async (): Promise<void> => {
     data-cy="lupa-search-box-product"
     @click="handleClick"
   >
-    <div class="lupa-search-box-product-image-section">
+    <div class="lupa-search-box-product-image-section" :style="imageStyleOverride">
       <SearchBoxProductElement
         class="lupa-search-box-product-element"
         v-for="element in imageElements"

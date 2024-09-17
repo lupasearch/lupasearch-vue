@@ -24,6 +24,7 @@ export type SearchBoxPanelBase = {
   queryKey: string
   limit: number
   labels?: SearchBoxPanelLabels
+  gridArea?: string
   visibility?: {
     showWhenKeyHasNoResults?: string
   }

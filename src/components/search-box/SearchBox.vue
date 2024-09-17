@@ -12,7 +12,7 @@ import type {
   SearchBoxOptions,
   SearchBoxPanelOptions
 } from '@/types/search-box/SearchBoxOptions'
-import { computed, onBeforeUnmount, onMounted, ref, type Ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 import type {
   FetchedData,
   HighlightedDocInfo,
@@ -47,7 +47,9 @@ const redirectionStore = useRedirectionStore()
 
 const inputValue = ref('')
 const suggestedValue: Ref<InputSuggestion> = ref(defaultSuggestedValue)
+
 const opened = ref(props.isSearchContainer)
+const focused = ref(false)
 
 const searchBoxInput = ref(null)
 
@@ -117,20 +119,27 @@ const handleMouseClick = (e: MouseEvent): void => {
   const hasLupaClass =
     typeof elementClass.includes == 'function' && elementClass.includes('lupa-search-box')
   const isOutsideElement = el && !el.contains(e.target as Node) && !hasLupaClass
+
+  if (isOutsideElement && props.options.keepOpen) {
+    focused.value = false
+  }
+
   if (!isOutsideElement || props.options.keepOpen) {
     return
   }
+
   opened.value = false
   suggestedValue.value = defaultSuggestedValue
 }
 
 const close = () => {
   opened.value = false
+  focused.value = false
   suggestedValue.value = defaultSuggestedValue
 }
 
 const handleKeyDown = (e: KeyboardEvent): void => {
-  if (!opened.value) {
+  if (!focused.value) {
     return
   }
   switch (e.key) {
@@ -152,6 +161,7 @@ const handleKeyDown = (e: KeyboardEvent): void => {
 
 const handleInput = (value: string): void => {
   opened.value = true
+  focused.value = true
   inputValue.value = value?.replace(/\s+$/, '') ?? ''
   suggestedValue.value = defaultSuggestedValue
   searchBoxStore.resetHighlightIndex()
@@ -299,6 +309,13 @@ const trackSuggestionClick = (suggestion?: string): void => {
   })
 }
 
+watch(() => props.options.debounce, handleCurrentValueSearch)
+
+const open = () => {
+  opened.value = true
+  focused.value = true
+}
+
 const resetValues = (): void => {
   inputValue.value = ''
   suggestedValue.value = defaultSuggestedValue
@@ -306,7 +323,9 @@ const resetValues = (): void => {
 
 const handleProductClick = (): void => {
   opened.value = false
+  focused.value = false
 }
+
 const slotProps = (
   props: any
 ): {
@@ -336,6 +355,7 @@ const slotProps = (
         :emit-input-on-focus="!isSearchContainer"
         ref="searchBoxInput"
         @input="handleInput"
+        @blur="focused = false"
         @focus="opened = true"
         @search="handleSearch"
         @close="$emit('close')"
@@ -345,6 +365,7 @@ const slotProps = (
         :options="panelOptions"
         :inputValue="inputValue"
         :isSearchContainer="isSearchContainer"
+        :focused="focused"
         @fetched="handleItemsFetch"
         @itemSelect="handleItemSelect"
         @go-to-results="handleSearch"

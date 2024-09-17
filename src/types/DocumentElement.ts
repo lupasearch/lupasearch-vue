@@ -40,6 +40,11 @@ export type ImageDocumentElement<T = any> = DocumentElementBase<T> & {
   key: string
   customUrl?: (document: T) => string
   alt?: (document: T) => string
+  dimensions?: {
+    width?: number
+    height?: number
+    objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
+  }
   hoverImages?: {
     key?: string
     display?: (document: T) => string[]

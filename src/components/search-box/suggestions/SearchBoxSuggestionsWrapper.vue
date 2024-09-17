@@ -52,6 +52,8 @@ const getSuggestions = (): void => {
 }
 
 const getSuggestionsDebounced = debounce(getSuggestions, props.debounce)
+
+watch(() => props.panel.limit, getSuggestionsDebounced)
 </script>
 <template>
   <SearchBoxSuggestions

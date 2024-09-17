@@ -75,6 +75,8 @@ const getItems = (): void => {
 }
 
 const getItemsDebounced = debounce(getItems, props.debounce)
+
+watch(() => props.panel.limit, getItemsDebounced)
 </script>
 
 <template>
