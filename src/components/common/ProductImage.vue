@@ -64,6 +64,26 @@ const hasHoverImages = computed(() => {
   return Boolean(hoverImages.value?.length)
 })
 
+const widthOverride = computed(() => {
+  return props.options.dimensions?.width ?? undefined
+})
+
+const heightOverride = computed(() => {
+  return props.options.dimensions?.height ?? undefined
+})
+
+const objectFitOverride = computed(() => {
+  return props.options.dimensions?.objectFit ?? undefined
+})
+
+const styleOverride = computed(() => {
+  return {
+    width: widthOverride.value ? `${widthOverride.value}px` : undefined,
+    height: heightOverride.value ? `${heightOverride.value}px` : undefined,
+    objectFit: objectFitOverride.value ? objectFitOverride.value : undefined
+  }
+})
+
 const replaceWithPlaceholder = (e: Event): void => {
   replaceImageWithPlaceholder(e, placeholder.value)
 }
@@ -138,6 +158,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     :class="{ [wrapperClass]: Boolean(wrapperClass), 'lupa-images-hover': isHover }"
+    :style="styleOverride"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
@@ -145,6 +166,7 @@ onBeforeUnmount(() => {
       <img
         class="lupa-images-hover-image"
         :class="{ [imageClass]: true, 'lupa-images-hover-image': isHover }"
+        :style="styleOverride"
         :src="finalUrl"
         v-bind="{ alt: imageAlt ? imageAlt : undefined }"
         @error="replaceWithPlaceholder"
@@ -155,6 +177,7 @@ onBeforeUnmount(() => {
       v-else
       class="lupa-images-main-image"
       :class="{ [imageClass]: true }"
+      :style="styleOverride"
       :src="finalMainImageUrl"
       v-bind="{ alt: imageAlt ? imageAlt : undefined }"
       @error="replaceWithPlaceholder"

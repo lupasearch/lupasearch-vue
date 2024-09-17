@@ -44,7 +44,10 @@
 }
 
 .lupa-search-box-product-details-section {
-  justify-content: space-between;
+  justify-content: center;
+  & > div:not(:first-child) {
+    margin-top: 4px;
+  }
 }
 
 .lupa-search-box-product-regular-price {

@@ -11,6 +11,7 @@ import {
   SearchBoxPanelType,
   SearchBoxPanelBase
 } from '@/types/search-box/SearchBoxPanel'
+import { generateGridTemplate } from '@/utils/grid.utils'
 
 const props = defineProps<{
   options: SearchBoxPanelOptions
@@ -54,6 +55,15 @@ const displayPanels = computed(() =>
     : panels.value
 )
 
+const gridTemplate = computed(() => generateGridTemplate(panels.value))
+
+const styleOverrides = computed(() => {
+  return {
+    display: expandOnSinglePanel.value ? 'block' : 'grid',
+    gridTemplateAreas: gridTemplate.value ? gridTemplate.value : 'left right'
+  }
+})
+
 const getInput = (panel: SearchBoxPanel): string => {
   if (panel.type === SearchBoxPanelType.SUGGESTION || !panel.searchBySuggestion) {
     return props.inputValue
@@ -86,6 +96,9 @@ onBeforeUnmount(() => {
 })
 
 const handleNavigation = (e: KeyboardEvent): void => {
+  if (!props.focused) {
+    return
+  }
   switch (e.key) {
     case 'ArrowDown':
       e.preventDefault()
@@ -186,11 +199,7 @@ export default {
       <a v-if="labels.closePanel" class="lupa-search-box-close-panel" @click="$emit('close')">
         {{ labels.closePanel }}
       </a>
-      <div
-        class="lupa-main-panel"
-        :style="expandOnSinglePanel ? { display: 'block' } : {}"
-        data-cy="lupa-main-panel"
-      >
+      <div class="lupa-main-panel" :style="styleOverrides" data-cy="lupa-main-panel">
         <div
           v-for="(panel, index) in displayPanels"
           :key="index"
@@ -198,6 +207,7 @@ export default {
             'lupa-panel-' + panel.type + '-index',
             panel.customClassName ? panel.customClassName : ''
           ]"
+          :style="panel.gridArea ? { gridArea: `${panel.gridArea}${index}` } : {}"
           :data-cy="'lupa-panel-' + panel.type + '-index'"
         >
           <div
