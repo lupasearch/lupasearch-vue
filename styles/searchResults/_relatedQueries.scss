@@ -1,0 +1,66 @@
+@use '../base/searchResults';
+
+.lupa-related-queries-title,
+.lupa-related-query-label {
+  font-family: searchResults.$search-results-font-family;
+}
+
+.lupa-related-queries ul {
+  display: flex;
+  padding: 0;
+  list-style: none;
+  margin: 20px 9px 30px -6px;
+}
+
+.lupa-related-queries li {
+  flex: 1 1 0; /* flex-grow: 1, flex-shrink: 1, and flex-basis: 0 */
+  box-sizing: border-box; /* ensures padding and borders are included in the item's size */
+  text-align: center;
+  padding: 10px;
+  a {
+    cursor: pointer;
+  }
+}
+
+.lupa-related-query-label {
+  margin-top: 10px;
+}
+
+.lupa-related-query-image-wrapper {
+  max-width: 100%;
+  img {
+    max-height: 120px;
+    max-width: 150px;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+.lupa-related-query-image {
+  min-height: 120px;
+}
+
+.lupa-related-query-count {
+  display: inline-block;
+  margin-left: 5px;
+  opacity: 0.5;
+}
+
+.lupa-related-queries li {
+  &:not(:last-child) {
+    margin: 0 16px 0 0;
+  }
+}
+
+@media (max-width: searchResults.$size-s) {
+  .lupa-related-queries ul {
+    margin: 20px -2px 30px;
+    flex-wrap: wrap;
+    li {
+      flex-basis: calc(50% - 60px);
+      &:not(:last-child),&:last-child {
+        margin: 10px;
+      }
+    }
+  }
+}
