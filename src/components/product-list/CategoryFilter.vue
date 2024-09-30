@@ -8,6 +8,7 @@ import { linksMatch } from '@/utils/link.utils'
 import lupaSearchSdk from '@getlupa/client-sdk'
 import type { SdkError, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { handleRoutingEvent } from '@/utils/routing.utils'
+import { useSearchResultStore } from '@/stores/searchResult'
 
 const props = defineProps<{
   options: CategoryFilterOptions
@@ -16,6 +17,7 @@ const props = defineProps<{
 const categoryChildren: Ref<Record<string, string>[]> = ref([])
 
 const optionStore = useOptionsStore()
+const searchResultsStore = useSearchResultStore()
 const { envOptions, searchResultOptions } = storeToRefs(optionStore)
 
 const hasBackButton = computed((): boolean => {
@@ -54,6 +56,7 @@ const handleResult = (result: SearchQueryResult | SdkError): void => {
     return
   }
   categoryChildren.value = result.items as Record<string, string>[]
+  searchResultsStore.setRelatedCategoryChildren(categoryChildren.value)
   searchResultOptions.value.callbacks?.onCategoryFilterResults?.({
     queryKey: props.options.queryKey,
     hasResults: result.total > 0
