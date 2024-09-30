@@ -19,6 +19,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const layout = ref(ResultsLayoutEnum.GRID)
   const loading = ref(false)
   const isMobileSidebarVisible = ref(false)
+  const relatedCategoryChildren = ref([])
 
   const optionsStore = useOptionsStore()
   const paramsStore = useParamsStore()
@@ -174,6 +175,10 @@ export const useSearchResultStore = defineStore('searchResult', () => {
       : items
   }
 
+  const setRelatedCategoryChildren = (children: Record<string, string>[]) => {
+    relatedCategoryChildren.value = [...children]
+  }
+
   return {
     isMobileSidebarVisible,
     searchResult,
@@ -194,6 +199,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     itemRange,
     isPageEmpty,
     hideFiltersOnExactMatchForKeys,
+    relatedCategoryChildren,
     setSidebarState,
     queryFacet,
     add,
@@ -202,6 +208,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     setLayout,
     setLoading,
     clearSearchResult,
-    filterVisibleFilterValues
+    filterVisibleFilterValues,
+    setRelatedCategoryChildren
   }
 })

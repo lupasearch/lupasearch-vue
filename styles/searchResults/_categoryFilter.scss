@@ -1,4 +1,4 @@
-@use "../base/searchResults";
+@use '../base/searchResults';
 
 .lupa-category-filter {
   padding: searchResults.$category-filter-padding;
@@ -51,4 +51,15 @@
   font-weight: searchResults.$category-overview-title-font-weight;
   font-size: searchResults.$category-overview-title-font-size;
   margin: searchResults.$category-overview-title-margin;
+}
+
+.lupa-category-top-mobile-filters {
+  .lupa-child-category-list {
+    display: flex;
+    overflow: auto;
+    padding: 15px 0;
+    .lupa-child-category-item {
+      white-space: nowrap;
+    }
+  }
 }
