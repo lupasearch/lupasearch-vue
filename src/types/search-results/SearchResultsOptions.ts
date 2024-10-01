@@ -4,6 +4,7 @@ import type { SearchResultsAdditionalPanelOptions } from './SearchResultsAdditio
 import type { SearchResultsProductCardOptions } from './SearchResultsProductCardOptions'
 import type { SearchResultsSortOptions } from './SearchResultsSort'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
+import { RelatedQueryOptions } from './RelatedQueryOptions'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -107,6 +108,7 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
     filters?: SearchResultsFilterOptions
     searchTitlePosition?: string
     hideResultsOnReload?: boolean
+    relatedQueries?: RelatedQueryOptions
     toolbar?: {
       layoutSelector?: boolean
       itemSummary?: boolean

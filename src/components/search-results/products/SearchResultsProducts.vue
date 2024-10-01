@@ -24,6 +24,7 @@ import AdditionalPanels from '../additional-panels/AdditionalPanels.vue'
 import Spinner from '@/components/common/Spinner.vue'
 import { useOptionsStore } from '@/stores/options'
 import SearchResultsSimilarResults from './similar-results/SearchResultsSimilarResults.vue'
+import RelatedQueries from '@/components/search-results/related-queries/RelatedQueries.vue'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
@@ -145,6 +146,8 @@ const filter = () => {
 <template>
   <div id="lupa-search-results-products">
     <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
+    <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
+    <RelatedQueries :options="options.relatedQueries" />
     <template v-if="hasResults">
       <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
       <SearchResultsToolbar
@@ -162,7 +165,6 @@ const filter = () => {
         :expandable="!desktopFiltersExpanded"
       />
     </template>
-    <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
     <template v-if="hasResults">
       <SearchResultsToolbar class="lupa-toolbar-top" :options="options" pagination-location="top" />
       <CurrentFilters
