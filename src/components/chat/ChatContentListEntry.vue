@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ChatContent } from '@/types/chat/ChatLog'
+import ChatContentEntry from './ChatContentEntry.vue'
 import { ChatOptions } from '@/types/chat/ChatOptions'
 import { ChatMessage } from '@/types/chat/SearchChatRequest'
-import ChatContentListEntry from './ChatContentListEntry.vue'
 
 const props = defineProps<{
-  content: ChatContent[]
+  entry: ChatContent
   options: ChatOptions
   history?: ChatMessage[]
 }>()
@@ -19,15 +19,16 @@ const bestItemsLoaded = (items: string[], key: string) => {
 </script>
 <template>
   <div>
-    <ul>
-      <li v-for="entry of content" :key="entry.key" class="chat-content-list-entry">
-        <ChatContentListEntry
-          :entry="entry"
-          :options="options"
-          :history="history"
-          @loaded="(items) => bestItemsLoaded(items, entry.key)"
-        />
-      </li>
-    </ul>
+    <h4 class="lupa-chat-section-title" @click="entry.expanded = !entry.expanded">
+      {{ entry.userInput }}
+    </h4>
+    <div v-if="entry.suggestedPhrases?.length" v-show="entry.expanded">
+      <ChatContentEntry
+        :entry="entry"
+        :options="options"
+        :history="history"
+        @loaded="(items) => bestItemsLoaded(items, entry.key)"
+      />
+    </div>
   </div>
 </template>

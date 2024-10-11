@@ -3,6 +3,13 @@ import { SearchResultsOptions } from '../search-results/SearchResultsOptions'
 
 export type ChatSettings = {
   model?: string
+  labels?: {
+    ask?: string
+    clear?: string
+    bestMatches?: string
+    checkingForMorePhraseMatches?: string
+    selectingBestPhrases?: string
+  }
 }
 
 export type ChatOptions = {

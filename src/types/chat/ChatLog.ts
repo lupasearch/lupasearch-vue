@@ -6,4 +6,5 @@ export type ChatContent = {
   simplifiedPhrases?: string[]
   phraseAlternatives?: string[]
   bestItems?: string[]
+  expanded?: boolean
 }

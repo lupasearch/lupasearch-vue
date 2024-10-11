@@ -98,20 +98,16 @@ const getPhraseAlternatives = async () => {
 }
 </script>
 <template>
-  <div class="lupa-chat-content-entry-phrase">
+  <div
+    v-if="!loading && searchResults.length"
+    class="lupa-chat-content-entry-phrase"
+    :class="{ 'lupa-chat-incomplete-results': usedPartialResults }"
+  >
     <div class="lupa-chat-phrase-title">
       <h3>{{ displayPhrase }}</h3>
-      <sub>{{ usedAlternativePhrases.join(', ') }}</sub>
-      <sub v-if="usedPartialResults" class="alert"
-        >Including partial matches - which might not be what you are looking for</sub
-      >
     </div>
     <div>
       <ChatPhraseProductsList :search-results="searchResults" :options="options.displayOptions" />
     </div>
-    <div v-if="!loading && !searchResults.length" class="lupa-chat-no-results">
-      <p>We found no matches for this search term</p>
-    </div>
-    <ChatSpinner v-if="loading" :message="currentAction" />
   </div>
 </template>

@@ -13,7 +13,12 @@ const options: ChatOptions = {
     environment: 'production'
   },
   chatSettings: {
-    model: "open-ai-gpt4"
+    model: 'open-ai-gpt4',
+    labels: {
+      bestMatches: 'AI recommendations:',
+      ask: 'Ask',
+      clear: 'Clear'
+    }
   }
 }
 </script>
@@ -39,7 +44,8 @@ const options: ChatOptions = {
   display: flex;
   flex-direction: column;
 }
-html, body {
+html,
+body {
   background: #f4f4f4;
 }
 </style>
