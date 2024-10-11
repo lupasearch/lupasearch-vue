@@ -6,11 +6,11 @@ import ChatService from '@/chat/ChatService'
 import { SearchChatRequest } from '@/types/chat/SearchChatRequest'
 import { ChatContent } from '@/types/chat/ChatLog'
 import ChatContentList from './ChatContentList.vue'
-import Spinner from '../common/Spinner.vue'
 import ChatSpinner from './ChatSpinner.vue'
 
 const loading = ref(false)
 const error = ref('')
+const focused = ref(false)
 
 const chatContent: Ref<ChatContent[]> = ref([])
 
@@ -31,8 +31,10 @@ const submitChatInput = async (input: string) => {
       key,
       userInput: input,
       allPhrases: [],
-      suggestedPhrases: []
+      suggestedPhrases: [],
+      expanded: true
     }
+    chatContent.value = chatContent.value.map((c) => ({ ...c, expanded: false }))
     chatContent.value.push(chatLog)
     const request: SearchChatRequest = {
       userPrompt: input,
@@ -67,25 +69,31 @@ const bestItemsLoaded = ({ items, key }: { items: string[]; key: string }) => {
   const entry = chatContent.value.find((c) => c.key === key)
   entry.bestItems = items
 }
+
+const clearChatContent = () => {
+  chatContent.value = []
+}
 </script>
 <template>
   <section class="lupasearch-chat">
-    <section class="lupa-chat-logo">
-      <img src="https://www.lupasearch.com/images/partials/header/lupasearch-logo.svg" />
-    </section>
-    <section v-if="chatContent.length" class="lupasearch-chat-content">
-      <ChatContentList
-        :content="chatContent"
-        :options="options"
-        @loaded="bestItemsLoaded"
-        :history="history"
-      />
-    </section>
-    <section class="lupa-chat-spinner-main" v-if="loading">
-      <ChatSpinner message="Loading initial recommendations... This might take up to 20s" />
-    </section>
     <section class="lupasearch-chat-input">
-      <ChatInput @submit="submitChatInput" :disabled="loading" />
+      <ChatInput
+        @submit="submitChatInput"
+        :disabled="loading"
+        :options="options"
+        @focus="focused = true"
+        @clear="clearChatContent"
+      />
+      <div class="lupasearch-chat-content-wrapper">
+        <section v-if="chatContent.length" v-show="focused" class="lupasearch-chat-content">
+          <ChatContentList
+            :content="chatContent"
+            :options="options"
+            :history="history"
+            @loaded="bestItemsLoaded"
+          />
+        </section>
+      </div>
     </section>
   </section>
 </template>

@@ -7,17 +7,34 @@
   $text-color-faded: lupaConfig.$text-color-faded,
   $border: lupaConfig.$border,
   $background: lupaConfig.$background,
-  $font-family-base: lupaConfig.$font-family,
+  $font-family-base: 'Lato',
   $link: lupaConfig.$link,
   $link-hover: darken(lupaConfig.$link, 10%),
   $grey-100: lighten(lupaConfig.$primary, 10%),
   $grey-200: lupaConfig.$primary
 );
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap');
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
 
-$shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14),
-  0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: general.$white;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: general.$secondary;
+    border-radius: 6px;
+    &:hover {
+      background: general.$primary;
+    }
+  }
+}
+
+$shadow: lupaConfig.$shadow;
 
 html,
 body {
@@ -26,8 +43,12 @@ body {
 
 .lupa-chat-section-title {
   font-family: general.$font-family-base;
-  font-weight: 300;
-  font-size: 32px;
+  font-weight: 700;
+  font-size: 26px;
+  margin: 0;
+  border-bottom: general.$border;
+  padding: 8px;
+  cursor: pointer;
 }
 
 .lupasearch-chat-input {
@@ -37,7 +58,7 @@ body {
 }
 
 .lupa-chat-input-container {
-  z-index: 100;
+  border-bottom: general.$border;
 }
 
 .lupasearch-chat {
@@ -45,7 +66,17 @@ body {
   margin: auto;
 }
 
+.lupasearch-chat-content-wrapper {
+  position: relative;
+}
+
 .lupasearch-chat-content {
+  position: absolute;
+  background: white;
+  box-shadow: $shadow;
+  width: 100%;
+  overflow: auto;
+
   ul {
     list-style: none;
     padding-left: 0;
@@ -53,44 +84,20 @@ body {
   }
 }
 
+.chat-content-list-entry {
+  border: general.$border;
+  border-width: 2px;
+}
+
+.lupa-chat-section-content {
+  display: flex;
+}
+
 .lupa-chat-phrase-title {
-  margin-left: 15px;
-}
-
-.lupa-chat-content-entry {
-  background: white;
-  box-shadow: $shadow;
-  padding: 15px;
-  margin: 20px 0;
-}
-
-.lupa-chat-content-entry-phrase,
-.lupa-chat-best-matches {
   h3 {
     font-family: general.$font-family-base;
-    margin: 15px 0 0;
+    margin: 0 0 10px;
     font-size: 24px;
-  }
-  sub {
-    display: block;
-    font-family: general.$font-family-base;
-    font-size: 13px;
-    color: general.$text-color-faded;
-    &:last-child {
-      margin-bottom: 20px;
-    }
-  }
-}
-
-.lupa-chat-best-matches {
-  h3 {
-    margin-left: 15px;
-    margin-bottom: 10px;
-  }
-  p {
-    margin-left: 15px;
-    font-family: general.$font-family-base;
-    font-weight: 300;
   }
 }
 
@@ -180,7 +187,8 @@ body {
   margin-bottom: 15px;
 }
 
-.lupa-chat-form-submit {
+.lupa-chat-form-submit,
+.lupa-chat-form-clear {
   appearance: none;
   border: none;
   background: general.$primary;
@@ -194,6 +202,11 @@ body {
   font-weight: 700;
 }
 
+.lupa-chat-form-clear {
+  background: general.$grey-100;
+  margin-left: 10px;
+}
+
 .chat-input-form {
   display: flex;
   justify-content: space-between;
@@ -205,11 +218,29 @@ body {
 
 .lupa-chat-results {
   display: flex;
-  flex-wrap: wrap;
-}
+  overflow: hidden;
 
-.lupa-search-results-image {
-  max-height: 150px;
+  .lupa-chat-item.lupa-chat-product-card-image {
+    flex-shrink: 0;
+    width: 80px;
+    height: 60px;
+    margin-right: 8px;
+    .lupa-search-results-image-wrapper {
+      padding-bottom: 20%;
+    }
+    .lupa-search-results-image {
+      max-height: 100px;
+    }
+    .lupa-search-results-image-wrapper {
+      width: 80px;
+      height: 60px;
+      height: 100%;
+      padding: 0;
+      img {
+        object-fit: cover;
+      }
+    }
+  }
 }
 
 .lupa-search-results-image-wrapper {
@@ -230,38 +261,64 @@ body {
 }
 
 .lupa-chat-text-response {
+  flex-basis: 50%;
   font-family: general.$font-family-base;
-  font-weight: 300;
-  margin-bottom: 40px;
+  font-weight: 400;
   min-height: 80px;
-
-  div.br {
-    margin-bottom: 8px;
+  max-height: 400px;
+  padding: 20px;
+  border-right: general.$border;
+  border-bottom: general.$border;
+  border-width: 1px;
+  overflow: auto;
+  @include scrollbar;
+  p {
+    margin: 0;
   }
+}
+
+.lupa-chat-incomplete-results {
+  opacity: 0.5;
+}
+
+.lupa-chat-content-entry-wrapper {
+  flex-basis: 50%;
+  max-height: 400px;
+  overflow: auto;
+  border-bottom: general.$border;
+  @include scrollbar;
+}
+
+.lupa-chat-content-entry {
+  margin-right: 5px;
+}
+
+.lupa-chat-content-entry-phrase {
+  border-bottom: general.$border;
+  margin-right: 5px;
+  padding: 10px;
+}
+
+.lupa-chat-product-card-image {
+  width: 100%;
 }
 
 .lupa-chat-product-card {
   width: 20%;
 }
 
-@media (max-width: 1200px) {
-  .lupa-chat-product-card {
-    width: 30%;
-  }
-}
-
-@media (max-width: 1024px) {
-  .lupa-chat-product-card {
-    width: 40%;
-  }
-}
-
-@media (max-width: 700px) {
-  .lupa-chat-product-card {
-    width: 50%;
-  }
-}
-
 .wrapper {
   background: none;
+}
+
+.lupa-chat-best-matches {
+  font-family: general.$font-family-base;
+  font-size: 24px;
+  padding: 10px;
+  h3 {
+    margin: 0 0 10px;
+  }
+  .lupa-chat-results {
+    flex-wrap: wrap;
+  }
 }
