@@ -89,3 +89,15 @@
     pointer-events: none;
   }
 }
+
+.lupa-related-queries li {
+  box-shadow: lupaConfig.$card-shadow;
+  border-radius: 8px;
+  padding: 16px 10px;
+  border: 1px solid #0000001a;
+  background-color: lupaConfig.$white;
+
+  &:hover {
+    border-color: lupaConfig.$primary;
+  }
+}
