@@ -12,9 +12,13 @@ export const renderHtmlTemplate = (
 
 const getFieldValue = (doc: Record<string, any>, field: string | number = '') => {
   if (typeof field === 'number') {
-    return field // Literal numeric value
+    return +field // Literal numeric value
   }
-  return field?.split('.')?.reduce((obj, key) => (obj ? obj[key] : undefined), doc)
+  const value = field?.split('.')?.reduce((obj, key) => (obj ? obj[key] : undefined), doc)
+  if (+value) {
+    return +value
+  }
+  return value
 }
 
 export const processDisplayCondition = (

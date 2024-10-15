@@ -2,7 +2,7 @@
 import { DisplayCondition } from '../DocumentElement'
 import type { AnchorPosition } from './SearchResultsProductCardOptions'
 
-export type SearchResultBadgeType = 'text' | 'image' | 'customHtml'
+export type SearchResultBadgeType = 'text' | 'image' | 'customHtml' | 'discount'
 
 export type BadgeGenerateSeed = {
   id?: string
@@ -63,13 +63,30 @@ export type CustomHtmlBadgeElement<T = any> = BaseBadgeElement<T> & {
   html?: string | ((doc: T) => string)
 }
 
-export type BadgeElement = BaseBadgeElement | TextBadgeElement
+export type DiscountBadgeElement<T = any> = BaseBadgeElement<T> & {
+  type: 'discount'
+  className?: string
+  regularPriceKey?: string
+  finalPriceKey?: string
+  discountKey?: string
+  discountType: 'percentage' | 'amount'
+  labels?: {
+    prefix?: string
+    postfix?: string
+  }
+}
+
+export type BadgeElement =
+  | BaseBadgeElement
+  | TextBadgeElement
+  | ImageBadgeElement
+  | CustomHtmlBadgeElement
+  | DiscountBadgeElement
 
 export enum BadgeType {
-  DISCOUNTPERCENTAGE = 'discountPercentage',
-  DISCOUNTAMOUNT = 'discountAmount',
   NEWITEM = 'newItem',
   TEXT = 'text',
   IMAGE = 'image',
-  CUSTOM_HTML = 'customHtml'
+  CUSTOM_HTML = 'customHtml',
+  DISCOUNT = 'discount'
 }

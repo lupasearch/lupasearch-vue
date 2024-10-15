@@ -20,6 +20,8 @@ $shadow: 0px 4px 6px rgb(0 0 0 / 25%);
 $panel-shadow: 0px 1px 1px rgb(22 22 22 / 14%), 0px 2px 1px rgb(22 22 22 / 12%),
   0px 1px 3px rgb(22 22 22 / 20%);
 $card-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+$star-color: #ffa41c;
+$star-base-color: #afafaf;
 
 @mixin material-icon {
   direction: ltr;
