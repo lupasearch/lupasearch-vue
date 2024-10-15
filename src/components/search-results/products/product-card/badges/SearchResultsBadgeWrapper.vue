@@ -70,6 +70,8 @@ const getBadgeComponent = (type: string): string => {
       return 'ImageBadge'
     case BadgeType.CUSTOM_HTML:
       return 'CustomBadge'
+    case BadgeType.DISCOUNT:
+      return 'DiscountBadge'
     default:
       return 'CustomBadge'
   }
@@ -81,12 +83,14 @@ import TextBadge from './TextBadge.vue'
 import ImageBadge from './ImageBadge.vue'
 import { useDynamicDataStore } from '@/stores/dynamicData'
 import { storeToRefs } from 'pinia'
+import DiscountBadge from './DiscountBadge.vue'
 
 export default {
   components: {
     CustomBadge,
     TextBadge,
-    ImageBadge
+    ImageBadge,
+    DiscountBadge
   }
 }
 </script>

@@ -5,7 +5,9 @@ import type { TextBadgeElement } from '@/types/search-results/BadgeOptions'
 const props = defineProps<{ badge: TextBadgeElement }>()
 
 const badges = computed((): string[] => {
-  return (props.badge?.value as unknown as string[]) ?? []
+  return Array.isArray(props.badge.value)
+    ? (props.badge.value as unknown as string[])
+    : [props.badge.value]
 })
 
 const displayBadges = computed((): string[] => {

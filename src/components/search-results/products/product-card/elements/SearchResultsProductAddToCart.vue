@@ -20,12 +20,17 @@ const label = computed((): string => {
   return props.options.labels.addToCart
 })
 
+const id = computed(() => {
+  const id = props.item.id ?? ''
+  return `lupa-add-to-cart-${id}`
+})
+
 const handleClick = async (): Promise<void> => {
   loading.value = true
 
   if (props.options.emitEvent) {
     const event = new CustomEvent(props.options.emitEvent, { detail: { item: props.item } })
-    window.dispatchEvent(event)
+    document.dispatchEvent(event)
   }
 
   if (props.options.action) {
@@ -42,10 +47,11 @@ const handleClick = async (): Promise<void> => {
   <div class="lupa-search-results-add-to-cart-wrapper">
     <div class="lupa-search-results-product-addtocart">
       <button
-        @click.stop="handleClick"
+        :id="id"
         :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
         data-cy="lupa-add-to-cart"
         :disabled="!inStockValue || loading"
+        @click.stop="handleClick"
       >
         {{ label }}
       </button>

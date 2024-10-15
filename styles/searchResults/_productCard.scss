@@ -126,11 +126,11 @@
 }
 
 .lupa-total-ratings {
-  color: searchResults.$product-card-rating-label-color !important;
+  color: searchResults.$product-card-rating-label-color;
   text-decoration: none;
   &:hover {
-    color: searchResults.$product-card-rating-label-color-hover !important;
-    text-decoration: underline !important;
+    color: searchResults.$product-card-rating-label-color-hover;
+    text-decoration: underline;
   }
 }
 

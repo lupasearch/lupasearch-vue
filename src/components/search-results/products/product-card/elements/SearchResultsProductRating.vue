@@ -29,9 +29,13 @@ const highlightedStars = computed((): string[] => {
 })
 
 const ratingPercentage = computed((): number => {
-  return props.options.getRatingPercentage
-    ? props.options.getRatingPercentage(props.item)
-    : currentRating.value
+  if (props.options.getRatingPercentage) {
+    return props.options.getRatingPercentage(props.item)
+  }
+  if (props.options.maxRating) {
+    return (currentRating.value / props.options.maxRating) * 100
+  }
+  return currentRating.value
 })
 
 const ratingLink = computed((): string => {

@@ -83,9 +83,73 @@
   }
 }
 
-.lupa-search-box-product-addtocart button {
+.lupa-search-box-product-addtocart button,
+.lupa-search-results-product-addtocart button {
   background: none;
   border: 1px solid lupaConfig.$border-color;
   padding: 8px 16px;
   border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: lupaConfig.$primary;
+    color: lupaConfig.$white;
+  }
+}
+
+.lupa-search-results-product-addtocart button {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.lupa-element-group-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.lupa-total-ratings {
+  position: relative;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+$star: 15px;
+
+.lupa-rating-wrapper,
+.lupa-ratings-base {
+  width: $star * 5;
+}
+
+.lupa-total-ratings {
+  margin-left: 5px;
+}
+
+.lupa-ratings {
+  position: relative;
+  height: 24px;
+  font-size: 0;
+
+  .lupa-stars {
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+  }
+  .lupa-base-stars,
+  .lupa-stars {
+    white-space: nowrap;
+  }
+  .lupa-rating {
+    display: inline-block;
+    &::after {
+      @include lupaConfig.material-icon;
+      content: '\f04ce';
+      font-size: $star;
+    }
+  }
+  .lupa-rating-not-highlighted {
+    color: lupaConfig.$star-base-color;
+  }
+  .lupa-rating-highlighted {
+    color: lupaConfig.$star-color;
+  }
 }

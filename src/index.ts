@@ -40,7 +40,8 @@ import type {
   SearchResultBadgeElement,
   BadgeGenerateSeed,
   BadgeGenerateOptions,
-  BadgeOptions
+  BadgeOptions,
+  BadgeElement
 } from './types/search-results/BadgeOptions'
 
 import { BadgeType } from './types/search-results/BadgeOptions'
@@ -179,5 +180,6 @@ export type {
   ScrollToResultsOptions,
   FilterBehavior,
   PluginElementsConfiguration,
-  PluginConfiguration
+  PluginConfiguration,
+  BadgeElement
 }
