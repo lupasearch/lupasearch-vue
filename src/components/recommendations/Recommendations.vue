@@ -31,6 +31,9 @@ const recommendationsType: Ref<'recommendations_original' | 'recommendations_lup
 )
 const loading = ref(true)
 
+const rootElement = ref(null)
+let observer: IntersectionObserver | null = null
+
 const carouselOptions = computed((): any => {
   return props.options.carousel ?? {}
 })
@@ -57,16 +60,37 @@ const hasRecommendations = computed(() => {
   return recommendations.value.length > 0
 })
 
+const initIntersectionObserver = (): void => {
+  if (rootElement.value) {
+    observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadRecommendations()
+        observer.unobserve(entries[0].target)
+      }
+    })
+
+    observer.observe(rootElement.value)
+  }
+}
+
 onMounted(() => {
-  loadRecommendations()
-  window.addEventListener('resize', handleResize)
   handleResize()
   optionsStore.setSearchResultOptions({
     options: props.options as unknown as SearchResultsOptions
   })
+  if (props.options.lazyLoad) {
+    initIntersectionObserver()
+  } else {
+    loadRecommendations()
+  }
+
+  window.addEventListener('resize', handleResize)
 })
 
 onBeforeUnmount(() => {
+  if (observer) {
+    observer.disconnect()
+  }
   window.removeEventListener('resize', handleResize)
 })
 
@@ -150,34 +174,36 @@ defineExpose({ fetch })
 </script>
 
 <template>
-  <div v-if="hasRecommendations" class="lupa-search-product-recommendations-wrapper">
-    <h2 class="lupa-recommendation-section-title" v-if="title">{{ title }}</h2>
-    <div v-if="!loading" class="lupa-recommended-products" data-cy="lupa-recommended-products">
-      <Carousel v-if="layoutType === 'carousel'" v-bind="carouselOptions" :wrap-around="true">
-        <Slide
-          v-for="(product, index) in recommendations"
-          :key="getProductKeyAction(index, product)"
-        >
+  <div class="lupa-search-product-recommendations-wrapper" ref="rootElement">
+    <template v-if="hasRecommendations">
+      <h2 class="lupa-recommendation-section-title" v-if="title">{{ title }}</h2>
+      <div v-if="!loading" class="lupa-recommended-products" data-cy="lupa-recommended-products">
+        <Carousel v-if="layoutType === 'carousel'" v-bind="carouselOptions" :wrap-around="true">
+          <Slide
+            v-for="(product, index) in recommendations"
+            :key="getProductKeyAction(index, product)"
+          >
+            <SearchResultsProductCard
+              :product="product"
+              :options="options"
+              :click-tracking-settings="clickTrackingSettings"
+            />
+          </Slide>
+          <template #addons>
+            <Navigation />
+          </template>
+        </Carousel>
+        <div v-else class="lupa-products" data-cy="lupa-products">
           <SearchResultsProductCard
+            v-for="(product, index) in recommendations"
+            :style="columnSize"
+            :key="getProductKeyAction(index, product)"
             :product="product"
             :options="options"
-            :click-tracking-settings="clickTrackingSettings"
+            :lupa-click-tracking-type="`recommendedItemClick`"
           />
-        </Slide>
-        <template #addons>
-          <Navigation />
-        </template>
-      </Carousel>
-      <div v-else class="lupa-products" data-cy="lupa-products">
-        <SearchResultsProductCard
-          v-for="(product, index) in recommendations"
-          :style="columnSize"
-          :key="getProductKeyAction(index, product)"
-          :product="product"
-          :options="options"
-          :lupa-click-tracking-type="`recommendedItemClick`"
-        />
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
