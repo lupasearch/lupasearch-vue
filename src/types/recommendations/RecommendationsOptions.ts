@@ -15,6 +15,7 @@ export type ProductRecommendationOptions = SearchResultsProductOptions & {
 } & {
   containerSelector: string
   queryKey: string
+  lazyLoad?: boolean
   itemId: DataExtraction | (string[] | string)
   abTesting?: RecommendationABTestingOptions
   carousel?: RecommenderCarouselOptions
