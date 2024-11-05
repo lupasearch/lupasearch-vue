@@ -70,7 +70,6 @@ const searchForRelatedQuery = async (): Promise<void> => {
 watch(
   () => props.query,
   () => {
-    console.log('query changed', props.query)
     searchForRelatedQuery()
   }
 )

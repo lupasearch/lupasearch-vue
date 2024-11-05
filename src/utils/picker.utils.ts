@@ -15,7 +15,12 @@ export const getHint = (suggestion: string, inputValue: string): string => {
   if (!inputValue) {
     return escapeHtml(suggestion)
   }
-  return suggestion?.replace(inputValue, `<strong>${escapeHtml(inputValue)}</strong>`) ?? ''
+  return (
+    suggestion?.replace(
+      inputValue?.toLocaleLowerCase(),
+      `<strong>${escapeHtml(inputValue?.toLocaleLowerCase())}</strong>`
+    ) ?? ''
+  )
 }
 
 // https://stackoverflow.com/a/56781239

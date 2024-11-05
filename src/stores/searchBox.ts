@@ -19,7 +19,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
   const highlightedIndex = ref(-1)
   const inputValue = ref('')
   const resultInputValue = ref('')
-
+  const latestRequestIdByQueryKey = {}
   const historyStore = useHistoryStore()
 
   const resultsVisible = computed(() => inputValue.value?.length >= options.value.minInputLength)
@@ -89,12 +89,21 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     options?: SdkOptions
   }) => {
     try {
+      // Handle race conditions so only latest request results are considered
+      const currentRequestId = Date.now()
+      latestRequestIdByQueryKey[queryKey] = currentRequestId
+
       const context = getLupaTrackingContext()
       const result = await lupaSearchSdk.suggestions(
         queryKey,
         { ...publicQuery, ...context },
         options
       )
+
+      if (latestRequestIdByQueryKey[queryKey] !== currentRequestId) {
+        return { suggestions: undefined }
+      }
+
       if (!result.success) {
         return { suggestions: undefined }
       }
@@ -141,8 +150,17 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     options?: SdkOptions
   }) => {
     try {
+      // Handle race conditions so only latest request results are considered
+      const currentRequestId = Date.now()
+      latestRequestIdByQueryKey[queryKey] = currentRequestId
+
       const context = getLupaTrackingContext()
       const result = await lupaSearchSdk.query(queryKey, { ...publicQuery, ...context }, options)
+
+      if (latestRequestIdByQueryKey[queryKey] !== currentRequestId) {
+        return { suggestions: undefined }
+      }
+
       if (!result.success) {
         return { queryKey, result: { items: [] } }
       }

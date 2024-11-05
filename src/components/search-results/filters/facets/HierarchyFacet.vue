@@ -54,12 +54,17 @@ const handleFacetClick = ({ value }: { value: string }): void => {
   emit('select', {
     key: facet.value.key,
     value,
-    type: 'hierarchy'
+    type: 'hierarchy',
+    behavior: props.options.hierarchy?.behavior ?? 'append'
   })
 }
 
 const handleShowAll = (): void => {
   showAll.value = true
+}
+
+const handleCancelShowAll = () => {
+  showAll.value = false
 }
 </script>
 
@@ -93,6 +98,13 @@ const handleShowAll = (): void => {
       @click="handleShowAll"
     >
       {{ options.labels.showAll }}
+    </div>
+    <div
+      v-else-if="showAll"
+      class="lupa-facet-term lupa-show-more-facet-results"
+      @click="handleCancelShowAll"
+    >
+      {{ options.labels.showLess }}
     </div>
   </div>
 </template>

@@ -50,10 +50,14 @@ const isInputVisible = computed((): boolean => {
   return Boolean(props.options.stats?.inputs)
 })
 
+const pricePrecision = computed((): number => {
+  return props.options.stats?.pricePrecisionDigits ?? 2
+})
+
 const fromValue = computed({
   get: () =>
     isPrice.value
-      ? sliderRange.value[0].toFixed(2).replace('.', separator.value)
+      ? sliderRange.value[0].toFixed(pricePrecision.value).replace('.', separator.value)
       : `${sliderRange.value[0]}`,
   set: (stringValue) => {
     let value = normalizeFloat(stringValue)
@@ -71,7 +75,7 @@ const fromValue = computed({
 const toValue = computed({
   get: () =>
     isPrice.value
-      ? sliderRange.value[1].toFixed(2).replace('.', separator.value)
+      ? sliderRange.value[1].toFixed(pricePrecision.value).replace('.', separator.value)
       : `${sliderRange.value[1]}`,
   set: (stringValue) => {
     let value = normalizeFloat(stringValue)

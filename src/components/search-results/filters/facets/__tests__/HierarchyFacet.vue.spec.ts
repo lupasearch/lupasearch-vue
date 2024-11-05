@@ -112,6 +112,8 @@ describe('hierarchyFacet', () => {
   it('should emit select event on click', () => {
     const wrapper = getComponent()
     wrapper.find('.lupa-term-checkbox').trigger('click')
-    expect(wrapper.emitted().select).toEqual([[{ key: 'price', type: 'hierarchy', value: 'one' }]])
+    expect(wrapper.emitted().select).toEqual([
+      [{ key: 'price', type: 'hierarchy', value: 'one', behavior: 'append' }]
+    ])
   })
 })
