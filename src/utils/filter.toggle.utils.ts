@@ -59,6 +59,13 @@ export const toggleTermFilter = (
   })
 }
 
+const replaceHierarchyParam = (params: string[] = [], param = ''): string[] => {
+  if (params.some((p) => p.startsWith(param))) {
+    return toggleLastPram(params, param)
+  }
+  return [param]
+}
+
 export const toggleHierarchyFilter = (
   appendParams: AppendParams,
   facetAction: HierarchyFacetAction,
@@ -67,11 +74,10 @@ export const toggleHierarchyFilter = (
   removeAllLevels = false
 ): void => {
   const currentFilter = currentFilters?.[facetAction.key] as FilterGroupItemTypeHierarchy
-  const newParams = toggleHierarchyParam(
-    currentFilter?.terms ?? [],
-    facetAction.value,
-    removeAllLevels
-  )
+  const newParams =
+    facetAction.behavior === 'append'
+      ? toggleHierarchyParam(currentFilter?.terms ?? [], facetAction.value, removeAllLevels)
+      : replaceHierarchyParam(currentFilter?.terms ?? [], facetAction.value)
   appendParams({
     params: [getFacetParam(facetAction.key, newParams, FACET_PARAMS_TYPE.HIERARCHY)],
     paramsToRemove: [getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE]

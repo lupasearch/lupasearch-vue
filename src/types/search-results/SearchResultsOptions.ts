@@ -218,12 +218,14 @@ export type ResultFacetOptions = {
   hierarchy?: {
     maxInitialLevel: number
     topLevelValueCountLimit?: number
-    filterable?: boolean
+    filterable?: boolean,
+    behavior?: 'append' | 'replace'
   }
   stats?: {
     slider?: boolean
     inputs?: boolean
     interval?: number
+    pricePrecisionDigits?: number
     labels?: {
       from?: string
       to?: string
