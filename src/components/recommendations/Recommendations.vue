@@ -13,6 +13,7 @@ import { useSearchResultStore } from '@/stores/searchResult'
 import { storeToRefs } from 'pinia'
 import { useScreenStore } from '@/stores/screen'
 import { extractValue } from '@/utils/extraction.utils'
+import { useDynamicDataStore } from '@/stores/dynamicData'
 
 const props = defineProps<{
   options: ProductRecommendationOptions
@@ -21,6 +22,7 @@ const props = defineProps<{
 const optionsStore = useOptionsStore()
 const searchResultStore = useSearchResultStore()
 const screenStore = useScreenStore()
+const dynamicDataStore = useDynamicDataStore()
 
 const { columnCount } = storeToRefs(searchResultStore)
 
@@ -165,6 +167,9 @@ const loadLupaRecommendations = async (): Promise<void> => {
       return
     }
     recommendations.value = result.recommended
+    await dynamicDataStore.enhanceSearchResultsWithDynamicData({
+      result: { items: result.recommended }
+    })
   } finally {
     loading.value = false
   }
