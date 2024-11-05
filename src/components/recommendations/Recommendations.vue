@@ -167,6 +167,7 @@ const loadLupaRecommendations = async (): Promise<void> => {
       return
     }
     recommendations.value = result.recommended
+    loading.value = false
     await dynamicDataStore.enhanceSearchResultsWithDynamicData({
       result: { items: result.recommended }
     })
