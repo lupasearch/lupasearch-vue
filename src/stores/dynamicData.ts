@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useOptionsStore } from './options'
 import { computed, ref, type Ref } from 'vue'
-import type { SearchQueryResult } from '@getlupa/client-sdk/Types'
+import { Document, SimilarQueryResult, SimilarResults } from '@getlupa/client-sdk/Types'
 
 export const useDynamicDataStore = defineStore('dynamicData', () => {
   const loading = ref(false)
@@ -34,7 +34,11 @@ export const useDynamicDataStore = defineStore('dynamicData', () => {
     result,
     mode
   }: {
-    result?: SearchQueryResult
+    result?: {
+      items: Document[]
+      similarQueries?: SimilarQueryResult[]
+      similarResults?: SimilarResults
+    }
     mode?: 'searchBox' | 'searchResults'
   }) => {
     const enabledForMode =
