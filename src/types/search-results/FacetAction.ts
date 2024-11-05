@@ -8,7 +8,7 @@ export type HierarchyFacetAction = {
   type: 'hierarchy'
   value: string
   key: string
-  behavior: 'append' | 'replace'
+  behavior?: 'append' | 'replace'
 }
 
 export type RangeFacetAction = {
