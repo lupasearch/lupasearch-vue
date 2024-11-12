@@ -17,6 +17,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 import SearchResultsBadgeWrapper from './badges/SearchResultsBadgeWrapper.vue'
 import SearchResultsProductCardElement from './elements/SearchResultsProductCardElement.vue'
+import { isDelayedClickTracking } from '@/utils/tracking.utils'
 
 const props = defineProps<{
   product: Document
@@ -140,7 +141,7 @@ const checkIfIsInStock = async (): Promise<void> => {
 }
 
 const handleClick = (): void => {
-  trackingStore.trackEvent({
+  const event = {
     queryKey: props.options.queryKey,
     data: {
       itemId: id.value,
@@ -153,9 +154,15 @@ const handleClick = (): void => {
         items: [props.product],
         itemId: id.value
       },
-      options: { allowEmptySearchQuery: true }
+      options: { allowEmptySearchQuery: true },
+      filters: searchResultStore.hasAnyFilter ? searchResultStore.filters : undefined
     }
-  })
+  }
+  if (isDelayedClickTracking()) {
+    trackingStore.trackDelayedEvent({ ...event, url: link.value })
+  } else {
+    trackingStore.trackEvent(event)
+  }
   searchResultOptions.value.callbacks?.onProductClick?.({
     queryKey: query.value,
     hasResults: true,
@@ -197,6 +204,7 @@ if (ssr.value) {
     :class="!isInStock ? 'lupa-out-of-stock' : ''"
     v-bind="customDocumentHtmlAttributes"
     @click="handleClick"
+    @click.middle.exact="handleClick"
   >
     <SearchResultsBadgeWrapper :options="badgesOptions" />
     <div :class="['lupa-search-result-product-contents', listLayoutClass]">

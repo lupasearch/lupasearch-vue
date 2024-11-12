@@ -1,6 +1,6 @@
 import type { AnalyticsEventType } from '@/types/AnalyticsOptions'
 import type { TrackableEventData } from '@/types/search-box/Common'
-import { track } from '@/utils/tracking.utils'
+import { getDelayedEventsCache, storeDelayedEventCache, track } from '@/utils/tracking.utils'
 import type { Options, PublicQuery, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { defineStore } from 'pinia'
 import { useOptionsStore } from './options'
@@ -77,5 +77,22 @@ export const useTrackingStore = defineStore('tracking', () => {
     )
   }
 
-  return { trackSearch, trackResults, trackEvent }
+  const trackDelayedEvent = ({
+    queryKey,
+    data,
+    url
+  }: {
+    queryKey: string
+    data: TrackableEventData
+    url: string
+  }) => {
+    let currentCache = getDelayedEventsCache()
+    currentCache = {
+      ...currentCache,
+      [url]: { data, queryKey }
+    }
+    storeDelayedEventCache(currentCache)
+  }
+
+  return { trackSearch, trackResults, trackEvent, trackDelayedEvent }
 })

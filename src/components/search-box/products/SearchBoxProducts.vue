@@ -11,6 +11,8 @@ import { useTrackingStore } from '@/stores/tracking'
 import { generateLink } from '@/utils/link.utils'
 import { useOptionsStore } from '@/stores/options'
 import { handleRoutingEvent } from '@/utils/routing.utils'
+import { TrackableEventData } from '@/types/search-box/Common'
+import { isDelayedClickTracking } from '@/utils/tracking.utils'
 
 const props = defineProps<{
   items: Document[]
@@ -59,7 +61,7 @@ const handleProductClick = ({
   if (!props.panelOptions.idKey) {
     return
   }
-  trackingStore.trackEvent({
+  const trackableEvent = {
     queryKey: props.panelOptions.queryKey,
     data: {
       itemId: id,
@@ -70,8 +72,16 @@ const handleProductClick = ({
         label: title ?? link,
         items: [item]
       }
-    }
-  })
+    } as TrackableEventData
+  }
+  if (isDelayedClickTracking()) {
+    trackingStore.trackDelayedEvent({
+      ...trackableEvent,
+      url: link
+    })
+  } else {
+    trackingStore.trackEvent(trackableEvent)
+  }
   if (!link || eventType === 'addToCart') {
     return
   }
