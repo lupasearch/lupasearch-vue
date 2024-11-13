@@ -52,13 +52,18 @@
   }
 }
 
+.lupa-related-queries li.lupa-selected-related-query-filter {
+  border: 1px solid searchResults.$facet-label-color-hover;
+}
+
 @media (max-width: searchResults.$size-s) {
   .lupa-related-queries ul {
     margin: 20px -2px 30px;
     flex-wrap: wrap;
     li {
       flex-basis: calc(50% - 60px);
-      &:not(:last-child),&:last-child {
+      &:not(:last-child),
+      &:last-child {
         margin: 10px;
       }
     }

@@ -25,6 +25,7 @@ import Spinner from '@/components/common/Spinner.vue'
 import { useOptionsStore } from '@/stores/options'
 import SearchResultsSimilarResults from './similar-results/SearchResultsSimilarResults.vue'
 import RelatedQueries from '@/components/search-results/related-queries/RelatedQueries.vue'
+import RedirectionSuggestions from '../redirection-suggestions/RedirectionSuggestions.vue'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
@@ -146,6 +147,7 @@ const filter = () => {
 <template>
   <div id="lupa-search-results-products">
     <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
+    <RedirectionSuggestions :options="options.redirectionSuggestions" />
     <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
     <RelatedQueries :options="options.relatedQueries" />
     <template v-if="hasResults">
