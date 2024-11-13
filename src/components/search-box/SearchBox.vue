@@ -17,7 +17,8 @@ import type {
   FetchedData,
   HighlightedDocInfo,
   InputSuggestion,
-  SelectedData
+  SelectedData,
+  TrackableEventData
 } from '@/types/search-box/Common'
 import { storeToRefs } from 'pinia'
 import { pick } from '@/utils/picker.utils'
@@ -26,6 +27,8 @@ import type { Document, Suggestion } from '@getlupa/client-sdk/Types'
 import { debounce } from '@/utils/debounce.utils'
 import { bindSearchTriggers, unbindSearchTriggers } from '@/utils/event.utils'
 import { useRedirectionStore } from '@/stores/redirections'
+import { isDelayedClickTracking } from '@/utils/tracking.utils'
+import { generateLink } from '@/utils/link.utils'
 
 const defaultSuggestedValue = {
   item: { suggestion: '' },
@@ -260,7 +263,7 @@ const trackDocumentClick = (doc: HighlightedDocInfo): void => {
   if (!doc.queryKey || !doc.doc) {
     return
   }
-  trackingStore.trackEvent({
+  const event = {
     queryKey: doc.queryKey,
     data: {
       itemId: doc.id as string,
@@ -271,8 +274,16 @@ const trackDocumentClick = (doc: HighlightedDocInfo): void => {
         label: doc.title || (doc.id as string),
         items: [doc]
       }
-    }
-  })
+    } as TrackableEventData
+  }
+  if (isDelayedClickTracking()) {
+    trackingStore.trackDelayedEvent({
+      ...event,
+      url: generateLink(props.options.links.searchResults, doc)
+    })
+  } else {
+    trackingStore.trackEvent(event)
+  }
 }
 
 const trackSearchQuery = (query?: string): void => {

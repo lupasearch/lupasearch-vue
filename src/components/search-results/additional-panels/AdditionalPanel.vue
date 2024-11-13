@@ -64,6 +64,7 @@ const handleResults = (res: SearchQueryResult): void => {
 }
 
 const handleQueryChange = (): void => {
+  showAll.value = false
   const context = getLupaTrackingContext()
   const queryBody = {
     ...context,

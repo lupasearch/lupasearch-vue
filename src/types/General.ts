@@ -18,6 +18,7 @@ export type TrackingOptions = {
   trackUser?: boolean
   userKey?: string
   analytics?: AnalyticsOptions
+  delayedClickTracking?: boolean
 }
 
 export type Environment = SdkEnvironment

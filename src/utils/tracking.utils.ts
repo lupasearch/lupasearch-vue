@@ -1,5 +1,7 @@
 import {
+  DELAYED_TRACKING_EVENTS_CACHE,
   TRACKING_ANALYTICS_KEY,
+  TRACKING_CLICK_DELAYED,
   TRACKING_KEY_LENGTH,
   TRACKING_STORAGE_KEY,
   TRACKING_STORAGE_KEY_BASE
@@ -10,6 +12,7 @@ import type { TrackableEventData } from '@/types/search-box/Common'
 import lupaSearchSdk from '@getlupa/client-sdk'
 import type { EventData, Options } from '@getlupa/client-sdk/Types'
 import { getRandomString } from './string.utils'
+import { useOptionsStore } from '@/stores/options'
 
 declare global {
   interface Window {
@@ -92,6 +95,14 @@ const isTrackingEnabled = (): boolean => {
   }
 }
 
+export const isDelayedClickTracking = (): boolean => {
+  try {
+    return Boolean(window.localStorage.getItem(TRACKING_CLICK_DELAYED))
+  } catch {
+    return false
+  }
+}
+
 const getSessionKey = (): string | undefined => {
   try {
     return window.sessionStorage.getItem(TRACKING_STORAGE_KEY) ?? undefined
@@ -122,6 +133,12 @@ export const initTracking = (options: TrackingOptions): void => {
   }
   if (options.analytics) {
     initAnalyticsTracking(options.analytics)
+  }
+  if (options.delayedClickTracking) {
+    window.localStorage.setItem(TRACKING_CLICK_DELAYED, '1')
+    checkAndDispatchDelayedEvents()
+  } else {
+    window.localStorage.removeItem(TRACKING_CLICK_DELAYED)
   }
 }
 
@@ -251,6 +268,45 @@ const processDebugEvent = (data: TrackableEventData) => {
   }
   console.debug('Analytics debug event:', params)
 }
+
+export const getDelayedEventsCache = (): Record<
+  string,
+  { queryKey: string; data: TrackableEventData }
+> => {
+  try {
+    return JSON.parse(window.localStorage.getItem(DELAYED_TRACKING_EVENTS_CACHE) ?? '{}')
+  } catch {
+    return {}
+  }
+}
+
+export const storeDelayedEventCache = (
+  cache: Record<string, { queryKey: string; data: TrackableEventData }>
+) => {
+  try {
+    window.localStorage.setItem(DELAYED_TRACKING_EVENTS_CACHE, JSON.stringify(cache))
+  } catch {
+    // Do nothing
+  }
+}
+
+export const checkAndDispatchDelayedEvents = () => {
+  const optionsStore = useOptionsStore()
+  const eventCache = getDelayedEventsCache()
+  const urls = Object.keys(eventCache)
+  let hasMatchingUrl = false
+  for (const url of urls) {
+    if (window.location.href?.includes(url)) {
+      hasMatchingUrl = true
+      const options: Options = optionsStore.envOptions ?? { environment: 'production' }
+      const { queryKey, data } = eventCache[url]
+      track(queryKey, data, options)
+    }
+  }
+  storeDelayedEventCache({})
+}
+
+export const checkForDelayedTrackingEvents = () => {}
 
 export const track = (
   queryKey?: string,

@@ -14,6 +14,16 @@ export const getNormalizedString = (str?: string | number): string => {
         ?.trim()
 }
 
+export const getTransformedString = (str?: string | number): string => {
+  if (!str) {
+    return ''
+  }
+  const transformedStr = typeof str === 'string' ? str : str.toString()
+  return transformedStr.normalize === undefined
+    ? transformedStr.toLocaleLowerCase()?.trim()
+    : transformedStr.toLocaleLowerCase().normalize('NFKD')?.trim()
+}
+
 export const capitalize = (str?: string): string => {
   if (!str) {
     return ''
@@ -116,8 +126,8 @@ export const inputsAreEqual = (input: string, possibleValues: string[]): boolean
   if (!input) {
     return false
   }
-  const normalizedInput = getNormalizedString(input)
-  return possibleValues.some((v) => getNormalizedString(v) === normalizedInput)
+  const normalizedInput = getTransformedString(input)
+  return possibleValues.some((v) => getTransformedString(v) === normalizedInput)
 }
 
 const levenshteinDistance = (s = '', t = '') => {
