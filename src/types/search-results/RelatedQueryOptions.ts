@@ -12,6 +12,7 @@ export type RelatedQueryFacetsSource = RelatedQuerySourceBase & {
   type: RelatedQuerySourceType.FACETS
   key: string
   count: number
+  mode?: 'query' | 'filter'
 }
 
 export type RelatedQuerySource = RelatedQueryFacetsSource

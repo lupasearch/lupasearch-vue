@@ -7,6 +7,7 @@ import { DocumentElementType } from '@/types/DocumentElement'
 import { SearchQueryResult } from '@getlupa/client-sdk/Types'
 import lupaSearchSdk from '@getlupa/client-sdk'
 import ProductImage from '@/components/common/ProductImage.vue'
+import { useSearchResultStore } from '@/stores/searchResult'
 
 const props = defineProps<{
   query?: string
@@ -17,7 +18,10 @@ const loading = ref(false)
 const relatedQueryResult: Ref<SearchQueryResult | null> = ref(null)
 
 const optionsStore = useOptionsStore()
+const searchResultStore = useSearchResultStore()
+
 const { searchResultOptions } = storeToRefs(optionsStore)
+const { searchResult } = storeToRefs(searchResultStore)
 
 const mainImage = computed(() => {
   return (
@@ -45,11 +49,25 @@ const totalItemCount = computed(() => {
   return relatedQueryResult.value?.total ?? 0
 })
 
+const searchText = computed(() => {
+  return props.options.source?.mode === 'filter'
+    ? searchResult.value?.searchText
+    : props.query?.toLowerCase()
+})
+
+const relatedQueryFilters = computed(() => {
+  return props.options.source?.mode === 'filter'
+    ? {
+        [props.options?.source?.key]: [props.query]
+      }
+    : {}
+})
+
 const searchForRelatedQuery = async (): Promise<void> => {
   if (!props.query) {
     return
   }
-  const lupaQuery = { searchText: props.query?.toLowerCase(), limit: 1 }
+  const lupaQuery = { searchText: searchText.value, limit: 1, filters: relatedQueryFilters.value }
   try {
     loading.value = true
     const result = await lupaSearchSdk.query(
