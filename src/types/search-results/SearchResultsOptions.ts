@@ -5,6 +5,7 @@ import type { SearchResultsProductCardOptions } from './SearchResultsProductCard
 import type { SearchResultsSortOptions } from './SearchResultsSort'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
 import { RelatedQueryOptions } from './RelatedQueryOptions'
+import { RedirectionSuggestionOptions } from './RedirectionSuggestionOptionts'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -109,6 +110,7 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
     searchTitlePosition?: string
     hideResultsOnReload?: boolean
     relatedQueries?: RelatedQueryOptions
+    redirectionSuggestions?: RedirectionSuggestionOptions[]
     toolbar?: {
       layoutSelector?: boolean
       itemSummary?: boolean
@@ -218,7 +220,7 @@ export type ResultFacetOptions = {
   hierarchy?: {
     maxInitialLevel: number
     topLevelValueCountLimit?: number
-    filterable?: boolean,
+    filterable?: boolean
     behavior?: 'append' | 'replace'
   }
   stats?: {

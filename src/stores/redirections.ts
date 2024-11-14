@@ -18,7 +18,11 @@ export const useRedirectionStore = defineStore('redirections', () => {
     try {
       localStorage.setItem(
         CACHE_KEY,
-        JSON.stringify({ redirections: redirections.value, savedAt: Date.now() })
+        JSON.stringify({
+          redirections: redirections.value,
+          savedAt: Date.now(),
+          queryKey: redirectionOptions.value.queryKey
+        })
       )
     } catch {
       // local storage not available, do nothing
@@ -30,6 +34,9 @@ export const useRedirectionStore = defineStore('redirections', () => {
 
     try {
       const data = JSON.parse(localStorage.getItem(CACHE_KEY) ?? '')
+      if (data.queryKey !== config.queryKey) {
+        return false
+      }
       if (data?.redirections && Date.now() - data.savedAt < 1000 * config.cacheSeconds) {
         redirections.value = data.redirections
         return true
@@ -56,6 +63,7 @@ export const useRedirectionStore = defineStore('redirections', () => {
     try {
       const result = await lupaSearchSdk.loadRedirectionRules(config.queryKey, options)
       if (!(result as RedirectionRules)?.rules?.length) {
+        redirections.value = { rules: [] }
         return
       }
       redirections.value = result as RedirectionRules
