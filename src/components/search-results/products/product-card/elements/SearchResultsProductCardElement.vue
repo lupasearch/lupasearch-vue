@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Document } from '@getlupa/client-sdk/Types'
-import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
-import { processDisplayCondition } from '@/utils/render.utils'
+import { getDynamicAttributes, processDisplayCondition } from '@/utils/render.utils'
 import type { DocumentElement } from '@/types/DocumentElement'
 import { DocumentElementType } from '@/types/DocumentElement'
 import { useDynamicDataStore } from '@/stores/dynamicData'
@@ -47,6 +46,10 @@ const elementComponent = computed((): string => {
   return 'searchResultsProductTitle'
 })
 
+const renderDynamicAttributesOnParentElement = computed((): boolean => {
+  return props.element.type !== DocumentElementType.ADDTOCART
+})
+
 const enhancedItem = computed((): Document => {
   if (!props.item?.id) {
     return props.item
@@ -67,6 +70,10 @@ const displayElement = computed((): boolean => {
   return typeof element.display === 'function'
     ? element.display(item)
     : processDisplayCondition(element.display, item)
+})
+
+const dynamicAttributes = computed((): Record<string, unknown> => {
+  return getDynamicAttributes(props.element.dynamicAttributes, enhancedItem.value)
 })
 
 const handleProductEvent = (item: { type: string }): void => {
@@ -115,6 +122,8 @@ export default {
     :inStock="inStock"
     :link="link"
     :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
+    :dynamic-attributes="dynamicAttributes"
+    v-bind="renderDynamicAttributesOnParentElement && dynamicAttributes"
     @productEvent="handleProductEvent"
   >
   </component>

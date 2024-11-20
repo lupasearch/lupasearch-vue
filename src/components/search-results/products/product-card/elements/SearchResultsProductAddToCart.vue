@@ -5,7 +5,12 @@ import type { AddToCartElement } from '@/types/DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 
-const props = defineProps<{ item: Document; options: AddToCartElement; inStock: boolean }>()
+const props = defineProps<{
+  item: Document
+  options: AddToCartElement
+  inStock: boolean
+  dynamicAttributes: Record<string, unknown>
+}>()
 
 const inStockValue = computed(() => props.inStock ?? true)
 
@@ -51,6 +56,7 @@ const handleClick = async (): Promise<void> => {
         :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
         data-cy="lupa-add-to-cart"
         :disabled="!inStockValue || loading"
+        v-bind="dynamicAttributes"
         @click.stop="handleClick"
       >
         {{ label }}

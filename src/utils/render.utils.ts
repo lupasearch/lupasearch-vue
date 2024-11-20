@@ -1,6 +1,7 @@
 import sanitizeHtml from 'sanitize-html'
 import Mustache from 'mustache'
-import { DisplayCondition } from '@/types/DocumentElement'
+import { DisplayCondition, DynamicAttribute } from '@/types/DocumentElement'
+import { escapeHtml } from './string.utils'
 
 export const renderHtmlTemplate = (
   template: string,
@@ -8,6 +9,20 @@ export const renderHtmlTemplate = (
 ): string => {
   const rendered = Mustache.render(template, document)
   return sanitizeHtml(rendered)
+}
+
+export const getDynamicAttributes = (
+  dynamicAttributes: DynamicAttribute[] = [],
+  document: Record<string, unknown> = {}
+) => {
+  const parsedAttributes = {}
+  for (const attribute of dynamicAttributes) {
+    if (!attribute?.key?.startsWith('data-')) {
+      continue // Only data- attributes are supported
+    }
+    parsedAttributes[attribute?.key] = escapeHtml(Mustache.render(attribute?.value ?? '', document))
+  }
+  return parsedAttributes
 }
 
 const getFieldValue = (doc: Record<string, any>, field: string | number = '') => {

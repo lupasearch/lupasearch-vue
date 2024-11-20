@@ -5,7 +5,7 @@ import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { processDisplayCondition } from '@/utils/render.utils'
+import { getDynamicAttributes, processDisplayCondition } from '@/utils/render.utils'
 
 const props = defineProps<{
   item: Document
@@ -40,6 +40,10 @@ const elementComponent = computed((): string => {
   return 'search-box-product-title'
 })
 
+const renderDynamicAttributesOnParentElement = computed((): boolean => {
+  return props.element.type !== DocumentElementType.ADDTOCART
+})
+
 const displayElement = computed((): boolean => {
   const element = props.element
   const item = props.item
@@ -60,6 +64,10 @@ const enhancedItem = computed((): Document => {
     ...props.item,
     ...enhancementData
   }
+})
+
+const dynamicAttributes = computed((): Record<string, unknown> => {
+  return getDynamicAttributes(props.element.dynamicAttributes, enhancedItem.value)
 })
 
 const isLoadingDynamicData = (id?: unknown) => {
@@ -99,6 +107,8 @@ export default {
       :labels="labels"
       :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
       :inStock="isInStock"
+      :dynamic-attributes="dynamicAttributes"
+      v-bind="renderDynamicAttributesOnParentElement && dynamicAttributes"
     >
     </component>
   </template>
