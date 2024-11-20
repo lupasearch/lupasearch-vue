@@ -1,5 +1,5 @@
 import { DisplayCondition } from '@/types/DocumentElement'
-import { processDisplayCondition, renderHtmlTemplate } from '../render.utils'
+import { getDynamicAttributes, processDisplayCondition, renderHtmlTemplate } from '../render.utils'
 
 describe('renderHtmlTemplate', () => {
   test('should interpolate values and sanitize output', () => {
@@ -195,5 +195,199 @@ describe('processDisplayCondition', () => {
     const condition: DisplayCondition = { condition: 'exists' } as any
     const result = processDisplayCondition(condition)
     expect(result).toBe(false)
+  })
+})
+
+describe('getDynamicAttributes', () => {
+  test('should return empty object if no dynamicAttributes are provided', () => {
+    const result = getDynamicAttributes()
+    expect(result).toEqual({})
+  })
+
+  test('should return empty object if dynamicAttributes is empty', () => {
+    const result = getDynamicAttributes([])
+    expect(result).toEqual({})
+  })
+
+  test('should ignore attributes whose key does not start with "data-"', () => {
+    const dynamicAttributes = [
+      { key: 'class', value: 'my-class' },
+      { key: 'id', value: 'my-id' }
+    ]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({})
+  })
+
+  test('should process attributes whose key starts with "data-"', () => {
+    const dynamicAttributes = [
+      { key: 'data-custom', value: 'custom value' },
+      { key: 'data-another', value: 'another value' }
+    ]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-custom': 'custom value',
+      'data-another': 'another value'
+    })
+  })
+
+  test('should render attribute values using Mustache and document data', () => {
+    const dynamicAttributes = [{ key: 'data-greeting', value: 'Hello, {{name}}!' }]
+    const document = { name: 'Alice' }
+    const result = getDynamicAttributes(dynamicAttributes, document)
+    expect(result).toEqual({
+      'data-greeting': 'Hello, Alice!'
+    })
+  })
+
+  test('should escape HTML in rendered values', () => {
+    const dynamicAttributes = [{ key: 'data-unsafe', value: '<script>alert("XSS")</script>' }]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-unsafe': '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;'
+    })
+  })
+
+  test('should handle nested properties in document', () => {
+    const dynamicAttributes = [
+      { key: 'data-fullname', value: '{{user.firstName}} {{user.lastName}}' }
+    ]
+    const document = { user: { firstName: 'John', lastName: 'Doe' } }
+    const result = getDynamicAttributes(dynamicAttributes, document)
+    expect(result).toEqual({
+      'data-fullname': 'John Doe'
+    })
+  })
+
+  test('should handle missing properties gracefully', () => {
+    const dynamicAttributes = [{ key: 'data-unknown', value: '{{unknownProperty}}' }]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-unknown': ''
+    })
+  })
+
+  test('should handle null or undefined values', () => {
+    const dynamicAttributes = [
+      { key: 'data-null', value: null },
+      { key: 'data-undefined', value: undefined }
+    ]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-null': '',
+      'data-undefined': ''
+    })
+  })
+
+  test('should handle empty string values', () => {
+    const dynamicAttributes = [{ key: 'data-empty', value: '' }]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-empty': ''
+    })
+  })
+
+  test('should handle arrays in document data', () => {
+    const dynamicAttributes = [{ key: 'data-items', value: '{{#items}}{{.}},{{/items}}' }]
+    const document = { items: ['a', 'b', 'c'] }
+    const result = getDynamicAttributes(dynamicAttributes, document)
+    expect(result).toEqual({
+      'data-items': 'a,b,c,'
+    })
+  })
+
+  test('should continue processing other attributes even if one fails', () => {
+    const dynamicAttributes = [
+      { key: 'data-valid', value: 'Valid' },
+      { key: null, value: 'Invalid' },
+      { key: 'data-also-valid', value: 'Also valid' }
+    ]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-valid': 'Valid',
+      'data-also-valid': 'Also valid'
+    })
+  })
+
+  test('should ignore attributes with null or undefined keys', () => {
+    const dynamicAttributes = [
+      { key: null, value: 'Null key' },
+      { key: undefined, value: 'Undefined key' },
+      { key: 'data-valid', value: 'Valid key' }
+    ]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-valid': 'Valid key'
+    })
+  })
+
+  test('should handle keys that start with "data-" but have uppercase letters', () => {
+    const dynamicAttributes = [{ key: 'data-Custom', value: 'Custom value' }]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-Custom': 'Custom value'
+    })
+  })
+
+  test('should not modify the original dynamicAttributes array', () => {
+    const dynamicAttributes = [{ key: 'data-original', value: 'Original value' }]
+    const originalDynamicAttributes = JSON.parse(JSON.stringify(dynamicAttributes))
+    getDynamicAttributes(dynamicAttributes)
+    expect(dynamicAttributes).toEqual(originalDynamicAttributes)
+  })
+
+  test('should not throw error if dynamicAttributes contains invalid entries', () => {
+    const dynamicAttributes = [
+      null,
+      { key: 'data-valid', value: 'Valid' },
+      undefined,
+      { key: 'not-data', value: 'Not data' }
+    ]
+    expect(() => getDynamicAttributes(dynamicAttributes)).not.toThrow()
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-valid': 'Valid'
+    })
+  })
+
+  test('should process attributes with key starting with "data-" with additional dashes', () => {
+    const dynamicAttributes = [{ key: 'data-custom-attribute', value: 'Custom Attribute' }]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-custom-attribute': 'Custom Attribute'
+    })
+  })
+
+  test('should escape HTML in rendered values with Mustache variables', () => {
+    const dynamicAttributes = [{ key: 'data-unsafe', value: '{{unsafe}}' }]
+    const document = { unsafe: '<script>alert("XSS")</script>' }
+    const result = getDynamicAttributes(dynamicAttributes, document)
+    expect(result).toEqual({
+      'data-unsafe': '&amp;lt;script&amp;gt;alert(&amp;quot;XSS&amp;quot;)&amp;lt;&amp;#x2F;script&amp;gt;'
+    })
+  })
+
+  test('should handle multiple attributes', () => {
+    const dynamicAttributes = [
+      { key: 'data-first', value: 'First' },
+      { key: 'data-second', value: 'Second' },
+      { key: 'data-third', value: 'Third' }
+    ]
+    const result = getDynamicAttributes(dynamicAttributes)
+    expect(result).toEqual({
+      'data-first': 'First',
+      'data-second': 'Second',
+      'data-third': 'Third'
+    })
+  })
+
+  test("should handle nested properties in document's dynamic attributes", () => {
+    const dynamicAttributes = [
+      { key: 'data-fullname', value: '{{user.firstName}} {{user.lastName}}' }
+    ]
+    const document = { user: { firstName: 'John', lastName: 'Doe' } }
+    const result = getDynamicAttributes(dynamicAttributes, document)
+    expect(result).toEqual({
+      'data-fullname': 'John Doe'
+    })
   })
 })

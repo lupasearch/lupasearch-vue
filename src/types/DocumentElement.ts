@@ -24,6 +24,11 @@ export type DisplayCondition = {
   fields: (string | number)[]
 }
 
+export type DynamicAttribute = {
+  key: string
+  value: string
+}
+
 export type DocumentElementBase<T = any> = {
   type: DocumentElementType
   key?: string
@@ -31,6 +36,7 @@ export type DocumentElementBase<T = any> = {
   isHtml?: boolean
   group?: string
   dynamic?: boolean
+  dynamicAttributes?: DynamicAttribute[]
 }
 
 export type ImageDocumentElement<T = any> = DocumentElementBase<T> & {
