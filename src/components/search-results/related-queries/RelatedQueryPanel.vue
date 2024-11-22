@@ -67,7 +67,12 @@ const searchForRelatedQuery = async (): Promise<void> => {
   if (!props.query) {
     return
   }
-  const lupaQuery = { searchText: searchText.value, limit: 1, filters: relatedQueryFilters.value }
+  const lupaQuery = {
+    searchText: searchText.value,
+    limit: 1,
+    filters: relatedQueryFilters.value,
+    trackTerm: false
+  }
   try {
     loading.value = true
     const result = await lupaSearchSdk.query(
