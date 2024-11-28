@@ -272,7 +272,7 @@ const handleDragging = (value: number[]): void => {
         :aria="sliderAria"
         v-model="sliderRange"
         @slide="handleDragging"
-        @end="handleChange"
+        @set="handleChange"
       >
       </Slider>
     </div>
