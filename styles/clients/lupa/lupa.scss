@@ -62,6 +62,7 @@ $icon-font-family: 'Material Design Icons' !default;
 @use './lupaProductCard.scss';
 @use './lupaFacets.scss';
 @use './lupaRecommendations.scss';
+@use './lupaVoiceSearch.scss';
 
 #lupa-search-results-products {
   background: lupaConfig.$white;

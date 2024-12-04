@@ -23,6 +23,9 @@ export const SEARCH_BOX_CONFIGURATION = {
   links: {
     searchResults: '/catalogsearch/result'
   },
+  voiceSearch: {
+    enabled: true,
+  },
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,
   showNoResultsPanel: true,

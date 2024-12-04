@@ -5,6 +5,7 @@ import type { InputSuggestion } from '@/types/search-box/Common'
 import type { SearchBoxInputOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import VoiceSearchButton from '@/components/search-box/voice-search/VoiceSearchButton.vue'
 
 const props = defineProps<{
   options: SearchBoxInputOptions
@@ -90,6 +91,11 @@ const focus = (): void => {
   ;(mainInput?.value as HTMLInputElement)?.focus()
 }
 
+const handleVoiceSearchOutput = (transcription: string): void => {
+  inputValue.value = transcription
+  handleSubmit()
+}
+
 defineExpose({ focus })
 </script>
 <template>
@@ -128,5 +134,10 @@ defineExpose({ focus })
     <div v-if="canClose" class="lupa-close-search-container" @click="$emit('close')">
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>
     </div>
+    <VoiceSearchButton
+      v-if="options.voiceSearch.enabled"
+      :options="options.voiceSearch"
+      @send-recognition-text="handleVoiceSearchOutput"
+    />
   </div>
 </template>

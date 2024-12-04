@@ -1,0 +1,93 @@
+@use './lupaConfig.scss';
+
+.voice-search-button {
+  cursor: pointer;
+  position: absolute;
+  right: -70px;
+  top: -1px;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &::after {
+    @include lupaConfig.material-icon();
+    // TODO: figure out microphone icon
+    content: '\F0349';
+    font-size: 24px;
+    position: absolute;
+    right: 13px;
+    top: 13px;
+  }
+
+  &:hover {
+    background-color: lupaConfig.$primary;
+  }
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 38px;
+  left: 500px;
+  width: 900px;
+  height: 300px;
+  border: 1px solid lupaConfig.$border-color;
+  background: lupaConfig.$white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .dialog-box {
+    padding: 20px;
+    text-align: center;
+  
+    .dialog-box-close-button {
+      position: absolute;
+      top: 10px; /* Adjust based on the distance from the top */
+      right: 10px; /* Adjust based on the distance from the right */
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .dialog-box-close-button:hover {
+      background-color: lupaConfig.$primary;
+    }
+  }
+
+  .dialog-content {
+    .listening-text {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: lupaConfig.$text-color;
+    }
+
+    .mic-button {
+      background: lupaConfig.$text-color-faded;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s ease;
+
+      &::after {
+        @include lupaConfig.material-icon();
+        // TODO: figure out microphone icon
+        content: '\F0349';
+        font-size: 24px;
+        position: absolute;
+        right: 13px;
+        top: 13px;
+      }
+
+      // TODO: how to make it stay active while listening?
+      &:active {
+        background: lupaConfig.$discount-color;
+      }
+    }
+  }
+}

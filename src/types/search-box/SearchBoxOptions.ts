@@ -35,12 +35,18 @@ export type SearchBoxOptionLinks = {
   searchResults: string
 }
 
+export type VoiceSearchOptions = {
+  enabled: boolean
+  language: string
+}
+
 export type SearchBoxInputOptions = {
   minInputLength: number
   labels: SearchBoxOptionLabels
   links: SearchBoxOptionLinks
   inputAttributes?: Record<string, string>
   showSubmitButton?: boolean
+  voiceSearch?: VoiceSearchOptions
 }
 
 export type SearchBoxResultCallbackContext = {

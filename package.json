@@ -69,6 +69,7 @@
   },
   "dependencies": {
     "mustache": "^4.2.0",
-    "sanitize-html": "^2.13.0"
+    "sanitize-html": "^2.13.0",
+    "ws": "^8.18.0"
   }
 }
