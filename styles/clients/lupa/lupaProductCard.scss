@@ -89,6 +89,7 @@
   border: 1px solid lupaConfig.$border-color;
   padding: 8px 16px;
   border-radius: 8px;
+  box-sizing: border-box;
   cursor: pointer;
   &:hover {
     background-color: lupaConfig.$primary;
