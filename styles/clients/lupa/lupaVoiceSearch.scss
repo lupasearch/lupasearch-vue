@@ -84,9 +84,8 @@
         top: 13px;
       }
 
-      // TODO: how to make it stay active while listening?
-      &:active {
-        background: lupaConfig.$discount-color;
+      &.recording {
+        background: red;
       }
     }
   }

@@ -137,7 +137,7 @@ defineExpose({ focus })
     <VoiceSearchButton
       v-if="options.voiceSearch.enabled"
       :options="options.voiceSearch"
-      @send-recognition-text="handleVoiceSearchOutput"
+      @get-recognition-text="handleVoiceSearchOutput"
     />
   </div>
 </template>

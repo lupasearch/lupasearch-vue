@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import VoiceSearchDialog from './VoiceSearchDialog.vue'
 
-const emits = defineEmits(['send-recognition-text'])
+const emits = defineEmits(['get-recognition-text'])
 
 const isDialogOpen = ref(false)
 
@@ -11,8 +11,14 @@ const closeDialog = () => {
 }
 
 const stopRecognition = (trascription: string) => {
-  isDialogOpen.value = false
-  emits('send-recognition-text', trascription)
+  setTimeout(() => {
+    isDialogOpen.value = false
+    emits('get-recognition-text', trascription)
+  }, 500);
+}
+
+const handleTranscriptionUpdate = (trascription: string) => {
+  emits('get-recognition-text', trascription)
 }
 
 const openVoiceSearchDialog = () => {
@@ -29,7 +35,8 @@ const openVoiceSearchDialog = () => {
     <VoiceSearchDialog 
       :isOpen="isDialogOpen" 
       @close="closeDialog"
-      @stop-recognition="stopRecognition"
+      @transcript-update="handleTranscriptionUpdate"
+      @stop-recognize="stopRecognition"
     />
   </div>
 </template>
