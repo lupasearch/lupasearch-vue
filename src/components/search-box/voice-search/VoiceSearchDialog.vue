@@ -46,11 +46,12 @@ const startRecognize = async () => {
     };
 
     socket.value.onmessage = (event) => {
-      const { eventName, transcript } = JSON.parse(event.data);
+      const messageObj = JSON.parse(event.data);
+      console.log('WebSocket message:', messageObj);
 
-      if (eventName === 'transcription') {
-        console.log('Transcription:', transcript);
-        transcription.value = transcript;
+      if (messageObj.event === 'transcription') {
+        console.log('Transcription:', messageObj.transcription);
+        transcription.value = messageObj.transcription;
         stopRecording();
       }
     };
@@ -129,8 +130,10 @@ const onDataAvailableHandler = (event: BlobEvent) => {
   console.log('Sending audio chunk...');
   // Encode audio data to base64
   const reader = new FileReader();
-  reader.onload = () => {
-    const base64Data = reader.result as string;
+  reader.readAsDataURL(event.data); 
+  reader.onloadend = () => {
+    const base64DataChunks = reader.result as string;
+    const base64Data = base64DataChunks.split(',')[1];
     socket.value?.send(JSON.stringify({ event: 'audio-chunk', data: base64Data }));
   };
 };
