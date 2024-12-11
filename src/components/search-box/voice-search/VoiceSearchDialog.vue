@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
+import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions';
+import { getVoiceServiceApiUrl } from '@/utils/api.utils';
 
 const socket = ref<WebSocket | null>(null)
 
@@ -12,7 +14,8 @@ const chunkLength = 1000
 const stopDelay = 500
 
 const props = defineProps<{
-  isOpen: boolean
+  isOpen: boolean,
+  options: VoiceSearchOptions
 }>()
 
 const emit = defineEmits([
@@ -46,8 +49,9 @@ const startRecognize = async () => {
   }
 
   try {
+    // TODO: how to better handle environment here
     socket.value = new WebSocket(
-      'ws://localhost:3000?lang=en-US&connectionType=write-first'
+      `${getVoiceServiceApiUrl("production", props.options.customVoiceServiceUrl)}?lang=${props.options.language ?? "en-US"}&connectionType=write-first`
     )
 
     socket.value.onmessage = (event) => {

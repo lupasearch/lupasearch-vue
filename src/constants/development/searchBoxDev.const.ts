@@ -25,6 +25,7 @@ export const SEARCH_BOX_CONFIGURATION = {
   },
   voiceSearch: {
     enabled: true,
+    customVoiceServiceUrl: 'ws://localhost:3000'
   },
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,

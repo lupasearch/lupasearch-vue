@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import VoiceSearchDialog from './VoiceSearchDialog.vue'
+import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions';
+
+const props = defineProps<{
+  options: VoiceSearchOptions
+}>()
 
 const emits = defineEmits(['get-recognition-text'])
 
@@ -27,13 +32,14 @@ const openVoiceSearchDialog = () => {
 </script>
 
 <template>
-  <div>
+  <div v-if="props.options.enabled">
     <button 
       @click="openVoiceSearchDialog" 
       class="voice-search-button"
     ></button>
     <VoiceSearchDialog 
       :isOpen="isDialogOpen" 
+      :options="props.options"
       @close="closeDialog"
       @transcript-update="handleTranscriptionUpdate"
       @stop-recognize="stopRecognition"

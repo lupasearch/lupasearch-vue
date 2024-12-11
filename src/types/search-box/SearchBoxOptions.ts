@@ -37,7 +37,8 @@ export type SearchBoxOptionLinks = {
 
 export type VoiceSearchOptions = {
   enabled: boolean
-  language: string
+  language?: string
+  customVoiceServiceUrl?: string
 }
 
 export type SearchBoxInputOptions = {
