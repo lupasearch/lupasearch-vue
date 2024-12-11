@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import WebSocket from 'ws';
 
 const socket = ref<WebSocket | null>(null);
 const isRecordingRef = ref<boolean>(false);
@@ -11,26 +10,26 @@ const transcription = ref('');
 
 const props = defineProps<{
   isOpen: boolean
-}>()
+}>();
 
-const emit = defineEmits(['close', 'stopRecognize'])
+const emit = defineEmits(['close', 'stopRecognize']);
 
 const closeDialog = (): void => {
-  emit('close')
-}
+  emit('close');
+};
 
 const stopRecognize = (): void => {
-  emit('stopRecognize', transcription.value)
-}
+  emit('stopRecognize', transcription.value);
+};
 
 const handleOverlayClick = (e: MouseEvent): void => {
   if ((e.target as HTMLElement).classList.contains('dialog-overlay')) {
-    closeDialog()
+    closeDialog();
   }
-}
+};
 
 const startRecognize = async () => {
-  console.log('Recognizing...')
+  console.log('Recognizing...');
 
   if (
     isRecordingRef.value ||
@@ -40,18 +39,29 @@ const startRecognize = async () => {
   }
 
   try {
-    socket.value = new WebSocket('http://localhost:3000', { 
-      query: {
-        lang: 'en-US',
-        connectionType: 'write-first',
-      } 
-    });
+    socket.value = new WebSocket('ws://localhost:3000?lang=en-US&connectionType=write-first');
 
-    socket.value.on('transcription', (data: string) => {
-      console.log('Transcription:', data);
-      transcription.value = data;
-      socket.value?.disconnect();
-    });
+    socket.value.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    socket.value.onmessage = (event) => {
+      const { eventName, transcript } = JSON.parse(event.data);
+
+      if (eventName === 'transcription') {
+        console.log('Transcription:', transcript);
+        transcription.value = transcript;
+        stopRecording();
+      }
+    };
+
+    socket.value.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.value.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
 
     const constraints = {
       video: false,
@@ -67,7 +77,7 @@ const startRecognize = async () => {
     mediaRecorder.value = new MediaRecorder(stream);
     mediaRecorder.value.ondataavailable = onDataAvailableHandler;
     mediaRecorder.value.onstop = onStopHandler;
-    mediaRecorder.value.start(1000);
+    mediaRecorder.value.start(1000); // Send chunks every second
     isRecordingRef.value = true;
 
     setTimeout(() => {
@@ -77,20 +87,20 @@ const startRecognize = async () => {
       }
     }, timesliceLimit.value * 1000);
   } catch (error) {
-    console.error('Error during recording start:', error)
-    return
+    console.error('Error during recording start:', error);
+    return;
   }
-}
+};
 
-const stopRecording = async () => {
+const stopRecording = () => {
   console.log('Recording stopped...');
 
   if (
     !mediaRecorder.value || 
     !isRecordingRef.value || 
-    mediaRecorder.value?.state === 'inactive' 
+    mediaRecorder.value?.state === 'inactive'
   ) {
-    throw new Error('MediaRecorder is not prepared or not recording')
+    throw new Error('MediaRecorder is not prepared or not recording');
   }
 
   try {
@@ -99,14 +109,14 @@ const stopRecording = async () => {
       track.stop();
     });
 
-    console.log('Emitting audio chunk end...');
-    socket.value?.emit('audio-chunk-end');
+    console.log('Sending audio-chunk-end message...');
+    socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }));
     isRecordingRef.value = false;
 
     stopRecognize();
   } catch (error) {
-    console.error('Error during recording stop:', error)
-    return
+    console.error('Error during recording stop:', error);
+    return;
   }
 };
 
@@ -116,13 +126,18 @@ const onDataAvailableHandler = (event: BlobEvent) => {
     return;
   }
 
-  console.log('Emitting audio chunk...');
-  socket.value?.emit("audio-chunk", event.data);
-}
+  console.log('Sending audio chunk...');
+  // Encode audio data to base64
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64Data = reader.result as string;
+    socket.value?.send(JSON.stringify({ event: 'audio-chunk', data: base64Data }));
+  };
+};
 
-const onStopHandler = async (event: Event) => {
+const onStopHandler = () => {
   stopRecording();
-}
+};
 </script>
 
 <template>
