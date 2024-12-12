@@ -8,7 +8,7 @@ const socket = ref<WebSocket | null>(null)
 const isRecordingRef = ref<boolean>(false)
 const mediaStream = ref<MediaStream | null>(null)
 const mediaRecorder = ref<MediaRecorder | null>(null)
-const timesliceLimit = ref<number>(5)
+const timesliceLimit = ref<number>(4)
 const transcription = ref('')
 const chunkLength = 1000
 const stopDelay = 500
@@ -188,7 +188,6 @@ const handleOnStopEvent = () => {
           class="dialog-box-close-button"
           @click="handleDialogCloseEvent"
         >
-          X
         </button>
         
         <div class="dialog-content">
