@@ -49,13 +49,17 @@ export const toggleTermFilter = (
   appendParams: AppendParams,
   facetAction: TermFacetAction,
   getQueryParamName?: (param: LupaQueryParamValue) => string,
-  currentFilters?: FilterGroup
+  currentFilters?: FilterGroup,
+  paramsToRemove: string[] = []
 ): void => {
   const currentFilter = currentFilters?.[facetAction.key] as FilterGroupItemTypeTerms
   const newParams = toggleTermParam(currentFilter, facetAction.value)
   appendParams({
     params: [getFacetParam(facetAction.key, newParams)],
-    paramsToRemove: [getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE]
+    paramsToRemove: [
+      ...paramsToRemove,
+      ...[getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE]
+    ]
   })
 }
 

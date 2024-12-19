@@ -8,11 +8,19 @@ export type RelatedQuerySourceBase = {
   type: RelatedQuerySourceType
 }
 
+export type RelatedQueryFacetsSourceQuery = {
+  facetKey: string
+  queryKey: string
+  type: 'document' | 'suggestion',
+  maxCount?: number
+}
+
 export type RelatedQueryFacetsSource = RelatedQuerySourceBase & {
   type: RelatedQuerySourceType.FACETS
   key: string
   count: number
   mode?: 'query' | 'filter'
+  queries?: RelatedQueryFacetsSourceQuery[]
 }
 
 export type RelatedQuerySource = RelatedQueryFacetsSource
