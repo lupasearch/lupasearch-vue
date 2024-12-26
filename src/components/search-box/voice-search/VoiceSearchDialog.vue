@@ -183,13 +183,11 @@ const handleOnStopEvent = () => {
 <template>
   <div>
     <div v-if="props.isOpen" class="dialog-overlay">
-      <div class="dialog-box">
-        <button
+      <button
           class="dialog-box-close-button"
           @click="handleDialogCloseEvent"
         >
         </button>
-        
         <div class="dialog-content">
           <p class="listening-text">
             {{ description }}
@@ -202,7 +200,6 @@ const handleOnStopEvent = () => {
           >
           </button>
         </div>
-      </div>
     </div>
   </div>
 </template>
