@@ -34,8 +34,8 @@
   align-items: center;
   z-index: 1000;
 
-  @media (max-width: lupaConfig.$size-s) {
-    width: 85%;
+  @media (min-width: lupaConfig.$size-xxs) and (max-width: lupaConfig.$size-md) {
+    width: 84%;
   }
 
   .dialog-box-close-button {
@@ -64,14 +64,27 @@
       color: lupaConfig.$text-color;
     }
 
+    .mic-button-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 60px;
+    }
+
     .mic-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      width: 50px;
+      height: 50px;
+
       background: lupaConfig.$text-color-faded;
       border: none;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
       cursor: pointer;
-      position: relative;
+      z-index: 2;
       transition: background 0.3s ease;
 
       &::after {
@@ -84,8 +97,23 @@
       }
 
       &.recording {
-        background: red;
+        background: lupaConfig.$recording-color;
       }
+    }
+
+    .progress-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      width: 100%;
+      height: 100%;
+
+      border-radius: 50%;
+      background: conic-gradient(lupaConfig.$primary 0%, transparent 0%);
+      z-index: 1;
+      pointer-events: none;
     }
   }
 }

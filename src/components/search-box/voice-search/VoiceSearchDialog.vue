@@ -9,9 +9,10 @@ const isRecordingRef = ref<boolean>(false)
 const mediaStream = ref<MediaStream | null>(null)
 const mediaRecorder = ref<MediaRecorder | null>(null)
 const timesliceLimit = ref<number>(3)
+const timeSliceLength = 1000
 const transcription = ref('')
-const chunkLength = 1000
-const stopDelay = 500
+const stopDelay = 700
+const progressBar = ref<HTMLElement | null>(null)
 
 const props = defineProps<{
   isOpen: boolean,
@@ -29,15 +30,13 @@ watch(transcription, (newValue) => {
 })
 
 const description = computed(() => {
-  if (!isRecordingRef.value && !transcription.value) {
+  if (!isRecordingRef.value) {
     return 'Microphone is off. Try again.'
   }
 
-  if (isRecordingRef.value && !transcription.value) {
-    return 'Listening...'
-  }
-
-  return transcription.value
+  // at the moment the full transcript text is returned
+  // so there is no point to show the transcription in real time
+  return 'Listening...'
 })
 
 const startRecognize = async () => {
@@ -82,17 +81,20 @@ const startRecognize = async () => {
     const stream = await navigator.mediaDevices.getUserMedia(constraints)
     mediaStream.value = stream
     mediaRecorder.value = new MediaRecorder(stream)
+    
+    mediaRecorder.value.onstart = startProgressBar
     mediaRecorder.value.ondataavailable = onDataAvailableHandler
     mediaRecorder.value.onstop = handleOnStopEvent
-    // Send chunks every second
-    mediaRecorder.value.start(chunkLength)
+    
+    // Send time slice every second
+    mediaRecorder.value.start(timeSliceLength)
     isRecordingRef.value = true
 
     setTimeout(() => {
       if (isRecordingRef.value) {
         stopRecognize()
       }
-    }, timesliceLimit.value * chunkLength)
+    }, timesliceLimit.value * timeSliceLength)
   } catch (error) {
     console.error('Error during recording start:', error)
     return
@@ -179,6 +181,55 @@ const handleOnStopEvent = () => {
   stopRecognize()
 }
 
+// Get the color of the progress bar, since it is set from the 
+// Lupa SCSS config var and not directly in the component
+const getProgressBarColor = (progressBarStyle: any) => {
+  if (!progressBarStyle.backgroundImage.startsWith('conic-gradient')) {
+    return progressBarStyle.backgroundColor
+  }
+
+  const colorStops = progressBarStyle.backgroundImage
+    .replace(/conic-gradient\(|\)$/g, '') // Remove the "conic-gradient(" and trailing ")"
+    .split(')')
+
+  if (colorStops.length > 1) {
+    return `${colorStops[0]})`
+  } else {
+    return progressBarStyle.backgroundColor
+  }
+}
+
+const startProgressBar = () => {
+  if (!progressBar.value) {
+    return
+  }
+
+  const duration = timesliceLimit.value * timeSliceLength
+
+  const progressBarStyle = 
+    window.getComputedStyle(progressBar.value);
+
+  const progressBarColor = getProgressBarColor(progressBarStyle);
+  progressBar.value.style.background = 
+    `conic-gradient(${progressBarColor} 0%, transparent 0%)`
+  
+    let startTime = null
+
+  function updateProgress(timestamp) {
+    if (!startTime) startTime = timestamp
+    const elapsed = timestamp - startTime
+    const progress = Math.min(elapsed / duration, 1) * 100;
+    progressBar.value.style.background =
+      `conic-gradient(${progressBarColor} ${progress}%, transparent ${progress}%)`
+
+    if (elapsed < duration) {
+      requestAnimationFrame(updateProgress)
+    }
+  }
+
+  requestAnimationFrame(updateProgress)
+}
+
 defineExpose({ startRecognize })
 </script>
 
@@ -195,12 +246,18 @@ defineExpose({ startRecognize })
             {{ description }}
           </p>
 
-          <button 
-            class="mic-button"
-            :class="{ recording: isRecordingRef }"
-            @click="handleRecordingButtonClick"
-          >
-          </button>
+          <div class="mic-button-wrapper">
+            <button 
+              class="mic-button"
+              :class="{ recording: isRecordingRef }"
+              @click="handleRecordingButtonClick"
+            >
+            </button>
+            <div
+              ref="progressBar" 
+              class="progress-circle"
+            ></div>
+          </div>
         </div>
     </div>
   </div>
