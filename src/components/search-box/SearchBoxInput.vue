@@ -30,6 +30,9 @@ const suggestedValue = computed(
   () => props.suggestedValue ?? { value: '', override: false, item: { suggestion: '' } }
 )
 
+const isVoiceSearchEnabled = computed(() => {
+  return props.options.voiceSearch?.enabled ?? false
+})
 const labels = computed(() => props.options.labels)
 const input = ref('')
 
@@ -180,14 +183,14 @@ defineExpose({ focus })
     <div v-if="canClose" class="lupa-close-search-container" @click="$emit('close')">
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>
     </div>
-    <div v-if="props.options.voiceSearch.enabled">
+    <div v-if="isVoiceSearchEnabled">
       <button 
         @click="openVoiceSearchDialog" 
         class="voice-search-button"
       ></button>
     </div>
     <VoiceSearchDialog 
-      v-if="props.options.voiceSearch.enabled"
+      v-if="isVoiceSearchEnabled"
       ref="voiceDialogOverlay"
       :isOpen="isVoiceDialogOpen"
       :options="props.options.voiceSearch"
