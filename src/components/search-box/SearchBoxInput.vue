@@ -5,7 +5,7 @@ import type { InputSuggestion } from '@/types/search-box/Common'
 import type { SearchBoxInputOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import VoiceSearchButton from '@/components/search-box/voice-search/VoiceSearchButton.vue'
+import VoiceSearchDialog from '@/components/search-box/voice-search/VoiceSearchDialog.vue'
 
 const props = defineProps<{
   options: SearchBoxInputOptions
@@ -21,6 +21,7 @@ const { query } = storeToRefs(paramStore)
 const emit = defineEmits(['input', 'focus', 'search'])
 
 const mainInput = ref(null)
+const isVoiceDialogOpen = ref(false)
 
 const emitInputOnFocus = computed(() => props.emitInputOnFocus ?? true)
 const suggestedValue = computed(
@@ -91,9 +92,24 @@ const focus = (): void => {
   ;(mainInput?.value as HTMLInputElement)?.focus()
 }
 
+const openVoiceSearchDialog = () => {
+  isVoiceDialogOpen.value = true
+}
+
+const closeDialog = () => {
+  isVoiceDialogOpen.value = false
+}
+
 const handleVoiceSearchOutput = (transcription: string): void => {
   inputValue.value = transcription
   handleSubmit()
+}
+
+const stopRecognition = (trascription: string) => {
+  setTimeout(() => {
+    isVoiceDialogOpen.value = false
+    handleVoiceSearchOutput(trascription)
+  }, 500);
 }
 
 defineExpose({ focus })
@@ -134,10 +150,19 @@ defineExpose({ focus })
     <div v-if="canClose" class="lupa-close-search-container" @click="$emit('close')">
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>
     </div>
-    <VoiceSearchButton
-      v-if="options.voiceSearch.enabled"
-      :options="options.voiceSearch"
-      @get-recognition-text="handleVoiceSearchOutput"
+    <div v-if="props.options.voiceSearch.enabled">
+      <button 
+        @click="openVoiceSearchDialog" 
+        class="voice-search-button"
+      ></button>
+    </div>
+    <VoiceSearchDialog 
+      v-if="props.options.voiceSearch.enabled"
+      :isOpen="isVoiceDialogOpen"
+      :options="props.options.voiceSearch"
+      @close="closeDialog"
+      @transcript-update="handleVoiceSearchOutput"
+      @stop-recognize="stopRecognition"
     />
   </div>
 </template>
