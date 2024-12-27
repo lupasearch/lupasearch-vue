@@ -8,7 +8,7 @@ const socket = ref<WebSocket | null>(null)
 const isRecordingRef = ref<boolean>(false)
 const mediaStream = ref<MediaStream | null>(null)
 const mediaRecorder = ref<MediaRecorder | null>(null)
-const timesliceLimit = ref<number>(4)
+const timesliceLimit = ref<number>(3)
 const transcription = ref('')
 const chunkLength = 1000
 const stopDelay = 500
@@ -178,6 +178,8 @@ const handleRecordingButtonClick = () => {
 const handleOnStopEvent = () => {
   stopRecognize()
 }
+
+defineExpose({ startRecognize })
 </script>
 
 <template>

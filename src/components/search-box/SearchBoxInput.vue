@@ -4,7 +4,7 @@ import { useSearchBoxStore } from '@/stores/searchBox'
 import type { InputSuggestion } from '@/types/search-box/Common'
 import type { SearchBoxInputOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onBeforeUnmount, onMounted } from 'vue'
 import VoiceSearchDialog from '@/components/search-box/voice-search/VoiceSearchDialog.vue'
 
 const props = defineProps<{
@@ -21,6 +21,8 @@ const { query } = storeToRefs(paramStore)
 const emit = defineEmits(['input', 'focus', 'search'])
 
 const mainInput = ref(null)
+const voiceDialogOverlay = ref(null)
+
 const isVoiceDialogOpen = ref(false)
 
 const emitInputOnFocus = computed(() => props.emitInputOnFocus ?? true)
@@ -51,6 +53,14 @@ const inputAttributes = computed(() => ({
 }))
 
 const ariaLabel = computed(() => labels.value.searchInputAriaLabel ?? 'Search input')
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideVoiceDialogOverlay)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutsideVoiceDialogOverlay)
+})
 
 watch(suggestedValue, () => {
   if (suggestedValue.value.override) {
@@ -94,6 +104,9 @@ const focus = (): void => {
 
 const openVoiceSearchDialog = () => {
   isVoiceDialogOpen.value = true
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(voiceDialogOverlay.value as any)?.startRecognize()
 }
 
 const closeDialog = () => {
@@ -110,6 +123,23 @@ const stopRecognition = (trascription: string) => {
     isVoiceDialogOpen.value = false
     handleVoiceSearchOutput(trascription)
   }, 500);
+}
+
+const handleClickOutsideVoiceDialogOverlay = (event) => {
+  if(event.target.classList.contains('voice-search-button')) {
+    return
+  }
+
+  if (
+    voiceDialogOverlay.value && 
+    voiceDialogOverlay.value.$el.contains(event.target)
+  ) {
+    return
+  }
+  
+  if (isVoiceDialogOpen.value) {
+    closeDialog()
+  }
 }
 
 defineExpose({ focus })
@@ -158,6 +188,7 @@ defineExpose({ focus })
     </div>
     <VoiceSearchDialog 
       v-if="props.options.voiceSearch.enabled"
+      ref="voiceDialogOverlay"
       :isOpen="isVoiceDialogOpen"
       :options="props.options.voiceSearch"
       @close="closeDialog"
