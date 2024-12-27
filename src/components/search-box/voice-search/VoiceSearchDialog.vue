@@ -105,7 +105,6 @@ const stopRecognize = () => {
   handleStopRecording()
 
   try {
-    console.log('Sending audio-chunk-end message...')
     socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }))
     isRecordingRef.value = false
 
