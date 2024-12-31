@@ -43,6 +43,10 @@ const startProgressBar = () => {
     let startTime = null
 
   function updateProgress(timestamp) {
+    if (!progressBar.value) {
+      return
+    }
+
     if (!startTime) startTime = timestamp
     const elapsed = timestamp - startTime
     const progress = Math.min(elapsed / duration, 1) * 100;
