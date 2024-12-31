@@ -20,7 +20,7 @@ export const DEFAULT_SEARCH_BOX_OPTIONS = {
     searchResults: '/search'
   },
   voiceSearch: {
-    enabled: true,
+    enabled: false,
   },
   panels: [
     {
