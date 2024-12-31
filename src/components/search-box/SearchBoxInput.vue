@@ -22,7 +22,6 @@ const emit = defineEmits(['input', 'focus', 'search'])
 
 const mainInput = ref(null)
 const voiceDialogOverlay = ref(null)
-
 const isVoiceDialogOpen = ref(false)
 
 const emitInputOnFocus = computed(() => props.emitInputOnFocus ?? true)
@@ -129,7 +128,7 @@ const stopRecognition = (trascription: string) => {
 }
 
 const handleClickOutsideVoiceDialogOverlay = (event) => {
-  if(event.target.classList.contains('voice-search-button')) {
+  if(event.target.classList.contains('lupa-voice-search-button')) {
     return
   }
 

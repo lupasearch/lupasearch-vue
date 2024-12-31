@@ -95,7 +95,7 @@ const startRecognize = async () => {
     mediaRecorder.value = new MediaRecorder(stream)
     
     mediaRecorder.value.onstart = 
-      (voiceSearchProgressBar.value as any).startProgressBar
+      (voiceSearchProgressBar.value as any)?.startProgressBar
     mediaRecorder.value.ondataavailable = onDataAvailableHandler
     mediaRecorder.value.onstop = handleOnStopEvent
     
