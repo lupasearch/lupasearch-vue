@@ -35,8 +35,17 @@ export type SearchBoxOptionLinks = {
   searchResults: string
 }
 
+export type VoiceSearchLabels = {
+  listening?: string
+  microphoneOff?: string
+}
+
 export type VoiceSearchOptions = {
   enabled: boolean
+  stopDelay?: number
+  timesliceLimit?: number
+  timesliceLength?: number
+  labels?: VoiceSearchLabels
   language?: string
   customVoiceServiceUrl?: string
 }

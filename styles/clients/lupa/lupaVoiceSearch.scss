@@ -100,20 +100,20 @@
         background: lupaConfig.$recording-color;
       }
     }
-
-    .lupa-progress-circle {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-
-      width: 100%;
-      height: 100%;
-
-      border-radius: 50%;
-      background: conic-gradient(lupaConfig.$primary 0%, transparent 0%);
-      z-index: 1;
-      pointer-events: none;
-    }
   }
+}
+
+.lupa-progress-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+  background: conic-gradient(lupaConfig.$primary 0%, transparent 0%);
+  z-index: 1;
+  pointer-events: none;
 }

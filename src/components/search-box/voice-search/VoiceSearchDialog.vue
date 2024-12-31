@@ -2,22 +2,15 @@
 import { ref, computed, watch } from 'vue'
 import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions';
 import { getVoiceServiceApiUrl } from '@/utils/api.utils';
-
-const socket = ref<WebSocket | null>(null)
-
-const isRecordingRef = ref<boolean>(false)
-const mediaStream = ref<MediaStream | null>(null)
-const mediaRecorder = ref<MediaRecorder | null>(null)
-const timesliceLimit = ref<number>(4)
-const timeSliceLength = 1000
-const transcription = ref('')
-const stopDelay = 700
-const progressBar = ref<HTMLElement | null>(null)
+import VoiceSearchProgressCircle from '@/components/search-box/voice-search/VoiceSearchProgressCircle.vue'
+import { useOptionsStore } from '@/stores/options'
 
 const props = defineProps<{
   isOpen: boolean,
   options: VoiceSearchOptions
 }>()
+
+const optionsStore = useOptionsStore()
 
 const emit = defineEmits([
   'close',
@@ -25,18 +18,34 @@ const emit = defineEmits([
   'stop-recognize'
 ])
 
-watch(transcription, (newValue) => {
-  emit('transcript-update', newValue)
-})
+const socket = ref<WebSocket | null>(null)
+
+const isRecordingRef = ref<boolean>(false)
+const mediaStream = ref<MediaStream | null>(null)
+const mediaRecorder = ref<MediaRecorder | null>(null)
+
+const transcription = ref('')
+
+const voiceSearchProgressBar = ref(null)
+
+const timesliceLimit = computed(() => props.options.timesliceLimit ?? 4)
+const timeSliceLength = computed(() => props.options.timesliceLength ?? 1000)
+const stopDelay = computed(() => props.options.stopDelay ?? 700)
+const labels = computed(() => props.options.labels ?? {});
 
 const description = computed(() => {
   if (!isRecordingRef.value) {
-    return 'Microphone is off. Try again.'
+    return labels.value.microphoneOff ?? 
+      'Microphone is off. Try again.'
   }
 
   // at the moment the full transcript text is returned
   // so there is no point to show the transcription in real time
-  return 'Listening...'
+  return labels.value.listening ?? 'Listening...'
+})
+
+watch(transcription, (newValue) => {
+  emit('transcript-update', newValue)
 })
 
 const startRecognize = async () => {
@@ -48,9 +57,12 @@ const startRecognize = async () => {
   }
 
   try {
-    // TODO: how to better handle environment here
+    const voiceServiceUrl = getVoiceServiceApiUrl(
+      optionsStore.envOptions.environment, 
+      props.options.customVoiceServiceUrl
+    )
     socket.value = new WebSocket(
-      `${getVoiceServiceApiUrl("production", props.options.customVoiceServiceUrl)}?lang=${props.options.language ?? "en-US"}&connectionType=write-first`
+      `${voiceServiceUrl}?lang=${props.options.language ?? "en-US"}&connectionType=write-first`
     )
 
     socket.value.onmessage = (event) => {
@@ -82,19 +94,20 @@ const startRecognize = async () => {
     mediaStream.value = stream
     mediaRecorder.value = new MediaRecorder(stream)
     
-    mediaRecorder.value.onstart = startProgressBar
+    mediaRecorder.value.onstart = 
+      (voiceSearchProgressBar.value as any).startProgressBar
     mediaRecorder.value.ondataavailable = onDataAvailableHandler
     mediaRecorder.value.onstop = handleOnStopEvent
     
     // Send time slice every second
-    mediaRecorder.value.start(timeSliceLength)
+    mediaRecorder.value.start(timeSliceLength.value)
     isRecordingRef.value = true
 
     setTimeout(() => {
       if (isRecordingRef.value) {
         stopRecognize()
       }
-    }, timesliceLimit.value * timeSliceLength)
+    }, timesliceLimit.value * timeSliceLength.value)
   } catch (error) {
     console.error('Error during recording start:', error)
     return
@@ -170,7 +183,7 @@ const handleRecordingButtonClick = () => {
     //dalay stop recording so that the last chunk is sent
     setTimeout(() => {
       stopRecognize()
-    }, stopDelay)
+    }, stopDelay.value)
   } else {
     startRecognize()
   }
@@ -178,55 +191,6 @@ const handleRecordingButtonClick = () => {
 
 const handleOnStopEvent = () => {
   stopRecognize()
-}
-
-// Get the color of the progress bar, since it is set from the 
-// Lupa SCSS config var and not directly in the component
-const getProgressBarColor = (progressBarStyle: any) => {
-  if (!progressBarStyle.backgroundImage.startsWith('conic-gradient')) {
-    return progressBarStyle.backgroundColor
-  }
-
-  const colorStops = progressBarStyle.backgroundImage
-    .replace(/conic-gradient\(|\)$/g, '') // Remove the "conic-gradient(" and trailing ")"
-    .split(')')
-
-  if (colorStops.length > 1) {
-    return `${colorStops[0]})`
-  } else {
-    return progressBarStyle.backgroundColor
-  }
-}
-
-const startProgressBar = () => {
-  if (!progressBar.value) {
-    return
-  }
-
-  const duration = timesliceLimit.value * timeSliceLength
-
-  const progressBarStyle = 
-    window.getComputedStyle(progressBar.value);
-
-  const progressBarColor = getProgressBarColor(progressBarStyle);
-  progressBar.value.style.background = 
-    `conic-gradient(${progressBarColor} 0%, transparent 0%)`
-  
-    let startTime = null
-
-  function updateProgress(timestamp) {
-    if (!startTime) startTime = timestamp
-    const elapsed = timestamp - startTime
-    const progress = Math.min(elapsed / duration, 1) * 100;
-    progressBar.value.style.background =
-      `conic-gradient(${progressBarColor} ${progress}%, transparent ${progress}%)`
-
-    if (elapsed < duration) {
-      requestAnimationFrame(updateProgress)
-    }
-  }
-
-  requestAnimationFrame(updateProgress)
 }
 
 defineExpose({ startRecognize })
@@ -255,10 +219,12 @@ defineExpose({ startRecognize })
             @click="handleRecordingButtonClick"
           >
           </button>
-          <div
-            ref="progressBar" 
+          <VoiceSearchProgressCircle
+            ref="voiceSearchProgressBar" 
             class="lupa-progress-circle"
-          ></div>
+            :timesliceLimit="timesliceLimit"
+            :timeSliceLength="timeSliceLength"
+          />
         </div>
       </div>
     </div>
