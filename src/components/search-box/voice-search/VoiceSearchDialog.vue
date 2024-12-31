@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions';
 import { getVoiceServiceApiUrl } from '@/utils/api.utils';
 import VoiceSearchProgressCircle from '@/components/search-box/voice-search/VoiceSearchProgressCircle.vue'
@@ -147,6 +147,17 @@ const onDataAvailableHandler = (event: BlobEvent) => {
   }
 }
 
+const stopMediaRecording = () => {
+  if (!mediaRecorder.value || !mediaStream.value) {
+    return
+  }
+
+  mediaRecorder.value?.stop()
+  mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
+    track.stop()
+  })
+}
+
 const handleStopRecording = () => {
   if (!mediaRecorder.value || !mediaStream.value) {
     return
@@ -160,10 +171,7 @@ const handleStopRecording = () => {
   }
 
   try {
-    mediaRecorder.value?.stop()
-    mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
-      track.stop()
-    })
+    stopMediaRecording()
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
@@ -192,6 +200,14 @@ const handleRecordingButtonClick = () => {
 const handleOnStopEvent = () => {
   stopRecognize()
 }
+
+onBeforeUnmount(() => {
+  if (socket.value) {
+    socket.value.close()
+  }
+
+  stopMediaRecording()
+})
 
 defineExpose({ startRecognize })
 </script>
