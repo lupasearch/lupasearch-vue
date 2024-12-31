@@ -57,9 +57,11 @@
 
   .lupa-dialog-content {
     text-align: center;
+    font-family: lupaConfig.$font-family;
+    font-size: lupaConfig.$base-font-size;
+    font-weight: 700;
 
     .lupa-listening-text {
-      font-size: 18px;
       margin-bottom: 20px;
       color: lupaConfig.$text-color;
     }
