@@ -234,30 +234,33 @@ defineExpose({ startRecognize })
 
 <template>
   <div>
-    <div v-if="props.isOpen" class="dialog-overlay">
+    <div 
+      v-if="props.isOpen" 
+      class="lupa-dialog-overlay"
+    >
       <button
-          class="dialog-box-close-button"
+          class="lupa-dialog-box-close-button"
           @click="handleDialogCloseEvent"
         >
-        </button>
-        <div class="dialog-content">
-          <p class="listening-text">
-            {{ description }}
-          </p>
+      </button>
+      <div class="lupa-dialog-content">
+        <p class="lupa-listening-text">
+          {{ description }}
+        </p>
 
-          <div class="mic-button-wrapper">
-            <button 
-              class="mic-button"
-              :class="{ recording: isRecordingRef }"
-              @click="handleRecordingButtonClick"
-            >
-            </button>
-            <div
-              ref="progressBar" 
-              class="progress-circle"
-            ></div>
-          </div>
+        <div class="lupa-mic-button-wrapper">
+          <button 
+            class="lupa-mic-button"
+            :class="{ recording: isRecordingRef }"
+            @click="handleRecordingButtonClick"
+          >
+          </button>
+          <div
+            ref="progressBar" 
+            class="lupa-progress-circle"
+          ></div>
         </div>
+      </div>
     </div>
   </div>
 </template>

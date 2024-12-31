@@ -186,7 +186,7 @@ defineExpose({ focus })
     <div v-if="isVoiceSearchEnabled">
       <button 
         @click="openVoiceSearchDialog" 
-        class="voice-search-button"
+        class="lupa-voice-search-button"
       ></button>
     </div>
     <VoiceSearchDialog 

@@ -1,6 +1,6 @@
 @use './lupaConfig.scss';
 
-.voice-search-button {
+.lupa-voice-search-button {
   cursor: pointer;
   width: 50px;
   height: 50px;
@@ -19,7 +19,7 @@
   }
 }
 
-.dialog-overlay {
+.lupa-dialog-overlay {
   position: absolute;
   width: 94%;
   left: 0%;
@@ -38,7 +38,7 @@
     width: 84%;
   }
 
-  .dialog-box-close-button {
+  .lupa-dialog-box-close-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -55,23 +55,23 @@
     }
   }
 
-  .dialog-content {
+  .lupa-dialog-content {
     text-align: center;
 
-    .listening-text {
+    .lupa-listening-text {
       font-size: 18px;
       margin-bottom: 20px;
       color: lupaConfig.$text-color;
     }
 
-    .mic-button-wrapper {
+    .lupa-mic-button-wrapper {
       position: relative;
       display: inline-block;
       width: 60px;
       height: 60px;
     }
 
-    .mic-button {
+    .lupa-mic-button {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -101,7 +101,7 @@
       }
     }
 
-    .progress-circle {
+    .lupa-progress-circle {
       position: absolute;
       top: 50%;
       left: 50%;
