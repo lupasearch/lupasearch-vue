@@ -19,6 +19,9 @@ export const DEFAULT_SEARCH_BOX_OPTIONS = {
   links: {
     searchResults: '/search'
   },
+  voiceSearch: {
+    enabled: false,
+  },
   panels: [
     {
       type: 'suggestion',
