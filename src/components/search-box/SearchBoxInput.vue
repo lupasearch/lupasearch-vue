@@ -108,11 +108,12 @@ const openVoiceSearchDialog = () => {
   isVoiceDialogOpen.value = true
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(voiceDialogOverlay.value as any)?.startRecognize()
+  ;(voiceDialogOverlay.value as any)?.handleRecordingButtonClick()
 }
 
 const closeDialog = () => {
   isVoiceDialogOpen.value = false
+  ;(voiceDialogOverlay.value as any)?.reset()
 }
 
 const handleVoiceSearchOutput = (transcription: string): void => {

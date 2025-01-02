@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onBeforeUnmount, onMounted } from 'vue'
 import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions';
 import { getVoiceServiceApiUrl } from '@/utils/api.utils';
 import VoiceSearchProgressCircle from '@/components/search-box/voice-search/VoiceSearchProgressCircle.vue'
@@ -21,6 +21,7 @@ const emit = defineEmits([
 const socket = ref<WebSocket | null>(null)
 
 const isRecordingRef = ref<boolean>(false)
+const errorRef = ref<string | null>(null)
 const mediaStream = ref<MediaStream | null>(null)
 const mediaRecorder = ref<MediaRecorder | null>(null)
 
@@ -34,6 +35,10 @@ const stopDelay = computed(() => props.options.stopDelay ?? 700)
 const labels = computed(() => props.options.labels ?? {});
 
 const description = computed(() => {
+  if (errorRef.value) {
+    return errorRef.value
+  }
+
   if (!isRecordingRef.value) {
     return labels.value.microphoneOff ?? 
       'Microphone is off. Try again.'
@@ -48,6 +53,10 @@ watch(transcription, (newValue) => {
   emit('transcript-update', newValue)
 })
 
+onMounted(() => {
+  reset()
+})
+
 const startRecognize = async () => {
   if (
     isRecordingRef.value ||
@@ -55,6 +64,9 @@ const startRecognize = async () => {
   ) {
     return
   }
+
+  transcription.value = ''
+  errorRef.value = null
 
   try {
     const voiceServiceUrl = getVoiceServiceApiUrl(
@@ -65,20 +77,15 @@ const startRecognize = async () => {
       `${voiceServiceUrl}?lang=${props.options.language ?? "en-US"}&connectionType=write-first`
     )
 
-    socket.value.onmessage = (event) => {
-      const messageObj = JSON.parse(event.data)
-      if (messageObj.event === 'transcription') {
-        transcription.value = messageObj.transcription
-        stopRecognize()
-      }
-    }
-
-    socket.value.onerror = (error) => {
-      console.error('WebSocket error:', error)
+    socket.value.onmessage = onBackendSocketMessage
+    socket.value.onerror = () => {
+      errorRef.value = 'Error connecting to transcription service'
     }
 
     socket.value.onclose = () => {
-      handleStopRecording()
+      if (isRecordingRef.value) {
+        stopMediaRecording()
+      }
     }
 
     const constraints = {
@@ -97,16 +104,17 @@ const startRecognize = async () => {
     mediaRecorder.value.onstart = 
       (voiceSearchProgressBar.value as any)?.startProgressBar
     mediaRecorder.value.ondataavailable = onDataAvailableHandler
-    mediaRecorder.value.onstop = handleOnStopEvent
+    mediaRecorder.value.onstop = () => {
+      (voiceSearchProgressBar.value as any)?.stopProgressBar()
+      handleOnStopEvent()
+    }
     
     // Send time slice every second
     mediaRecorder.value.start(timeSliceLength.value)
     isRecordingRef.value = true
 
     setTimeout(() => {
-      if (isRecordingRef.value) {
-        stopRecognize()
-      }
+      handleOnStopEvent()
     }, timesliceLimit.value * timeSliceLength.value)
   } catch (error) {
     console.error('Error during recording start:', error)
@@ -115,16 +123,34 @@ const startRecognize = async () => {
 }
 
 const stopRecognize = () => {
-  handleStopRecording()
+  stopMediaRecording()
+
+  if (
+    socket.value.readyState === WebSocket.CLOSED ||
+    socket.value.readyState === WebSocket.CLOSING
+  ) {
+    return
+  }
 
   try {
     socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }))
-    isRecordingRef.value = false
-
     emitStoppedRecording()
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
+  }
+}
+
+const onBackendSocketMessage = (event) => {
+  const messageObj = JSON.parse(event.data)
+  if (messageObj.event === 'error') {
+    errorRef.value = 'Server error during transcription'
+    stopMediaRecording()
+  }
+
+  if (messageObj.event === 'transcription') {
+    transcription.value = messageObj.transcription
+    stopRecognize()
   }
 }
 
@@ -152,17 +178,6 @@ const stopMediaRecording = () => {
     return
   }
 
-  mediaRecorder.value?.stop()
-  mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
-    track.stop()
-  })
-}
-
-const handleStopRecording = () => {
-  if (!mediaRecorder.value || !mediaStream.value) {
-    return
-  }
-
   if (
     mediaRecorder.value?.state === 'inactive' && 
     !isRecordingRef.value
@@ -171,7 +186,11 @@ const handleStopRecording = () => {
   }
 
   try {
-    stopMediaRecording()
+    mediaRecorder.value?.stop()
+    mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
+      track.stop()
+    })
+    isRecordingRef.value = false
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
@@ -179,6 +198,10 @@ const handleStopRecording = () => {
 }
 
 const emitStoppedRecording = (): void => {
+  if (errorRef.value) {
+    return
+  }
+
   emit('stop-recognize', transcription.value)
 }
 
@@ -188,9 +211,9 @@ const handleDialogCloseEvent = (): void => {
 
 const handleRecordingButtonClick = () => {
   if (isRecordingRef.value) {
-    //dalay stop recording so that the last chunk is sent
+    //delay stop recording so that the last chunk is sent
     setTimeout(() => {
-      stopRecognize()
+      handleOnStopEvent()
     }, stopDelay.value)
   } else {
     startRecognize()
@@ -198,7 +221,15 @@ const handleRecordingButtonClick = () => {
 }
 
 const handleOnStopEvent = () => {
-  stopRecognize()
+  if (isRecordingRef.value) {
+    stopRecognize()
+  }
+}
+
+const reset = () => {
+  stopMediaRecording()
+  transcription.value = ''
+  errorRef.value = null
 }
 
 onBeforeUnmount(() => {
@@ -206,10 +237,13 @@ onBeforeUnmount(() => {
     socket.value.close()
   }
 
-  stopMediaRecording()
+  reset()
 })
 
-defineExpose({ startRecognize })
+defineExpose({ 
+  handleRecordingButtonClick, 
+  reset 
+})
 </script>
 
 <template>
@@ -238,6 +272,7 @@ defineExpose({ startRecognize })
           <VoiceSearchProgressCircle
             ref="voiceSearchProgressBar" 
             class="lupa-progress-circle"
+            :isRecording="isRecordingRef"
             :timesliceLimit="timesliceLimit"
             :timeSliceLength="timeSliceLength"
           />

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 const props = defineProps<{
+  isRecording: boolean
   timesliceLimit: number
   timeSliceLength: number
 }>()
@@ -27,7 +28,7 @@ const getProgressBarColor = (progressBarStyle: any) => {
 }
 
 const startProgressBar = () => {
-  if (!progressBar.value) {
+  if (!progressBar.value || !props.isRecording) {
     return
   }
 
@@ -43,7 +44,7 @@ const startProgressBar = () => {
     let startTime = null
 
   function updateProgress(timestamp) {
-    if (!progressBar.value) {
+    if (!progressBar.value || !props.isRecording) {
       return
     }
 
@@ -61,8 +62,17 @@ const startProgressBar = () => {
   requestAnimationFrame(updateProgress)
 }
 
+const stopProgressBar = () => {
+  if (!progressBar.value) {
+    return
+  }
+
+  progressBar.value.style.background = '';
+}
+
 defineExpose({
-  startProgressBar
+  startProgressBar,
+  stopProgressBar
 })
 </script>
 
