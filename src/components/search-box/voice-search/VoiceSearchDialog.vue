@@ -105,8 +105,8 @@ const startRecognize = async () => {
       (voiceSearchProgressBar.value as any)?.startProgressBar
     mediaRecorder.value.ondataavailable = onDataAvailableHandler
     mediaRecorder.value.onstop = () => {
+      handleOnStopEvent();
       (voiceSearchProgressBar.value as any)?.stopProgressBar()
-      handleOnStopEvent()
     }
     
     // Send time slice every second
