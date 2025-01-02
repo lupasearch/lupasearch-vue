@@ -74,7 +74,7 @@ const startRecognize = async () => {
       props.options.customVoiceServiceUrl
     )
     socket.value = new WebSocket(
-      `${voiceServiceUrl}?lang=${props.options.language ?? "en-US"}&connectionType=write-first`
+      `${voiceServiceUrl}?languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
     )
 
     socket.value.onmessage = onBackendSocketMessage
