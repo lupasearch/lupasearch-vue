@@ -1,4 +1,4 @@
-import { SearchQueryResult } from '@getlupa/client-sdk/Types'
+import { FilterGroup, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import type { LupaQueryParamValue, SdkOptions } from '../General'
 import type { RoutingBehavior } from '../search-results/RoutingBehavior'
 import type { DynamicData } from '../search-results/SearchResultsOptions'
@@ -7,6 +7,7 @@ import type { SearchBoxPanel } from './SearchBoxPanel'
 import { DisplaySuggestion } from './Common'
 import { QueryParams } from '../search-results/QueryParams'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
+import { DataExtraction } from '../DataExtraction'
 
 export type SearchBoxOptions = SearchBoxPanelOptions & {
   inputSelector: string
@@ -72,4 +73,5 @@ export type SearchBoxPanelOptions = SearchBoxInputOptions & {
   showMoreResultsButton?: boolean
   expandOnSinglePanel?: boolean
   forceFullReloadOnParams?: string[]
+  initialFilters?: FilterGroup | Record<string, DataExtraction>
 }

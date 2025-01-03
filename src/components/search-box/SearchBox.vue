@@ -29,6 +29,7 @@ import { bindSearchTriggers, unbindSearchTriggers } from '@/utils/event.utils'
 import { useRedirectionStore } from '@/stores/redirections'
 import { isDelayedClickTracking } from '@/utils/tracking.utils'
 import { generateLink } from '@/utils/link.utils'
+import { processExtractionObject } from '@/utils/extraction.utils'
 
 const defaultSuggestedValue = {
   item: { suggestion: '' },
@@ -57,6 +58,12 @@ const focused = ref(false)
 const searchBoxInput = ref(null)
 
 const { highlightedDocument } = storeToRefs(searchBoxStore)
+
+const extractedInitialFilters = computed(() => {
+  return {
+    ...processExtractionObject(props.options.initialFilters)
+  }
+})
 
 const searchValue = computed((): string => {
   return suggestedValue.value.override ? suggestedValue.value.item.suggestion : inputValue.value
@@ -87,7 +94,8 @@ const panelOptions = computed(
       'hideMoreResultsButtonOnNoResults',
       'showNoResultsPanel',
       'expandOnSinglePanel',
-      'showMoreResultsButton'
+      'showMoreResultsButton',
+      'initialFilters'
     ])
 )
 

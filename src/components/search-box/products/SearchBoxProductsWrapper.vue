@@ -11,6 +11,7 @@ import { debounce } from '@/utils/debounce.utils'
 import { useDynamicDataStore } from '@/stores/dynamicData'
 import type { SdkOptions } from '@/types/General'
 import type { SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
+import { processExtractionObject } from '@/utils/extraction.utils'
 
 const props = defineProps<{
   panel: DocumentSearchBoxPanel
@@ -36,6 +37,12 @@ const showGoToResultsButton = computed(() => {
   return props.panel.showGoToResults
 })
 
+const extractedInitialFilters = computed(() => {
+  return {
+    ...processExtractionObject(props.searchBoxOptions.initialFilters)
+  }
+})
+
 const inputValueProp = computed(() => props.inputValue)
 
 onMounted(() => {
@@ -59,7 +66,11 @@ const getItems = (): void => {
   searchBoxStore
     .queryDocuments({
       queryKey: props.panel.queryKey,
-      publicQuery: { searchText: props.inputValue, limit: props.panel.limit },
+      publicQuery: {
+        searchText: props.inputValue,
+        limit: props.panel.limit,
+        filters: extractedInitialFilters.value
+      },
       options: props.options
     })
     .then(({ result }) => {
