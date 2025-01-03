@@ -18,6 +18,10 @@ const hasBackButton = computed((): boolean => {
   return Boolean(props.options.categories?.back?.title)
 })
 
+const hasRelatedCategoryChildren = computed((): boolean => {
+  return relatedCategoryChildren.value?.length > 0
+})
+
 const backTitle = computed((): string | undefined => {
   return props.options.categories?.back?.title
 })
@@ -50,14 +54,20 @@ const getCategoryKey = (item: Record<string, string>): string => {
 </script>
 
 <template>
-  <div class="lupa-category-top-mobile-filters" :class="{ 'lupa-has-back-button': hasBackButton }">
+  <div
+    class="lupa-category-top-mobile-filters"
+    :class="{
+      'lupa-has-back-button': hasBackButton,
+      'has-related-category-children': hasRelatedCategoryChildren
+    }"
+  >
     <div class="lupa-top-mobile-filter-wrapper">
       <div class="lupa-category-back" v-if="hasBackButton">
         <a data-cy="lupa-category-back" :href="backUrlLink" @click="handleNavigationBack">
           {{ backTitle }}
         </a>
       </div>
-      <div class="lupa-child-category-list">
+      <div v-if="hasRelatedCategoryChildren" class="lupa-child-category-list">
         <CategoryFilterItem
           v-for="child of relatedCategoryChildren"
           :key="getCategoryKey(child)"
