@@ -28,6 +28,7 @@ import SearchResultsBreadcrumbs from './SearchResultsBreadcrumbs.vue'
 import SearchResultsFilters from './filters/SearchResultsFilters.vue'
 import SearchResultsProducts from './products/SearchResultsProducts.vue'
 import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
+import { processExtractionObject } from '@/utils/extraction.utils'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -45,7 +46,13 @@ const dynamicDataStore = useDynamicDataStore()
 const screenStore = useScreenStore()
 const redirectionStore = useRedirectionStore()
 
-const initialFilters = computed(() => props.initialFilters ?? {})
+const extractedInitialFilters = computed(() => {
+  return {
+    ...processExtractionObject(props.options.initialFilters)
+  }
+})
+
+const initialFilters = computed(() => props.initialFilters ?? extractedInitialFilters.value ?? {})
 
 const { currentQueryText, hasResults, currentFilterCount } = storeToRefs(searchResultStore)
 const { searchString, sortParams } = storeToRefs(paramStore)

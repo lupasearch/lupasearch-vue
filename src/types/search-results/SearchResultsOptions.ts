@@ -6,6 +6,8 @@ import type { SearchResultsSortOptions } from './SearchResultsSort'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
 import { RelatedQueryOptions } from './RelatedQueryOptions'
 import { RedirectionSuggestionOptions } from './RedirectionSuggestionOptionts'
+import { FilterGroup } from '@getlupa/client-sdk/Types'
+import { DataExtraction } from '../DataExtraction'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -19,6 +21,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     ssr?: SsrOptions
     redirections?: RedirectionOptions
     scrollToResults?: ScrollToResultsOptions
+    initialFilters?: FilterGroup | Record<string, DataExtraction>
   }
 
 export type ScrollToResultsOptions = {
