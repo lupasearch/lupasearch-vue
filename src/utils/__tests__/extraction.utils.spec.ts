@@ -1,16 +1,28 @@
 import {
   ExtractFromUrl,
   ExtractFromStorage,
-  ExtractFromHtmlElementText
+  ExtractFromHtmlElementText,
+  ExtractFromCookie
 } from '@/types/DataExtraction'
 import { extractValue, processExtractionObject } from '../extraction.utils'
 import { vi } from 'vitest'
+
+function deleteAllCookies() {
+  document.cookie.split(';').forEach((cookie) => {
+    const [name] = cookie.split('=')
+    if (!name.trim()) {
+      return
+    }
+    document.cookie = `${name.trim()}=;expires=${new Date(0).toUTCString()};path=/`
+  })
+}
 
 describe('extractValue', () => {
   afterEach(() => {
     vi.restoreAllMocks() // Restore original implementations after each test
     localStorage.clear() // Clear localStorage after each test
     sessionStorage.clear() // Clear sessionStorage after each test
+    deleteAllCookies() // Clear cookies after each test
   })
 
   // Test case for extracting value from URL
@@ -177,6 +189,50 @@ describe('extractValue', () => {
     const result = extractValue(elementOptions)
     expect(result).toBe('defaultText')
   })
+
+  test('should extract simple value from cookie', () => {
+    const cookieOptions: ExtractFromCookie = {
+      extractFrom: 'cookie',
+      default: 'defaultValue',
+      cookieName: 'testCookie'
+    }
+    document.cookie = 'testCookie=cookieValue'
+    const result = extractValue(cookieOptions)
+    expect(result).toBe('cookieValue')
+  })
+
+  test('should extract value from cookie with multiple cookies', () => {
+    const cookieOptions: ExtractFromCookie = {
+      extractFrom: 'cookie',
+      default: 'defaultValue',
+      cookieName: 'testCookie'
+    }
+    document.cookie = 'otherCookie=otherValue;'
+    document.cookie = 'testCookie=cookieValue;'
+    const result = extractValue(cookieOptions)
+    expect(result).toBe('cookieValue')
+  })
+
+  test('should return default value when cookie does not exist', () => {
+    const cookieOptions: ExtractFromCookie = {
+      extractFrom: 'cookie',
+      default: 'defaultValue',
+      cookieName: 'nonExistingCookie'
+    }
+    document.cookie = 'testCookie=cookieValue'
+    const result = extractValue(cookieOptions)
+    expect(result).toBe('defaultValue')
+  })
+
+  test('should return default value if there is no cookie', () => {
+    const cookieOptions: ExtractFromCookie = {
+      extractFrom: 'cookie',
+      default: 'defaultValue',
+      cookieName: 'testCookie'
+    }
+    const result = extractValue(cookieOptions)
+    expect(result).toBe('defaultValue')
+  })
 })
 
 describe('processExtractionObject', () => {
@@ -194,7 +250,7 @@ describe('processExtractionObject', () => {
 
     expect(processExtractionObject(value)).toEqual({
       category: 15,
-      tag: 'tagValue'
+      tag: ['tagValue']
     })
   })
 
@@ -222,7 +278,7 @@ describe('processExtractionObject', () => {
 
     expect(processExtractionObject(value)).toEqual({
       category: 15,
-      tag: 'defaultTag'
+      tag: ['defaultTag']
     })
   })
 

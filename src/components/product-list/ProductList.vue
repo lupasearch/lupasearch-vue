@@ -39,7 +39,7 @@ defineExpose({ fetch })
   <div>
     <SearchResults
       :options="componentOptions"
-      :initial-filters="options.initialFilters"
+      :initial-filters="initialFilters"
       :is-product-list="true"
       ref="searchResults"
     >
