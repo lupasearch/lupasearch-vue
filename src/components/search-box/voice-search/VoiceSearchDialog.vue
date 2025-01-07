@@ -23,7 +23,6 @@ const socket = ref<WebSocket | null>(null)
 const clientId = ref<string | null>(null)
 
 const isRecordingRef = ref<boolean>(false)
-const isFinishedRef = ref<boolean>(false)
 const errorRef = ref<string | null>(null)
 const mediaStream = ref<MediaStream | null>(null)
 const mediaRecorder = ref<MediaRecorder | null>(null)
@@ -42,7 +41,7 @@ const description = computed(() => {
     return errorRef.value
   }
 
-  if (!isRecordingRef.value && !isFinishedRef.value) {
+  if (!isRecordingRef.value) {
     return labels.value.microphoneOff ?? 
       'Microphone is off. Try again.'
   }
@@ -69,7 +68,6 @@ const startRecognize = async () => {
     return
   }
 
-  isFinishedRef.value = false
   transcription.value = ''
   errorRef.value = null
 
@@ -90,6 +88,7 @@ const startRecognize = async () => {
     socket.value.onclose = () => {
       if (isRecordingRef.value) {
         stopMediaRecording()
+        isRecordingRef.value = false
       }
     }
 
@@ -142,7 +141,11 @@ const stopRecognize = () => {
 
   try {
     socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }))
-    emitStoppedRecording()
+
+    setTimeout(() => {
+      isRecordingRef.value = false
+      emitStoppedRecording()
+    }, 2000)
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
@@ -154,6 +157,7 @@ const onBackendSocketMessage = (event) => {
   if (messageObj.event === 'error') {
     errorRef.value = 'Server error during transcription'
     stopMediaRecording()
+    isRecordingRef.value = false
   }
 
   if (messageObj.event === 'transcription') {
@@ -198,8 +202,6 @@ const stopMediaRecording = () => {
     mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
       track.stop()
     })
-    isRecordingRef.value = false
-    isFinishedRef.value = true
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
@@ -237,6 +239,7 @@ const handleOnStopEvent = () => {
 
 const reset = () => {
   stopMediaRecording()
+  isRecordingRef.value = false
   transcription.value = ''
   errorRef.value = null
 }
