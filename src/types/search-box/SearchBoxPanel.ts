@@ -1,7 +1,8 @@
 import type { DisplayCondition, DocumentElement } from '../DocumentElement'
-import type { Document } from '@getlupa/client-sdk/Types'
+import type { Document, FilterGroup } from '@getlupa/client-sdk/Types'
 import { CustomDocumentHtmlAttributes } from '../General'
 import { SearchBoxBadgeOptions } from './SearchBoxBadgeOptions'
+import { DataExtraction } from '../DataExtraction'
 
 export enum SearchBoxPanelType {
   SUGGESTION = 'suggestion',
@@ -32,6 +33,7 @@ export type SearchBoxPanelBase = {
 
 export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   type: SearchBoxPanelType.DOCUMENT
+  initialFilters?: FilterGroup | Record<string, DataExtraction>
   links: SearchBoxPanelLinks
   elements: DocumentElement[]
   titleKey?: string

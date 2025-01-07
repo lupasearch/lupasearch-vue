@@ -39,7 +39,7 @@ const showGoToResultsButton = computed(() => {
 
 const extractedInitialFilters = computed(() => {
   return {
-    ...processExtractionObject(props.searchBoxOptions.initialFilters)
+    ...processExtractionObject(props.panel?.initialFilters)
   }
 })
 

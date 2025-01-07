@@ -149,7 +149,7 @@ const filter = () => {
     <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
     <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
-    <RelatedQueries :options="options.relatedQueries" />
+    <RelatedQueries v-if="options.relatedQueries" :options="options.relatedQueries" />
     <template v-if="hasResults">
       <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
       <SearchResultsToolbar
