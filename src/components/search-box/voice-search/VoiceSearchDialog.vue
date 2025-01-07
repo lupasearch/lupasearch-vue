@@ -4,6 +4,7 @@ import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions';
 import { getVoiceServiceApiUrl } from '@/utils/api.utils';
 import VoiceSearchProgressCircle from '@/components/search-box/voice-search/VoiceSearchProgressCircle.vue'
 import { useOptionsStore } from '@/stores/options'
+import { getSocketClientId } from '@/utils/string.utils';
 
 const props = defineProps<{
   isOpen: boolean,
@@ -19,8 +20,10 @@ const emit = defineEmits([
 ])
 
 const socket = ref<WebSocket | null>(null)
+const clientId = ref<string | null>(null)
 
 const isRecordingRef = ref<boolean>(false)
+const isFinishedRef = ref<boolean>(false)
 const errorRef = ref<string | null>(null)
 const mediaStream = ref<MediaStream | null>(null)
 const mediaRecorder = ref<MediaRecorder | null>(null)
@@ -39,7 +42,7 @@ const description = computed(() => {
     return errorRef.value
   }
 
-  if (!isRecordingRef.value) {
+  if (!isRecordingRef.value && !isFinishedRef.value) {
     return labels.value.microphoneOff ?? 
       'Microphone is off. Try again.'
   }
@@ -54,6 +57,7 @@ watch(transcription, (newValue) => {
 })
 
 onMounted(() => {
+  clientId.value = getSocketClientId()
   reset()
 })
 
@@ -65,6 +69,7 @@ const startRecognize = async () => {
     return
   }
 
+  isFinishedRef.value = false
   transcription.value = ''
   errorRef.value = null
 
@@ -74,7 +79,7 @@ const startRecognize = async () => {
       props.options.customVoiceServiceUrl
     )
     socket.value = new WebSocket(
-      `${voiceServiceUrl}?languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
+      `${voiceServiceUrl}?clientId=${clientId.value}&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
     )
 
     socket.value.onmessage = onBackendSocketMessage
@@ -92,14 +97,16 @@ const startRecognize = async () => {
       video: false,
       audio: {
         channelCount: 1,
-        echoCancellation: false,
+        echoCancellation: true,
         sampleRate: 16000,
       },
     }
 
     const stream = await navigator.mediaDevices.getUserMedia(constraints)
     mediaStream.value = stream
-    mediaRecorder.value = new MediaRecorder(stream)
+    mediaRecorder.value = new MediaRecorder(stream, {
+      mimeType: 'audio/webm; codecs=opus',
+    })
     
     mediaRecorder.value.onstart = 
       (voiceSearchProgressBar.value as any)?.startProgressBar
@@ -129,7 +136,8 @@ const stopRecognize = () => {
     socket.value.readyState === WebSocket.CLOSED ||
     socket.value.readyState === WebSocket.CLOSING
   ) {
-    return
+    console.warn("Cannot stop: Either not recording or socket not open.");
+    return;
   }
 
   try {
@@ -191,6 +199,7 @@ const stopMediaRecording = () => {
       track.stop()
     })
     isRecordingRef.value = false
+    isFinishedRef.value = true
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
@@ -235,8 +244,10 @@ const reset = () => {
 onBeforeUnmount(() => {
   if (socket.value) {
     socket.value.close()
+    socket.value = null
   }
 
+  clientId.value = null
   reset()
 })
 
