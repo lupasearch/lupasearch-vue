@@ -59,12 +59,6 @@ const searchBoxInput = ref(null)
 
 const { highlightedDocument } = storeToRefs(searchBoxStore)
 
-const extractedInitialFilters = computed(() => {
-  return {
-    ...processExtractionObject(props.options.initialFilters)
-  }
-})
-
 const searchValue = computed((): string => {
   return suggestedValue.value.override ? suggestedValue.value.item.suggestion : inputValue.value
 })
@@ -95,7 +89,6 @@ const panelOptions = computed(
       'showNoResultsPanel',
       'expandOnSinglePanel',
       'showMoreResultsButton',
-      'initialFilters'
     ])
 )
 
