@@ -48,6 +48,12 @@ export const getRandomString = (length: number): string => {
   return result
 }
 
+export const getSocketClientId = (): string => {
+  const timestamp = Date.now().toString(36)
+  const randomString = getRandomString(8)
+  return `${timestamp}-${randomString}`
+}
+
 const toFixedIfNecessary = (value: string, precision = 2): string => {
   return (+parseFloat(value).toFixed(precision)).toString()
 }

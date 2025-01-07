@@ -23,6 +23,17 @@ export const SEARCH_BOX_CONFIGURATION = {
   links: {
     searchResults: '/catalogsearch/result'
   },
+  voiceSearch: {
+    enabled: true,
+    stopDelay: 700,
+    timesliceLimit: 4,
+    timesliceLength: 1000,
+    labels: {
+      listening: 'Listening...',
+      microphoneOff: 'Microphone is off. Try again.',
+    },
+    customVoiceServiceUrl: 'ws://localhost:3000'
+  },
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,
   showNoResultsPanel: true,
