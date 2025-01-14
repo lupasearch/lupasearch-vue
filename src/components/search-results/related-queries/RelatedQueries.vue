@@ -62,7 +62,7 @@ watch(searchResult, async () => {
 })
 
 const hasEnoughRelatedQueries = computed(() => {
-  return relatedQueries.value.length > 1
+  return relatedQueries.value?.length > 1
 })
 
 const handleRelatedQueryClick = (query: { key: string; value: string }) => {

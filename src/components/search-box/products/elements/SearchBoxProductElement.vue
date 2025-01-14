@@ -46,7 +46,7 @@ const renderDynamicAttributesOnParentElement = computed((): boolean => {
 
 const displayElement = computed((): boolean => {
   const element = props.element
-  const item = props.item
+  const item = enhancedItem.value
   if (!element.display) {
     return true
   }
