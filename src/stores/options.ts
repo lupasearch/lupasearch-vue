@@ -8,6 +8,7 @@ import type { LupaQueryParamValue, TrackingOptions } from '@/types/General'
 import type { FilterGroup } from '@getlupa/client-sdk/Types'
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_SELECTION } from '@/constants/global.const'
 import { useScreenStore } from './screen'
+import { ProductRecommendationOptions } from '@/types/recommendations/RecommendationsOptions'
 
 export const useOptionsStore = defineStore('options', () => {
   const searchBoxOptions: Ref<SearchBoxOptions> = ref(
@@ -21,6 +22,8 @@ export const useOptionsStore = defineStore('options', () => {
   const trackingOptions: Ref<TrackingOptions> = ref({})
 
   const searchResultInitialFilters: Ref<FilterGroup> = ref({})
+
+  const productRecommendationOptions: Ref<Partial<ProductRecommendationOptions>> = ref({})
 
   const screenStore = useScreenStore()
 
@@ -79,6 +82,14 @@ export const useOptionsStore = defineStore('options', () => {
     searchResultInitialFilters.value = initialFilters
   }
 
+  const setProductRecommendationOptions = ({
+    options
+  }: {
+    options: ProductRecommendationOptions
+  }) => {
+    productRecommendationOptions.value = options
+  }
+
   const getQueryParamName = (param: LupaQueryParamValue) => {
     const nameMap = searchBoxOptions.value.queryParameterNames
     return nameMap?.[param] ?? param
@@ -95,10 +106,12 @@ export const useOptionsStore = defineStore('options', () => {
     searchResultsRoutingBehavior,
     defaultSearchResultPageSize,
     currentResolutionPageSizes,
+    productRecommendationOptions,
     setSearchBoxOptions,
     setTrackingOptions,
     setSearchResultOptions,
     setInitialFilters,
+    setProductRecommendationOptions,
     getQueryParamName
   }
 })
