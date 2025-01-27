@@ -8,7 +8,7 @@ import RelatedQueryPanel from './RelatedQueryPanel.vue'
 import { useParamsStore } from '@/stores/params'
 import { useOptionsStore } from '@/stores/options'
 import { toggleTermFilter } from '@/utils/filter.toggle.utils'
-import { FilterGroup, FilterGroupItemTypeTerms, Document } from '@getlupa/client-sdk/Types'
+import type { FilterGroup, FilterGroupItemTypeTerms, Document } from '@getlupa/client-sdk/Types'
 
 const props = defineProps<{
   options?: RelatedQueryOptions
