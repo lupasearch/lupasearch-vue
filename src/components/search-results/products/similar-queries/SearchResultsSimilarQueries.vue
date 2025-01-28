@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useParamsStore } from '@/stores/params'
 import { useSearchResultStore } from '@/stores/searchResult'
-import type { InputSuggestionFacet } from '@/types/search-box/Common'
+import type { EventSourceMetadata, InputSuggestionFacet } from '@/types/search-box/Common'
 import type { SearchResultsSimilarQueriesLabels } from '@/types/search-results/SearchResultsOptions'
 import type { SearchResultsProductCardOptions } from '@/types/search-results/SearchResultsProductCardOptions'
 import { escapeHtml, getProductKey } from '@/utils/string.utils'
-import type { Document } from '@getlupa/client-sdk/Types'
+import type { Document, SimilarQueryResult } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import SearchResultsProductCard from '../product-card/SearchResultsProductCard.vue'
@@ -44,6 +44,14 @@ const goToResults = ({
 }) => {
   paramsStore.goToResults({ searchText, facet })
 }
+
+const getClickMetadata = (similarQuery: SimilarQueryResult): EventSourceMetadata => {
+  const isRegularSimilarQuery = similarQuery.displayQuery?.includes('<del>')
+  return {
+    source: isRegularSimilarQuery ? 'similarQueries' : 'similarQueriesAI',
+    updatedQuery: similarQuery.query
+  }
+}
 </script>
 <template>
   <div id="lupa-search-results-similar-queries" data-cy="lupa-search-results-similar-queries">
@@ -70,6 +78,7 @@ const goToResults = ({
           :key="getDocumentKey(index, product)"
           :product="product"
           :options="productCardOptions"
+          :analytics-metadata="getClickMetadata(similarQuery)"
         />
       </div>
     </div>
