@@ -26,6 +26,7 @@ const props = defineProps<{
   clickTrackingSettings?: ProductClickTrackingSettings
   lupaClickTrackingType?: 'itemClick' | 'recommendedItemClick'
   sourceItemId?: string | string[]
+  analyticsMetadata?: Record<string, unknown>
 }>()
 
 const clickTrackingSettings = computed(() => props.clickTrackingSettings ?? {})
@@ -158,7 +159,8 @@ const handleClick = (): void => {
       options: { allowEmptySearchQuery: true },
       filters: searchResultStore.hasAnyFilter ? searchResultStore.filters : undefined,
       sourceItemId:
-        props.lupaClickTrackingType === 'recommendedItemClick' ? props.sourceItemId : undefined
+        props.lupaClickTrackingType === 'recommendedItemClick' ? props.sourceItemId : undefined,
+      metadata: props.analyticsMetadata
     }
   }
   if (isDelayedClickTracking()) {
