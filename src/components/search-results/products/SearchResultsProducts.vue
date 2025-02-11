@@ -135,8 +135,8 @@ const clickMetadata: ComputedRef<EventSourceMetadata> = computed(() => {
   const hasDidYouMean = Boolean(searchResult.value.suggestedSearchText)
   return hasDidYouMean
     ? {
-        source: 'didYouMean',
-        updatedQuery: searchResult.value.suggestedSearchText
+        _lupaEventSource: 'didYouMean',
+        _lupaUpdatedQuery: searchResult.value.suggestedSearchText
       }
     : undefined
 })

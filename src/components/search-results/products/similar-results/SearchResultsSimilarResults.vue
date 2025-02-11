@@ -26,7 +26,7 @@ const getDocumentKey = (index: number, product: Document): string => {
 
 const clickMetadata: ComputedRef<EventSourceMetadata> = computed(() => {
   return {
-    source: 'similarResults'
+    _lupaEventSource: 'similarResults'
   }
 })
 </script>

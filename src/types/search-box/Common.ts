@@ -41,8 +41,8 @@ export type SelectedData = {
 export type EventSourceType = 'didYouMean' | 'similarQueries' | 'similarResults' | 'similarQueriesAI'
 
 export type EventSourceMetadata = {
-  source: EventSourceType;
-  updatedQuery?: string;
+  _lupaEventSource: EventSourceType;
+  _lupaUpdatedQuery?: string;
 }
 
 export type TrackableEventData = {

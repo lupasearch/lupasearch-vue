@@ -48,8 +48,8 @@ const goToResults = ({
 const getClickMetadata = (similarQuery: SimilarQueryResult): EventSourceMetadata => {
   const isRegularSimilarQuery = similarQuery.displayQuery?.includes('<del>')
   return {
-    source: isRegularSimilarQuery ? 'similarQueries' : 'similarQueriesAI',
-    updatedQuery: similarQuery.query
+    _lupaEventSource: isRegularSimilarQuery ? 'similarQueries' : 'similarQueriesAI',
+    _lupaUpdatedQuery: similarQuery.query
   }
 }
 </script>
