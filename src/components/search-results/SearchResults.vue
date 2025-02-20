@@ -29,6 +29,7 @@ import SearchResultsFilters from './filters/SearchResultsFilters.vue'
 import SearchResultsProducts from './products/SearchResultsProducts.vue'
 import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
 import { processExtractionObject } from '@/utils/extraction.utils'
+import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -54,7 +55,8 @@ const extractedInitialFilters = computed(() => {
 
 const initialFilters = computed(() => props.initialFilters ?? extractedInitialFilters.value ?? {})
 
-const { currentQueryText, hasResults, currentFilterCount } = storeToRefs(searchResultStore)
+const { currentQueryText, hasResults, currentFilterCount, isMobileSidebarVisible, layout } =
+  storeToRefs(searchResultStore)
 const { searchString, sortParams } = storeToRefs(paramStore)
 const { defaultSearchResultPageSize } = storeToRefs(optionStore)
 
@@ -77,6 +79,14 @@ const showFilterSidebar = computed((): boolean => {
 
 const isTitleResultTopPosition = computed((): boolean => {
   return props.options.searchTitlePosition === 'search-results-top'
+})
+
+const indicatorClasses = computed(() => {
+  return {
+    'lupa-mobile-sidebar-visible': isMobileSidebarVisible.value,
+    'lupa-layout-grid': !layout.value || layout.value === ResultsLayoutEnum.GRID,
+    'lupa-layout-list': layout.value === ResultsLayoutEnum.LIST
+  }
 })
 
 // Code for handling browser back button navigation
@@ -293,7 +303,7 @@ defineExpose({ handleMounted, handleUrlChange })
       :breadcrumbs="options.breadcrumbs"
     />
     <template v-if="isTitleResultTopPosition">
-      <div id="lupa-search-results" class="top-layout-wrapper">
+      <div id="lupa-search-results" class="top-layout-wrapper" :class="indicatorClasses">
         <SearchResultsFilters
           v-if="showFilterSidebar"
           :options="options.filters ?? {}"
@@ -315,7 +325,7 @@ defineExpose({ handleMounted, handleUrlChange })
       <SearchResultsDidYouMean :labels="didYouMeanLabels" />
       <SearchResultsTitle :options="options" :is-product-list="isProductList ?? false" />
 
-      <div id="lupa-search-results">
+      <div id="lupa-search-results" :class="indicatorClasses">
         <SearchResultsFilters
           v-if="showFilterSidebar"
           :options="options.filters ?? {}"

@@ -83,6 +83,10 @@ const activeFilterKeys = computed((): string => {
   return (currentFilterKeys.value ?? []).join(',')
 })
 
+const facetKeyClass = computed((): string => {
+  return `lupa-facet-${facet.value.key}`
+})
+
 onMounted(() => {
   if (props.options.style?.type === 'top-dropdown') {
     window.addEventListener('click', handleMouseClick)
@@ -142,7 +146,7 @@ const clear = (): void => {
     <div
       class="lupa-search-result-facet-label"
       data-cy="lupa-search-result-facet-label"
-      :class="{ open: isOpen, 'lupa-has-filter': hasFilter }"
+      :class="{ open: isOpen, 'lupa-has-filter': hasFilter, [facetKeyClass]: true }"
       @click="toggleFacet"
     >
       <div class="lupa-facet-label-text">{{ facet.label }}</div>
