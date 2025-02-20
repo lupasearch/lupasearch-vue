@@ -191,7 +191,7 @@
 }
 
 @media (max-width: searchResults.$size-xs) {
-  .lupa-mobile-toggle, {
+  .lupa-mobile-toggle {
     width: searchResults.$mobile-sidebar-toggle-width-xs;
   }
   .lupa-select-dropdown {
