@@ -1,4 +1,4 @@
-@use "../base/searchResults";
+@use '../base/searchResults';
 
 // Mobile sidebar
 
@@ -80,7 +80,8 @@
   display: none;
 }
 
-.lupa-mobile-toggle {
+.lupa-mobile-toggle,
+.lupa-mobile-filter-close-toggle {
   font-family: searchResults.$search-results-font-family;
   font-size: searchResults.$select-font-size;
   color: searchResults.$mobile-sidebar-toggle-color;
@@ -92,6 +93,14 @@
   line-height: searchResults.$mobile-sidebar-toggle-line-height;
   text-align: center;
   z-index: 2;
+}
+
+.lupa-mobile-filter-close-toggle {
+  display: block;
+  margin-left: 8px;
+  width: auto;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 // Search product elements
@@ -182,7 +191,7 @@
 }
 
 @media (max-width: searchResults.$size-xs) {
-  .lupa-mobile-toggle {
+  .lupa-mobile-toggle, {
     width: searchResults.$mobile-sidebar-toggle-width-xs;
   }
   .lupa-select-dropdown {

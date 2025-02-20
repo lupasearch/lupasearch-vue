@@ -90,6 +90,7 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
     itemCount: string
     emptyResults: string
     mobileFilterButton: string
+    mobileFilterCloseButton: string
     htmlTitleTemplate: string
     outOfStock?: string
     noItemsInPage?: string
@@ -119,6 +120,7 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
       itemSummary?: boolean
       clearFilters?: boolean
       totalCount?: boolean
+      filtersCloseButton?: boolean
     }
   }
 
@@ -215,6 +217,7 @@ export type ResultFacetOptions = {
     facetFilterButton?: string
   }
   hideFiltersOnExactMatchForKeys?: string[]
+  disableMobileBodyScrollLock?: boolean
   promotedFacets?: string[]
   filterBehavior?: FilterBehavior
   filterable?: {

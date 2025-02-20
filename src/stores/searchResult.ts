@@ -85,8 +85,14 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     () => hasResults.value && (searchResult.value.offset ?? 0) >= totalItems.value
   )
 
-  const setSidebarState = ({ visible }: { visible: boolean }) => {
-    if (visible) {
+  const setSidebarState = ({
+    visible,
+    disableBodyScrolling = true
+  }: {
+    visible: boolean
+    disableBodyScrolling?: boolean
+  }) => {
+    if (visible && disableBodyScrolling) {
       disableBodyScroll()
     } else {
       enableBodyScroll()

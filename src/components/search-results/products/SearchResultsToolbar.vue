@@ -2,6 +2,7 @@
 import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
 import SearchResultsLayoutSelection from './SearchResultsLayoutSelection.vue'
 import SearchResultsMobileToggle from './SearchResultsMobileToggle.vue'
+import SearchResultsMobileFilterClose from './SearchResultsMobileFilterClose.vue'
 import SearchResultsSummary from './SearchResultsSummary.vue'
 import SearchResultsPageSelect from './pagination/SearchResultsPageSelect.vue'
 import SearchResultsPageSize from './pagination/SearchResultsPageSize.vue'
@@ -27,7 +28,7 @@ const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
 
 const { page, limit } = storeToRefs(paramStore)
-const { hasAnyFilter, searchResult } = storeToRefs(searchResultStore)
+const { hasAnyFilter, searchResult, isMobileSidebarVisible } = storeToRefs(searchResultStore)
 const { currentResolutionPageSizes } = storeToRefs(optionsStore)
 
 const isBottomLocation = computed((): boolean => {
@@ -44,6 +45,10 @@ const showItemSummary = computed((): boolean => {
 
 const showLayoutSelection = computed((): boolean => {
   return isBottomLocation.value ? false : Boolean(optionsValue.value.toolbar?.layoutSelector)
+})
+
+const showFiltersCloseButton = computed((): boolean => {
+  return isBottomLocation.value ? false : Boolean(optionsValue.value.toolbar?.filtersCloseButton)
 })
 
 const sortOptions = computed((): SortOptions | undefined => {
@@ -162,6 +167,10 @@ const handleClearAll = (): void => {
       <div v-else></div>
       <SearchResultsSort v-if="sortOptions" :options="sortOptions" :callbacks="callbacks" />
       <div v-else></div>
+      <SearchResultsMobileFilterClose
+        v-if="showFiltersCloseButton && isMobileSidebarVisible"
+        :label="optionsValue.labels.mobileFilterCloseButton"
+      />
     </div>
   </div>
 </template>
