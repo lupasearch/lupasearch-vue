@@ -47,7 +47,7 @@ const handleNavigation = (event: Event, link: string): void => {
       <span v-else class="lupa-search-results-breadcrumb-text">{{
         getLabel(breadcrumb.label)
       }}</span>
-      <span v-if="index < breadcrumbsValue.length - 1"> / </span>
+      <span v-if="index < breadcrumbsValue.length - 1"> {{ breadcrumb.separator ?? '/' }} </span>
     </span>
   </div>
 </template>

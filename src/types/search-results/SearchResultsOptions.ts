@@ -253,12 +253,13 @@ export type ResultFacetOptions = {
 }
 
 export type SearchResultsFilterOptions = {
+  visible?: boolean
   currentFilters?: ResultCurrentFilterOptions
   facets?: ResultFacetOptions
   categories?: CategoryFilterOptions
 }
 
-export type SearchResultsBreadcrumb = { label: string; link?: string }
+export type SearchResultsBreadcrumb = { label: string; link?: string; separator?: string }
 
 export type DynamicData = {
   enabled?: boolean

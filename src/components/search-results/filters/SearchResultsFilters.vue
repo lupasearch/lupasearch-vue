@@ -24,6 +24,10 @@ const showCurrentFilters = computed((): boolean => {
   return currentFiltersVisible.value ? Boolean(props.options.facets) : false
 })
 
+const visible = computed((): boolean => {
+  return props.options.visible ?? true
+})
+
 const filter = () => {
   emit('filter')
 }
@@ -38,7 +42,7 @@ defineExpose({ fetch })
 </script>
 
 <template>
-  <div id="lupa-search-result-filters" class="lupa-search-result-filters">
+  <div v-if="visible" id="lupa-search-result-filters" class="lupa-search-result-filters">
     <CurrentFilters
       v-if="showCurrentFilters"
       :options="options.currentFilters"
