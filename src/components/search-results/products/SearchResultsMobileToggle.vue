@@ -11,16 +11,17 @@ defineProps<{
 
 const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
-const { currentFilterCount } = storeToRefs(searchResultStore)
+const { currentFilterCount, isMobileSidebarVisible } = storeToRefs(searchResultStore)
 const { searchResultOptions } = storeToRefs(optionsStore)
 
 const disableMobileBodyScrollLock = computed(
   () => searchResultOptions.value.filters?.facets?.disableMobileBodyScrollLock ?? false
 )
+const isSidebarVisible = computed(() => isMobileSidebarVisible.value)
 
 const handleMobileToggle = (): void => {
   searchResultStore.setSidebarState({
-    visible: true,
+    visible: !isSidebarVisible.value,
     disableBodyScrolling: !disableMobileBodyScrollLock.value
   })
 }
@@ -34,7 +35,8 @@ const hasActiveFilters = computed(() => currentFilterCount.value > 0)
     @click="handleMobileToggle"
     :class="{
       'lupa-mobile-toggle-filters-empty': currentFilterCount < 1,
-      'lupa-mobile-toggle-has-filters': hasActiveFilters
+      'lupa-mobile-toggle-has-filters': hasActiveFilters,
+      'lupa-sidebar-open': isSidebarVisible
     }"
   >
     {{ label }}
