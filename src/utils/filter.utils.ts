@@ -45,6 +45,7 @@ const unfoldRangeFilter = (
     keys?: string[]
     currency?: string
     separator?: string
+    currencyTemplate?: string
   } = {}
 ): UnfoldedFilter[] => {
   const gt = filter.gte || filter.gt
@@ -53,7 +54,12 @@ const unfoldRangeFilter = (
     return [
       {
         key,
-        value: formatPriceSummary([gt, lt], price.currency, price.separator),
+        value: formatPriceSummary(
+          [gt, lt],
+          price.currency,
+          price.separator,
+          price.currencyTemplate
+        ),
         type: 'range'
       }
     ]
@@ -68,6 +74,7 @@ const unfoldFilter = (
     keys?: string[]
     currency?: string
     separator?: string
+    currencyTemplate?: string
   } = {}
 ): UnfoldedFilter[] => {
   if (Array.isArray(filter)) {
@@ -88,6 +95,7 @@ export const unfoldFilters = (
     keys?: string[]
     currency?: string
     separator?: string
+    currencyTemplate?: string
   } = {}
 ): UnfoldedFilter[] => {
   if (!filters) {
