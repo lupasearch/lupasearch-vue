@@ -45,6 +45,14 @@ describe('formatPrice', () => {
   it('should return empty string if value cannot be parsed', () => {
     expect(formatPrice('asf')).toEqual('')
   })
+
+  it('should format price with template', () => {
+    expect(formatPrice('2.3', '€', ',', '{1} €')).toEqual('2,30 €')
+    expect(formatPrice('2.3', '€', ',', '{1}')).toEqual('2,30')
+    expect(formatPrice('2.3', '$', '.', '$ {1}')).toEqual('$ 2.30')
+    expect(formatPrice('2.3', '$', '.', '{1} $')).toEqual('2.30 $')
+    expect(formatPrice(0, '$', '.', '$ {1}')).toEqual('$ 0.00')
+  })
 })
 
 describe('formatPriceSummary', () => {
@@ -61,5 +69,16 @@ describe('formatPriceSummary', () => {
   it('should render price range for only min value', () => {
     expect(formatPriceSummary([undefined, 20])).toBe('< 20,00 €')
     expect(formatPriceSummary([undefined, 0])).toBe('< 0,00 €')
+  })
+
+  it('should render price range with template', () => {
+    expect(formatPriceSummary([2, 4], '€', ',', '{1} €')).toBe('2,00 € - 4,00 €')
+    expect(formatPriceSummary([2, 4], '€', ',', '{1}')).toBe('2,00 - 4,00')
+    expect(formatPriceSummary([2, 4], '$', '.', '{1} $')).toBe('2.00 $ - 4.00 $')
+    expect(formatPriceSummary([2, 4], '$', '.', '$ {1}')).toBe('$ 2.00 - $ 4.00')
+
+    expect(formatPriceSummary([2], '€', ',', '{1} €')).toBe('> 2,00 €')
+    expect(formatPriceSummary([2], '€', ',', '{1}')).toBe('> 2,00')
+    expect(formatPriceSummary([2], '$', '.', '${1}')).toBe('> $2.00')
   })
 })

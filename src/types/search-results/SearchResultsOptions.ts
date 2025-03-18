@@ -83,7 +83,8 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
   SearchResultsSimilarQueriesLabels &
   SearchResultsSimilarResultsLabels & {
     sortBy: string
-    currency: string
+    currency?: string
+    currencyTemplate?: string
     priceSeparator?: string
     searchResults?: string
     searchResultsCount?: string

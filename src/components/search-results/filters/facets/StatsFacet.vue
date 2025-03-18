@@ -38,6 +38,10 @@ const currency = computed((): string => {
   return searchResultOptions.value?.labels.currency
 })
 
+const currencyTemplate = computed((): string => {
+  return searchResultOptions.value?.labels.currencyTemplate
+})
+
 const priceKeys = computed((): string[] => {
   return searchResultOptions.value?.priceKeys ?? []
 })
@@ -143,7 +147,7 @@ const facetMax = computed((): number => {
 const statsSummary = computed((): string => {
   const [min, max] = sliderRange.value
   return isPrice.value
-    ? formatPriceSummary([min, max], currency.value, separator.value)
+    ? formatPriceSummary([min, max], currency.value, separator.value, currencyTemplate.value)
     : formatRange({ gte: min, lte: max })
 })
 
