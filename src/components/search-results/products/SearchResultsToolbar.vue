@@ -156,7 +156,7 @@ const handleClearAll = (): void => {
         {{ toolbarRightLabel }}
       </div>
       <SearchResultsMobileToggle
-        :label="optionsValue.labels.mobileFilterButton"
+        :labels="optionsValue.labels"
         :show-filter-count="showMobileFilterCount"
       />
       <SearchResultsPageSize

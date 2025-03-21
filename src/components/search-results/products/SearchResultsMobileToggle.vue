@@ -3,9 +3,10 @@ import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useOptionsStore } from '@/stores/options'
 import { useSearchResultStore } from '@/stores/searchResult'
+import { SearchResultsOptionLabels } from '@/types/search-results/SearchResultsOptions'
 
-defineProps<{
-  label: string
+const props = defineProps<{
+  labels: SearchResultsOptionLabels
   showFilterCount: boolean
 }>()
 
@@ -18,6 +19,22 @@ const disableMobileBodyScrollLock = computed(
   () => searchResultOptions.value.filters?.facets?.disableMobileBodyScrollLock ?? false
 )
 const isSidebarVisible = computed(() => isMobileSidebarVisible.value)
+
+const defaultLabel = computed(() => props.labels.mobileFilterButton)
+
+const activeLabel = computed(() => props.labels.mobileFilterButtonActive)
+
+const openLabel = computed(() => props.labels.mobileFilterButtonOpen)
+
+const label = computed(() => {
+  if (isSidebarVisible.value) {
+    return openLabel.value
+  }
+  if (hasActiveFilters.value) {
+    return activeLabel.value
+  }
+  return defaultLabel.value
+})
 
 const handleMobileToggle = (): void => {
   searchResultStore.setSidebarState({
