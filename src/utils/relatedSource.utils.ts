@@ -78,7 +78,10 @@ const processFacetsRelatedSourceDocumentQuery = async (
     searchText: searchText,
     limit: 1,
     filters: activeFilters,
-    trackTerm: false
+    trackTerm: false,
+    modifiers: {
+      refiners: false
+    }
   }
   try {
     const result = await lupaSearchSdk.query(querySource.queryKey, lupaQuery, options)

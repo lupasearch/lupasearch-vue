@@ -29,3 +29,5 @@ export const DEFAULT_CONTAINER_STYLE = 'containerStyle.css'
 export const RATING_STAR_HTML = '&#x2606;'
 
 export const RESULT_ROOT_SELECTOR = '#lupa-search-results'
+
+export const SKIP_FACET_RELOAD_FOR = ['page', 'limit', 'sort']

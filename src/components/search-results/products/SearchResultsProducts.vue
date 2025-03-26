@@ -27,6 +27,7 @@ import SearchResultsSimilarResults from './similar-results/SearchResultsSimilarR
 import RelatedQueries from '@/components/search-results/related-queries/RelatedQueries.vue'
 import RedirectionSuggestions from '../redirection-suggestions/RedirectionSuggestions.vue'
 import { EventSourceMetadata } from '@/types/search-box/Common'
+import RefinersLoadingNotice from './RefinersLoadingNotice.vue'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
@@ -237,7 +238,7 @@ const filter = () => {
     >
       {{ options.labels.emptyResults }} <span>{{ currentQueryText }}</span>
     </div>
-
+    <RefinersLoadingNotice :labels="options.labels" />
     <div v-if="hasSimilarQueries">
       <SearchResultsSimilarQueries
         :labels="similarQueriesLabels"
