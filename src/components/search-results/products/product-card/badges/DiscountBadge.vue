@@ -39,7 +39,8 @@ const discountStringValue = computed((): string => {
     : formatPrice(
         discountValue.value,
         searchResultOptions.value?.labels?.currency,
-        searchResultOptions.value?.labels?.priceSeparator
+        searchResultOptions.value?.labels?.priceSeparator,
+        searchResultOptions.value?.labels?.currencyTemplate
       )
 })
 
