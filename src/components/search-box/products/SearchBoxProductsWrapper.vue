@@ -69,7 +69,11 @@ const getItems = (): void => {
       publicQuery: {
         searchText: props.inputValue,
         limit: props.panel.limit,
-        filters: extractedInitialFilters.value
+        filters: extractedInitialFilters.value,
+        modifiers: {
+          facets: false,
+          refiners: false,
+        }
       },
       options: props.options
     })

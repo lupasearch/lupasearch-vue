@@ -73,7 +73,11 @@ const searchForRelatedQuery = async (): Promise<void> => {
     searchText: searchText.value,
     limit: 3,
     filters: relatedQueryFilters.value,
-    trackTerm: false
+    trackTerm: false,
+    modifiers: {
+      facets: false,
+      refiners: false
+    }
   }
   try {
     loading.value = true

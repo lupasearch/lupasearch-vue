@@ -99,6 +99,7 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
     backToFirstPage?: string
     toolbarRightLabel?: string
     toolbarLeftLabel?: string
+    refinersLoadingNotice?: string
   }
 
 export type SearchResultsAdditionalPanels = {
@@ -117,6 +118,7 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
     hideResultsOnReload?: boolean
     relatedQueries?: RelatedQueryOptions
     redirectionSuggestions?: RedirectionSuggestionOptions[]
+    splitExpensiveRequests?: boolean
     toolbar?: {
       layoutSelector?: boolean
       itemSummary?: boolean

@@ -6,7 +6,8 @@
 }
 
 .lupa-similar-queries-label,
-.lupa-similar-results-label {
+.lupa-similar-results-label,
+.lupa-refiners-loading-notice p {
   font-size: searchResults.$similar-queries-label-font-size;
   font-family: searchResults.$search-results-font-family;
   font-weight: searchResults.$similar-queries-label-font-weight;
