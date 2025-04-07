@@ -3,7 +3,7 @@ import { useHistoryStore } from '@/stores/history'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import type { SearchBoxHistory } from '@/types/search-box/SearchBoxHistory'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { ref, computed, onBeforeMount, onMounted } from 'vue'
 import SearchBoxHistoryItem from './SearchBoxHistoryItem.vue'
 
 defineProps<{ options: SearchBoxHistory }>()
@@ -26,6 +26,13 @@ onMounted(() => {
 
 onBeforeMount(() => {
   window.removeEventListener('keydown', handleKeyDown)
+})
+
+const availableLimits = ref([3, 5, 10, 20])
+const selectedHistoryLimit = ref(5)
+
+const limitedHistory = computed(() => {
+  return (history.value ?? []).slice(0, selectedHistoryLimit.value)
 })
 
 const remove = ({ item }: { item: string }) => {
@@ -52,8 +59,17 @@ const handleKeyDown = (e: KeyboardEvent): void => {
 </script>
 <template>
   <div class="lupa-search-box-history-panel" v-if="hasHistory">
+    <div class="history-dropdown">
+      <label for="history-limit"> Show </label>
+      <select id="history-limit" v-model="selectedHistoryLimit">
+        <option v-for="limit in availableLimits" :value="limit" :key="limit">
+          {{ limit }}
+        </option>
+      </select>
+      <span>results</span>
+    </div>
     <SearchBoxHistoryItem
-      v-for="(item, index) in history"
+      v-for="(item, index) in limitedHistory"
       :key="item"
       :item="item"
       :highlighted="index === highlightIndex"
