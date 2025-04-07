@@ -6,6 +6,7 @@ import { computed, watch } from 'vue'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import { storeToRefs } from 'pinia'
 import type { Suggestion } from '@getlupa/client-sdk/Types'
+import { ref } from 'vue'
 
 const props = defineProps<{
   items: DisplaySuggestion[]
@@ -16,6 +17,13 @@ const props = defineProps<{
 
 const items = computed(() => props.items ?? [])
 const highlight = computed(() => props.highlight ?? true)
+
+const suggestionLimit = ref(3);
+const limitOptions = [3, 6, 9, 12];
+
+const limitedItems = computed(() => {
+  return items.value.slice(0, suggestionLimit.value)
+})
 
 const emit = defineEmits<{
   (
@@ -76,9 +84,17 @@ watch(highlightedItem, () => {
 </script>
 
 <template>
+  <div class="dropdown-container">
+    <label for="limit-select">Show up to:</label>
+    <select id="limit-select" v-model.number="suggestionLimit">
+      <option v-for="option in limitOptions" :key="option" :value="option">
+        {{ option }}
+      </option>
+    </select>
+  </div>
   <div id="lupa-search-box-suggestions" data-cy="lupa-search-box-suggestions">
     <SearchBoxSuggestion
-      v-for="(item, index) in items"
+      v-for="(item, index) in limitedItems"
       :key="getSuggestionKey(item)"
       :class="['lupa-suggestion', index === highlightedIndex ? 'lupa-suggestion-highlighted' : '']"
       :suggestion="item"
