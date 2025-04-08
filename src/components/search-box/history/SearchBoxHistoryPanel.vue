@@ -5,14 +5,11 @@ import type { SearchBoxHistory } from '@/types/search-box/SearchBoxHistory'
 import { storeToRefs } from 'pinia'
 import { ref, computed, onBeforeMount, onMounted } from 'vue'
 import SearchBoxHistoryItem from './SearchBoxHistoryItem.vue'
-import { SEARCH_BOX_CONFIGURATION } from '@/constants/development/searchBoxDev.const'
-
-defineProps<{ options: SearchBoxHistory }>()
 
 const historyStore = useHistoryStore()
 const searchBoxStore = useSearchBoxStore()
 
-const historyOptions = SEARCH_BOX_CONFIGURATION.history
+const props = defineProps<{ options: SearchBoxHistory }>()
 
 const { highlightedIndex } = storeToRefs(searchBoxStore)
 const { items: history } = storeToRefs(historyStore)
@@ -30,7 +27,7 @@ onMounted(() => {
 onBeforeMount(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
-const historyLimit = computed(() => historyOptions.historyLimit ?? 5)
+const historyLimit = computed(() => props.options.historyLimit ?? 5)
 
 const limitedHistory = computed(() => {
   return (history.value ?? []).slice(0, historyLimit.value)

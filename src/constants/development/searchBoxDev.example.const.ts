@@ -99,6 +99,7 @@ export const SEARCH_BOX_CONFIGURATION = {
   history: {
     labels: {
       clear: 'Clear History'
-    }
+    },
+    historyLimit: 5
   }
 }
