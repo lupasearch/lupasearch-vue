@@ -3,13 +3,13 @@ import { useHistoryStore } from '@/stores/history'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import type { SearchBoxHistory } from '@/types/search-box/SearchBoxHistory'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { ref, computed, onBeforeMount, onMounted } from 'vue'
 import SearchBoxHistoryItem from './SearchBoxHistoryItem.vue'
-
-defineProps<{ options: SearchBoxHistory }>()
 
 const historyStore = useHistoryStore()
 const searchBoxStore = useSearchBoxStore()
+
+const props = defineProps<{ options: SearchBoxHistory }>()
 
 const { highlightedIndex } = storeToRefs(searchBoxStore)
 const { items: history } = storeToRefs(historyStore)
@@ -26,6 +26,11 @@ onMounted(() => {
 
 onBeforeMount(() => {
   window.removeEventListener('keydown', handleKeyDown)
+})
+const historyLimit = computed(() => props.options.historyLimit ?? 5)
+
+const limitedHistory = computed(() => {
+  return (history.value ?? []).slice(0, historyLimit.value)
 })
 
 const remove = ({ item }: { item: string }) => {
@@ -53,7 +58,7 @@ const handleKeyDown = (e: KeyboardEvent): void => {
 <template>
   <div class="lupa-search-box-history-panel" v-if="hasHistory">
     <SearchBoxHistoryItem
-      v-for="(item, index) in history"
+      v-for="(item, index) in limitedHistory"
       :key="item"
       :item="item"
       :highlighted="index === highlightIndex"
