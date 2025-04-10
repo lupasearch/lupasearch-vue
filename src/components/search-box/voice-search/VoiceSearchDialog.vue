@@ -5,6 +5,8 @@ import { getVoiceServiceApiUrl } from '@/utils/api.utils';
 import VoiceSearchProgressCircle from '@/components/search-box/voice-search/VoiceSearchProgressCircle.vue'
 import { useOptionsStore } from '@/stores/options'
 import { getSocketClientId } from '@/utils/string.utils';
+import { useSearchBoxStore } from '@/stores/searchBox';
+import { SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel';
 
 const props = defineProps<{
   isOpen: boolean,
@@ -12,6 +14,7 @@ const props = defineProps<{
 }>()
 
 const optionsStore = useOptionsStore()
+const searchBoxStore = useSearchBoxStore()
 
 const emit = defineEmits([
   'close',
@@ -36,6 +39,20 @@ const timeSliceLength = computed(() => props.options.timesliceLength ?? 1000)
 const stopDelay = computed(() => props.options.stopDelay ?? 700)
 const labels = computed(() => props.options.labels ?? {});
 
+// TODO: is this right?
+// const queryKey = computed(() => {
+//   console.log(searchBoxStore.options.panels.length)
+//   const queryKey = searchBoxStore.options.panels.find(
+//     (panel) => panel.type === SearchBoxPanelType.DOCUMENT
+//   )?.queryKey
+
+//   if (!queryKey) {
+//     console.error('No query key found for the document panel')
+//     return null
+//   }
+//   return queryKey
+// })
+
 const description = computed(() => {
   if (errorRef.value) {
     return errorRef.value
@@ -55,118 +72,15 @@ watch(transcription, (newValue) => {
   emit('transcript-update', newValue)
 })
 
-onMounted(() => {
-  clientId.value = getSocketClientId()
-  reset()
-})
-
-const startRecognize = async () => {
-  if (
-    isRecordingRef.value ||
-    (mediaRecorder.value && mediaRecorder.value.state === 'recording')
-  ) {
+const onMediaRecorderStart = () => {
+  if (mediaRecorder.value?.state !== 'recording') {
     return
   }
 
-  transcription.value = ''
-  errorRef.value = null
-
-  try {
-    const voiceServiceUrl = getVoiceServiceApiUrl(
-      optionsStore.envOptions.environment, 
-      props.options.customVoiceServiceUrl
-    )
-    socket.value = new WebSocket(
-      `${voiceServiceUrl}?clientId=${clientId.value}&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
-    )
-
-    socket.value.onmessage = onBackendSocketMessage
-    socket.value.onerror = () => {
-      errorRef.value = 'Error connecting to transcription service'
-    }
-
-    socket.value.onclose = () => {
-      if (isRecordingRef.value) {
-        stopMediaRecording()
-        isRecordingRef.value = false
-      }
-    }
-
-    const constraints = {
-      video: false,
-      audio: {
-        channelCount: 1,
-        echoCancellation: true,
-        sampleRate: 16000,
-      },
-    }
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints)
-    mediaStream.value = stream
-    mediaRecorder.value = new MediaRecorder(stream, {
-      mimeType: 'audio/webm; codecs=opus',
-    })
-    
-    mediaRecorder.value.onstart = 
-      (voiceSearchProgressBar.value as any)?.startProgressBar
-    mediaRecorder.value.ondataavailable = onDataAvailableHandler
-    mediaRecorder.value.onstop = () => {
-      handleOnStopEvent();
-      (voiceSearchProgressBar.value as any)?.stopProgressBar()
-    }
-    
-    // Send time slice every second
-    mediaRecorder.value.start(timeSliceLength.value)
-    isRecordingRef.value = true
-
-    setTimeout(() => {
-      handleOnStopEvent()
-    }, timesliceLimit.value * timeSliceLength.value)
-  } catch (error) {
-    console.error('Error during recording start:', error)
-    return
-  }
+  (voiceSearchProgressBar.value as any)?.startProgressBar()
 }
 
-const stopRecognize = () => {
-  stopMediaRecording()
-
-  if (
-    socket.value.readyState === WebSocket.CLOSED ||
-    socket.value.readyState === WebSocket.CLOSING
-  ) {
-    console.warn("Cannot stop: Either not recording or socket not open.");
-    return;
-  }
-
-  try {
-    socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }))
-
-    setTimeout(() => {
-      isRecordingRef.value = false
-      emitStoppedRecording()
-    }, 2000)
-  } catch (error) {
-    console.error('Error during recording stop:', error)
-    return
-  }
-}
-
-const onBackendSocketMessage = (event) => {
-  const messageObj = JSON.parse(event.data)
-  if (messageObj.event === 'error') {
-    errorRef.value = 'Server error during transcription'
-    stopMediaRecording()
-    isRecordingRef.value = false
-  }
-
-  if (messageObj.event === 'transcription') {
-    transcription.value = messageObj.transcription
-    stopRecognize()
-  }
-}
-
-const onDataAvailableHandler = (event: BlobEvent) => {
+const onMediaRecorderDataAvailable = (event: BlobEvent) => {
   if (mediaRecorder.value?.state !== 'recording') {
     return
   }
@@ -185,7 +99,40 @@ const onDataAvailableHandler = (event: BlobEvent) => {
   }
 }
 
-const stopMediaRecording = () => {
+const onMediaRecorderStop = () => {
+  handleOnStopEvent();
+  (voiceSearchProgressBar.value as any)?.stopProgressBar()
+}
+
+const startMediaRecorder = async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: false,
+    audio: {
+      channelCount: 1,
+      echoCancellation: true,
+      sampleRate: 16000,
+    },
+  })
+  mediaStream.value = stream
+  mediaRecorder.value = new MediaRecorder(stream, {
+    mimeType: 'audio/webm; codecs=opus',
+  })
+  
+  mediaRecorder.value.onstart = onMediaRecorderStart
+  mediaRecorder.value.ondataavailable = onMediaRecorderDataAvailable
+  mediaRecorder.value.onstop = onMediaRecorderStop
+  
+  // Send time slice every second
+  mediaRecorder.value.start(timeSliceLength.value)
+  isRecordingRef.value = true
+
+  setTimeout(() => {
+    handleOnStopEvent()
+  }, timesliceLimit.value * timeSliceLength.value)
+}
+
+
+const stopMediaRecorder = () => {
   if (!mediaRecorder.value || !mediaStream.value) {
     return
   }
@@ -202,6 +149,95 @@ const stopMediaRecording = () => {
     mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
       track.stop()
     })
+  } catch (error) {
+    console.error('Error during recording stop:', error)
+    return
+  }
+}
+
+const onConnectionOpen = async () => {
+  if (mediaRecorder.value && mediaRecorder.value.state === 'inactive') {
+    await startMediaRecorder()
+  } else {
+    console.error('Media recorder is not initialized or already recording')
+    return
+  }
+  // socket.value?.send(JSON.stringify({ event: 'audio-chunk-start' }))
+}
+
+const onConnectionSocketMessage = (event) => {
+  const messageObj = JSON.parse(event.data)
+  if (messageObj.event === 'error') {
+    errorRef.value = 'Server error during transcription'
+    stopMediaRecorder()
+    isRecordingRef.value = false
+  }
+
+  if (messageObj.event === 'transcription') {
+    transcription.value = messageObj.transcription
+    stopRecognitionConnection()
+  }
+}
+
+const onConnectionClose = () => {
+  if (isRecordingRef.value) {
+    stopMediaRecorder()
+    isRecordingRef.value = false
+  }
+}
+
+const onConnectionError = () => {
+  errorRef.value = 'Error connecting to transcription service'
+}
+
+const startRecognitionConnection = async () => {
+  if (
+    isRecordingRef.value ||
+    (mediaRecorder.value && mediaRecorder.value.state === 'recording')
+  ) {
+    return
+  }
+
+  transcription.value = ''
+  errorRef.value = null
+
+  try {
+    const voiceServiceUrl = getVoiceServiceApiUrl(
+      optionsStore.envOptions.environment, 
+      props.options.customVoiceServiceUrl
+    )
+    socket.value = new WebSocket(
+      `${voiceServiceUrl}?clientId=${clientId.value}&queryKey=TEST&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
+    )
+
+    socket.value.onopen = onConnectionOpen
+    socket.value.onmessage = onConnectionSocketMessage
+    socket.value.onclose = onConnectionClose
+    socket.value.onerror = onConnectionError
+  } catch (error) {
+    console.error('Error during recording start:', error)
+    return
+  }
+}
+
+const stopRecognitionConnection = () => {
+  stopMediaRecorder()
+
+  if (
+    socket.value.readyState === WebSocket.CLOSED ||
+    socket.value.readyState === WebSocket.CLOSING
+  ) {
+    console.warn("Cannot stop: Either not recording or socket not open.");
+    return;
+  }
+
+  try {
+    socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }))
+
+    setTimeout(() => {
+      isRecordingRef.value = false
+      emitStoppedRecording()
+    }, 2000)
   } catch (error) {
     console.error('Error during recording stop:', error)
     return
@@ -227,22 +263,27 @@ const handleRecordingButtonClick = () => {
       handleOnStopEvent()
     }, stopDelay.value)
   } else {
-    startRecognize()
+    startRecognitionConnection()
   }
 }
 
 const handleOnStopEvent = () => {
   if (isRecordingRef.value) {
-    stopRecognize()
+    stopRecognitionConnection()
   }
 }
 
 const reset = () => {
-  stopMediaRecording()
+  stopMediaRecorder()
   isRecordingRef.value = false
   transcription.value = ''
   errorRef.value = null
 }
+
+onMounted(() => {
+  clientId.value = getSocketClientId()
+  reset()
+})
 
 onBeforeUnmount(() => {
   if (socket.value) {
