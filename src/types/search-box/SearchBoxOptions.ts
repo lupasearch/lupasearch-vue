@@ -24,7 +24,8 @@ export type SearchBoxOptionLabels = {
   placeholder: string
   noResults: string
   moreResults: string
-  currency: string
+  currency?: string
+  currencyTemplate?: string
   priceSeparator?: string
   defaultFacetLabel?: string
   close?: string
