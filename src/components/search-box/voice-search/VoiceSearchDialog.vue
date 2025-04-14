@@ -5,8 +5,7 @@ import { getVoiceServiceApiUrl } from '@/utils/api.utils';
 import VoiceSearchProgressCircle from '@/components/search-box/voice-search/VoiceSearchProgressCircle.vue'
 import { useOptionsStore } from '@/stores/options'
 import { getSocketClientId } from '@/utils/string.utils';
-import { useSearchBoxStore } from '@/stores/searchBox';
-import { SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel';
+import { useVoiceRecorder } from '@/composables/useVoiceRecorder'
 
 const props = defineProps<{
   isOpen: boolean,
@@ -14,7 +13,15 @@ const props = defineProps<{
 }>()
 
 const optionsStore = useOptionsStore()
-const searchBoxStore = useSearchBoxStore()
+
+const {
+  isRecording,
+  transcription,
+  errorRef,
+  initSocket,
+  stopSocketConnection,
+  reset,
+} = useVoiceRecorder(props.options)
 
 const emit = defineEmits([
   'close',
@@ -22,15 +29,7 @@ const emit = defineEmits([
   'stop-recognize'
 ])
 
-const socket = ref<WebSocket | null>(null)
 const clientId = ref<string | null>(null)
-
-const isRecordingRef = ref<boolean>(false)
-const errorRef = ref<string | null>(null)
-const mediaStream = ref<MediaStream | null>(null)
-const mediaRecorder = ref<MediaRecorder | null>(null)
-
-const transcription = ref('')
 
 const voiceSearchProgressBar = ref(null)
 
@@ -39,26 +38,12 @@ const timeSliceLength = computed(() => props.options.timesliceLength ?? 1000)
 const stopDelay = computed(() => props.options.stopDelay ?? 700)
 const labels = computed(() => props.options.labels ?? {});
 
-// TODO: is this right?
-// const queryKey = computed(() => {
-//   console.log(searchBoxStore.options.panels.length)
-//   const queryKey = searchBoxStore.options.panels.find(
-//     (panel) => panel.type === SearchBoxPanelType.DOCUMENT
-//   )?.queryKey
-
-//   if (!queryKey) {
-//     console.error('No query key found for the document panel')
-//     return null
-//   }
-//   return queryKey
-// })
-
 const description = computed(() => {
   if (errorRef.value) {
     return errorRef.value
   }
 
-  if (!isRecordingRef.value) {
+  if (!isRecording.value) {
     return labels.value.microphoneOff ?? 
       'Microphone is off. Try again.'
   }
@@ -72,232 +57,56 @@ watch(transcription, (newValue) => {
   emit('transcript-update', newValue)
 })
 
-const onMediaRecorderStart = () => {
-  if (mediaRecorder.value?.state !== 'recording') {
-    return
-  }
+const handleRecordingButtonClick = () => {
+  if (isRecording.value) {
+    //delay stop recording so that the last chunk is sent
+    setTimeout(() => {
+      stopSocketConnection()
+      handleOnStopEvent()
+    }, stopDelay.value)
 
+    return
+  } 
+
+  const voiceServiceUrl = getVoiceServiceApiUrl(
+    optionsStore.envOptions.environment, 
+    props.options.customVoiceServiceUrl
+  )
+  const socketUrl =
+    `${voiceServiceUrl}?clientId=${props.options.queryKey}&queryKey=TEST&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
+  initSocket(socketUrl);;
   (voiceSearchProgressBar.value as any)?.startProgressBar()
-}
-
-const onMediaRecorderDataAvailable = (event: BlobEvent) => {
-  if (mediaRecorder.value?.state !== 'recording') {
-    return
-  }
-
-  // Encode audio data to base64 for sending over WebSocket
-  const reader = new FileReader()
-  reader.readAsDataURL(event.data)
-  reader.onloadend = () => {
-    const base64DataChunks = reader.result as string
-    const base64Data = base64DataChunks.split(',')[1]
-
-    socket.value?.send(JSON.stringify({ 
-      event: 'audio-chunk', 
-      data: base64Data 
-    }))
-  }
-}
-
-const onMediaRecorderStop = () => {
-  handleOnStopEvent();
-  (voiceSearchProgressBar.value as any)?.stopProgressBar()
-}
-
-const startMediaRecorder = async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: false,
-    audio: {
-      channelCount: 1,
-      echoCancellation: true,
-      sampleRate: 16000,
-    },
-  })
-  mediaStream.value = stream
-  mediaRecorder.value = new MediaRecorder(stream, {
-    mimeType: 'audio/webm; codecs=opus',
-  })
-  
-  mediaRecorder.value.onstart = onMediaRecorderStart
-  mediaRecorder.value.ondataavailable = onMediaRecorderDataAvailable
-  mediaRecorder.value.onstop = onMediaRecorderStop
-  
-  // Send time slice every second
-  mediaRecorder.value.start(timeSliceLength.value)
-  isRecordingRef.value = true
 
   setTimeout(() => {
+    stopSocketConnection()
     handleOnStopEvent()
   }, timesliceLimit.value * timeSliceLength.value)
 }
 
-
-const stopMediaRecorder = () => {
-  if (!mediaRecorder.value || !mediaStream.value) {
-    return
-  }
-
-  if (
-    mediaRecorder.value?.state === 'inactive' && 
-    !isRecordingRef.value
-  ) {
-    return
-  }
-
-  try {
-    mediaRecorder.value?.stop()
-    mediaStream.value?.getTracks().forEach((track: MediaStreamTrack) => {
-      track.stop()
-    })
-  } catch (error) {
-    console.error('Error during recording stop:', error)
-    return
-  }
-}
-
-const onConnectionOpen = async () => {
-  if (mediaRecorder.value && mediaRecorder.value.state === 'inactive') {
-    await startMediaRecorder()
-  } else {
-    console.error('Media recorder is not initialized or already recording')
-    return
-  }
-  // socket.value?.send(JSON.stringify({ event: 'audio-chunk-start' }))
-}
-
-const onConnectionSocketMessage = (event) => {
-  const messageObj = JSON.parse(event.data)
-  if (messageObj.event === 'error') {
-    errorRef.value = 'Server error during transcription'
-    stopMediaRecorder()
-    isRecordingRef.value = false
-  }
-
-  if (messageObj.event === 'transcription') {
-    transcription.value = messageObj.transcription
-    stopRecognitionConnection()
-  }
-}
-
-const onConnectionClose = () => {
-  if (isRecordingRef.value) {
-    stopMediaRecorder()
-    isRecordingRef.value = false
-  }
-}
-
-const onConnectionError = () => {
-  errorRef.value = 'Error connecting to transcription service'
-}
-
-const startRecognitionConnection = async () => {
-  if (
-    isRecordingRef.value ||
-    (mediaRecorder.value && mediaRecorder.value.state === 'recording')
-  ) {
-    return
-  }
-
-  transcription.value = ''
-  errorRef.value = null
-
-  try {
-    const voiceServiceUrl = getVoiceServiceApiUrl(
-      optionsStore.envOptions.environment, 
-      props.options.customVoiceServiceUrl
-    )
-    socket.value = new WebSocket(
-      `${voiceServiceUrl}?clientId=${clientId.value}&queryKey=TEST&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
-    )
-
-    socket.value.onopen = onConnectionOpen
-    socket.value.onmessage = onConnectionSocketMessage
-    socket.value.onclose = onConnectionClose
-    socket.value.onerror = onConnectionError
-  } catch (error) {
-    console.error('Error during recording start:', error)
-    return
-  }
-}
-
-const stopRecognitionConnection = () => {
-  stopMediaRecorder()
-
-  if (
-    socket.value.readyState === WebSocket.CLOSED ||
-    socket.value.readyState === WebSocket.CLOSING
-  ) {
-    console.warn("Cannot stop: Either not recording or socket not open.");
-    return;
-  }
-
-  try {
-    socket.value?.send(JSON.stringify({ event: 'audio-chunk-end' }))
-
-    setTimeout(() => {
-      isRecordingRef.value = false
-      emitStoppedRecording()
-    }, 2000)
-  } catch (error) {
-    console.error('Error during recording stop:', error)
-    return
-  }
-}
-
-const emitStoppedRecording = (): void => {
-  if (errorRef.value) {
-    return
-  }
-
-  emit('stop-recognize', transcription.value)
-}
-
-const handleDialogCloseEvent = (): void => {
-  emit('close')
-}
-
-const handleRecordingButtonClick = () => {
-  if (isRecordingRef.value) {
-    //delay stop recording so that the last chunk is sent
-    setTimeout(() => {
-      handleOnStopEvent()
-    }, stopDelay.value)
-  } else {
-    startRecognitionConnection()
-  }
-}
-
 const handleOnStopEvent = () => {
-  if (isRecordingRef.value) {
-    stopRecognitionConnection()
-  }
-}
-
-const reset = () => {
-  stopMediaRecorder()
-  isRecordingRef.value = false
-  transcription.value = ''
-  errorRef.value = null
+  setTimeout(() => {
+    if (errorRef.value) return
+    emit('stop-recognize', transcription.value)
+  }, 2000);;
+  (voiceSearchProgressBar.value as any)?.stopProgressBar()
 }
 
 onMounted(() => {
   clientId.value = getSocketClientId()
-  reset()
 })
 
 onBeforeUnmount(() => {
-  if (socket.value) {
-    socket.value.close()
-    socket.value = null
-  }
-
   clientId.value = null
-  reset()
 })
+
+const dialogReset = () => {
+  reset();;
+  (voiceSearchProgressBar.value as any)?.stopProgressBar()
+}
 
 defineExpose({ 
   handleRecordingButtonClick, 
-  reset 
+  reset: dialogReset
 })
 </script>
 
@@ -309,7 +118,7 @@ defineExpose({
     >
       <button
           class="lupa-dialog-box-close-button"
-          @click="handleDialogCloseEvent"
+          @click="() => emit('close')"
         >
       </button>
       <div class="lupa-dialog-content">
@@ -320,14 +129,14 @@ defineExpose({
         <div class="lupa-mic-button-wrapper">
           <button 
             class="lupa-mic-button"
-            :class="{ recording: isRecordingRef }"
+            :class="{ recording: isRecording }"
             @click="handleRecordingButtonClick"
           >
           </button>
           <VoiceSearchProgressCircle
             ref="voiceSearchProgressBar" 
             class="lupa-progress-circle"
-            :isRecording="isRecordingRef"
+            :isRecording="isRecording"
             :timesliceLimit="timesliceLimit"
             :timeSliceLength="timeSliceLength"
           />

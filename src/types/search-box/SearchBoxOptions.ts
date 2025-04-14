@@ -42,6 +42,7 @@ export type VoiceSearchLabels = {
 
 export type VoiceSearchOptions = {
   enabled: boolean
+  queryKey: string
   stopDelay?: number
   timesliceLimit?: number
   timesliceLength?: number

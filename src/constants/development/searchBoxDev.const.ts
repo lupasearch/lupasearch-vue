@@ -25,6 +25,7 @@ export const SEARCH_BOX_CONFIGURATION = {
   },
   voiceSearch: {
     enabled: true,
+    queryKey: 'jnovl7k0kkvd',
     stopDelay: 700,
     timesliceLimit: 4,
     timesliceLength: 1000,

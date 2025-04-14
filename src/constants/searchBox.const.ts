@@ -21,6 +21,7 @@ export const DEFAULT_SEARCH_BOX_OPTIONS = {
   },
   voiceSearch: {
     enabled: false,
+    queryKey: '',
   },
   panels: [
     {
