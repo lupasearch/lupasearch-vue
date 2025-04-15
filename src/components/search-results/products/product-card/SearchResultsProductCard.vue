@@ -25,6 +25,8 @@ const props = defineProps<{
   isAdditionalPanel?: boolean
   clickTrackingSettings?: ProductClickTrackingSettings
   lupaClickTrackingType?: 'itemClick' | 'recommendedItemClick'
+  sourceItemId?: string | string[]
+  analyticsMetadata?: Record<string, unknown>
 }>()
 
 const clickTrackingSettings = computed(() => props.clickTrackingSettings ?? {})
@@ -35,7 +37,7 @@ const paramsStore = useParamsStore()
 const trackingStore = useTrackingStore()
 
 const { layout } = storeToRefs(searchResultStore)
-const { searchResultsRoutingBehavior, searchResultOptions, trackingOptions } =
+const { searchResultsRoutingBehavior, searchResultOptions, productRecommendationOptions } =
   storeToRefs(optionsStore)
 
 const { query } = storeToRefs(paramsStore)
@@ -155,7 +157,10 @@ const handleClick = (): void => {
         itemId: id.value
       },
       options: { allowEmptySearchQuery: true },
-      filters: searchResultStore.hasAnyFilter ? searchResultStore.filters : undefined
+      filters: searchResultStore.hasAnyFilter ? searchResultStore.filters : undefined,
+      sourceItemId:
+        props.lupaClickTrackingType === 'recommendedItemClick' ? props.sourceItemId : undefined,
+      metadata: props.analyticsMetadata
     }
   }
   if (isDelayedClickTracking()) {

@@ -6,6 +6,7 @@ export type PluginElementsConfiguration = {
   recommendations?: string
   productList?: string
   genAiChat?: string
+  tracking?: string
 }
 
 export type PluginConfiguration = {

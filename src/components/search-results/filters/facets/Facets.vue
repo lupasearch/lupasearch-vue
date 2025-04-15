@@ -30,7 +30,7 @@ const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
 
 const { filters } = storeToRefs(paramStore)
-const { facets } = storeToRefs(searchResultStore)
+const { facets, loadingFacets } = storeToRefs(searchResultStore)
 const { searchResultOptions } = storeToRefs(optionsStore)
 
 const emit = defineEmits(['filter'])
@@ -102,7 +102,10 @@ const filter = () => {
 }
 </script>
 <template>
-  <div class="lupa-search-result-facets">
+  <div
+    class="lupa-search-result-facets"
+    :class="{ 'lupa-search-result-facets-loading': loadingFacets }"
+  >
     <FacetList
       v-if="regularFacets"
       :options="options"

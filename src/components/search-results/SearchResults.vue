@@ -17,7 +17,12 @@ import { parseParams } from '@/utils/params.utils'
 import { pick } from '@/utils/picker.utils'
 import { createPublicQuery, getPublicQuery } from '@/utils/query.utils'
 import { getSearchParams } from '@/utils/ssr.utils'
-import type { FilterGroup, PublicQuery, SearchQueryResult } from '@getlupa/client-sdk/Types'
+import type {
+  FilterGroup,
+  PublicQuery,
+  SdkError,
+  SearchQueryResult
+} from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { getLupaTrackingContext } from '@/utils/tracking.utils'
@@ -28,6 +33,8 @@ import SearchResultsBreadcrumbs from './SearchResultsBreadcrumbs.vue'
 import SearchResultsFilters from './filters/SearchResultsFilters.vue'
 import SearchResultsProducts from './products/SearchResultsProducts.vue'
 import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
+import { processExtractionObject } from '@/utils/extraction.utils'
+import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -45,10 +52,24 @@ const dynamicDataStore = useDynamicDataStore()
 const screenStore = useScreenStore()
 const redirectionStore = useRedirectionStore()
 
-const initialFilters = computed(() => props.initialFilters ?? {})
+const extractedInitialFilters = computed(() => {
+  return {
+    ...processExtractionObject(props.options.initialFilters)
+  }
+})
 
-const { currentQueryText, hasResults, currentFilterCount } = storeToRefs(searchResultStore)
-const { searchString, sortParams } = storeToRefs(paramStore)
+const initialFilters = computed(() => props.initialFilters ?? extractedInitialFilters.value ?? {})
+
+const {
+  currentQueryText,
+  hasResults,
+  currentFilterCount,
+  isMobileSidebarVisible,
+  layout,
+  loadingFacets,
+  loadingRefiners
+} = storeToRefs(searchResultStore)
+const { searchString, sortParams, skipFacetReload } = storeToRefs(paramStore)
 const { defaultSearchResultPageSize } = storeToRefs(optionStore)
 
 const searchResultsFilters = ref(null)
@@ -72,6 +93,14 @@ const isTitleResultTopPosition = computed((): boolean => {
   return props.options.searchTitlePosition === 'search-results-top'
 })
 
+const indicatorClasses = computed(() => {
+  return {
+    'lupa-mobile-sidebar-visible': isMobileSidebarVisible.value,
+    'lupa-layout-grid': !layout.value || layout.value === ResultsLayoutEnum.GRID,
+    'lupa-layout-list': layout.value === ResultsLayoutEnum.LIST
+  }
+})
+
 // Code for handling browser back button navigation
 const handlePopState = () => {
   const searchParams = getSearchParams(props.options.ssr?.url)
@@ -83,7 +112,7 @@ onMounted(async () => {
   window.addEventListener('resize', handleResize)
   await redirectionStore.initiate(props.options.redirections, props.options.options)
   if (props.initialData) {
-    searchResultStore.add({ ...props.initialData })
+    searchResultStore.add('', { ...props.initialData })
   }
   handleMounted()
   props.options.callbacks?.onMounted?.()
@@ -136,7 +165,7 @@ const handleResults = async ({
   await dynamicDataStore.enhanceSearchResultsWithDynamicData({ result: results })
 }
 
-const query = (publicQuery: PublicQuery): void => {
+const query = (requestId: string, publicQuery: PublicQuery): void => {
   trackingStore.trackSearch({
     queryKey: props.options.queryKey,
     query: publicQuery,
@@ -144,7 +173,10 @@ const query = (publicQuery: PublicQuery): void => {
   })
   const context = getLupaTrackingContext()
   const limit = publicQuery.limit || defaultSearchResultPageSize.value
-  const query = { ...publicQuery, ...context, limit }
+  const modifiers = props.options.splitExpensiveRequests
+    ? { facets: false, refiners: false }
+    : undefined
+  const query = { ...publicQuery, ...context, limit, modifiers }
 
   const redirectionApplied = redirectionStore.redirectOnKeywordIfConfigured(
     publicQuery.searchText,
@@ -163,7 +195,10 @@ const query = (publicQuery: PublicQuery): void => {
     .then((res) => {
       if (res.success) {
         handleResults({ queryKey: props.options.queryKey, results: res })
-        searchResultStore.add({ ...res })
+        searchResultStore.add(requestId, { ...res })
+        if (props.options.splitExpensiveRequests && res.refinementThreshold >= res.total) {
+          queryRefiners(requestId, publicQuery)
+        }
       } else if (props.options?.options?.onError) {
         props.options.options.onError(res)
       }
@@ -179,6 +214,52 @@ const query = (publicQuery: PublicQuery): void => {
     })
 }
 
+const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
+  if (skipFacetReload.value) {
+    return
+  }
+  loadingFacets.value = true
+  const context = getLupaTrackingContext()
+  const query = { ...publicQuery, ...context, modifiers: { facets: true, refiners: false } }
+  lupaSearchSdk
+    .queryFacets(props.options.queryKey, query, props.options.options)
+    .then((res) => {
+      if (!(res as SdkError).success) {
+        return
+      }
+      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) })
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+    .finally(() => {
+      loadingFacets.value = false
+    })
+}
+
+const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
+  if(!publicQuery.searchText) {
+    return
+  }
+  loadingRefiners.value = true;
+  const context = getLupaTrackingContext()
+  const query = { ...publicQuery, ...context, modifiers: { facets: false, refiners: true } }
+  lupaSearchSdk
+    .queryRefiners(props.options.queryKey, query, props.options.options)
+    .then((res) => {
+      if (!(res as SdkError).success) {
+        return
+      }
+      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) })
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+    .finally(() => {
+      loadingRefiners.value = false
+    })
+}
+
 const handleResize = (): void => {
   const doc = document.documentElement
   doc.style.setProperty('--lupa-full-height', `${window.innerHeight}px`)
@@ -187,6 +268,8 @@ const handleResize = (): void => {
 }
 
 const handleUrlChange = (params?: URLSearchParams): void => {
+  const requestId = new Date().getTime().toString()
+  searchResultStore.setLastRequestId(requestId)
   const searchParams = getSearchParams(props.options.ssr?.url, params)
   const publicQuery = createPublicQuery(
     parseParams(optionStore.getQueryParamName, searchParams),
@@ -194,7 +277,11 @@ const handleUrlChange = (params?: URLSearchParams): void => {
     defaultSearchResultPageSize.value
   )
   searchResultStore.setLoading(true)
-  query(getPublicQuery(publicQuery, initialFilters.value, props.isProductList))
+  const finalPublicQuery = getPublicQuery(publicQuery, initialFilters.value, props.isProductList)
+  query(requestId, finalPublicQuery)
+  if (props.options.splitExpensiveRequests) {
+    queryFacets(requestId, finalPublicQuery)
+  }
 }
 
 const handleMounted = (): void => {
@@ -238,7 +325,7 @@ const handleCreated = () => {
     if (typeof window !== 'undefined') {
       optionStore.setSearchResultOptions({ options: props.options })
       if (props.initialData) {
-        searchResultStore.add({ ...props.initialData })
+        searchResultStore.add('', { ...props.initialData })
       }
       handleMounted()
       return
@@ -249,7 +336,7 @@ const handleCreated = () => {
       props.options.ssr?.baseUrl
     )
     optionStore.setSearchResultOptions({ options: props.options })
-    searchResultStore.add({ ...initialData })
+    searchResultStore.add('', { ...initialData })
     paramStore.add(parseParams(optionStore.getQueryParamName, searchParams), props.options.ssr)
     paramStore.setDefaultLimit(defaultSearchResultPageSize.value)
     handleResults({ queryKey: props.options.queryKey, results: initialData })
@@ -286,7 +373,7 @@ defineExpose({ handleMounted, handleUrlChange })
       :breadcrumbs="options.breadcrumbs"
     />
     <template v-if="isTitleResultTopPosition">
-      <div id="lupa-search-results" class="top-layout-wrapper">
+      <div id="lupa-search-results" class="top-layout-wrapper" :class="indicatorClasses">
         <SearchResultsFilters
           v-if="showFilterSidebar"
           :options="options.filters ?? {}"
@@ -308,7 +395,7 @@ defineExpose({ handleMounted, handleUrlChange })
       <SearchResultsDidYouMean :labels="didYouMeanLabels" />
       <SearchResultsTitle :options="options" :is-product-list="isProductList ?? false" />
 
-      <div id="lupa-search-results">
+      <div id="lupa-search-results" :class="indicatorClasses">
         <SearchResultsFilters
           v-if="showFilterSidebar"
           :options="options.filters ?? {}"

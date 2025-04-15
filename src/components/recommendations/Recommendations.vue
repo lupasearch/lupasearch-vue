@@ -80,6 +80,9 @@ onMounted(() => {
   optionsStore.setSearchResultOptions({
     options: props.options as unknown as SearchResultsOptions
   })
+  optionsStore.setProductRecommendationOptions({
+    options: props.options
+  })
   if (props.options.lazyLoad) {
     initIntersectionObserver()
   } else {
@@ -193,6 +196,8 @@ defineExpose({ fetch })
               :product="product"
               :options="options"
               :click-tracking-settings="clickTrackingSettings"
+              :lupa-click-tracking-type="`recommendedItemClick`"
+              :source-item-id="itemId"
             />
           </Slide>
           <template #addons>
@@ -207,6 +212,7 @@ defineExpose({ fetch })
             :product="product"
             :options="options"
             :lupa-click-tracking-type="`recommendedItemClick`"
+            :source-item-id="itemId"
           />
         </div>
       </div>

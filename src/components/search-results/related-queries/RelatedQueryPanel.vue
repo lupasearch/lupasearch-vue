@@ -4,18 +4,24 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, Ref, ref, watch } from 'vue'
 import { useOptionsStore } from '@/stores/options'
 import { DocumentElementType } from '@/types/DocumentElement'
-import { SearchQueryResult } from '@getlupa/client-sdk/Types'
+import type { Document, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import lupaSearchSdk from '@getlupa/client-sdk'
 import ProductImage from '@/components/common/ProductImage.vue'
 import { useSearchResultStore } from '@/stores/searchResult'
 
 const props = defineProps<{
   query?: string
+  sourceKey?: string
   options?: RelatedQueryOptions
+  existingItemsFromOtherQueries?: Record<string, Document>
 }>()
 
 const loading = ref(false)
 const relatedQueryResult: Ref<SearchQueryResult | null> = ref(null)
+
+const itemToDisplay = ref<Document | null>(null)
+
+const emit = defineEmits(['loaded'])
 
 const optionsStore = useOptionsStore()
 const searchResultStore = useSearchResultStore()
@@ -41,10 +47,6 @@ const hasResults = computed(() => {
   return relatedQueryResult.value?.items?.length > 0
 })
 
-const firstResultItem = computed(() => {
-  return relatedQueryResult.value?.items?.[0]
-})
-
 const totalItemCount = computed(() => {
   return relatedQueryResult.value?.total ?? 0
 })
@@ -58,7 +60,7 @@ const searchText = computed(() => {
 const relatedQueryFilters = computed(() => {
   return props.options.source?.mode === 'filter'
     ? {
-        [props.options?.source?.key]: [props.query]
+        [props.sourceKey]: [props.query]
       }
     : {}
 })
@@ -69,9 +71,13 @@ const searchForRelatedQuery = async (): Promise<void> => {
   }
   const lupaQuery = {
     searchText: searchText.value,
-    limit: 1,
+    limit: 3,
     filters: relatedQueryFilters.value,
-    trackTerm: false
+    trackTerm: false,
+    modifiers: {
+      facets: false,
+      refiners: false
+    }
   }
   try {
     loading.value = true
@@ -83,6 +89,12 @@ const searchForRelatedQuery = async (): Promise<void> => {
     if (result.success) {
       relatedQueryResult.value = result
     }
+    const firstItem = relatedQueryResult.value?.items?.[0]
+    itemToDisplay.value =
+      relatedQueryResult?.value?.items?.find(
+        (i) => !props.existingItemsFromOtherQueries[`${i.id}`]
+      ) ?? firstItem
+    emit('loaded', itemToDisplay.value)
   } catch (error) {
     searchResultOptions.value?.options?.onError(error)
   } finally {
@@ -105,10 +117,10 @@ onMounted(() => {
   <div class="lupa-related-query-item">
     <div class="lupa-related-query-image">
       <ProductImage
-        v-if="firstResultItem && image"
+        v-if="itemToDisplay && image"
         wrapper-class="lupa-related-query-image-wrapper"
         image-class="lupa-related-query-image"
-        :item="firstResultItem"
+        :item="itemToDisplay"
         :options="image"
       />
     </div>

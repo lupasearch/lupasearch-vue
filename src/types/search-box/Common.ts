@@ -38,10 +38,18 @@ export type SelectedData = {
   type: SearchBoxPanelType
 }
 
+export type EventSourceType = 'didYouMean' | 'similarQueries' | 'similarResults' | 'similarQueriesAI'
+
+export type EventSourceMetadata = {
+  _lupaEventSource: EventSourceType;
+  _lupaUpdatedQuery?: string;
+}
+
 export type TrackableEventData = {
   type?: ReportableEventType
   searchQuery?: string
   itemId?: string
+  sourceItemId?: string | string[]
   analytics?: {
     type: AnalyticsEventType
     label: string
@@ -54,6 +62,7 @@ export type TrackableEventData = {
     allowEmptySearchQuery: boolean
   }
   filters?: FilterGroup
+  metadata?: Record<string, unknown>
 }
 
 export type HighlightedDocInfo = {

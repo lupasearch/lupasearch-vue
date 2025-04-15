@@ -1,5 +1,6 @@
 import {
   DataExtraction,
+  ExtractFromCookie,
   ExtractFromHtmlElementText,
   ExtractFromStorage,
   ExtractFromUrl
@@ -18,8 +19,24 @@ export const extractValue = <T>(options: DataExtraction): T => {
     case 'htmlElementText':
       return extractFromHtmlElementText(options) as T
 
+    case 'cookie':
+      return extractFromCookie(options) as T
+
     default:
       return (options as DataExtraction).default as T
+  }
+}
+
+const extractFromCookie = (
+  options: ExtractFromCookie
+): string | number | Record<string, unknown> => {
+  try {
+    const cookieValue = document.cookie
+      ?.split('; ')
+      ?.find((row) => row?.startsWith(`${options.cookieName}=`))
+    return cookieValue ? cookieValue.split('=')[1] : options.default
+  } catch {
+    return options.default
   }
 }
 
@@ -73,7 +90,8 @@ export const processExtractionObject = (value: Record<string, unknown> = {}) => 
   const parsedObject: Record<string, unknown> = {}
   for (const key in value) {
     if (isObject(value[key]) && (value[key] as DataExtraction)?.extractFrom) {
-      parsedObject[key] = extractValue(value[key] as DataExtraction)
+      const extractedValue = extractValue(value[key] as DataExtraction)
+      parsedObject[key] = Array.isArray(extractedValue) ? extractedValue : [extractedValue]
     } else {
       parsedObject[key] = value[key]
     }

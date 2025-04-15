@@ -1,4 +1,4 @@
-import { Environment } from '@getlupa/client-sdk/Types'
+import type { Environment } from '@getlupa/client-sdk/Types'
 import { SdkOptions } from '..'
 import {
   ChatMessage,

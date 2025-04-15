@@ -6,6 +6,8 @@ import type { SearchResultsSortOptions } from './SearchResultsSort'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
 import { RelatedQueryOptions } from './RelatedQueryOptions'
 import { RedirectionSuggestionOptions } from './RedirectionSuggestionOptionts'
+import { FilterGroup } from '@getlupa/client-sdk/Types'
+import { DataExtraction } from '../DataExtraction'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -19,6 +21,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     ssr?: SsrOptions
     redirections?: RedirectionOptions
     scrollToResults?: ScrollToResultsOptions
+    initialFilters?: FilterGroup | Record<string, DataExtraction>
   }
 
 export type ScrollToResultsOptions = {
@@ -80,19 +83,24 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
   SearchResultsSimilarQueriesLabels &
   SearchResultsSimilarResultsLabels & {
     sortBy: string
-    currency: string
+    currency?: string
+    currencyTemplate?: string
     priceSeparator?: string
     searchResults?: string
     searchResultsCount?: string
     itemCount: string
     emptyResults: string
     mobileFilterButton: string
+    mobileFilterButtonActive: string
+    mobileFilterButtonOpen: string
+    mobileFilterCloseButton: string
     htmlTitleTemplate: string
     outOfStock?: string
     noItemsInPage?: string
     backToFirstPage?: string
     toolbarRightLabel?: string
     toolbarLeftLabel?: string
+    refinersLoadingNotice?: string
   }
 
 export type SearchResultsAdditionalPanels = {
@@ -111,11 +119,13 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
     hideResultsOnReload?: boolean
     relatedQueries?: RelatedQueryOptions
     redirectionSuggestions?: RedirectionSuggestionOptions[]
+    splitExpensiveRequests?: boolean
     toolbar?: {
       layoutSelector?: boolean
       itemSummary?: boolean
       clearFilters?: boolean
       totalCount?: boolean
+      filtersCloseButton?: boolean
     }
   }
 
@@ -212,6 +222,7 @@ export type ResultFacetOptions = {
     facetFilterButton?: string
   }
   hideFiltersOnExactMatchForKeys?: string[]
+  disableMobileBodyScrollLock?: boolean
   promotedFacets?: string[]
   filterBehavior?: FilterBehavior
   filterable?: {
@@ -247,12 +258,13 @@ export type ResultFacetOptions = {
 }
 
 export type SearchResultsFilterOptions = {
+  visible?: boolean
   currentFilters?: ResultCurrentFilterOptions
   facets?: ResultFacetOptions
   categories?: CategoryFilterOptions
 }
 
-export type SearchResultsBreadcrumb = { label: string; link?: string }
+export type SearchResultsBreadcrumb = { label: string; link?: string; separator?: string }
 
 export type DynamicData = {
   enabled?: boolean

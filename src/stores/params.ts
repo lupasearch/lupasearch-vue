@@ -1,17 +1,24 @@
 import { ref, computed, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { QueryParams } from '@/types/search-results/QueryParams'
-import { DEFAULT_PAGE_SIZE } from '@/constants/global.const'
+import { DEFAULT_PAGE_SIZE, SKIP_FACET_RELOAD_FOR } from '@/constants/global.const'
 import { QUERY_PARAMS, QUERY_PARAMS_PARSED } from '@/constants/queryParams.const'
 import { useOptionsStore } from './options'
 import { getPageUrl, redirectToResultsPage } from '@/utils/routing.utils'
 import { isFacetKey } from '@/utils/filter.utils'
-import { appendParam, getQueryParam, getRemovableParams, parseParams, removeParams } from '@/utils/params.utils'
+import {
+  appendParam,
+  getQueryParam,
+  getRemovableParams,
+  parseParams,
+  removeParams
+} from '@/utils/params.utils'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
 import { linksMatch } from '@/utils/link.utils'
 import { getFacetParam } from '@/utils/filter.toggle.utils'
 import { SortCallbackContext, SsrOptions } from '..'
 import { useRedirectionStore } from './redirections'
+import { findChangedParams } from '@/utils/url.utils'
 
 export const useParamsStore = defineStore('params', () => {
   const params: Ref<QueryParams> = ref({})
@@ -22,6 +29,14 @@ export const useParamsStore = defineStore('params', () => {
 
   const optionsStore = useOptionsStore()
   const redirectionStore = useRedirectionStore()
+
+  const lastChangedParams = ref([])
+
+  const skipFacetReload = computed(
+    () =>
+      lastChangedParams.value?.length &&
+      lastChangedParams.value?.every((p) => SKIP_FACET_RELOAD_FOR.includes(p))
+  )
 
   const sortParams = ref({
     selectedSortKey: '',
@@ -66,6 +81,7 @@ export const useParamsStore = defineStore('params', () => {
       return { params: params.value }
     }
     const url = getPageUrl(undefined, ssr)
+    lastChangedParams.value = findChangedParams(params.value, newParams)
     params.value = newParams
     searchString.value = url.search
   }
@@ -93,7 +109,7 @@ export const useParamsStore = defineStore('params', () => {
     if (!save) {
       return
     }
-
+    lastChangedParams.value = findChangedParams(params.value, {})
     params.value = parseParams(optionsStore.getQueryParamName, url.searchParams)
     searchString.value = url.search
   }
@@ -200,7 +216,9 @@ export const useParamsStore = defineStore('params', () => {
     if (!save) {
       return
     }
-    params.value = parseParams(optionsStore.getQueryParamName, url.searchParams)
+    const updatedParams = parseParams(optionsStore.getQueryParamName, url.searchParams)
+    lastChangedParams.value = findChangedParams(params.value, updatedParams)
+    params.value = updatedParams
     searchString.value = url.search
   }
 
@@ -236,6 +254,8 @@ export const useParamsStore = defineStore('params', () => {
     sort,
     filters,
     sortParams,
+    lastChangedParams,
+    skipFacetReload,
     add,
     removeAllFilters,
     removeParameters,

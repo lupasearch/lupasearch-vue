@@ -165,7 +165,9 @@ const trackLupaEvent = (queryKey?: string, data: TrackableEventData = {}, option
     name: data.type,
     userId: getUserKey(),
     sessionId: getSessionKey(),
-    filters: data.filters
+    filters: data.filters,
+    metadata: data.metadata,
+    sourceItemId: data.sourceItemId
   }
   lupaSearchSdk.track(queryKey, eventData, options)
 }

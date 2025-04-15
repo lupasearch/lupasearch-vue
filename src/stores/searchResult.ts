@@ -18,14 +18,22 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const addToCartAmount = ref(1)
   const layout = ref(ResultsLayoutEnum.GRID)
   const loading = ref(false)
+  const loadingFacets = ref(false)
+  const loadingRefiners = ref(false)
   const isMobileSidebarVisible = ref(false)
   const relatedCategoryChildren = ref([])
+  const lastRequestId = ref('')
+  const searchRequestResults = ref<Record<string, Partial<SearchQueryResult>>>({})
 
   const optionsStore = useOptionsStore()
   const paramsStore = useParamsStore()
   const screenStore = useScreenStore()
 
   const { searchResultOptions } = storeToRefs(optionsStore)
+
+  const anyRequestLoading = computed(
+    () => loading.value || loadingFacets.value || loadingRefiners.value
+  )
 
   const facets = computed(() => searchResult.value.facets)
 
@@ -35,7 +43,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
 
   const totalItems = computed(() => searchResult.value.total)
 
-  const hasResults = computed(() => totalItems.value > 0)
+  const hasResults = computed(() => totalItems.value > 0 || loading.value)
 
   const priceKeys = computed((): string[] => {
     return searchResultOptions.value?.priceKeys ?? []
@@ -49,12 +57,17 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     return searchResultOptions.value?.labels?.priceSeparator ?? ''
   })
 
+  const currencyTemplate = computed((): string => {
+    return searchResultOptions.value?.labels?.currencyTemplate ?? ''
+  })
+
   const labeledFilters = computed(() =>
     getLabeledFilters(
       unfoldFilters(filters.value, {
         keys: priceKeys.value,
         currency: currency.value,
-        separator: priceSeparator.value
+        separator: priceSeparator.value,
+        currencyTemplate: currencyTemplate.value
       }),
       facets.value
     )
@@ -85,8 +98,14 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     () => hasResults.value && (searchResult.value.offset ?? 0) >= totalItems.value
   )
 
-  const setSidebarState = ({ visible }: { visible: boolean }) => {
-    if (visible) {
+  const setSidebarState = ({
+    visible,
+    disableBodyScrolling = true
+  }: {
+    visible: boolean
+    disableBodyScrolling?: boolean
+  }) => {
+    if (visible && disableBodyScrolling) {
       disableBodyScroll()
     } else {
       enableBodyScroll()
@@ -110,8 +129,22 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     searchResult.value = updatedResult
   }
 
-  const add = (newSearchResult: SearchQueryResult) => {
-    if (!newSearchResult) {
+  const saveRequestResult = (requestId: string, result: Partial<SearchQueryResult>) => {
+    const existingResult = searchRequestResults.value[requestId] ?? {}
+    const combinedResult = { ...existingResult, ...result }
+    searchRequestResults.value = {
+      ...searchRequestResults.value,
+      [requestId]: combinedResult
+    }
+    searchResult.value = combinedResult as SearchQueryResult
+  }
+
+  const setLastRequestId = (requestId: string) => {
+    lastRequestId.value = requestId
+  }
+
+  const add = (requestId: string, newSearchResult: SearchQueryResult) => {
+    if (lastRequestId.value !== requestId || !newSearchResult) {
       return {
         searchResult: searchResult.value,
         pageSize: searchResult.value.limit || 0
@@ -123,9 +156,23 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         newSearchResult.searchText
       )
     }
-    searchResult.value = newSearchResult
-
+    if (searchResultOptions.value.splitExpensiveRequests) {
+      // Keep facets from old request for smooth filtering experience
+      const combinedNewSearchResult = { facets: searchResult.value.facets, ...newSearchResult }
+      saveRequestResult(requestId, combinedNewSearchResult)
+    } else {
+      saveRequestResult(requestId, newSearchResult)
+    }
+    saveRequestResult(requestId, newSearchResult)
     return { searchResult: newSearchResult }
+  }
+
+  const addPartial = (requestId: string, newSearchResult: Partial<SearchQueryResult>) => {
+    if (lastRequestId.value !== requestId || !newSearchResult) {
+      return
+    }
+    saveRequestResult(requestId, newSearchResult)
+    return { searchResult: searchResult.value }
   }
 
   const setColumnCount = ({ width, grid }: { width: number; grid: ProductGrid }) => {
@@ -187,6 +234,8 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     facets,
     filters,
     loading,
+    loadingFacets,
+    loadingRefiners,
     layout,
     currentQueryText,
     totalItems,
@@ -200,9 +249,12 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     isPageEmpty,
     hideFiltersOnExactMatchForKeys,
     relatedCategoryChildren,
+    searchRequestResults,
     setSidebarState,
     queryFacet,
+    setLastRequestId,
     add,
+    addPartial,
     setColumnCount,
     setAddToCartAmount,
     setLayout,

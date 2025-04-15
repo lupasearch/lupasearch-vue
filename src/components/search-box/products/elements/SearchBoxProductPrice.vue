@@ -15,7 +15,8 @@ const price = computed((): string => {
   return formatPrice(
     props.item[props.options.key] as string,
     props.labels?.currency,
-    props.labels?.priceSeparator
+    props.labels?.priceSeparator,
+    props.labels?.currencyTemplate
   )
 })
 </script>

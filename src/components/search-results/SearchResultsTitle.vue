@@ -4,6 +4,7 @@ import SearchResultsSummary from './products/SearchResultsSummary.vue'
 import { useSearchResultStore } from '@/stores/searchResult'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { addParamsToLabel } from '@/utils/string.utils'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -41,11 +42,18 @@ const summaryLabel = computed((): string => {
 const searchResultsCountLabel = computed((): string => {
   return props.options.labels?.searchResultsCount ?? ''
 })
+
+const searchResultsTitleTemplate = computed((): string => {
+  return props.options?.labels?.searchResults?.includes('{')
+    ? addParamsToLabel(props.options?.labels?.searchResults, queryText.value)
+    : ``
+})
 </script>
 <template>
   <div>
     <h1 class="lupa-result-page-title" data-cy="lupa-result-page-title" v-if="showSearchTitle">
-      {{ options.labels.searchResults }}<span v-if="queryText">'{{ queryText }}'</span>
+      {{ searchResultsTitleTemplate || options.labels.searchResults
+      }}<span v-if="queryText && !searchResultsTitleTemplate">'{{ queryText }}'</span>
       <span v-if="showProductCount" class="lupa-results-total-count"
         >({{ searchResultsCountLabel
         }}<span class="lupa-results-total-count-number">{{ totalItems }}</span

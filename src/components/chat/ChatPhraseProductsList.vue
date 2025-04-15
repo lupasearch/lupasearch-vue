@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { Document } from '@getlupa/client-sdk/Types'
+import type { Document } from '@getlupa/client-sdk/Types'
 import { SearchResultsProductOptions } from '@/types/search-results/SearchResultsOptions'
 import { getProductKey } from '@/utils/string.utils'
 import SearchResultsProductImage from '../search-results/products/product-card/elements/SearchResultsProductImage.vue'

@@ -1,6 +1,6 @@
 {
   "name": "@getlupa/vue",
-  "version": "0.15.7",
+  "version": "0.17.1",
   "main": "dist/lupaSearch.mjs",
   "module": "dist/lupaSearch.mjs",
   "types": "dist/src/index.d.ts",
@@ -23,7 +23,7 @@
     "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@getlupa/client-sdk": "^1.5.4",
+    "@getlupa/client-sdk": "^1.7.0",
     "@pinia/testing": "^0.1.2",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",

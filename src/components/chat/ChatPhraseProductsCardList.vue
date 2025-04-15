@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SearchResultsProductOptions } from '@/types/search-results/SearchResultsOptions'
 import { getProductKey } from '@/utils/string.utils'
-import { Document } from '@getlupa/client-sdk/Types'
+import type { Document } from '@getlupa/client-sdk/Types'
 import SearchResultsProductCard from '../search-results/products/product-card/SearchResultsProductCard.vue'
 
 const props = defineProps<{

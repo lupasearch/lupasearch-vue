@@ -102,5 +102,5 @@ export const DEFAULT_OPTIONS_RESULTS = {
     details: '/{id}'
   },
   elements: [],
-  breadcrumbs: [{ label: 'Main Page', link: '/' }, { label: 'Search: {1}' }]
+  breadcrumbs: []
 }

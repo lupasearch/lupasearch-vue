@@ -243,7 +243,7 @@ export default {
       <SearchBoxMoreResults
         v-if="hasAnyResults || !options.hideMoreResultsButtonOnNoResults"
         :labels="labels"
-        :showTotalCount="options.showTotalCount ?? false"
+        :options="options"
         @go-to-results="$emit('go-to-results')"
       ></SearchBoxMoreResults>
     </div>

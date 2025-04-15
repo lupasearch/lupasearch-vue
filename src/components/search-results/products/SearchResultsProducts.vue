@@ -13,7 +13,7 @@ import type { SearchResultsProductCardOptions } from '@/types/search-results/Sea
 import { pick } from '@/utils/picker.utils'
 import { getProductKey } from '@/utils/string.utils'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ComputedRef } from 'vue'
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import FiltersTopDropdown from '../filters/FiltersTopDropdown.vue'
 import SearchResultsToolbar from './SearchResultsToolbar.vue'
@@ -26,6 +26,8 @@ import { useOptionsStore } from '@/stores/options'
 import SearchResultsSimilarResults from './similar-results/SearchResultsSimilarResults.vue'
 import RelatedQueries from '@/components/search-results/related-queries/RelatedQueries.vue'
 import RedirectionSuggestions from '../redirection-suggestions/RedirectionSuggestions.vue'
+import { EventSourceMetadata } from '@/types/search-box/Common'
+import RefinersLoadingNotice from './RefinersLoadingNotice.vue'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
@@ -130,6 +132,16 @@ const hasSimilarQueries = computed(() => Boolean(searchResult.value.similarQueri
 
 const hasSimilarResults = computed(() => Boolean(searchResult.value.similarResults?.items?.length))
 
+const clickMetadata: ComputedRef<EventSourceMetadata> = computed(() => {
+  const hasDidYouMean = Boolean(searchResult.value.suggestedSearchText)
+  return hasDidYouMean
+    ? {
+        _lupaEventSource: 'didYouMean',
+        _lupaUpdatedQuery: searchResult.value.suggestedSearchText
+      }
+    : undefined
+})
+
 const getProductKeyAction = (index: number, product: Document): string => {
   return getProductKey(`${index}`, product, props.options.idKey)
 }
@@ -149,7 +161,7 @@ const filter = () => {
     <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
     <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
-    <RelatedQueries :options="options.relatedQueries" />
+    <RelatedQueries v-if="options.relatedQueries" :options="options.relatedQueries" />
     <template v-if="hasResults">
       <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
       <SearchResultsToolbar
@@ -194,6 +206,7 @@ const filter = () => {
             :key="getProductKeyAction(index, product)"
             :product="product"
             :options="productCardOptions"
+            :analytics-metadata="clickMetadata"
           />
         </template>
       </div>
@@ -225,7 +238,7 @@ const filter = () => {
     >
       {{ options.labels.emptyResults }} <span>{{ currentQueryText }}</span>
     </div>
-
+    <RefinersLoadingNotice :labels="options.labels" />
     <div v-if="hasSimilarQueries">
       <SearchResultsSimilarQueries
         :labels="similarQueriesLabels"

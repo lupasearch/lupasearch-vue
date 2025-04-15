@@ -57,8 +57,9 @@ describe('SearchBox.vue', () => {
       debounce: DEFAULT_SEARCH_BOX_OPTIONS.debounce,
       showTotalCount: DEFAULT_SEARCH_BOX_OPTIONS.showTotalCount,
       hideMoreResultsButtonOnNoResults: undefined,
+      showMoreResultsButton: undefined,
       showNoResultsPanel: undefined,
-      expandOnSinglePanel: undefined
+      expandOnSinglePanel: undefined,
     })
   })
 
