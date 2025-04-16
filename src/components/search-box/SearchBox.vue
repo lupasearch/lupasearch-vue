@@ -54,6 +54,7 @@ const suggestedValue: Ref<InputSuggestion> = ref(defaultSuggestedValue)
 
 const opened = ref(props.isSearchContainer)
 const focused = ref(false)
+const openedAt: Ref<null | number> = ref(null)
 
 const searchBoxInput = ref(null)
 
@@ -88,7 +89,7 @@ const panelOptions = computed(
       'hideMoreResultsButtonOnNoResults',
       'showNoResultsPanel',
       'expandOnSinglePanel',
-      'showMoreResultsButton',
+      'showMoreResultsButton'
     ])
 )
 
@@ -125,6 +126,10 @@ const handleMouseClick = (e: MouseEvent): void => {
     typeof elementClass.includes == 'function' && elementClass.includes('lupa-search-box')
   const isOutsideElement = el && !el.contains(e.target as Node) && !hasLupaClass
 
+  if (openedAt.value && Date.now() - openedAt?.value < 500) {
+    return
+  }
+
   if (isOutsideElement && props.options.keepOpen) {
     focused.value = false
   }
@@ -158,6 +163,10 @@ const handleKeyDown = (e: KeyboardEvent): void => {
       e.preventDefault()
       handleSearch()
       resetValues()
+      break
+    case 'Escape':
+      opened.value = false
+      focused.value = false
       break
     default:
       break
@@ -324,10 +333,13 @@ const trackSuggestionClick = (suggestion?: string): void => {
 
 watch(() => props.options.debounce, handleCurrentValueSearch)
 
-const open = () => {
-  opened.value = true
-  focused.value = true
-}
+watch(opened, () => {
+  if (opened.value) {
+    openedAt.value = Date.now()
+  } else {
+    openedAt.value = null
+  }
+})
 
 const resetValues = (): void => {
   inputValue.value = ''
