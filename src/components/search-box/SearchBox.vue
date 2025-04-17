@@ -111,8 +111,8 @@ onMounted(() => {
   if (props.isSearchContainer && searchBoxInput.value) {
     ;(searchBoxInput.value as HTMLInputElement)?.focus()
   }
-  if (props.options.callbacks.onMounted) {
-    props.options.callbacks.onMounted()
+  if (props.options.callbacks?.onMounted) {
+    props.options.callbacks?.onMounted()
   }
 })
 
@@ -144,7 +144,7 @@ const handleMouseClick = (e: MouseEvent): void => {
   opened.value = false
   suggestedValue.value = defaultSuggestedValue
   if (props.options.callbacks?.onClosed) {
-    props.options.callbacks.onClosed()
+    props.options.callbacks?.onClosed()
   }
 }
 
@@ -153,7 +153,7 @@ const close = () => {
   focused.value = false
   suggestedValue.value = defaultSuggestedValue
   if (props.options.callbacks?.onClosed) {
-    props.options.callbacks.onClosed()
+    props.options.callbacks?.onClosed()
   }
 }
 
