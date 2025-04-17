@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import { useOptionsStore } from '@/stores/options';
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
-import type { FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
+import { getTranslatedFacetValue } from '@/utils/translation.utils';
+import type { FacetGroupHierarchy, FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -8,7 +11,11 @@ const props = defineProps<{
   level: number
   item: HierarchyTree
   currentFilters: FilterGroupItemTypeHierarchy
+  facet: FacetGroupHierarchy
 }>()
+
+const optionsStore = useOptionsStore()
+const { searchResultOptions } = storeToRefs(optionsStore)
 
 const level = computed(() => props.level ?? 0)
 const treeItem = computed(() => props.item ?? { key: '', children: [] })
@@ -29,6 +36,10 @@ const handleFacetClick = (item: HierarchyTree): void => {
     value: item.key
   })
 }
+
+const getItemLabel = (item: HierarchyTree) => {
+  return getTranslatedFacetValue(props.facet, item, searchResultOptions.value.filters?.translations)
+}
 </script>
 <template>
   <div class="lupa-facet-hierarchy" :class="{ 'lupa-term-active': isChecked }">
@@ -37,7 +48,7 @@ const handleFacetClick = (item: HierarchyTree): void => {
         <span class="lupa-term-checkbox" :class="{ checked: isChecked }"> </span>
       </div>
       <div class="lupa-term-checkbox-label">
-        <span class="lupa-term-label">{{ item.title }}{{ ' ' }}</span>
+        <span class="lupa-term-label">{{ getItemLabel(item) }}{{ ' ' }}</span>
         <span v-if="options.showDocumentCount" class="lupa-term-count">({{ item.count }})</span>
       </div>
     </div>
@@ -49,6 +60,7 @@ const handleFacetClick = (item: HierarchyTree): void => {
         :item="itemChild"
         :currentFilters="currentFilters"
         :level="level + 1"
+        :facet="facet"
         @select="(i) => $emit('select', i)"
       />
     </div>

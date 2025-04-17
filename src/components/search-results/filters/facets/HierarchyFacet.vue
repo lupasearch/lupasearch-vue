@@ -83,6 +83,7 @@ const handleCancelShowAll = () => {
     </div>
     <HierarchyFacetLevel
       v-for="item of displayValues"
+      :facet="facet"
       :key="item.title"
       :options="options"
       :item="item"
