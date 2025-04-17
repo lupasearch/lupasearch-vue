@@ -59,6 +59,11 @@ export type SearchBoxResultsNavigateContext = {
 }
 
 export type SearchBoxEventCallbacks = {
+  onMounted: () => unknown
+  onFocused: () => unknown
+  onBlurred: () => unknown
+  onClosed: () => unknown
+  onSearchBoxInput?: (input: string) => unknown
   onSearchBoxResults?: (context: SearchBoxResultCallbackContext) => unknown
   onSearchResultsNavigate?: (context: SearchBoxResultsNavigateContext) => unknown
 }

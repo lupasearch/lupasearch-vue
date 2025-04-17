@@ -111,6 +111,9 @@ onMounted(() => {
   if (props.isSearchContainer && searchBoxInput.value) {
     ;(searchBoxInput.value as HTMLInputElement)?.focus()
   }
+  if (props.options.callbacks?.onMounted) {
+    props.options.callbacks?.onMounted()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -140,12 +143,18 @@ const handleMouseClick = (e: MouseEvent): void => {
 
   opened.value = false
   suggestedValue.value = defaultSuggestedValue
+  if (props.options.callbacks?.onClosed) {
+    props.options.callbacks?.onClosed()
+  }
 }
 
 const close = () => {
   opened.value = false
   focused.value = false
   suggestedValue.value = defaultSuggestedValue
+  if (props.options.callbacks?.onClosed) {
+    props.options.callbacks?.onClosed()
+  }
 }
 
 const handleKeyDown = (e: KeyboardEvent): void => {
@@ -179,6 +188,9 @@ const handleInput = (value: string): void => {
   inputValue.value = value?.replace(/\s+$/, '') ?? ''
   suggestedValue.value = defaultSuggestedValue
   searchBoxStore.resetHighlightIndex()
+  if (props.options.callbacks?.onSearchBoxInput) {
+    props.options.callbacks.onSearchBoxInput(value)
+  }
   trackSearchQuery(value)
   if (props.isSearchContainer) {
     goToResultsDebounced({
@@ -369,6 +381,20 @@ const slotProps = (
     ...props
   }
 }
+
+const onFocus = () => {
+  opened.value = true
+  if (props.options.callbacks?.onFocused) {
+    props.options.callbacks?.onFocused()
+  }
+}
+
+const onBlur = () => {
+  focused.value = false
+  if (props.options.callbacks?.onBlurred) {
+    props.options.callbacks?.onBlurred()
+  }
+}
 </script>
 <template>
   <div id="lupa-search-box">
@@ -380,8 +406,8 @@ const slotProps = (
         :emit-input-on-focus="!isSearchContainer"
         ref="searchBoxInput"
         @input="handleInput"
-        @blur="focused = false"
-        @focus="opened = true"
+        @blur="onBlur"
+        @focus="onFocus"
         @search="handleSearch"
         @close="$emit('close')"
       />
