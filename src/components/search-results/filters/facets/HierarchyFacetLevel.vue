@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useOptionsStore } from '@/stores/options';
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
-import type { FacetGroupHierarchy, FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
+import type { FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue'
 
@@ -10,11 +10,7 @@ const props = defineProps<{
   level: number
   item: HierarchyTree
   currentFilters: FilterGroupItemTypeHierarchy
-  facet: FacetGroupHierarchy
 }>()
-
-const optionsStore = useOptionsStore()
-const { searchResultOptions } = storeToRefs(optionsStore)
 
 const level = computed(() => props.level ?? 0)
 const treeItem = computed(() => props.item ?? { key: '', children: [] })
@@ -55,7 +51,6 @@ const handleFacetClick = (item: HierarchyTree): void => {
         :item="itemChild"
         :currentFilters="currentFilters"
         :level="level + 1"
-        :facet="facet"
         @select="(i) => $emit('select', i)"
       />
     </div>
