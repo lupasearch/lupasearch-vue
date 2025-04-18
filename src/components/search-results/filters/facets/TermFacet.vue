@@ -12,6 +12,9 @@ import type {
 } from '@getlupa/client-sdk/Types'
 import { computed, ref } from 'vue'
 import { useSearchResultStore } from '@/stores/searchResult'
+import { getTranslatedFacetValue } from '@/utils/translation.utils'
+import { useOptionsStore } from '@/stores/options'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -20,6 +23,8 @@ const props = defineProps<{
 }>()
 
 const searchResultStore = useSearchResultStore()
+const optionsStore = useOptionsStore()
+const { searchResultOptions } = storeToRefs(optionsStore)
 
 const facet = computed(() => props.facet ?? { type: 'terms', items: [], key: '' })
 
@@ -92,6 +97,10 @@ const isChecked = (item: FacetGroupItem): boolean => {
       : selectedItems
   return selectedItems?.includes(item.title?.toString())
 }
+
+const getItemLabel = (item: FacetGroupItem) => {
+  return getTranslatedFacetValue(props.facet, item, searchResultOptions.value.filters?.translations)
+}
 </script>
 <template>
   <div class="lupa-search-result-facet-term-values" data-cy="lupa-search-result-facet-term-values">
@@ -115,7 +124,7 @@ const isChecked = (item: FacetGroupItem): boolean => {
           <span class="lupa-term-checkbox" :class="{ checked: isChecked(item) }"> </span>
         </div>
         <div class="lupa-term-checkbox-label">
-          <span class="lupa-term-label">{{ item.title }}</span>
+          <span class="lupa-term-label">{{ getItemLabel(item) }}</span>
           <span v-if="options.showDocumentCount" class="lupa-term-count">({{ item.count }})</span>
         </div>
       </div>
