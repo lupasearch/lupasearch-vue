@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useOptionsStore } from '@/stores/options';
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
-import { getTranslatedFacetValue } from '@/utils/translation.utils';
 import type { FacetGroupHierarchy, FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue'
@@ -36,10 +35,6 @@ const handleFacetClick = (item: HierarchyTree): void => {
     value: item.key
   })
 }
-
-const getItemLabel = (item: HierarchyTree) => {
-  return getTranslatedFacetValue(props.facet, item, searchResultOptions.value.filters?.translations)
-}
 </script>
 <template>
   <div class="lupa-facet-hierarchy" :class="{ 'lupa-term-active': isChecked }">
@@ -48,7 +43,7 @@ const getItemLabel = (item: HierarchyTree) => {
         <span class="lupa-term-checkbox" :class="{ checked: isChecked }"> </span>
       </div>
       <div class="lupa-term-checkbox-label">
-        <span class="lupa-term-label">{{ getItemLabel(item) }}{{ ' ' }}</span>
+        <span class="lupa-term-label">{{ item.title }}{{ ' ' }}</span>
         <span v-if="options.showDocumentCount" class="lupa-term-count">({{ item.count }})</span>
       </div>
     </div>

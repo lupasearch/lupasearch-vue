@@ -61,6 +61,10 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     return searchResultOptions.value?.labels?.currencyTemplate ?? ''
   })
 
+  const filterTranslations = computed(() => {
+    return searchResultOptions.value?.filters?.translations ?? {}
+  })
+
   const labeledFilters = computed(() =>
     getLabeledFilters(
       unfoldFilters(filters.value, {
@@ -69,7 +73,8 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         separator: priceSeparator.value,
         currencyTemplate: currencyTemplate.value
       }),
-      facets.value
+      facets.value,
+      filterTranslations.value,
     )
   )
 
