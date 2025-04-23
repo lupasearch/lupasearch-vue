@@ -8,6 +8,7 @@ import { RelatedQueryOptions } from './RelatedQueryOptions'
 import { RedirectionSuggestionOptions } from './RedirectionSuggestionOptionts'
 import { FilterGroup } from '@getlupa/client-sdk/Types'
 import { DataExtraction } from '../DataExtraction'
+import { FilterTranslationOptions } from './FilterTranslationOptions'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -262,6 +263,7 @@ export type SearchResultsFilterOptions = {
   currentFilters?: ResultCurrentFilterOptions
   facets?: ResultFacetOptions
   categories?: CategoryFilterOptions
+  translations?: FilterTranslationOptions
 }
 
 export type SearchResultsBreadcrumb = { label: string; link?: string; separator?: string }

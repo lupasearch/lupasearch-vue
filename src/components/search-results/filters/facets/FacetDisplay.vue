@@ -2,6 +2,8 @@
 import TermFacet from './TermFacet.vue'
 import StatsFacet from './StatsFacet.vue'
 import HierarchyFacet from './HierarchyFacet.vue'
+import { useOptionsStore } from '@/stores/options'
+import { getTranslatedFacetKey } from '@/utils/translation.utils'
 
 export default {
   components: {
@@ -36,7 +38,9 @@ const facet = computed(() => props.facet ?? { type: '', key: '' })
 const currentFilters = computed(() => props.currentFilters ?? {})
 
 const searchResultStore = useSearchResultStore()
+const optionsStore = useOptionsStore()
 const { currentFilterKeys } = storeToRefs(searchResultStore)
+const { searchResultOptions } = storeToRefs(optionsStore)
 
 const emit = defineEmits(['select', 'clear'])
 
@@ -85,6 +89,10 @@ const activeFilterKeys = computed((): string => {
 
 const facetKeyClass = computed((): string => {
   return `lupa-facet-${facet.value.key}`
+})
+
+const facetLabel = computed(() => {
+  return getTranslatedFacetKey(props.facet, searchResultOptions.value.filters?.translations)
 })
 
 onMounted(() => {
@@ -149,7 +157,7 @@ const clear = (): void => {
       :class="{ open: isOpen, 'lupa-has-filter': hasFilter, [facetKeyClass]: true }"
       @click="toggleFacet"
     >
-      <div class="lupa-facet-label-text">{{ facet.label }}</div>
+      <div class="lupa-facet-label-text">{{ facetLabel }}</div>
       <div class="lupa-facet-label-caret" :class="isOpen && 'open'"></div>
     </div>
     <div class="lupa-facet-content" data-cy="lupa-facet-content" v-if="isOpen">

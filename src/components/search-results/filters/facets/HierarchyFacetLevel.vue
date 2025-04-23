@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { useOptionsStore } from '@/stores/options';
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import type { FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue'
 
 const props = defineProps<{
