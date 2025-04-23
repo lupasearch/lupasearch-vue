@@ -397,7 +397,7 @@ const onBlur = () => {
 }
 </script>
 <template>
-  <div id="lupa-search-box">
+  <div id="lupa-search-box" :class="{ 'lupa-search-box-opened': opened }">
     <div class="lupa-search-box-wrapper">
       <SearchBoxInput
         :options="inputOptions"
