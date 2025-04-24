@@ -65,4 +65,20 @@ describe('StatsFacet', () => {
     const wrapper = getComponent({ stats: { inputs: true } }, { key: 'range' })
     expect(wrapper.find('.lupa-stats-facet-summary').exists()).toBe(false)
   })
+  it('appends the correct unit for a non-price facet', () => {
+    const wrapper = getComponent(
+      {
+        stats: {
+          slider: true,
+          inputs: false,
+          labels: { from: '', to: '', ariaFrom:'', ariaTo:'', sliderDotAriaLabel:'' },
+          units: { depth: 'mm.' }
+        }
+      },
+      { key: 'depth', min: 5, max: 10 }
+    )
+  
+    const text = wrapper.find('.lupa-stats-facet-summary').text()
+    expect(text).toContain('5 - 10 mm.')
+  })
 })

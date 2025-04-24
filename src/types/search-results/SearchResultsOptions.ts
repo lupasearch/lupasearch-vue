@@ -246,6 +246,7 @@ export type ResultFacetOptions = {
       ariaTo?: string
       sliderDotAriaLabel?: string
     }
+    units?: Record<string,string>
   }
   facetValueCountLimit?: number
   showDocumentCount?: boolean
