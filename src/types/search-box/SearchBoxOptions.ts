@@ -12,6 +12,7 @@ import { DataExtraction } from '../DataExtraction'
 export type SearchBoxOptions = SearchBoxPanelOptions & {
   inputSelector: string
   searchTriggers?: string[]
+  searchBoxCloseTriggers?: string[]
   routingBehavior?: RoutingBehavior
   dynamicData?: DynamicData
   callbacks?: SearchBoxEventCallbacks
