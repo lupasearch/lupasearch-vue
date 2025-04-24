@@ -118,7 +118,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       },
       stats: {
         slider: true,
-        inputs: false,
+        inputs: true,
         labels: {
           from: 'From:',
           to: 'To:',
@@ -128,9 +128,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         },
         units: {
           depth:  'mm.',
-          length: 'm.',
-          price: "mm",
-          rating: "dumb"
+          length: 'm.'
         }
       },
       filterable: {
