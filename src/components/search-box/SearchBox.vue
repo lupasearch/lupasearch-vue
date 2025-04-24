@@ -97,6 +97,12 @@ const searchTriggers = computed((): string[] => {
   return props.options.searchTriggers ?? []
 })
 
+const searchBoxCloseTriggers = computed((): Element[] => {
+  return (
+    props.options.searchBoxCloseTriggers?.map((selector) => document.querySelector(selector)) ?? []
+  )
+})
+
 const goToResultsDebounced = debounce(paramsStore.goToResults, props.options.debounce ?? 300)
 
 onMounted(() => {
@@ -133,6 +139,10 @@ const handleMouseClick = (e: MouseEvent): void => {
     return
   }
 
+  if (searchBoxCloseTriggers.value?.includes(e.target as Element)) {
+    close(e)
+  }
+
   if (isOutsideElement && props.options.keepOpen) {
     focused.value = false
   }
@@ -148,7 +158,7 @@ const handleMouseClick = (e: MouseEvent): void => {
   }
 }
 
-const close = () => {
+const close = (e?: Event) => {
   opened.value = false
   focused.value = false
   suggestedValue.value = defaultSuggestedValue
