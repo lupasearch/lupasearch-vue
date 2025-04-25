@@ -46,6 +46,12 @@ describe('TermFacet', () => {
     vi.mock('@/utils/string.utils', () => ({
       getDisplayValue: (v) => {
         return v
+      },
+      slugifyClass: (v) => {
+        return v
+      },
+      getNormalizedString: (v) => {
+        return v ?? ''
       }
     }))
   })
@@ -101,7 +107,10 @@ describe('TermFacet', () => {
       getNormalizedString: (v) => {
         return v ?? ''
       },
-      getDisplayValue: (v) => v
+      getDisplayValue: (v) => v,
+      slugifyClass: (v) => {
+        return v
+      }
     }))
 
     const wrapper = getComponent({ filterable: { minValues: 4 } })

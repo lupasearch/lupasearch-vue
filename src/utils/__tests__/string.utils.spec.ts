@@ -6,7 +6,8 @@ import {
   escapeHtml,
   getDisplayValue,
   getNormalizedString,
-  normalizeFloat
+  normalizeFloat,
+  slugifyClass
 } from '../string.utils'
 
 describe('getNormalizedString', () => {
@@ -131,5 +132,37 @@ describe('normalizeFloat', () => {
 
   it('should return 0 if there are no number characters', () => {
     expect(normalizeFloat('abc')).toBeCloseTo(0)
+  })
+})
+
+const cases: [string, string][] = [
+  ['Hello, World!', 'hello-world'],
+  ['  123 cafés  ', 'c-123-cafes'],
+  ['--foo_bar--baz!!!', 'foo-bar-baz'],
+  ['', 'c-'],
+  ['---', 'c-'],
+  ['12345', 'c-12345'],
+  ['äëïöü', 'aeiou'],
+  ['中文字符', '中文字符'],
+  ['foo--bar', 'foo-bar'],
+  ['foo- -bar', 'foo-bar'],
+  ['a', 'a'],
+  ['A very   long–––sentence!!!', 'a-very-long-sentence'],
+  ["\"hello\"", 'hello'],
+]
+
+describe('slugifyClass', () => {
+  it.each(cases)('%s → %s', (input, expected) => {
+    expect(slugifyClass(input)).toBe(expected)
+  })
+
+  it('prefixes slugs that start with a dash or digit', () => {
+    expect(slugifyClass('-abc')).toBe('abc')
+    expect(slugifyClass('9lives')).toBe('c-9-lives')
+  })
+
+  it('always returns a valid single-class selector', () => {
+    const result = slugifyClass('Example 99')
+    expect(result).toMatch(/^[a-z][a-z0-9-]*$/)
   })
 })
