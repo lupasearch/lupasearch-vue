@@ -254,6 +254,7 @@ export type ResultFacetOptions = {
     type: FacetStyle
   }
   exclude?: string[]
+  excludeValues?: Record<string, Record<string, string[]>>
   expand?: string[]
   facetFilterQueries?: Record<string, FacetFilterQuery>
 }

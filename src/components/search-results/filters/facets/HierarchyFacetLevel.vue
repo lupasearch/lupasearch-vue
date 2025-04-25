@@ -1,8 +1,13 @@
 <script lang="ts" setup>
-import { useOptionsStore } from '@/stores/options';
+import { useOptionsStore } from '@/stores/options'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
-import type { FilterGroupItemTypeHierarchy, HierarchyTree } from '@getlupa/client-sdk/Types'
-import { storeToRefs } from 'pinia';
+import { slugifyClass } from '@/utils/string.utils'
+import type {
+  FacetGroupItem,
+  FilterGroupItemTypeHierarchy,
+  HierarchyTree
+} from '@getlupa/client-sdk/Types'
+import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -31,6 +36,14 @@ const handleFacetClick = (item: HierarchyTree): void => {
     value: item.key
   })
 }
+
+const getFacetValueClass = (item: FacetGroupItem): string => {
+  try {
+    return `lupa-facet-value-${slugifyClass(item.title)}`
+  } catch (e) {
+    return ''
+  }
+}
 </script>
 <template>
   <div class="lupa-facet-hierarchy" :class="{ 'lupa-term-active': isChecked }">
@@ -38,7 +51,7 @@ const handleFacetClick = (item: HierarchyTree): void => {
       <div class="lupa-term-checkbox-wrapper">
         <span class="lupa-term-checkbox" :class="{ checked: isChecked }"> </span>
       </div>
-      <div class="lupa-term-checkbox-label">
+      <div class="lupa-term-checkbox-label" :class="{ [getFacetValueClass(item)]: true }">
         <span class="lupa-term-label">{{ item.title }}{{ ' ' }}</span>
         <span v-if="options.showDocumentCount" class="lupa-term-count">({{ item.count }})</span>
       </div>
