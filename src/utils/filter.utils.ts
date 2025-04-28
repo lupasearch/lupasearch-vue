@@ -118,7 +118,8 @@ export const getLabeledFilters = (
       translations?.keyTranslations?.[f.key] ??
       facets?.find((ft) => ft.key === f.key)?.label ??
       capitalize(f.key),
-    value: getTranslatedFacetValue({ key: f.key }, { title: f.value }, translations)
+    value: getTranslatedFacetValue({ key: f.key }, { title: f.value }, translations),
+    originalValue: f.value,
   }))
 }
 
