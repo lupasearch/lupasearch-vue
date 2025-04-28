@@ -230,8 +230,8 @@ const unit = computed(() =>
 <template>
   <div class="lupa-search-result-facet-stats-values">
     <div class="lupa-stats-facet-summary" v-if="!isInputVisible">
-      {{ statsSummary }} 
-    </div>
+      {{ statsSummary }}<span v-if="unit"> {{ unit }}</span>
+   </div>
     <div class="lupa-stats-facet-summary-input" v-else>
       <div>
         <div class="lupa-stats-range-label" v-if="rangeLabelFrom">
