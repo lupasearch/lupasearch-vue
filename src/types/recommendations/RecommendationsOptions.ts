@@ -1,4 +1,4 @@
-import { FilterGroup } from '@getlupa/client-sdk/Types'
+import type { FilterGroup, Document } from '@getlupa/client-sdk/Types'
 import type { SdkOptions } from '../General'
 import { SearchResultsProductOptions } from '../search-results/SearchResultsOptions'
 import { DataExtraction } from '../DataExtraction'
@@ -8,6 +8,11 @@ export type RecommenderCarouselOptions = {
   snapAlign?: string
   scrollPerPage?: number
   breakpoints?: Record<number, RecommenderCarouselOptions>
+}
+
+export type RecommendationCallbacks = {
+  onRecommenderResults?: (results: Document[]) => unknown
+  onMounted?: () => unknown
 }
 
 export type ProductRecommendationOptions = SearchResultsProductOptions & {
@@ -23,7 +28,8 @@ export type ProductRecommendationOptions = SearchResultsProductOptions & {
   layoutType?: 'carousel' | 'grid'
   recommendationLabels?: {
     title?: string
-  }
+  },
+  recommendationCallbacks?: RecommendationCallbacks
 }
 
 export type RecommendationABTestingOptions = {
