@@ -1,6 +1,7 @@
 import {
   DataExtraction,
   ExtractFromCookie,
+  ExtractFromHtmlElementAttribute,
   ExtractFromHtmlElementText,
   ExtractFromStorage,
   ExtractFromUrl
@@ -18,6 +19,9 @@ export const extractValue = <T>(options: DataExtraction): T => {
 
     case 'htmlElementText':
       return extractFromHtmlElementText(options) as T
+
+    case 'htmlElementAttribute':
+      return extractFromHtmlElementAttribute(options) as T
 
     case 'cookie':
       return extractFromCookie(options) as T
@@ -77,6 +81,23 @@ const extractFromHtmlElementText = (
 ): string | number | Record<string, unknown> => {
   const element = document.querySelector(options.querySelector)
   return element ? element.textContent?.trim() || options.default : options.default
+}
+
+const extractFromHtmlElementAttribute = (
+  options: ExtractFromHtmlElementAttribute
+): string | number | Record<string, unknown> => {
+  const element = document.querySelector(options.querySelector)
+  if (!element) {
+    return options.default
+  }
+
+  const attr = options.attribute
+
+  if (attr === 'value' && (element as HTMLInputElement)?.value) {
+    return (element as HTMLInputElement).value
+  }
+
+  return element.getAttribute(attr) || options.default
 }
 
 // Helper function to get a nested value using a dot notation path
