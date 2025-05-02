@@ -2,7 +2,8 @@ import {
   ExtractFromUrl,
   ExtractFromStorage,
   ExtractFromHtmlElementText,
-  ExtractFromCookie
+  ExtractFromCookie,
+  ExtractFromHtmlElementAttribute
 } from '@/types/DataExtraction'
 import { extractValue, processExtractionObject } from '../extraction.utils'
 import { vi } from 'vitest'
@@ -188,6 +189,59 @@ describe('extractValue', () => {
 
     const result = extractValue(elementOptions)
     expect(result).toBe('defaultText')
+  })
+
+  test('should extract value from HTML element id attribute', () => {
+    const elementOptions: ExtractFromHtmlElementAttribute = {
+      extractFrom: 'htmlElementAttribute',
+      default: 'defaultValue',
+      querySelector: '.test-element',
+      attribute: 'id'
+    }
+
+    // Mock document.querySelector
+    const mockElement = {
+      getAttribute: vi.fn().mockReturnValue('extractedValue')
+    } as unknown as HTMLElement
+    vi.spyOn(document, 'querySelector').mockReturnValue(mockElement)
+
+    const result = extractValue(elementOptions)
+    expect(result).toBe('extractedValue')
+  })
+
+  test('should extract value from HTML element value attribute', () => {
+    const elementOptions: ExtractFromHtmlElementAttribute = {
+      extractFrom: 'htmlElementAttribute',
+      default: 'defaultValue',
+      querySelector: '.test-element',
+      attribute: 'value'
+    }
+
+    const mockElement = {
+      getAttribute: vi.fn().mockReturnValue('html-value'),
+      value: 'actual-value'
+    } as unknown as HTMLInputElement
+    vi.spyOn(document, 'querySelector').mockReturnValue(mockElement)
+
+    const result = extractValue(elementOptions)
+    expect(result).toBe('actual-value')
+  })
+
+  test('should return default value when HTML element attribute does not exist', () => {
+    const elementOptions: ExtractFromHtmlElementAttribute = {
+      extractFrom: 'htmlElementAttribute',
+      default: 'defaultValue',
+      querySelector: '.test-element',
+      attribute: 'value'
+    }
+
+    const mockElement = {
+      getAttribute: vi.fn().mockReturnValue(null)
+    } as unknown as HTMLElement
+    vi.spyOn(document, 'querySelector').mockReturnValue(mockElement)
+
+    const result = extractValue(elementOptions)
+    expect(result).toBe('defaultValue')
   })
 
   test('should extract simple value from cookie', () => {
