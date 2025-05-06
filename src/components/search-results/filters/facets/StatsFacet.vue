@@ -221,13 +221,17 @@ const handleChange = (): void => {
 const handleDragging = (value: number[]): void => {
   innerSliderRange.value = value
 }
+
+const unit = computed(() => 
+  props.options.stats?.units?.[props.facet?.key ?? ''] ?? ''
+)
 </script>
 
 <template>
   <div class="lupa-search-result-facet-stats-values">
     <div class="lupa-stats-facet-summary" v-if="!isInputVisible">
-      {{ statsSummary }}
-    </div>
+      {{ statsSummary }}<span v-if="unit"> {{ unit }}</span>
+   </div>
     <div class="lupa-stats-facet-summary-input" v-else>
       <div>
         <div class="lupa-stats-range-label" v-if="rangeLabelFrom">
@@ -243,7 +247,7 @@ const handleDragging = (value: number[]): void => {
             :pattern="sliderInputFormat"
             :aria-label="ariaLabelFrom"
           />
-          <span v-if="isPrice">{{ currency }}</span>
+          <span v-if="isPrice">{{ currency }}</span><span v-if="unit"> {{ unit }}</span>
         </div>
       </div>
       <div class="lupa-stats-separator"></div>
@@ -261,7 +265,7 @@ const handleDragging = (value: number[]): void => {
             :pattern="sliderInputFormat"
             :aria-label="ariaLabelTo"
           />
-          <span v-if="isPrice">{{ currency }}</span>
+          <span v-if="isPrice">{{ currency }}</span><span v-if="unit"> {{ unit }}</span>
         </div>
       </div>
     </div>
