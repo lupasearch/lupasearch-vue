@@ -3,11 +3,12 @@ import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useSearchResultStore } from '@/stores/searchResult'
+import { useOptionsStore } from '@/stores/options'
 import CurrentFilters from '../CurrentFilters.vue'
 
 const baseOptions: ResultCurrentFilterOptions = {
   labels: {
-    title: 'Filters:',
+    title:    'Filters:',
     clearAll: 'Clear all:'
   },
   visibility: {
@@ -20,24 +21,28 @@ describe('CurrentFilters', () => {
   const getComponent = async (
     filters: { key: string; label: string; type: string; value: string }[]
   ) => {
-    const pinia = createTestingPinia({ stubActions: false })
-
     const wrapper = shallowMount(CurrentFilters, {
-      global: { plugins: [pinia] },
+      global: {
+        plugins: [createTestingPinia({ stubActions: false })]
+      },
       props: { options: baseOptions, expandable: false }
     })
 
+    const optionsStore = useOptionsStore()
+    // @ts-ignore
+    optionsStore.searchResultOptions.value.filters.facets.stats.units = {}
+
     const searchResultStore = useSearchResultStore()
     // @ts-ignore
-    searchResultStore.filters                       = filters
+    searchResultStore.filters                      = filters
     // @ts-ignore
-    searchResultStore.displayFilters                = filters
-    // @ts-ignore
-    searchResultStore.currentFilterCount            = filters.length
+    searchResultStore.displayFilters               = filters
     // @ts-ignore
     searchResultStore.hideFiltersOnExactMatchForKeys = []
     // @ts-ignore
-    searchResultStore.currentQueryText               = ''
+    searchResultStore.currentFilterCount           = filters.length
+    // @ts-ignore
+    searchResultStore.currentQueryText             = ''
 
     await nextTick()
     return wrapper
@@ -52,16 +57,16 @@ describe('CurrentFilters', () => {
 
   it('should render filter section if at least one filter is visible', async () => {
     const wrapper = await getComponent([
-      { key: 'tag', label: 'Tag',   type: 'terms', value: '1' },
+      { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
       { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
     ])
 
     expect(wrapper.find('.lupa-filter-title-text').text()).toBe(
-      'Filters:'
+      baseOptions.labels.title
     )
     expect(
       wrapper.find('.lupa-clear-all-filters').text()
-    ).toBe('Clear all:')
+    ).toBe(baseOptions.labels.clearAll)
   })
 
   it('should render a given number of filters', async () => {
