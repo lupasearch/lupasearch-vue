@@ -1,9 +1,19 @@
+import { ref } from 'vue'
 import type { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useSearchResultStore } from '@/stores/searchResult'
 import CurrentFilters from '../CurrentFilters.vue'
+
+import { vi } from 'vitest'
+vi.mock('@/stores/options', () => ({
+  useOptionsStore: () => ({
+    searchResultOptions: ref({
+      filters: { facets: { stats: { units: {} as Record<string,string> } } }
+    })
+  })
+}))
 
 const baseOptions: ResultCurrentFilterOptions = {
   labels: {
@@ -20,22 +30,7 @@ describe('CurrentFilters.vue', () => {
   async function getComponent(
     filters: Array<{ key: string; label: string; type: string; value: string }>
   ) {
-    const pinia = createTestingPinia({
-      stubActions: false,
-      initialState: {
-        options: {
-          searchResultOptions: {
-            filters: {
-              facets: {
-                stats: {
-                  units: {} as Record<string,string>
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    const pinia = createTestingPinia({ stubActions: false })
 
     const wrapper = shallowMount(CurrentFilters, {
       global: { plugins: [pinia] },
@@ -44,10 +39,11 @@ describe('CurrentFilters.vue', () => {
 
     const store = useSearchResultStore()
     store.$patch(({
-      displayFilters:                filters,
+      filters,
+      displayFilters: filters, 
       hideFiltersOnExactMatchForKeys: [],
-      currentFilterCount:            filters.length,
-      currentQueryText:              ''
+      currentFilterCount:    filters.length,
+      currentQueryText:      ''
     } as any))
 
     await nextTick()
@@ -61,7 +57,7 @@ describe('CurrentFilters.vue', () => {
     ).toBe(false)
   })
 
-  it('renders header and clear-all button when filters exist', async () => {
+  it('should render filter section if at least one filter is visible', async () => {
     const wrapper = await getComponent([
       { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
       { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
