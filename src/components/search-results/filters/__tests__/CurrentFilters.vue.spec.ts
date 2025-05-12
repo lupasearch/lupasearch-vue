@@ -1,51 +1,51 @@
 import { shallowMount } from '@vue/test-utils'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import type { LabeledFilter } from '@/types/search-results/Filters'
 import CurrentFilters from '@/components/search-results/filters/CurrentFilters.vue'
 import { toggleTermFilter, toggleHierarchyFilter } from '@/utils/filter.toggle.utils'
 
-jest.mock('@/utils/filter.toggle.utils', () => ({
-  toggleTermFilter: jest.fn(),
-  toggleHierarchyFilter: jest.fn(),
+vi.mock('@/utils/filter.toggle.utils', () => ({
+  toggleTermFilter:     vi.fn(),
+  toggleHierarchyFilter: vi.fn(),
 }))
 
 const mockParamsStore = {
-  removeAllFilters: jest.fn(),
-  appendParams:     jest.fn(),
-  removeParameters: jest.fn(),
+  removeAllFilters: vi.fn(),
+  appendParams:     vi.fn(),
+  removeParameters: vi.fn(),
 }
-jest.mock('@/stores/params', () => ({
+vi.mock('@/stores/params', () => ({
   useParamsStore: () => mockParamsStore
 }))
 
-jest.mock('@/stores/options', () => {
+vi.mock('@/stores/options', () => {
   const { ref } = require('vue')
   return {
     useOptionsStore: () => ({
       searchResultOptions: ref({
         filters: { facets: { stats: { units: {} as Record<string,string> } } }
       }),
-      getQueryParamName: (k: string) => k
+      getQueryParamName: (k: string) => k,
     })
   }
 })
 
 const mockSearchResultStore: {
-  filters:                LabeledFilter[]
-  displayFilters:         LabeledFilter[]
-  currentFilterCount:     number
+  filters:                    LabeledFilter[]
+  displayFilters:             LabeledFilter[]
+  currentFilterCount:         number
   hideFiltersOnExactMatchForKeys: string[]
-  currentQueryText:       string
+  currentQueryText:           string
 } = {
-  filters:                    [],
-  displayFilters:             [],
-  currentFilterCount:         0,
-  hideFiltersOnExactMatchForKeys: [],
-  currentQueryText:           '',
+  filters:                         [],
+  displayFilters:                  [],
+  currentFilterCount:              0,
+  hideFiltersOnExactMatchForKeys:  [],
+  currentQueryText:                '',
 }
-jest.mock('@/stores/searchResult', () => ({
+vi.mock('@/stores/searchResult', () => ({
   useSearchResultStore: () => mockSearchResultStore
 }))
-
 
 describe('CurrentFilters.vue', () => {
   const defaultProps = {
@@ -53,26 +53,28 @@ describe('CurrentFilters.vue', () => {
     expandable: false
   }
 
+  beforeEach(() => {
+    mockParamsStore.removeAllFilters.mockClear()
+    mockParamsStore.appendParams.mockClear()
+    mockParamsStore.removeParameters.mockClear()
+    ;(toggleTermFilter as jest.Mock | any).mockClear()
+    ;(toggleHierarchyFilter as jest.Mock | any).mockClear()
+  })
+
   function setup({
     filters = [] as LabeledFilter[],
     displayFilters = [] as LabeledFilter[],
     units = {} as Record<string,string>,
     expandable = false
   } = {}) {
-    mockParamsStore.removeAllFilters.mockClear()
-    mockParamsStore.appendParams.mockClear()
-    mockParamsStore.removeParameters.mockClear()
-    ;(toggleTermFilter as jest.Mock).mockClear()
-    ;(toggleHierarchyFilter as jest.Mock).mockClear()
-
     const optionsStore = require('@/stores/options').useOptionsStore()
     optionsStore.searchResultOptions.value.filters.facets.stats.units = units
 
-    mockSearchResultStore.filters                    = filters
-    mockSearchResultStore.displayFilters             = displayFilters
-    mockSearchResultStore.currentFilterCount         = displayFilters.length
+    mockSearchResultStore.filters                        = filters
+    mockSearchResultStore.displayFilters                 = displayFilters
+    mockSearchResultStore.currentFilterCount             = displayFilters.length
     mockSearchResultStore.hideFiltersOnExactMatchForKeys = []
-    mockSearchResultStore.currentQueryText           = ''
+    mockSearchResultStore.currentQueryText               = ''
 
     const wrapper = shallowMount(CurrentFilters, {
       props: { ...defaultProps, expandable }
