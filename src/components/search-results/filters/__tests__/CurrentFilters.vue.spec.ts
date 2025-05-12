@@ -21,17 +21,8 @@ const baseOptions: ResultCurrentFilterOptions = {
 const getComponent = async (
   filters: { key: string; label: string; type: string; value: string }[]
 ) => {
-    const pinia = createTestingPinia({
-    initialState: {
-      searchResult: {
-        displayFilters: filters,
-        hideFiltersOnExactMatchForKeys: [],
-        currentFilterCount: filters.length,
-        currentQueryText: ''
-      }
-    },
-    stubActions: false
-  })
+
+  const pinia = createTestingPinia({ stubActions: false })
 
   const wrapper = shallowMount(CurrentFilters, {
     global: {
@@ -45,9 +36,9 @@ const getComponent = async (
 
   await nextTick()
   return wrapper
-  }
+}
 
-describe('FacetList', () => {
+describe('CurrentFilters', () => {
   beforeEach(() => {})
 
   it('should not render anything if there are no filters', async () => {
