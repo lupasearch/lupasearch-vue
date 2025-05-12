@@ -50,7 +50,7 @@ describe('FacetList', () => {
       { key: 'tag', label: 'Tag', type: 'terms', value: '1' },
       { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
     ])
-    expect(wrapper.find('.lupa-filter-title-text').text()).toBe('Filters:')
+    expect(wrapper.find('.lupa-filter-title-text').text()).toBe('Current filters:')
     expect(wrapper.find('.lupa-clear-all-filters').text()).toBe('Clear all:')
   })
 
@@ -61,6 +61,7 @@ describe('FacetList', () => {
       { key: 'tag1', label: 'Tag', type: 'terms', value: '1' },
       { key: 'price1', label: 'Price', type: 'range', value: '1 - 2' }
     ])
-    expect(wrapper.findAllComponents(CurrentFilterDisplay).length).toBe(4)
+    const tags = wrapper.findAll('.lupa-current-filter-tag')
+    expect(tags).toHaveLength(4)
   })
 })
