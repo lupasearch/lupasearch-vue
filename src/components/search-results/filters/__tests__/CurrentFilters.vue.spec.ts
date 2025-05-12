@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils'
-import CurrentFilters from '@/components/search-results/filters/CurrentFilters.vue'
+import { shallowMount } from '@vue/test-utils'
 import type { LabeledFilter } from '@/types/search-results/Filters'
+import CurrentFilters from '@/components/search-results/filters/CurrentFilters.vue'
 import { toggleTermFilter, toggleHierarchyFilter } from '@/utils/filter.toggle.utils'
 
 jest.mock('@/utils/filter.toggle.utils', () => ({
@@ -9,23 +9,25 @@ jest.mock('@/utils/filter.toggle.utils', () => ({
 }))
 
 const mockParamsStore = {
-  removeAllFilters:   jest.fn(),
-  appendParams:       jest.fn(),
-  removeParameters:   jest.fn(),
+  removeAllFilters: jest.fn(),
+  appendParams:     jest.fn(),
+  removeParameters: jest.fn(),
 }
 jest.mock('@/stores/params', () => ({
   useParamsStore: () => mockParamsStore
 }))
 
-const mockOptionsStore = {
-  searchResultOptions: {
-    value: { filters: { facets: { stats: { units: {} as Record<string,string> } } } }
-  },
-  getQueryParamName: jest.fn((k: string) => k),
-}
-jest.mock('@/stores/options', () => ({
-  useOptionsStore: () => mockOptionsStore
-}))
+jest.mock('@/stores/options', () => {
+  const { ref } = require('vue')
+  return {
+    useOptionsStore: () => ({
+      searchResultOptions: ref({
+        filters: { facets: { stats: { units: {} as Record<string,string> } } }
+      }),
+      getQueryParamName: (k: string) => k
+    })
+  }
+})
 
 const mockSearchResultStore: {
   filters:                LabeledFilter[]
@@ -44,6 +46,7 @@ jest.mock('@/stores/searchResult', () => ({
   useSearchResultStore: () => mockSearchResultStore
 }))
 
+
 describe('CurrentFilters.vue', () => {
   const defaultProps = {
     options:    { labels: { title: 'Active Filters', clearAll: 'Clear All' } },
@@ -59,11 +62,11 @@ describe('CurrentFilters.vue', () => {
     mockParamsStore.removeAllFilters.mockClear()
     mockParamsStore.appendParams.mockClear()
     mockParamsStore.removeParameters.mockClear()
-    mockOptionsStore.getQueryParamName.mockClear()
     ;(toggleTermFilter as jest.Mock).mockClear()
     ;(toggleHierarchyFilter as jest.Mock).mockClear()
 
-    mockOptionsStore.searchResultOptions.value.filters.facets.stats.units = units
+    const optionsStore = require('@/stores/options').useOptionsStore()
+    optionsStore.searchResultOptions.value.filters.facets.stats.units = units
 
     mockSearchResultStore.filters                    = filters
     mockSearchResultStore.displayFilters             = displayFilters
@@ -71,7 +74,7 @@ describe('CurrentFilters.vue', () => {
     mockSearchResultStore.hideFiltersOnExactMatchForKeys = []
     mockSearchResultStore.currentQueryText           = ''
 
-    const wrapper = mount(CurrentFilters, {
+    const wrapper = shallowMount(CurrentFilters, {
       props: { ...defaultProps, expandable }
     })
 
@@ -95,7 +98,7 @@ describe('CurrentFilters.vue', () => {
     expect(tag.text()).toContain('red')
   })
 
-  it('calls removeAllFilters on Clear All click', async () => {
+  it('calls removeAllFilters on "Clear All" click', async () => {
     const my: LabeledFilter[] = [
       { type: 'terms', key: 'size', value: 'M', label: 'Size' }
     ]
