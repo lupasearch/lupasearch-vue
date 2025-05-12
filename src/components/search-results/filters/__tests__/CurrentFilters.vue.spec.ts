@@ -3,7 +3,6 @@ import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useSearchResultStore } from '@/stores/searchResult'
-import { useOptionsStore } from '@/stores/options'
 import CurrentFilters from '../CurrentFilters.vue'
 
 const baseOptions: ResultCurrentFilterOptions = {
@@ -17,53 +16,61 @@ const baseOptions: ResultCurrentFilterOptions = {
   }
 }
 
-describe('CurrentFilters', () => {
-  const getComponent = async (
-    filters: { key: string; label: string; type: string; value: string }[]
-  ) => {
+describe('CurrentFilters.vue', () => {
+  async function getComponent(
+    filters: Array<{ key: string; label: string; type: string; value: string }>
+  ) {
+    const pinia = createTestingPinia({
+      stubActions: false,
+      initialState: {
+        options: {
+          searchResultOptions: {
+            filters: {
+              facets: {
+                stats: {
+                  units: {} as Record<string,string>
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+
     const wrapper = shallowMount(CurrentFilters, {
-      global: { plugins: [createTestingPinia({ stubActions: false })] },
+      global: { plugins: [pinia] },
       props:  { options: baseOptions, expandable: false }
     })
 
-    const optionsStore = useOptionsStore()
-    // @ts-ignore
-    optionsStore.searchResultOptions.value = {
-      filters: { facets: { stats: { units: {} } } }
-    } as any
-
-    const searchResultStore = useSearchResultStore()
-    // @ts-ignore
-    searchResultStore.filters                      = filters
-    // @ts-ignore
-    searchResultStore.displayFilters               = filters
-    // @ts-ignore
-    searchResultStore.hideFiltersOnExactMatchForKeys = []
-    // @ts-ignore
-    searchResultStore.currentFilterCount           = filters.length
-    // @ts-ignore
-    searchResultStore.currentQueryText             = ''
+    const store = useSearchResultStore()
+    store.$patch(({
+      displayFilters:                filters,
+      hideFiltersOnExactMatchForKeys: [],
+      currentFilterCount:            filters.length,
+      currentQueryText:              ''
+    } as any))
 
     await nextTick()
     return wrapper
   }
 
-  it('should not render anything if there are no filters', async () => {
+  it('does not render anything if there are no filters', async () => {
     const wrapper = await getComponent([])
     expect(
       wrapper.find('.lupa-search-result-current-filters').exists()
     ).toBe(false)
   })
 
-  it('should render filter section if at least one filter is visible', async () => {
+  it('renders header and clear-all button when filters exist', async () => {
     const wrapper = await getComponent([
       { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
       { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
     ])
 
-    expect(wrapper.find('.lupa-filter-title-text').text()).toBe(
-      baseOptions.labels.title
-    )
+    expect(
+      wrapper.find('.lupa-filter-title-text').text()
+    ).toBe(baseOptions.labels.title)
+
     expect(
       wrapper.find('.lupa-clear-all-filters').text()
     ).toBe(baseOptions.labels.clearAll)
