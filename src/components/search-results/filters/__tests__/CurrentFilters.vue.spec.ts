@@ -1,5 +1,6 @@
 import { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
 import { shallowMount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import CurrentFilters from '../CurrentFilters.vue'
 import CurrentFilterDisplay from '../CurrentFilterDisplay.vue'
 import { vi } from 'vitest'
@@ -20,22 +21,31 @@ const baseOptions: ResultCurrentFilterOptions = {
 const getComponent = async (
   filters: { key: string; label: string; type: string; value: string }[]
 ) => {
+    const pinia = createTestingPinia({
+    initialState: {
+      searchResult: {
+        displayFilters: filters,
+        hideFiltersOnExactMatchForKeys: [],
+        currentFilterCount: filters.length,
+        currentQueryText: ''
+      }
+    },
+    stubActions: false
+  })
+
   const wrapper = shallowMount(CurrentFilters, {
     global: {
-      plugins: [createTestingPinia({})]
+      plugins: [pinia]
     },
     props: {
       options: baseOptions,
       expandable: false
     }
   })
-  const searchResultStore = useSearchResultStore()
-  // @ts-ignore
-  searchResultStore.displayFilters = filters
 
-  await wrapper.vm.$nextTick()
+  await nextTick()
   return wrapper
-}
+  }
 
 describe('FacetList', () => {
   beforeEach(() => {})
@@ -50,7 +60,7 @@ describe('FacetList', () => {
       { key: 'tag', label: 'Tag', type: 'terms', value: '1' },
       { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
     ])
-    expect(wrapper.find('.lupa-filter-title-text').text()).toBe('Current filters:')
+    expect(wrapper.find('.lupa-filter-title-text').text()).toBe('Filters:')
     expect(wrapper.find('.lupa-clear-all-filters').text()).toBe('Clear all:')
   })
 
