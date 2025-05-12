@@ -43,7 +43,7 @@ vi.mock('@/stores/searchResult', () => ({
 
 const baseOptions: ResultCurrentFilterOptions = {
   labels: {
-    title:    'Filters:',
+    title: 'Filters:',
     clearAll: 'Clear all:'
   },
   visibility: {
@@ -85,8 +85,8 @@ describe('CurrentFilters.vue', () => {
 
   it('renders header and clear-all button when filters exist', async () => {
     const wrapper = await getComponent([
-      { type: 'terms',     key: 'tag',   value: '1',   label: 'Tag'   },
-      { type: 'range',     key: 'price', value: '1 - 2', label: 'Price' }
+      { type: 'terms',key: 'tag', value: '1', label: 'Tag' },
+      { type: 'range',key: 'price', value: '1 - 2', label: 'Price' }
     ])
     expect(wrapper.find('.lupa-filter-title-text').text()).toBe(
       baseOptions.labels.title
