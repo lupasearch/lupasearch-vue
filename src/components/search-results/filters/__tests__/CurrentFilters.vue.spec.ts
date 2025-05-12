@@ -1,13 +1,13 @@
-import { shallowMount } from '@vue/test-utils'
-import { nextTick } from 'vue'
-import { createTestingPinia } from '@pinia/testing'
-import CurrentFilters from '../CurrentFilters.vue'
 import type { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
+import { nextTick } from 'vue'
+import { shallowMount } from '@vue/test-utils'
+import { createTestingPinia } from '@pinia/testing'
 import { useSearchResultStore } from '@/stores/searchResult'
+import CurrentFilters from '../CurrentFilters.vue'
 
 const baseOptions: ResultCurrentFilterOptions = {
   labels: {
-    title:    'Filters:',
+    title: 'Filters:',
     clearAll: 'Clear all:'
   },
   visibility: {
@@ -16,58 +16,63 @@ const baseOptions: ResultCurrentFilterOptions = {
   }
 }
 
-async function getComponent(
-  filters: Array<{ key: string; label: string; type: string; value: string }>
-) {
-  const wrapper = shallowMount(CurrentFilters, {
-    global: {
-      plugins: [createTestingPinia()]
-    },
-    props: {
-      options:    baseOptions,
-      expandable: false
-    }
-  })
+describe('CurrentFilters', () => {
+  const getComponent = async (
+    filters: { key: string; label: string; type: string; value: string }[]
+  ) => {
+    const pinia = createTestingPinia({ stubActions: false })
 
-  const store = useSearchResultStore()
-  // @ts-ignore
-  store.filters                      = filters
-  // @ts-ignore
-  store.displayFilters               = filters
-  // @ts-ignore
-  store.currentFilterCount           = filters.length
-  // @ts-ignore
-  store.hideFiltersOnExactMatchForKeys = []
-  // @ts-ignore
-  store.currentQueryText             = ''
+    const wrapper = shallowMount(CurrentFilters, {
+      global: { plugins: [pinia] },
+      props: { options: baseOptions, expandable: false }
+    })
 
-  await nextTick()
-  return wrapper
-}
+    const searchResultStore = useSearchResultStore()
+    // @ts-ignore
+    searchResultStore.filters                       = filters
+    // @ts-ignore
+    searchResultStore.displayFilters                = filters
+    // @ts-ignore
+    searchResultStore.currentFilterCount            = filters.length
+    // @ts-ignore
+    searchResultStore.hideFiltersOnExactMatchForKeys = []
+    // @ts-ignore
+    searchResultStore.currentQueryText               = ''
 
-describe('CurrentFilters.vue', () => {
-  it('does not render anything when there are no filters', async () => {
+    await nextTick()
+    return wrapper
+  }
+
+  it('should not render anything if there are no filters', async () => {
     const wrapper = await getComponent([])
-    expect(wrapper.find('.lupa-search-result-current-filters').exists()).toBe(false)
+    expect(
+      wrapper.find('.lupa-search-result-current-filters').exists()
+    ).toBe(false)
   })
 
-  it('renders header and clear-all button when filters exist', async () => {
+  it('should render filter section if at least one filter is visible', async () => {
     const wrapper = await getComponent([
-      { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
+      { key: 'tag', label: 'Tag',   type: 'terms', value: '1' },
       { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
     ])
 
-    expect(wrapper.find('.lupa-filter-title-text').text()).toBe('Filters:')
-    expect(wrapper.find('.lupa-clear-all-filters').text()).toBe('Clear all:')
+    expect(wrapper.find('.lupa-filter-title-text').text()).toBe(
+      'Filters:'
+    )
+    expect(
+      wrapper.find('.lupa-clear-all-filters').text()
+    ).toBe('Clear all:')
   })
 
-  it('renders exactly one tag per filter', async () => {
-    const filters = [
-      { key: 'a', label: 'A', type: 'terms', value: 'x' },
-      { key: 'b', label: 'B', type: 'range', value: 'x - y' },
-      { key: 'c', label: 'C', type: 'terms', value: 'z' }
-    ]
-    const wrapper = await getComponent(filters)
-    expect(wrapper.findAll('.lupa-current-filter-tag')).toHaveLength(3)
+  it('should render a given number of filters', async () => {
+    const wrapper = await getComponent([
+      { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
+      { key: 'price', label: 'Price', type: 'range', value: '1 - 2' },
+      { key: 'tag1',  label: 'Tag',   type: 'terms', value: '1' },
+      { key: 'price1',label: 'Price', type: 'range', value: '1 - 2' }
+    ])
+
+    const tags = wrapper.findAll('.lupa-current-filter-tag')
+    expect(tags).toHaveLength(4)
   })
 })
