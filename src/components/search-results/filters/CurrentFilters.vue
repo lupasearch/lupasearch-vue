@@ -19,7 +19,7 @@ defineProps<{
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
 const units = computed(
-  () => optionsStore.searchResultOptions.filters?.facets?.stats?.units ?? {}
+  () => searchResultOptions.value.filters.facets.stats.units ?? {}
 )
 
 const isOpen = ref(false)
@@ -85,6 +85,29 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
       break
   }
 }
+
+function formatFilterValue(filter: LabeledFilter): string {
+  const unit = units.value[filter.key] || ''
+  let min: string | undefined
+  let max: string | undefined
+
+  if (Array.isArray(filter.value)) {
+    [min, max] = filter.value.map(String)
+  }
+  else if (typeof filter.value === 'string' && filter.value.includes('-')) {
+    const parts = filter.value.split('-').map(s => s.trim())
+    if (parts.length === 2) {
+      [min, max] = parts
+    }
+  }
+
+  if (min != null && max != null) {
+    return `${min} ${unit} – ${max} ${unit}`.trim()
+  }
+
+  return `${filter.value} ${unit}`.trim()
+}
+
 </script>
 <template>
   <div
@@ -108,17 +131,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
           class="lupa-current-filter-tag"
         >
       {{ filter.label }}:
-      <small style="color: purple; display: block">
-    key="{{ filter.key }}" → unit="{{ units[filter.key] }}"
-  </small>
-        <span v-if="Array.isArray(filter.value) && units[filter.key]">
-        {{ filter.value[0] }} {{ units[filter.key] }}
-        &ndash;
-        {{ filter.value[1] }} {{ units[filter.key] }}
-        </span>
-        <span v-else>
-        {{ filter.value }}
-        </span>
+      <span>{{ formatFilterValue(filter) }}</span>
 
   <button @click="handleRemove({ filter })">×</button>
 </div>
