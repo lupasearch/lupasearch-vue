@@ -1,18 +1,44 @@
-import { ref } from 'vue'
-import type { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
-import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { createTestingPinia } from '@pinia/testing'
-import { useSearchResultStore } from '@/stores/searchResult'
+import { ref, nextTick, Ref } from 'vue'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import CurrentFilters from '../CurrentFilters.vue'
+import type { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
+import type { LabeledFilter } from '@/types/search-results/Filters'
 
-import { vi } from 'vitest'
-vi.mock('@/stores/options', () => ({
-  useOptionsStore: () => ({
-    searchResultOptions: ref({
-      filters: { facets: { stats: { units: {} as Record<string,string> } } }
+vi.mock('@/utils/filter.toggle.utils', () => ({
+  toggleTermFilter:     vi.fn(),
+  toggleHierarchyFilter: vi.fn(),
+}))
+
+const mockParamsStore = {
+  removeAllFilters: vi.fn(),
+  appendParams:     vi.fn(),
+  removeParameters: vi.fn(),
+}
+vi.mock('@/stores/params', () => ({
+  useParamsStore: () => mockParamsStore
+}))
+
+vi.mock('@/stores/options', () => {
+  return {
+    useOptionsStore: () => ({
+      searchResultOptions: ref({
+        filters: { facets: { stats: { units: {} as Record<string,string> } } }
+      }),
+      getQueryParamName: (k: string) => k
     })
-  })
+  }
+})
+
+const mockSearchResultStore = {
+  filters:                     ref([]) as Ref<LabeledFilter[]>,
+  displayFilters:              ref([]) as Ref<LabeledFilter[]>,
+  currentFilterCount:          ref(0),
+  hideFiltersOnExactMatchForKeys: ref([] as string[]),
+  currentQueryText:            ref(''),
+}
+vi.mock('@/stores/searchResult', () => ({
+  useSearchResultStore: () => mockSearchResultStore
 }))
 
 const baseOptions: ResultCurrentFilterOptions = {
@@ -27,24 +53,26 @@ const baseOptions: ResultCurrentFilterOptions = {
 }
 
 describe('CurrentFilters.vue', () => {
-  async function getComponent(
-    filters: Array<{ key: string; label: string; type: string; value: string }>
-  ) {
-    const pinia = createTestingPinia({ stubActions: false })
+  beforeEach(() => {
+    mockParamsStore.removeAllFilters.mockClear()
+    mockParamsStore.appendParams.mockClear()
+    mockParamsStore.removeParameters.mockClear()
+
+    mockSearchResultStore.filters.value = []
+    mockSearchResultStore.displayFilters.value = []
+    mockSearchResultStore.currentFilterCount.value = 0
+    mockSearchResultStore.hideFiltersOnExactMatchForKeys.value = []
+    mockSearchResultStore.currentQueryText.value = ''
+  })
+
+  async function getComponent(filters: LabeledFilter[]) {
+    mockSearchResultStore.filters.value = filters
+    mockSearchResultStore.displayFilters.value = filters
+    mockSearchResultStore.currentFilterCount.value = filters.length
 
     const wrapper = shallowMount(CurrentFilters, {
-      global: { plugins: [pinia] },
-      props:  { options: baseOptions, expandable: false }
+      props: { options: baseOptions, expandable: false }
     })
-
-    const store = useSearchResultStore()
-    store.$patch(({
-      filters,
-      displayFilters: filters, 
-      hideFiltersOnExactMatchForKeys: [],
-      currentFilterCount:    filters.length,
-      currentQueryText:      ''
-    } as any))
 
     await nextTick()
     return wrapper
@@ -52,35 +80,30 @@ describe('CurrentFilters.vue', () => {
 
   it('does not render anything if there are no filters', async () => {
     const wrapper = await getComponent([])
-    expect(
-      wrapper.find('.lupa-search-result-current-filters').exists()
-    ).toBe(false)
+    expect(wrapper.find('.lupa-search-result-current-filters').exists()).toBe(false)
   })
 
-  it('should render filter section if at least one filter is visible', async () => {
+  it('renders header and clear-all button when filters exist', async () => {
     const wrapper = await getComponent([
-      { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
-      { key: 'price', label: 'Price', type: 'range', value: '1 - 2' }
+      { type: 'terms',     key: 'tag',   value: '1',   label: 'Tag'   },
+      { type: 'range',     key: 'price', value: '1 - 2', label: 'Price' }
     ])
-
-    expect(
-      wrapper.find('.lupa-filter-title-text').text()
-    ).toBe(baseOptions.labels.title)
-
-    expect(
-      wrapper.find('.lupa-clear-all-filters').text()
-    ).toBe(baseOptions.labels.clearAll)
+    expect(wrapper.find('.lupa-filter-title-text').text()).toBe(
+      baseOptions.labels.title
+    )
+    expect(wrapper.find('.lupa-clear-all-filters').text()).toBe(
+      baseOptions.labels.clearAll
+    )
   })
 
   it('should render a given number of filters', async () => {
-    const wrapper = await getComponent([
-      { key: 'tag',   label: 'Tag',   type: 'terms', value: '1' },
-      { key: 'price', label: 'Price', type: 'range', value: '1 - 2' },
-      { key: 'tag1',  label: 'Tag',   type: 'terms', value: '1' },
-      { key: 'price1',label: 'Price', type: 'range', value: '1 - 2' }
-    ])
-
-    const tags = wrapper.findAll('.lupa-current-filter-tag')
-    expect(tags).toHaveLength(4)
+    const items: LabeledFilter[] = [
+      { type: 'terms', key: 'tag',   value: '1',   label: 'Tag'   },
+      { type: 'range', key: 'price', value: '1 - 2', label: 'Price' },
+      { type: 'terms', key: 'tag1',  value: '1',   label: 'Tag'   },
+      { type: 'range', key: 'price1',value: '1 - 2', label: 'Price' }
+    ]
+    const wrapper = await getComponent(items)
+    expect(wrapper.findAll('.lupa-current-filter-tag')).toHaveLength(4)
   })
 })
