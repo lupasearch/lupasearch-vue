@@ -1,8 +1,25 @@
-import { nextTick } from 'vue'
+
+import { nextTick, ref } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import type { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
 import CurrentFilters from '../CurrentFilters.vue'
+
+const mockSearchResultOptions = ref({
+  filters: {
+    facets: {
+      stats: { units: {} }
+    }
+  }
+})
+const mockGetQueryParamName = vi.fn((key: string) => key)
+
+vi.mock('@/stores/options', () => ({
+  useOptionsStore: () => ({
+    searchResultOptions: mockSearchResultOptions,
+    getQueryParamName: mockGetQueryParamName
+  })
+}))
 
 vi.mock('@/stores/searchResult', () => ({
   useSearchResultStore: () => ({
@@ -30,8 +47,8 @@ const baseOptions: ResultCurrentFilterOptions = {
 async function getComponent(
   filters: { key: string; label: string; type: string; value: string }[]
 ) {
+  // Grab our mocked store and overwrite its fields
   const store = (useSearchResultStore() as any)
-
   store.displayFilters = filters
   store.hideFiltersOnExactMatchForKeys = []
   store.currentFilterCount = filters.length
