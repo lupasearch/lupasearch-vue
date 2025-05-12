@@ -222,7 +222,7 @@ const handleDragging = (value: number[]): void => {
   innerSliderRange.value = value
 }
 
-const unit = computed(() => 
+const unit = computed(() =>
   props.options.stats?.units?.[props.facet?.key ?? ''] ?? ''
 )
 </script>

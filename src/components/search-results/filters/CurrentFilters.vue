@@ -17,6 +17,7 @@ defineProps<{
 }>()
 
 const optionsStore = useOptionsStore()
+const { searchResultOptions } = storeToRefs(optionsStore)
 const units = computed(
   () => optionsStore.searchResultOptions.filters?.facets?.stats?.units ?? {}
 )
@@ -102,15 +103,26 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
     <div class="filter-values" v-if="!expandable || isOpen">
       <div class="lupa-current-filter-list">
         <div
-           v-for="filter of currentDisplayFilters"
+          v-for="filter of currentDisplayFilters"
           :key="filter.key + '_' + filter.value"
           class="lupa-current-filter-tag"
         >
-        {{ filter.label }}:
-        {{ filter.value[0] }} – {{ filter.value[1] }}
-        <span v-if="units[filter.key]"> {{ units[filter.key] }}</span>
-    <button @click="handleRemove({ filter })">×</button>
-   </div>
+      {{ filter.label }}:
+      <small style="color: purple; display: block">
+    key="{{ filter.key }}" → unit="{{ units[filter.key] }}"
+  </small>
+        <span v-if="Array.isArray(filter.value) && units[filter.key]">
+        {{ filter.value[0] }} {{ units[filter.key] }}
+        &ndash;
+        {{ filter.value[1] }} {{ units[filter.key] }}
+        </span>
+        <span v-else>
+        {{ filter.value }}
+        </span>
+
+  <button @click="handleRemove({ filter })">×</button>
+</div>
+
       </div>
       <div class="lupa-clear-all-filters" data-cy="lupa-clear-all-filters" @click="handleClearAll">
         {{ options?.labels?.clearAll ?? '' }}
