@@ -122,6 +122,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         labels: {
           from: 'From:',
           to: 'To:'
+        },
+          units: {
+            depth:  'mm.',
+            length: 'm.'
         }
       },
       filterable: {

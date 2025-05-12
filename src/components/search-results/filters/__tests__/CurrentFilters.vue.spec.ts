@@ -22,15 +22,15 @@ describe('CurrentFilters', () => {
     filters: { key: string; label: string; type: string; value: string }[]
   ) => {
     const wrapper = shallowMount(CurrentFilters, {
-      global: {
-        plugins: [createTestingPinia({ stubActions: false })]
-      },
-      props: { options: baseOptions, expandable: false }
+      global: { plugins: [createTestingPinia({ stubActions: false })] },
+      props:  { options: baseOptions, expandable: false }
     })
 
     const optionsStore = useOptionsStore()
     // @ts-ignore
-    optionsStore.searchResultOptions.value.filters.facets.stats.units = {}
+    optionsStore.searchResultOptions.value = {
+      filters: { facets: { stats: { units: {} } } }
+    } as any
 
     const searchResultStore = useSearchResultStore()
     // @ts-ignore
