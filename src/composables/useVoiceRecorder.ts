@@ -1,4 +1,5 @@
 import { VoiceSearchOptions } from '@/types/search-box/SearchBoxOptions'
+import { buildSocketMessageFrameHeader } from '@/utils/stream.utils'
 import { ref, computed, onBeforeUnmount } from 'vue'
 
 export function useVoiceRecorder(options: VoiceSearchOptions) {
@@ -45,27 +46,20 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
     }
 
     socket.value.onerror = () => {
+      stopRecording()
       errorRef.value = 'WebSocket error'
     }
   }
 
-  const onMediaRecorderDataAvailable = (event: BlobEvent) => {
-    if (mediaRecorder.value?.state !== 'recording') {
-      return
-    }
-  
-    // Encode audio data to base64 for sending over WebSocket
-    const reader = new FileReader()
-    reader.readAsDataURL(event.data)
-    reader.onloadend = () => {
-      const base64DataChunks = reader.result as string
-      const base64Data = base64DataChunks.split(',')[1]
-  
-      socket.value?.send(JSON.stringify({ 
-        event: 'audio-chunk', 
-        data: base64Data 
-      }))
-    }
+  const onMediaRecorderDataAvailable = async (event: BlobEvent) => {
+    if (mediaRecorder.value?.state !== 'recording') return
+
+    const audioBuffer = await event.data.arrayBuffer()
+    const header = buildSocketMessageFrameHeader('audio-chunk', audioBuffer.byteLength)
+    const buffer = new Uint8Array(header.length + audioBuffer.byteLength)
+    buffer.set(header, 0)
+    buffer.set(new Uint8Array(audioBuffer), header.length)
+    socket.value?.send(buffer)
   }
   
   const startRecording = async () => {
@@ -100,12 +94,12 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
 
   const stopSocketConnection = () => {
     if (socket.value && socket.value.readyState === WebSocket.OPEN) {
-      socket.value.send(JSON.stringify({ event: 'audio-chunk-end' }))
+      const endHeader = buildSocketMessageFrameHeader('audio-chunk-end', 0)
+      socket.value.send(endHeader)
       setTimeout(() => {
-        isRecording.value = false
-      }, 2000)
+        closeSocket()
+      }, 1000)
     }
-    startRecording()
   }
 
   const closeSocket = () => {

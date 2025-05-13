@@ -87,7 +87,7 @@ const handleOnStopEvent = () => {
   setTimeout(() => {
     if (errorRef.value) return
     emit('stop-recognize', transcription.value)
-  }, 2000);;
+  }, 1500);;
   (voiceSearchProgressBar.value as any)?.stopProgressBar()
 }
 
