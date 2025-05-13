@@ -4,6 +4,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest'
 import CurrentFilters from '../CurrentFilters.vue'
 import type { ResultCurrentFilterOptions } from '@/types/search-results/SearchResultsOptions'
 import type { LabeledFilter } from '@/types/search-results/Filters'
+import CurrentFilterDisplay from '../CurrentFilterDisplay.vue'
 
 vi.mock('@/utils/filter.toggle.utils', () => ({
   toggleTermFilter:     vi.fn(),
@@ -104,6 +105,6 @@ describe('CurrentFilters.vue', () => {
       { type: 'range', key: 'price1',value: '1 - 2', label: 'Price' }
     ]
     const wrapper = await getComponent(items)
-    expect(wrapper.findAll('.lupa-current-filter-tag')).toHaveLength(4)
+    expect(wrapper.findAllComponents(CurrentFilterDisplay)).toHaveLength(4)
   })
 })
