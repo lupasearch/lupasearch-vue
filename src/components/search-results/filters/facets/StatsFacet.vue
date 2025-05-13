@@ -63,6 +63,7 @@ const fromValue = computed({
     isPrice.value
       ? sliderRange.value[0].toFixed(pricePrecision.value).replace('.', separator.value)
       : `${sliderRange.value[0]}`,
+      
   set: (stringValue) => {
     let value = normalizeFloat(stringValue)
     if (value < facetMin.value) {
@@ -71,7 +72,7 @@ const fromValue = computed({
     if (!value || value > facetMax.value) {
       return
     }
-    innerSliderRange.value = [value, sliderRange.value[1]]
+    innerSliderRange.value = [sliderRange.value[1], value]
     handleInputChange()
   }
 })
@@ -146,9 +147,20 @@ const facetMax = computed((): number => {
 
 const statsSummary = computed((): string => {
   const [min, max] = sliderRange.value
-  return isPrice.value
-    ? formatPriceSummary([min, max], currency.value, separator.value, currencyTemplate.value)
-    : formatRange({ gte: min, lte: max })
+ if (isPrice.value) {
+    return formatPriceSummary(
+      [min, max],
+      currency.value,
+      separator.value,
+      currencyTemplate.value
+    )
+  }
+
+  if (unit.value) {
+    return `${min} ${unit.value} - ${max} ${unit.value}`
+  }
+
+  return formatRange({ gte: min, lte: max })
 })
 
 const separator = computed((): string => {
@@ -230,7 +242,7 @@ const unit = computed(() =>
 <template>
   <div class="lupa-search-result-facet-stats-values">
     <div class="lupa-stats-facet-summary" v-if="!isInputVisible">
-      {{ statsSummary }}<span v-if="unit"> {{ unit }}</span>
+      {{ statsSummary }}
    </div>
     <div class="lupa-stats-facet-summary-input" v-else>
       <div>
