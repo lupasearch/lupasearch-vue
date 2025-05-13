@@ -1,3 +1,4 @@
+import { kebabCase } from 'lodash'
 import type { Document } from '@getlupa/client-sdk/Types'
 
 export const getNormalizedString = (str?: string | number): string => {
@@ -169,4 +170,12 @@ export const findClosestStringValue = <T>(input: string, possibleValues: T[], ke
   const minDistance = Math.min(...distances)
   const closestValue = possibleValues.filter((_, i) => distances[i] === minDistance)?.[0]
   return closestValue
+}
+
+export const slugifyClass = (s?: string): string => {
+  let slug = kebabCase(s)
+  if (!slug || /^[0-9-]/.test(slug)) {
+    slug = `c-${slug}`
+  } // CSS-safe start
+  return slug
 }

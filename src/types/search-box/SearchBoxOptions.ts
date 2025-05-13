@@ -12,6 +12,7 @@ import { DataExtraction } from '../DataExtraction'
 export type SearchBoxOptions = SearchBoxPanelOptions & {
   inputSelector: string
   searchTriggers?: string[]
+  searchBoxCloseTriggers?: string[]
   routingBehavior?: RoutingBehavior
   dynamicData?: DynamicData
   callbacks?: SearchBoxEventCallbacks
@@ -76,6 +77,11 @@ export type SearchBoxResultsNavigateContext = {
 }
 
 export type SearchBoxEventCallbacks = {
+  onMounted?: () => unknown
+  onFocused?: () => unknown
+  onBlurred?: () => unknown
+  onClosed?: () => unknown
+  onSearchBoxInput?: (input: string) => unknown
   onSearchBoxResults?: (context: SearchBoxResultCallbackContext) => unknown
   onSearchResultsNavigate?: (context: SearchBoxResultsNavigateContext) => unknown
 }

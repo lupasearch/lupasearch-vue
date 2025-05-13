@@ -88,7 +88,9 @@ onMounted(() => {
   } else {
     loadRecommendations()
   }
-
+  if (props.options.recommendationCallbacks?.onMounted) {
+    props.options.recommendationCallbacks?.onMounted()
+  }
   window.addEventListener('resize', handleResize)
 })
 
@@ -174,6 +176,7 @@ const loadLupaRecommendations = async (): Promise<void> => {
     await dynamicDataStore.enhanceSearchResultsWithDynamicData({
       result: { items: result.recommended }
     })
+    props.options.recommendationCallbacks?.onRecommenderResults?.(result.recommended)
   } finally {
     loading.value = false
   }

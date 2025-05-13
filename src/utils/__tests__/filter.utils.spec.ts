@@ -120,9 +120,9 @@ describe('getLabeledFilters', () => {
       }
     ]
     const expectedLabeledFacets = [
-      { key: 'tag', value: 'books', label: 'Tag', type: 'terms' },
-      { key: 'tag', value: 'journals', label: 'Tag', type: 'terms' },
-      { key: 'discount', value: 'yes', label: 'Discount', type: 'terms' }
+      { key: 'tag', value: 'books', label: 'Tag', type: 'terms', originalValue: 'books' },
+      { key: 'tag', value: 'journals', label: 'Tag', type: 'terms', originalValue: 'journals' },
+      { key: 'discount', value: 'yes', label: 'Discount', type: 'terms', originalValue: 'yes' }
     ]
     expect(getLabeledFilters(filters, facets)).toEqual(expectedLabeledFacets)
   })
@@ -145,12 +145,13 @@ describe('getLabeledFilters', () => {
       }
     ]
     const expectedLabeledFacets = [
-      { key: 'tag', value: 'books', label: 'Tag', type: 'terms' },
+      { key: 'tag', value: 'books', label: 'Tag', type: 'terms', originalValue: 'books' },
       {
         key: 'category',
         value: 'electronics',
         label: 'Category',
-        type: 'terms'
+        type: 'terms',
+        originalValue: 'electronics'
       }
     ]
     expect(getLabeledFilters(filters, facets)).toEqual(expectedLabeledFacets)

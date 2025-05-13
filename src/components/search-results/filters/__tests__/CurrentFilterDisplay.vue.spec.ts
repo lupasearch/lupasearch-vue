@@ -16,7 +16,8 @@ describe('CurrentFilterDisplay', () => {
       key: 'tag',
       label: 'Tag',
       value: 'books',
-      type: 'terms'
+      type: 'terms',
+      originalValue: 'books'
     })
     expect(wrapper.find('.lupa-search-result-filter-value').exists()).toBe(true)
   })
@@ -26,7 +27,8 @@ describe('CurrentFilterDisplay', () => {
       key: 'tag',
       label: 'Tag',
       value: 'books',
-      type: 'terms'
+      type: 'terms',
+      originalValue: 'books'
     })
     expect(wrapper.find('.lupa-current-filter-label').text()).toBe('Tag:')
     expect(wrapper.find('.lupa-current-filter-value').text()).toBe('books')

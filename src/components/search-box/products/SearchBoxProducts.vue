@@ -87,6 +87,9 @@ const handleProductClick = ({
   }
   emit('product-click')
   handleRoutingEvent(link, event, boxRoutingBehavior.value === 'event')
+  if (props.panelOptions.programmaticNavigation) {
+    window.location.assign(link)
+  }
 }
 </script>
 

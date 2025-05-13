@@ -15,6 +15,7 @@ export enum DocumentElementType {
 export type DisplayCondition = {
   condition:
     | 'exists'
+    | 'notExists'
     | 'equals'
     | 'notEquals'
     | 'greaterThan'

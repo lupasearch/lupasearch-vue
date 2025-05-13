@@ -27,10 +27,10 @@ const activeLabel = computed(() => props.labels.mobileFilterButtonActive)
 const openLabel = computed(() => props.labels.mobileFilterButtonOpen)
 
 const label = computed(() => {
-  if (isSidebarVisible.value) {
+  if (isSidebarVisible.value && openLabel.value) {
     return openLabel.value
   }
-  if (hasActiveFilters.value) {
+  if (hasActiveFilters.value && activeLabel.value) {
     return activeLabel.value
   }
   return defaultLabel.value

@@ -1,6 +1,6 @@
 {
   "name": "@getlupa/vue",
-  "version": "0.17.1",
+  "version": "0.17.11",
   "main": "dist/lupaSearch.mjs",
   "module": "dist/lupaSearch.mjs",
   "types": "dist/src/index.d.ts",
@@ -70,5 +70,6 @@
   "dependencies": {
     "mustache": "^4.2.0",
     "sanitize-html": "^2.13.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

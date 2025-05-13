@@ -1,4 +1,10 @@
-export type ExtractFrom = 'url' | 'localStorage' | 'sessionStorage' | 'htmlElementText' | 'cookie'
+export type ExtractFrom =
+  | 'url'
+  | 'localStorage'
+  | 'sessionStorage'
+  | 'htmlElementText'
+  | 'htmlElementAttribute'
+  | 'cookie'
 
 export type BaseExtractFrom = {
   extractFrom: ExtractFrom
@@ -21,6 +27,12 @@ export type ExtractFromHtmlElementText = BaseExtractFrom & {
   querySelector: string
 }
 
+export type ExtractFromHtmlElementAttribute = BaseExtractFrom & {
+  extractFrom: 'htmlElementAttribute'
+  querySelector: string
+  attribute: string
+}
+
 export type ExtractFromCookie = BaseExtractFrom & {
   extractFrom: 'cookie'
   cookieName: string
@@ -30,4 +42,5 @@ export type DataExtraction =
   | ExtractFromUrl
   | ExtractFromStorage
   | ExtractFromHtmlElementText
+  | ExtractFromHtmlElementAttribute
   | ExtractFromCookie

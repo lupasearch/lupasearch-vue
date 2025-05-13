@@ -12,6 +12,8 @@ import type {
 } from '@getlupa/client-sdk/Types'
 import { formatPriceSummary } from './price.utils'
 import { capitalize, getNormalizedString } from './string.utils'
+import { getTranslatedFacetValue } from './translation.utils'
+import { FilterTranslationOptions } from '@/types/search-results/FilterTranslationOptions'
 
 export const formatRange = (filter: FilterGroupItemTypeRange): string => {
   const lt = filter.lt ?? filter.lte
@@ -107,11 +109,17 @@ export const unfoldFilters = (
 
 export const getLabeledFilters = (
   filters: UnfoldedFilter[],
-  facets?: FacetResult[]
+  facets?: FacetResult[],
+  translations?: FilterTranslationOptions
 ): LabeledFilter[] => {
   return filters.map((f) => ({
     ...f,
-    label: facets?.find((ft) => ft.key === f.key)?.label ?? capitalize(f.key)
+    label:
+      translations?.keyTranslations?.[f.key] ??
+      facets?.find((ft) => ft.key === f.key)?.label ??
+      capitalize(f.key),
+    value: getTranslatedFacetValue({ key: f.key }, { title: f.value }, translations),
+    originalValue: f.value,
   }))
 }
 

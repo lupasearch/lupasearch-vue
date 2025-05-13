@@ -51,6 +51,11 @@ export const processDisplayCondition = (
       // Check if all fields exist in the document
       return fields?.every((field) => getFieldValue(doc, field) !== undefined)
     }
+    case 'notExists': {
+      return fields?.every(
+        (field) => getFieldValue(doc, field) === undefined || getFieldValue(doc, field) === null
+      )
+    }
     case 'equals': {
       if (fields.length < 2) return false // At least two fields needed for comparison
       const [field1, field2] = fields

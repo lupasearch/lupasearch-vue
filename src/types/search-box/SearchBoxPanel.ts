@@ -43,6 +43,7 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   badges?: SearchBoxBadgeOptions
   showGoToResults?: boolean
   isInStock?: DisplayCondition | ((doc: Document) => boolean)
+  programmaticNavigation?: boolean
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 

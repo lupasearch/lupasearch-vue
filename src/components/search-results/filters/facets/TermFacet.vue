@@ -3,7 +3,7 @@ import { MAX_FACET_VALUES } from '@/constants/global.const'
 import { FACET_TERM_RANGE_SEPARATOR } from '@/constants/queryParams.const'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { rangeFilterToString } from '@/utils/filter.utils'
-import { getDisplayValue, getNormalizedString } from '@/utils/string.utils'
+import { getDisplayValue, getNormalizedString, slugifyClass } from '@/utils/string.utils'
 import type {
   FacetGroup,
   FacetGroupItem,
@@ -12,6 +12,9 @@ import type {
 } from '@getlupa/client-sdk/Types'
 import { computed, ref } from 'vue'
 import { useSearchResultStore } from '@/stores/searchResult'
+import { getTranslatedFacetValue } from '@/utils/translation.utils'
+import { useOptionsStore } from '@/stores/options'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -20,6 +23,8 @@ const props = defineProps<{
 }>()
 
 const searchResultStore = useSearchResultStore()
+const optionsStore = useOptionsStore()
+const { searchResultOptions } = storeToRefs(optionsStore)
 
 const facet = computed(() => props.facet ?? { type: 'terms', items: [], key: '' })
 
@@ -43,6 +48,11 @@ const allValues = computed((): FacetGroupItem[] => {
 const displayValues = computed((): FacetGroupItem[] => {
   return filteredValues.value
     .slice(0, itemLimit.value)
+    .filter((v) =>
+      props.options.excludeValues?.[facet.value.key]
+        ? !props.options.excludeValues?.[facet.value.key]?.[v.title]
+        : true
+    )
     .map((v) => ({ ...v, title: getDisplayValue(v.title) }))
 })
 
@@ -92,6 +102,18 @@ const isChecked = (item: FacetGroupItem): boolean => {
       : selectedItems
   return selectedItems?.includes(item.title?.toString())
 }
+
+const getItemLabel = (item: FacetGroupItem) => {
+  return getTranslatedFacetValue(props.facet, item, searchResultOptions.value.filters?.translations)
+}
+
+const getFacetValueClass = (item: FacetGroupItem): string => {
+  try {
+    return `lupa-facet-value-${slugifyClass(item.title)}`
+  } catch (e) {
+    return ''
+  }
+}
 </script>
 <template>
   <div class="lupa-search-result-facet-term-values" data-cy="lupa-search-result-facet-term-values">
@@ -114,8 +136,8 @@ const isChecked = (item: FacetGroupItem): boolean => {
         <div class="lupa-term-checkbox-wrapper">
           <span class="lupa-term-checkbox" :class="{ checked: isChecked(item) }"> </span>
         </div>
-        <div class="lupa-term-checkbox-label">
-          <span class="lupa-term-label">{{ item.title }}</span>
+        <div class="lupa-term-checkbox-label" :class="{ [getFacetValueClass(item)]: true }">
+          <span class="lupa-term-label">{{ getItemLabel(item) }}</span>
           <span v-if="options.showDocumentCount" class="lupa-term-count">({{ item.count }})</span>
         </div>
       </div>

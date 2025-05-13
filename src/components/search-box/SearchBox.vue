@@ -54,6 +54,7 @@ const suggestedValue: Ref<InputSuggestion> = ref(defaultSuggestedValue)
 
 const opened = ref(props.isSearchContainer)
 const focused = ref(false)
+const openedAt: Ref<null | number> = ref(null)
 
 const searchBoxInput = ref(null)
 
@@ -89,12 +90,18 @@ const panelOptions = computed(
       'hideMoreResultsButtonOnNoResults',
       'showNoResultsPanel',
       'expandOnSinglePanel',
-      'showMoreResultsButton',
+      'showMoreResultsButton'
     ])
 )
 
 const searchTriggers = computed((): string[] => {
   return props.options.searchTriggers ?? []
+})
+
+const searchBoxCloseTriggers = computed((): Element[] => {
+  return (
+    props.options.searchBoxCloseTriggers?.map((selector) => document.querySelector(selector)) ?? []
+  )
 })
 
 const goToResultsDebounced = debounce(paramsStore.goToResults, props.options.debounce ?? 300)
@@ -111,6 +118,9 @@ onMounted(() => {
   if (props.isSearchContainer && searchBoxInput.value) {
     ;(searchBoxInput.value as HTMLInputElement)?.focus()
   }
+  if (props.options.callbacks?.onMounted) {
+    props.options.callbacks?.onMounted()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -126,6 +136,14 @@ const handleMouseClick = (e: MouseEvent): void => {
     typeof elementClass.includes == 'function' && elementClass.includes('lupa-search-box')
   const isOutsideElement = el && !el.contains(e.target as Node) && !hasLupaClass
 
+  if (openedAt.value && Date.now() - openedAt?.value < 500) {
+    return
+  }
+
+  if (searchBoxCloseTriggers.value?.includes(e.target as Element)) {
+    close(e)
+  }
+
   if (isOutsideElement && props.options.keepOpen) {
     focused.value = false
   }
@@ -136,12 +154,18 @@ const handleMouseClick = (e: MouseEvent): void => {
 
   opened.value = false
   suggestedValue.value = defaultSuggestedValue
+  if (props.options.callbacks?.onClosed) {
+    props.options.callbacks?.onClosed()
+  }
 }
 
-const close = () => {
+const close = (e?: Event) => {
   opened.value = false
   focused.value = false
   suggestedValue.value = defaultSuggestedValue
+  if (props.options.callbacks?.onClosed) {
+    props.options.callbacks?.onClosed()
+  }
 }
 
 const handleKeyDown = (e: KeyboardEvent): void => {
@@ -160,6 +184,10 @@ const handleKeyDown = (e: KeyboardEvent): void => {
       handleSearch()
       resetValues()
       break
+    case 'Escape':
+      opened.value = false
+      focused.value = false
+      break
     default:
       break
   }
@@ -171,6 +199,9 @@ const handleInput = (value: string): void => {
   inputValue.value = value?.replace(/\s+$/, '') ?? ''
   suggestedValue.value = defaultSuggestedValue
   searchBoxStore.resetHighlightIndex()
+  if (props.options.callbacks?.onSearchBoxInput) {
+    props.options.callbacks.onSearchBoxInput(value)
+  }
   trackSearchQuery(value)
   if (props.isSearchContainer) {
     goToResultsDebounced({
@@ -325,10 +356,13 @@ const trackSuggestionClick = (suggestion?: string): void => {
 
 watch(() => props.options.debounce, handleCurrentValueSearch)
 
-const open = () => {
-  opened.value = true
-  focused.value = true
-}
+watch(opened, () => {
+  if (opened.value) {
+    openedAt.value = Date.now()
+  } else {
+    openedAt.value = null
+  }
+})
 
 const resetValues = (): void => {
   inputValue.value = ''
@@ -358,9 +392,23 @@ const slotProps = (
     ...props
   }
 }
+
+const onFocus = () => {
+  opened.value = true
+  if (props.options.callbacks?.onFocused) {
+    props.options.callbacks?.onFocused()
+  }
+}
+
+const onBlur = () => {
+  focused.value = false
+  if (props.options.callbacks?.onBlurred) {
+    props.options.callbacks?.onBlurred()
+  }
+}
 </script>
 <template>
-  <div id="lupa-search-box">
+  <div id="lupa-search-box" :class="{ 'lupa-search-box-opened': opened }">
     <div class="lupa-search-box-wrapper">
       <SearchBoxInput
         :options="inputOptions"
@@ -369,8 +417,8 @@ const slotProps = (
         :emit-input-on-focus="!isSearchContainer"
         ref="searchBoxInput"
         @input="handleInput"
-        @blur="focused = false"
-        @focus="opened = true"
+        @blur="onBlur"
+        @focus="onFocus"
         @search="handleSearch"
         @close="$emit('close')"
       />
