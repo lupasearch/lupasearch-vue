@@ -85,29 +85,6 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
       break
   }
 }
-
-function formatFilterValue(filter: LabeledFilter): string {
-  const unit = units.value[filter.key] || ''
-  let min: string | undefined
-  let max: string | undefined
-
-  if (Array.isArray(filter.value)) {
-    [min, max] = filter.value.map(String)
-  }
-  else if (typeof filter.value === 'string' && filter.value.includes('-')) {
-    const parts = filter.value.split('-').map(s => s.trim())
-    if (parts.length === 2) {
-      [min, max] = parts
-    }
-  }
-
-  if (min != null && max != null) {
-    return `${min} ${unit} – ${max} ${unit}`.trim()
-  }
-
-  return `${filter.value} ${unit}`.trim()
-}
-
 </script>
 <template>
   <div
@@ -125,17 +102,13 @@ function formatFilterValue(filter: LabeledFilter): string {
     </div>
     <div class="filter-values" v-if="!expandable || isOpen">
       <div class="lupa-current-filter-list">
-        <div
+         <CurrentFilterDisplay
           v-for="filter of currentDisplayFilters"
           :key="filter.key + '_' + filter.value"
-          class="lupa-current-filter-tag"
-        >
-      {{ filter.label }}:
-      <span>{{ formatFilterValue(filter) }}</span>
-
-  <button @click="handleRemove({ filter })">×</button>
-</div>
-
+          :filter="filter"
+          :units="units"
+          @remove="handleRemove"
+        />
       </div>
       <div class="lupa-clear-all-filters" data-cy="lupa-clear-all-filters" @click="handleClearAll">
         {{ options?.labels?.clearAll ?? '' }}
