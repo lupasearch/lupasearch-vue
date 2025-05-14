@@ -6,8 +6,8 @@ const Env = {
 }
 
 const VoiceServiceEnv = {
-  production: 'ws://voice.lupasearch.com:3000',
-  staging: 'ws://voice.lupasearch.dev:3000',
+  production: 'ws://voice.lupasearch.com:3001',
+  staging: 'ws://voice.lupasearch.dev:3001',
 }
 
 export const DEFAULT_REQUEST_CONFIG = {

@@ -33,8 +33,9 @@ export const SEARCH_BOX_CONFIGURATION = {
     labels: {
       listening: 'Listening...',
       microphoneOff: 'Microphone is off. Try again.',
+      serviceError: 'Service error during transcription'
     },
-    customVoiceServiceUrl: 'ws://localhost:3000'
+    customVoiceServiceUrl: 'ws://localhost:3001'
   },
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,

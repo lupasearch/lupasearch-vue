@@ -47,7 +47,7 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
 
     socket.value.onerror = () => {
       stopRecording()
-      errorRef.value = 'WebSocket error'
+      errorRef.value = 'Service connection error'
     }
   }
 

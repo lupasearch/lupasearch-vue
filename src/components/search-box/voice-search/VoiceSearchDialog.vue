@@ -40,7 +40,7 @@ const labels = computed(() => props.options.labels ?? {});
 
 const description = computed(() => {
   if (errorRef.value) {
-    return errorRef.value
+    return labels.value.serviceError ?? errorRef.value
   }
 
   if (!isRecording.value) {
@@ -73,7 +73,7 @@ const handleRecordingButtonClick = () => {
     props.options.customVoiceServiceUrl
   )
   const socketUrl =
-    `${voiceServiceUrl}?clientId=${props.options.queryKey}&queryKey=TEST&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
+    `${voiceServiceUrl}?clientId=${clientId.value}&queryKey=${props.options.queryKey}&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
   initSocket(socketUrl);;
   (voiceSearchProgressBar.value as any)?.startProgressBar()
 

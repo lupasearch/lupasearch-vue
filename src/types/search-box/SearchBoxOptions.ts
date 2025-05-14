@@ -41,6 +41,7 @@ export type SearchBoxOptionLinks = {
 export type VoiceSearchLabels = {
   listening?: string
   microphoneOff?: string
+  serviceError?: string
 }
 
 export type VoiceSearchOptions = {
