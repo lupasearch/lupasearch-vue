@@ -196,6 +196,14 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
       if (res.success) {
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
+        searchResultStore.setRelatedQueriesApiEnabled(res.hasRelatedQueries ?? false)
+        if (res.hasRelatedQueries) {
+          searchResultStore.queryRelatedQueries(
+            props.options.queryKey,
+            publicQuery,
+            props.options.options
+          )
+        }
         if (props.options.splitExpensiveRequests && res.refinementThreshold >= res.total) {
           queryRefiners(requestId, publicQuery)
         }
@@ -238,10 +246,10 @@ const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
 }
 
 const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
-  if(!publicQuery.searchText) {
+  if (!publicQuery.searchText) {
     return
   }
-  loadingRefiners.value = true;
+  loadingRefiners.value = true
   const context = getLupaTrackingContext()
   const query = { ...publicQuery, ...context, modifiers: { facets: false, refiners: true } }
   lupaSearchSdk

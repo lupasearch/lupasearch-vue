@@ -158,6 +158,9 @@ export const extractRelatedSource = async (
   options: SdkOptions,
   activeFilters?: FilterGroup
 ): Promise<{ key: string; value: string }[]> => {
+  if (!source) {
+    return []
+  }
   switch (source.type) {
     case RelatedQuerySourceType.FACETS:
       return extractFacetsRelatedSource(source, searchResults, options, activeFilters)
