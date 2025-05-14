@@ -12,6 +12,7 @@ vi.mock('@/stores/options', () => ({
   })
 }))
 
+
 describe('CurrentFilterDisplay.vue', () => {
   const makeFilter = (): LabeledFilter => ({
     key: 'tag',
