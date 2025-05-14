@@ -1,7 +1,14 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref, type Ref } from 'vue'
 import lupaSearchSdk from '@getlupa/client-sdk'
-import type { FacetGroup, FacetGroupItem, SearchQueryResult } from '@getlupa/client-sdk/Types'
+import type {
+  FacetGroup,
+  FacetGroupItem,
+  PublicQuery,
+  RelatedQueries,
+  SdkError,
+  SearchQueryResult
+} from '@getlupa/client-sdk/Types'
 import { ResultsLayoutEnum, type ResultsLayout } from '@/types/search-results/ResultsLayout'
 import { getLabeledFilters, unfoldFilters } from '@/utils/filter.utils'
 import { useOptionsStore } from './options'
@@ -11,6 +18,8 @@ import { setDocumentTitle } from '@/utils/document.utils'
 import type { ProductGrid } from '@/types/search-results/SearchResultsOptions'
 import { useScreenStore } from './screen'
 import { getNormalizedString } from '@/utils/string.utils'
+import { getLupaTrackingContext } from '@/utils/tracking.utils'
+import { SdkOptions } from '@/types/General'
 
 export const useSearchResultStore = defineStore('searchResult', () => {
   const searchResult: Ref<SearchQueryResult> = ref({} as SearchQueryResult)
@@ -20,10 +29,13 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const loading = ref(false)
   const loadingFacets = ref(false)
   const loadingRefiners = ref(false)
+  const loadingRelatedQueries = ref(false)
   const isMobileSidebarVisible = ref(false)
   const relatedCategoryChildren = ref([])
   const lastRequestId = ref('')
   const searchRequestResults = ref<Record<string, Partial<SearchQueryResult>>>({})
+  const relatedQueriesResult: Ref<Partial<RelatedQueries>> = ref({})
+  const relatedQueriesApiEnabled: Ref<boolean | null> = ref(null)
 
   const optionsStore = useOptionsStore()
   const paramsStore = useParamsStore()
@@ -74,7 +86,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         currencyTemplate: currencyTemplate.value
       }),
       facets.value,
-      filterTranslations.value,
+      filterTranslations.value
     )
   )
 
@@ -190,6 +202,10 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     columnCount.value = grid.columns[screenWidth]
   }
 
+  const setRelatedQueriesApiEnabled = (enabled: boolean | null) => {
+    relatedQueriesApiEnabled.value = enabled
+  }
+
   const setAddToCartAmount = (newAddToCartAmount: number) => {
     if (!newAddToCartAmount) {
       return
@@ -231,6 +247,30 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     relatedCategoryChildren.value = [...children]
   }
 
+  const queryRelatedQueries = async (
+    queryKey: string,
+    publicQuery: PublicQuery,
+    options: SdkOptions
+  ) => {
+    loadingRelatedQueries.value = true
+    const context = getLupaTrackingContext()
+    const query = { ...publicQuery, ...context, modifiers: { facets: false, refiners: true } }
+    lupaSearchSdk
+      .queryRelated(queryKey, query, options)
+      .then((res) => {
+        if (!(res as SdkError).success) {
+          return
+        }
+        relatedQueriesResult.value = res as RelatedQueries
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+      .finally(() => {
+        loadingRelatedQueries.value = false
+      })
+  }
+
   return {
     isMobileSidebarVisible,
     searchResult,
@@ -255,6 +295,8 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     hideFiltersOnExactMatchForKeys,
     relatedCategoryChildren,
     searchRequestResults,
+    relatedQueriesResult,
+    relatedQueriesApiEnabled,
     setSidebarState,
     queryFacet,
     setLastRequestId,
@@ -266,6 +308,8 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     setLoading,
     clearSearchResult,
     filterVisibleFilterValues,
-    setRelatedCategoryChildren
+    setRelatedCategoryChildren,
+    queryRelatedQueries,
+    setRelatedQueriesApiEnabled
   }
 })
