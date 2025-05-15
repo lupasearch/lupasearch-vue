@@ -16,6 +16,12 @@ defineProps<{
   expandable: boolean
 }>()
 
+const optionsStore = useOptionsStore()
+const { searchResultOptions } = storeToRefs(optionsStore)
+const units = computed(
+  () => searchResultOptions.value.filters.facets.stats.units ?? {}
+)
+
 const isOpen = ref(false)
 
 const paramsStore = useParamsStore()
@@ -55,7 +61,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
       toggleTermFilter(
         // TODO: Fix any
         paramsStore.appendParams as any,
-        { type: 'terms', value: filter.originalValue, key: filter.key },
+        { type: 'terms', value: filter.value, key: filter.key },
         optionStore.getQueryParamName,
         currentFilters.value
       )
@@ -63,7 +69,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
     case 'hierarchy':
       toggleHierarchyFilter(
         paramsStore.appendParams as any,
-        { type: 'hierarchy', value: filter.originalValue, key: filter.key },
+        { type: 'hierarchy', value: filter.value, key: filter.key },
         optionStore.getQueryParamName,
         currentFilters.value,
         true
@@ -96,10 +102,11 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
     </div>
     <div class="filter-values" v-if="!expandable || isOpen">
       <div class="lupa-current-filter-list">
-        <CurrentFilterDisplay
+         <CurrentFilterDisplay
           v-for="filter of currentDisplayFilters"
           :key="filter.key + '_' + filter.value"
           :filter="filter"
+          :units="units"
           @remove="handleRemove"
         />
       </div>
