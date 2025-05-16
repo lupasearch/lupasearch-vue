@@ -227,7 +227,7 @@ const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
       if (!(res as SdkError).success) {
         return
       }
-      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) })
+      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) }, 'facets')
     })
     .catch((err) => {
       console.error(err)
@@ -238,10 +238,10 @@ const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
 }
 
 const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
-  if(!publicQuery.searchText) {
+  if (!publicQuery.searchText) {
     return
   }
-  loadingRefiners.value = true;
+  loadingRefiners.value = true
   const context = getLupaTrackingContext()
   const query = { ...publicQuery, ...context, modifiers: { facets: false, refiners: true } }
   lupaSearchSdk
@@ -250,7 +250,11 @@ const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
       if (!(res as SdkError).success) {
         return
       }
-      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) })
+      searchResultStore.addPartial(
+        requestId,
+        { ...(res as Partial<SearchQueryResult>) },
+        'refiners'
+      )
     })
     .catch((err) => {
       console.error(err)

@@ -24,16 +24,13 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const relatedCategoryChildren = ref([])
   const lastRequestId = ref('')
   const searchRequestResults = ref<Record<string, Partial<SearchQueryResult>>>({})
+  const lastResultsSource: Ref<string | undefined> = ref(undefined)
 
   const optionsStore = useOptionsStore()
   const paramsStore = useParamsStore()
   const screenStore = useScreenStore()
 
   const { searchResultOptions } = storeToRefs(optionsStore)
-
-  const anyRequestLoading = computed(
-    () => loading.value || loadingFacets.value || loadingRefiners.value
-  )
 
   const facets = computed(() => searchResult.value.facets)
 
@@ -74,7 +71,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         currencyTemplate: currencyTemplate.value
       }),
       facets.value,
-      filterTranslations.value,
+      filterTranslations.value
     )
   )
 
@@ -134,13 +131,18 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     searchResult.value = updatedResult
   }
 
-  const saveRequestResult = (requestId: string, result: Partial<SearchQueryResult>) => {
+  const saveRequestResult = (
+    requestId: string,
+    result: Partial<SearchQueryResult>,
+    source = 'items'
+  ) => {
     const existingResult = searchRequestResults.value[requestId] ?? {}
     const combinedResult = { ...existingResult, ...result }
     searchRequestResults.value = {
       ...searchRequestResults.value,
       [requestId]: combinedResult
     }
+    lastResultsSource.value = source
     searchResult.value = combinedResult as SearchQueryResult
   }
 
@@ -168,15 +170,18 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     } else {
       saveRequestResult(requestId, newSearchResult)
     }
-    saveRequestResult(requestId, newSearchResult)
     return { searchResult: newSearchResult }
   }
 
-  const addPartial = (requestId: string, newSearchResult: Partial<SearchQueryResult>) => {
+  const addPartial = (
+    requestId: string,
+    newSearchResult: Partial<SearchQueryResult>,
+    source: string
+  ) => {
     if (lastRequestId.value !== requestId || !newSearchResult) {
       return
     }
-    saveRequestResult(requestId, newSearchResult)
+    saveRequestResult(requestId, newSearchResult, source)
     return { searchResult: searchResult.value }
   }
 
@@ -255,6 +260,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     hideFiltersOnExactMatchForKeys,
     relatedCategoryChildren,
     searchRequestResults,
+    lastResultsSource,
     setSidebarState,
     queryFacet,
     setLastRequestId,
