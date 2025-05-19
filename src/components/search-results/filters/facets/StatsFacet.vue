@@ -34,12 +34,19 @@ const rangeLabelTo = computed((): string => {
   return props.options.stats?.labels?.to ?? ''
 })
 
-const currency = computed((): string => {
-  return searchResultOptions.value?.labels.currency
+const currency = computed(() => {
+  const cfg = optionsStore.multiCurrency.currencies.find(
+    (c) => c.key === optionsStore.multiCurrency.selected
+  )
+  // fall back to your label if someone hasn’t configured currencies
+  return cfg?.symbol ?? searchResultOptions.value?.labels.currency
 })
 
-const currencyTemplate = computed((): string => {
-  return searchResultOptions.value?.labels.currencyTemplate
+const currencyTemplate = computed(() => {
+  const cfg = optionsStore.multiCurrency.currencies.find(
+    (c) => c.key === optionsStore.multiCurrency.selected
+  )
+  return cfg?.template ?? searchResultOptions.value?.labels.currencyTemplate
 })
 
 const priceKeys = computed((): string[] => {
