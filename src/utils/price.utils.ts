@@ -1,4 +1,18 @@
 import { addParamsToLabel } from './string.utils'
+import { useOptionsStore }  from '@/stores/options'
+
+export interface CurrencyConfig {
+  key:        string
+  symbol:     string
+  template?:  string
+  separator:  string
+  multiplier: number
+}
+
+export interface MultiCurrencyConfig {
+  selected:   string
+  currencies: CurrencyConfig[]
+}
 
 const getAmount = (price: string | number, separator = '.') => {
   if (typeof price === 'number') {
@@ -20,14 +34,25 @@ export const formatPrice = (
   if (price !== 0 && !price) {
     return ''
   }
-  const amount = getAmount(price, separator)
-  if (!amount) {
-    return ''
+  const store = useOptionsStore()
+  const { selected, currencies } = store.multiCurrency
+  const cfg = currencies.find(c => c.key === selected)
+
+  const raw = typeof price === 'number' ? price : parseFloat(price)
+  if (isNaN(raw)) return ''
+  const adjusted = raw * (cfg?.multiplier ?? 1)
+
+  const sepToUse = cfg?.separator ?? separator
+  const amount   = getAmount(adjusted, sepToUse)
+  if (!amount) return ''
+
+  const tpl = cfg?.template ?? currencyTemplate
+  if (tpl) {
+    return addParamsToLabel(tpl, amount)
   }
-  if (currencyTemplate) {
-    return addParamsToLabel(currencyTemplate, amount)
-  }
-  return `${amount} ${currency}`
+
+  const sym = cfg?.symbol ?? currency
+  return `${amount} ${sym}`
 }
 
 export const formatPriceSummary = (

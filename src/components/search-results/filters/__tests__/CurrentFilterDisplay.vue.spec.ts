@@ -1,6 +1,11 @@
 import { LabeledFilter } from '@/types/search-results/Filters'
 import { shallowMount } from '@vue/test-utils'
 import CurrentFilterDisplay from '../CurrentFilterDisplay.vue'
+import { createPinia, setActivePinia } from 'pinia'
+
+beforeEach(() => {
+  setActivePinia(createPinia())
+})
 
 const getComponent = (filter: LabeledFilter) => {
   return shallowMount(CurrentFilterDisplay, {
