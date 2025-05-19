@@ -42,16 +42,16 @@ function formatFilterValue(filter: LabeledFilter): string {
     :class="[ facetKeyClass ]"
     data-cy="lupa-current-filter-item"
   >
-    <button
-      class="lupa-current-filter-action"
-      @click="handleClick"
-      aria-label="Remove filter"
-    >
-      ×
-    </button>
+  <div
+    class="lupa-current-filter-action"
+    @click="handleClick"
+    aria-label="Remove filter"
+  >
+    ⨉
+  </div>
 
     <div class="lupa-current-filter-label" data-cy="lupa-current-filter-label">
-      {{ props.filter.label }}:
+      {{ filter.label }}:
     </div>
     <div class="lupa-current-filter-value" data-cy="lupa-current-filter-value">
       {{ formatFilterValue(props.filter) }}

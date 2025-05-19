@@ -19,7 +19,7 @@ defineProps<{
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
 const units = computed(
-  () => searchResultOptions.value.filters.facets.stats.units ?? {}
+  () => searchResultOptions?.value?.filters?.facets?.stats?.units ?? {}
 )
 
 const isOpen = ref(false)
