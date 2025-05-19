@@ -63,6 +63,7 @@ const fromValue = computed({
     isPrice.value
       ? sliderRange.value[0].toFixed(pricePrecision.value).replace('.', separator.value)
       : `${sliderRange.value[0]}`,
+      
   set: (stringValue) => {
     let value = normalizeFloat(stringValue)
     if (value < facetMin.value) {
@@ -71,7 +72,7 @@ const fromValue = computed({
     if (!value || value > facetMax.value) {
       return
     }
-    innerSliderRange.value = [value, sliderRange.value[1]]
+    innerSliderRange.value = [sliderRange.value[1], value]
     handleInputChange()
   }
 })
@@ -146,9 +147,20 @@ const facetMax = computed((): number => {
 
 const statsSummary = computed((): string => {
   const [min, max] = sliderRange.value
-  return isPrice.value
-    ? formatPriceSummary([min, max], currency.value, separator.value, currencyTemplate.value)
-    : formatRange({ gte: min, lte: max })
+ if (isPrice.value) {
+    return formatPriceSummary(
+      [min, max],
+      currency.value,
+      separator.value,
+      currencyTemplate.value
+    )
+  }
+
+  if (unit.value) {
+    return `${min} ${unit.value} - ${max} ${unit.value}`
+  }
+
+  return formatRange({ gte: min, lte: max })
 })
 
 const separator = computed((): string => {
@@ -221,13 +233,17 @@ const handleChange = (): void => {
 const handleDragging = (value: number[]): void => {
   innerSliderRange.value = value
 }
+
+const unit = computed(() =>
+  props.options.stats?.units?.[props.facet?.key ?? ''] ?? ''
+)
 </script>
 
 <template>
   <div class="lupa-search-result-facet-stats-values">
     <div class="lupa-stats-facet-summary" v-if="!isInputVisible">
       {{ statsSummary }}
-    </div>
+   </div>
     <div class="lupa-stats-facet-summary-input" v-else>
       <div>
         <div class="lupa-stats-range-label" v-if="rangeLabelFrom">
@@ -243,7 +259,7 @@ const handleDragging = (value: number[]): void => {
             :pattern="sliderInputFormat"
             :aria-label="ariaLabelFrom"
           />
-          <span v-if="isPrice">{{ currency }}</span>
+          <span v-if="isPrice">{{ currency }}</span><span v-if="unit"> {{ unit }}</span>
         </div>
       </div>
       <div class="lupa-stats-separator"></div>
@@ -261,7 +277,7 @@ const handleDragging = (value: number[]): void => {
             :pattern="sliderInputFormat"
             :aria-label="ariaLabelTo"
           />
-          <span v-if="isPrice">{{ currency }}</span>
+          <span v-if="isPrice">{{ currency }}</span><span v-if="unit"> {{ unit }}</span>
         </div>
       </div>
     </div>
