@@ -4,7 +4,8 @@ import { useSearchBoxStore } from '@/stores/searchBox'
 import type { InputSuggestion } from '@/types/search-box/Common'
 import type { SearchBoxInputOptions } from '@/types/search-box/SearchBoxOptions'
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onBeforeUnmount, onMounted } from 'vue'
+import VoiceSearchDialog from '@/components/search-box/voice-search/VoiceSearchDialog.vue'
 
 const props = defineProps<{
   options: SearchBoxInputOptions
@@ -20,12 +21,17 @@ const { query } = storeToRefs(paramStore)
 const emit = defineEmits(['input', 'focus', 'search'])
 
 const mainInput = ref(null)
+const voiceDialogOverlay = ref(null)
+const isVoiceDialogOpen = ref(false)
 
 const emitInputOnFocus = computed(() => props.emitInputOnFocus ?? true)
 const suggestedValue = computed(
   () => props.suggestedValue ?? { value: '', override: false, item: { suggestion: '' } }
 )
 
+const isVoiceSearchEnabled = computed(() => {
+  return props.options.voiceSearch?.enabled ?? false
+})
 const labels = computed(() => props.options.labels)
 const input = ref('')
 
@@ -49,6 +55,14 @@ const inputAttributes = computed(() => ({
 }))
 
 const ariaLabel = computed(() => labels.value.searchInputAriaLabel ?? 'Search input')
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutsideVoiceDialogOverlay)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutsideVoiceDialogOverlay)
+})
 
 watch(suggestedValue, () => {
   if (suggestedValue.value.override) {
@@ -90,6 +104,47 @@ const focus = (): void => {
   ;(mainInput?.value as HTMLInputElement)?.focus()
 }
 
+const openVoiceSearchDialog = () => {
+  isVoiceDialogOpen.value = true
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(voiceDialogOverlay.value as any)?.handleRecordingButtonClick()
+}
+
+const closeDialog = () => {
+  isVoiceDialogOpen.value = false
+  ;(voiceDialogOverlay.value as any)?.reset()
+}
+
+const handleVoiceSearchOutput = (transcription: string): void => {
+  inputValue.value = transcription
+  handleSubmit()
+}
+
+const stopRecognition = (trascription: string) => {
+  setTimeout(() => {
+    isVoiceDialogOpen.value = false
+    handleVoiceSearchOutput(trascription)
+  }, 500);
+}
+
+const handleClickOutsideVoiceDialogOverlay = (event) => {
+  if(event.target.classList.contains('lupa-voice-search-button')) {
+    return
+  }
+
+  if (
+    voiceDialogOverlay.value && 
+    voiceDialogOverlay.value.$el.contains(event.target)
+  ) {
+    return
+  }
+  
+  if (isVoiceDialogOpen.value) {
+    closeDialog()
+  }
+}
+
 defineExpose({ focus })
 </script>
 <template>
@@ -128,5 +183,20 @@ defineExpose({ focus })
     <div v-if="canClose" class="lupa-close-search-container" @click="$emit('close')">
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>
     </div>
+    <div v-if="isVoiceSearchEnabled">
+      <button 
+        @click="openVoiceSearchDialog" 
+        class="lupa-voice-search-button"
+      ></button>
+    </div>
+    <VoiceSearchDialog 
+      v-if="isVoiceSearchEnabled"
+      ref="voiceDialogOverlay"
+      :isOpen="isVoiceDialogOpen"
+      :options="props.options.voiceSearch"
+      @close="closeDialog"
+      @transcript-update="handleVoiceSearchOutput"
+      @stop-recognize="stopRecognition"
+    />
   </div>
 </template>
