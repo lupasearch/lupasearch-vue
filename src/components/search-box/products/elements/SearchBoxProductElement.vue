@@ -12,6 +12,7 @@ const props = defineProps<{
   element: DocumentElement
   labels?: SearchBoxOptionLabels
   isInStock?: boolean
+  link?: string
 }>()
 
 const dynamicDataStore = useDynamicDataStore()
@@ -108,6 +109,7 @@ export default {
       :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
       :inStock="isInStock"
       :dynamic-attributes="dynamicAttributes"
+      :link="link"
       v-bind="renderDynamicAttributesOnParentElement && dynamicAttributes"
     >
     </component>
@@ -120,6 +122,7 @@ export default {
         :item="enhancedItem"
         :options="element"
         :labels="labels"
+        :link="link"
         :class="{ 'lupa-loading-dynamic-data': isLoadingDynamicData(item?.id) }"
         :inStock="isInStock"
       >

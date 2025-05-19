@@ -126,6 +126,7 @@ export type AddToCartElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.ADDTOCART
   action: (document: T, amount: number) => Promise<unknown> | undefined
   emitEvent: string
+  link?: boolean
   labels: {
     addToCart: string
   }
