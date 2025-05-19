@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { formatPrice, formatPriceSummary } from '../price.utils'
+import { createPinia, setActivePinia } from 'pinia'
+
+beforeEach(() => {
+  setActivePinia(createPinia())
+})
 
 describe('formatPrice', () => {
   it('should return number formatted to 2 decimal places', () => {
