@@ -172,9 +172,18 @@ export const useParamsStore = defineStore('params', () => {
             }
           ]
         : []
+      const limitParam = params.value[QUERY_PARAMS_PARSED.LIMIT] 
+        ? [
+            {
+              name: optionsStore.getQueryParamName(QUERY_PARAMS.LIMIT),
+              value: limit.value.toString()
+            }
+          ]
+        : []
       appendParams({
         params: [
           { name: optionsStore.getQueryParamName(QUERY_PARAMS.QUERY), value: searchText },
+          ...limitParam,
           ...facetParam
         ],
         paramsToRemove: 'all',
