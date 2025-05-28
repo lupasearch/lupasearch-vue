@@ -18,7 +18,7 @@ const searchResultStore = useSearchResultStore()
 const paramsStore = useParamsStore()
 const optionsStore = useOptionsStore()
 
-const { searchResult } = storeToRefs(searchResultStore)
+const { searchResult, lastResultsSource } = storeToRefs(searchResultStore)
 const { searchResultOptions } = storeToRefs(optionsStore)
 
 const relatedQueries: Ref<{ key: string; value: string }[]> = ref([])
@@ -51,6 +51,9 @@ watch(
   async () => {
     allDisplayItems.value = {}
     querySourceResultMap.value = {}
+    if (searchResult.value?.searchText === undefined || lastResultsSource.value !== 'items') {
+      return
+    }
     if (!props.options || !searchResult.value) {
       relatedQueries.value = []
     }

@@ -10,6 +10,7 @@ const props = defineProps<{
   options: AddToCartElement
   inStock: boolean
   dynamicAttributes: Record<string, unknown>
+  link?: string
 }>()
 
 const inStockValue = computed(() => props.inStock ?? true)
@@ -46,12 +47,29 @@ const handleClick = async (): Promise<void> => {
 
   loading.value = false
 }
+
+const hasLink = computed((): boolean => {
+  return Boolean(props.link && props.options.link)
+})
 </script>
 
 <template>
   <div class="lupa-search-results-add-to-cart-wrapper">
     <div class="lupa-search-results-product-addtocart">
       <button
+        v-if="hasLink"
+        :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
+        data-cy="lupa-add-to-cart"
+        :disabled="!inStockValue || loading"
+        v-bind="dynamicAttributes"
+        @click="handleClick"
+      >
+        <a :href="link">
+          {{ label }}
+        </a>
+      </button>
+      <button
+        v-else
         :id="id"
         :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
         data-cy="lupa-add-to-cart"

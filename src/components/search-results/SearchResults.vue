@@ -157,7 +157,12 @@ const handleResults = async ({
       results.didYouMean?.options ||
       results.similarResults?.items?.length
   )
-  props.options.callbacks?.onSearchResults?.({ queryKey, hasResults, params: paramStore.params })
+  props.options.callbacks?.onSearchResults?.({ 
+    queryKey, 
+    hasResults, 
+    params: paramStore.params,
+    results
+  })
   if (!hasResults) {
     return
   }
@@ -236,7 +241,7 @@ const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
       if (!(res as SdkError).success) {
         return
       }
-      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) })
+      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) }, 'facets')
     })
     .catch((err) => {
       console.error(err)
@@ -259,7 +264,11 @@ const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
       if (!(res as SdkError).success) {
         return
       }
-      searchResultStore.addPartial(requestId, { ...(res as Partial<SearchQueryResult>) })
+      searchResultStore.addPartial(
+        requestId,
+        { ...(res as Partial<SearchQueryResult>) },
+        'refiners'
+      )
     })
     .catch((err) => {
       console.error(err)

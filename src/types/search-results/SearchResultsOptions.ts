@@ -6,7 +6,7 @@ import type { SearchResultsSortOptions } from './SearchResultsSort'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
 import { RelatedQueryOptions } from './RelatedQueryOptions'
 import { RedirectionSuggestionOptions } from './RedirectionSuggestionOptionts'
-import { FilterGroup } from '@getlupa/client-sdk/Types'
+import { FilterGroup, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { DataExtraction } from '../DataExtraction'
 import { FilterTranslationOptions } from './FilterTranslationOptions'
 
@@ -67,6 +67,7 @@ export type SortCallbackContext = {
 
 export type ResultCallbackContext = CallbackContext & {
   params: Record<string, any>
+  results: SearchQueryResult
 }
 
 export type SearchResultEventCallbacks = {
