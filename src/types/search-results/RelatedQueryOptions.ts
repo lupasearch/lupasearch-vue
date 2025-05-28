@@ -26,7 +26,7 @@ export type RelatedQueryFacetsSource = RelatedQuerySourceBase & {
 export type RelatedQuerySource = RelatedQueryFacetsSource
 
 export type RelatedQueryOptions = {
-  source: RelatedQuerySource
+  source?: RelatedQuerySource
   labels?: {
     title?: string
   }

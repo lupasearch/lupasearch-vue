@@ -46,23 +46,27 @@ const currentFiltersWithoutQuerySources = computed(() => {
   return filters
 })
 
-watch(searchResult, async () => {
-  allDisplayItems.value = {}
-  querySourceResultMap.value = {}
-  if (searchResult.value?.searchText === undefined || lastResultsSource.value !== 'items') {
-    return
-  }
-  if (!props.options || !searchResult.value) {
-    relatedQueries.value = []
-  }
-  const queries = await extractRelatedSource(
-    props.options.source,
-    searchResult.value,
-    searchResultOptions.value.options,
-    currentFiltersWithoutQuerySources.value
-  )
-  relatedQueries.value = queries
-})
+watch(
+  searchResult,
+  async () => {
+    allDisplayItems.value = {}
+    querySourceResultMap.value = {}
+    if (searchResult.value?.searchText === undefined || lastResultsSource.value !== 'items') {
+      return
+    }
+    if (!props.options || !searchResult.value) {
+      relatedQueries.value = []
+    }
+    const queries = await extractRelatedSource(
+      props.options.source,
+      searchResult.value,
+      searchResultOptions.value.options,
+      currentFiltersWithoutQuerySources.value
+    )
+    relatedQueries.value = queries
+  },
+  { immediate: true }
+)
 
 const hasEnoughRelatedQueries = computed(() => {
   return relatedQueries.value?.length > 1

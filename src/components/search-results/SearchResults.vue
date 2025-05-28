@@ -201,6 +201,15 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
       if (res.success) {
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
+        searchResultStore.setRelatedQueriesApiEnabled(res.hasRelatedQueries ?? false)
+        if (res.hasRelatedQueries) {
+          searchResultStore.queryRelatedQueries(
+            props.options.queryKey,
+            publicQuery,
+            res,
+            props.options.options
+          )
+        }
         if (props.options.splitExpensiveRequests && res.refinementThreshold >= res.total) {
           queryRefiners(requestId, publicQuery)
         }

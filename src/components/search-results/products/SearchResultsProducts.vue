@@ -28,6 +28,7 @@ import RelatedQueries from '@/components/search-results/related-queries/RelatedQ
 import RedirectionSuggestions from '../redirection-suggestions/RedirectionSuggestions.vue'
 import { EventSourceMetadata } from '@/types/search-box/Common'
 import RefinersLoadingNotice from './RefinersLoadingNotice.vue'
+import RelatedQueriesApi from '../related-queries/RelatedQueriesApi.vue'
 
 const props = defineProps<{
   options: SearchResultsProductOptions
@@ -46,7 +47,8 @@ const {
   columnCount,
   searchResult,
   layout,
-  loading
+  loading,
+  relatedQueriesApiEnabled
 } = storeToRefs(searchResultStore)
 
 const emit = defineEmits(['filter'])
@@ -142,6 +144,14 @@ const clickMetadata: ComputedRef<EventSourceMetadata> = computed(() => {
     : undefined
 })
 
+const showLocalRelatedQueries = computed((): boolean => {
+  return Boolean(props.options.relatedQueries?.source && relatedQueriesApiEnabled.value === false)
+})
+
+const showApiRelatedQueries = computed((): boolean => {
+  return Boolean(relatedQueriesApiEnabled.value === true)
+})
+
 const getProductKeyAction = (index: number, product: Document): string => {
   return getProductKey(`${index}`, product, props.options.idKey)
 }
@@ -161,7 +171,8 @@ const filter = () => {
     <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
     <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
-    <RelatedQueries v-if="options.relatedQueries" :options="options.relatedQueries" />
+    <RelatedQueries v-if="showLocalRelatedQueries" :options="options.relatedQueries" />
+    <RelatedQueriesApi v-if="showApiRelatedQueries" :options="options.relatedQueries" />
     <template v-if="hasResults">
       <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
       <SearchResultsToolbar
