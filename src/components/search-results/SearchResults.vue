@@ -201,6 +201,7 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
           searchResultStore.queryRelatedQueries(
             props.options.queryKey,
             publicQuery,
+            res,
             props.options.options
           )
         }

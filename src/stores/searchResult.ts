@@ -250,11 +250,18 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const queryRelatedQueries = async (
     queryKey: string,
     publicQuery: PublicQuery,
+    result: SearchQueryResult,
     options: SdkOptions
   ) => {
     loadingRelatedQueries.value = true
     const context = getLupaTrackingContext()
-    const query = { ...publicQuery, ...context, modifiers: { facets: false, refiners: true } }
+    const searchText = result.suggestedSearchText ?? result.searchText ?? ''
+    const query = {
+      ...publicQuery,
+      searchText,
+      ...context,
+      modifiers: { facets: false, refiners: true }
+    }
     lupaSearchSdk
       .queryRelated(queryKey, query, options)
       .then((res) => {
