@@ -197,18 +197,18 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-        display: (doc: Record<string, string>) => Number(doc.price) < Number(doc.price),
-        html:    (doc: Record<string, string>) => {
+      display: (doc: Record<string, string>) => Number(doc.price) < Number(doc.price),
+      html:    (doc: Record<string, string>) => {
         const disc = formatPrice(doc.discountPriceKey  ?? doc.price)
         const reg  = formatPrice(doc.regularPriceKey   ?? doc.price)
         return `<span class="lupa-discount">${disc}</span><span class="lupa-regular">${reg}</span>`
        },
-       action:  (doc: any) => console.log('price 1 click', doc)
+      action:  (doc: any) => console.log('price 1 click', doc)
     },
       {
         type: 'customHtml',
-          display: (doc: Record<string, string>) => Number(doc.price) >= Number(doc.price),
-          html:    (doc: Record<string, string>) => {
+        display: (doc: Record<string, string>) => Number(doc.price) >= Number(doc.price),
+        html:    (doc: Record<string, string>) => {
           const finalPrice = formatPrice(doc.price)
           return `<span class="lupa-final">${finalPrice}</span>`
         },

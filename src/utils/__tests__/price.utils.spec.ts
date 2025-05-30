@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest'
+import type { MultiCurrencyConfig } from '../price.utils'
 import { formatPrice, formatPriceSummary } from '../price.utils'
-import { createPinia, setActivePinia } from 'pinia'
 
-beforeEach(() => {
-  setActivePinia(createPinia())
-})
+const fakeMulti: MultiCurrencyConfig = {
+  selected: 'EUR',
+  currencies: [
+    { key: 'EUR', symbol: '€', separator: ',', multiplier: 1 },
+    { key: 'USD', symbol: '$', separator: '.', multiplier: 1.2 }
+  ]
+}
 
-describe('formatPrice', () => {
+describe('formatPrice (defaults)', () => {
   it('should return number formatted to 2 decimal places', () => {
     expect(formatPrice(2.6598)).toEqual('2,66 €')
   })
@@ -60,6 +64,19 @@ describe('formatPrice', () => {
   })
 })
 
+describe('formatPrice (multiCurrency stub)', () => {
+  it('uses EUR config from fakeMulti', () => {
+    // fallback args omitted: currency, separator, template
+    expect(formatPrice(10, undefined, undefined, undefined, fakeMulti)).toBe('10,00 €')
+  })
+
+  it('applies USD multiplier and formatting', () => {
+    expect(
+      formatPrice(10, undefined, undefined, undefined, { ...fakeMulti, selected: 'USD' })
+    ).toBe('12.00 $')
+  })
+})
+
 describe('formatPriceSummary', () => {
   it('should render price range for both min and max values', () => {
     expect(formatPriceSummary([2, 4])).toBe('2,00 € - 4,00 €')
@@ -71,7 +88,7 @@ describe('formatPriceSummary', () => {
     expect(formatPriceSummary([0])).toBe('> 0,00 €')
   })
 
-  it('should render price range for only min value', () => {
+  it('should render price range for only max value', () => {
     expect(formatPriceSummary([undefined, 20])).toBe('< 20,00 €')
     expect(formatPriceSummary([undefined, 0])).toBe('< 0,00 €')
   })
@@ -85,5 +102,11 @@ describe('formatPriceSummary', () => {
     expect(formatPriceSummary([2], '€', ',', '{1} €')).toBe('> 2,00 €')
     expect(formatPriceSummary([2], '€', ',', '{1}')).toBe('> 2,00')
     expect(formatPriceSummary([2], '$', '.', '${1}')).toBe('> $2.00')
+  })
+
+  it('should render summary with multiCurrency stub', () => {
+    expect(formatPriceSummary([2, 4], undefined, undefined, undefined, fakeMulti)).toBe(
+      '2,00 € - 4,00 €'
+    )
   })
 })
