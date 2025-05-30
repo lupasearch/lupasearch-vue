@@ -149,7 +149,7 @@ const showLocalRelatedQueries = computed((): boolean => {
 })
 
 const showApiRelatedQueries = computed((): boolean => {
-  return Boolean(relatedQueriesApiEnabled.value === true)
+  return Boolean(relatedQueriesApiEnabled.value === true) && Boolean(props.options.relatedQueries)
 })
 
 const getProductKeyAction = (index: number, product: Document): string => {

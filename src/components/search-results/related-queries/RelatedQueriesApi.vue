@@ -9,7 +9,7 @@ import { toggleTermFilter } from '@/utils/filter.toggle.utils'
 import type { FilterGroupItemTypeTerms, RelatedQuery } from '@getlupa/client-sdk/Types'
 import RelatedQueryPanelApi from './RelatedQueryPanelApi.vue'
 
-defineProps<{
+const props = defineProps<{
   options?: RelatedQueryOptions
 }>()
 
@@ -20,7 +20,8 @@ const optionsStore = useOptionsStore()
 const { searchResult, relatedQueriesResult } = storeToRefs(searchResultStore)
 
 const relatedQueries = computed((): RelatedQuery[] => {
-  return relatedQueriesResult.value?.relatedQueries ?? []
+  const allQueries = relatedQueriesResult.value?.relatedQueries ?? []
+  return props.options?.source?.count ? allQueries.slice(0, props.options.source.count) : allQueries
 })
 
 const currentSearchText = computed(() => searchResult.value?.searchText ?? '')
