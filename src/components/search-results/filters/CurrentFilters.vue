@@ -61,7 +61,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
       toggleTermFilter(
         // TODO: Fix any
         paramsStore.appendParams as any,
-        { type: 'terms', value: filter.value, key: filter.key },
+        { type: 'terms', value: filter.originalValue, key: filter.key },
         optionStore.getQueryParamName,
         currentFilters.value
       )
@@ -69,7 +69,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
     case 'hierarchy':
       toggleHierarchyFilter(
         paramsStore.appendParams as any,
-        { type: 'hierarchy', value: filter.value, key: filter.key },
+        { type: 'hierarchy', value: filter.originalValue, key: filter.key },
         optionStore.getQueryParamName,
         currentFilters.value,
         true
