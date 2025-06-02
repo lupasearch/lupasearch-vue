@@ -157,9 +157,9 @@ const handleResults = async ({
       results.didYouMean?.options ||
       results.similarResults?.items?.length
   )
-  props.options.callbacks?.onSearchResults?.({ 
-    queryKey, 
-    hasResults, 
+  props.options.callbacks?.onSearchResults?.({
+    queryKey,
+    hasResults,
     params: paramStore.params,
     results
   })
@@ -202,7 +202,7 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
         searchResultStore.setRelatedQueriesApiEnabled(res.hasRelatedQueries ?? false)
-        if (res.hasRelatedQueries) {
+        if (res.hasRelatedQueries && Boolean(props.options.relatedQueries)) {
           searchResultStore.queryRelatedQueries(
             props.options.queryKey,
             publicQuery,
