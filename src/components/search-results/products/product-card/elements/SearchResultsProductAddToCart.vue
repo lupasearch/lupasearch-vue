@@ -4,6 +4,7 @@ import { useSearchResultStore } from '@/stores/searchResult'
 import type { AddToCartElement } from '@/types/DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
+import { useOptionsStore } from '@/stores/options'
 
 const props = defineProps<{
   item: Document
@@ -16,6 +17,8 @@ const props = defineProps<{
 const inStockValue = computed(() => props.inStock ?? true)
 
 const searchResultStore = useSearchResultStore()
+const optionsStore = useOptionsStore()
+const { searchResultOptions } = storeToRefs(optionsStore)
 const { addToCartAmount } = storeToRefs(searchResultStore)
 
 const emit = defineEmits(['productEvent'])
@@ -31,7 +34,18 @@ const id = computed(() => {
   return `lupa-add-to-cart-${id}`
 })
 
-const handleClick = async (): Promise<void> => {
+const productCardIsClickable = computed((): boolean => {
+  return searchResultOptions.value.isLink
+})
+
+const hasLink = computed((): boolean => {
+  return Boolean(props.link && props.options.link)
+})
+
+const handleClick = async (e: Event): Promise<void> => {
+  if (productCardIsClickable.value && !hasLink.value) {
+    e.preventDefault()
+  }
   loading.value = true
 
   if (props.options.emitEvent) {
@@ -47,10 +61,6 @@ const handleClick = async (): Promise<void> => {
 
   loading.value = false
 }
-
-const hasLink = computed((): boolean => {
-  return Boolean(props.link && props.options.link)
-})
 </script>
 
 <template>
