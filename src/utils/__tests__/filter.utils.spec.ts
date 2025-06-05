@@ -10,6 +10,12 @@ import {
   recursiveFilter,
   unfoldFilters
 } from '../filter.utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { useOptionsStore }             from '@/stores/options'
+
+beforeEach(() => {
+  setActivePinia(createPinia())
+})
 
 describe('unfoldFilters', () => {
   it('should return empty array for empty filters', () => {
