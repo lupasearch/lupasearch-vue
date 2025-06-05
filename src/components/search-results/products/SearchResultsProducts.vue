@@ -63,6 +63,7 @@ const productCardOptions = computed((): SearchResultsProductCardOptions => {
     'queryKey',
     'idKey',
     'titleKey',
+    'isLink',
     'routingBehavior',
     'customDocumentHtmlAttributes'
   ])

@@ -18,6 +18,7 @@ export type SearchResultsProductCardOptions = {
   idKey?: string
   titleKey?: string
   priceKeys?: string[]
+  isLink?: boolean
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 

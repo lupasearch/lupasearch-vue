@@ -151,6 +151,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   },
   idKey: 'id',
   titleKey: 'name',
+  isLink: false,
   elements: [
     {
       type: 'image',

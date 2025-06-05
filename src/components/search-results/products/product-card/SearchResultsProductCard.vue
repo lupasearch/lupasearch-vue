@@ -50,6 +50,10 @@ const listLayoutClass = computed((): string => {
     : ''
 })
 
+const useLinkWrapper = computed((): boolean => {
+  return props.options.isLink
+})
+
 const badgesOptions = computed((): BadgeOptions => {
   return { ...props.options.badges, product: props.product }
 })
@@ -202,7 +206,9 @@ if (ssr.value) {
 }
 </script>
 <template>
-  <div
+  <component
+    :is="useLinkWrapper ? 'a' : 'div'"
+    :href="useLinkWrapper ? link : null"
     id="lupa-search-result-product-card"
     data-cy="lupa-search-result-product-card"
     class="lupa-search-result-product-card"
@@ -261,5 +267,5 @@ if (ssr.value) {
         />
       </div>
     </div>
-  </div>
+  </component>
 </template>
