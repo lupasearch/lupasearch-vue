@@ -125,6 +125,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
           ariaFrom: 'From',
           ariaTo: 'To',
           sliderDotAriaLabel: 'Slider dot'
+        },
+        units: {
+          depth:  'mm.',
+          length: 'm.'
         }
       },
       filterable: {
