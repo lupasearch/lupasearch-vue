@@ -2,11 +2,19 @@ import { DocumentElement } from '@/types/DocumentElement'
 import { SdkOptions } from '@/types/General'
 import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
+import { formatPrice } from '@/utils/price.utils'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
     environment: 'production',
-  } as SdkOptions,
+    selected: 'usd',
+    currencies: [
+      { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+      { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+    ]
+  } as SdkOptions & MultiCurrencyConfig,
+
   queryKey: 'jnovl7k0kkvd',
   labels: {
     pageSize: 'Page size:',
@@ -25,7 +33,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     similarQuery: 'Search results for phrase {1}',
     similarQueries: 'Similar queries:',
     aiSuggestions: 'Other suggestions:',
-    similarResultsLabel: "Related to your query:"
+    similarResultsLabel: 'Related to your query:'
   },
   toolbar: {
     layoutSelector: false,
@@ -121,7 +129,10 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         inputs: true,
         labels: {
           from: 'From:',
-          to: 'To:'
+          to: 'To:',
+          ariaFrom: 'From',
+          ariaTo: 'To',
+          sliderDotAriaLabel: 'Slider dot'
         }
       },
       filterable: {
@@ -137,6 +148,12 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   isInStock: (doc: any): boolean => {
     return Boolean(doc)
   },
+  customDocumentHtmlAttributes: (doc: any) => {
+    return {
+      'data-id': doc.id,
+      'data-name': doc.name
+    }
+  },
   links: {
     details: '{url}'
   },
@@ -151,7 +168,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'custom',
-      key: 'id',
+      key: 'brand',
       className: 'lupa-custom-brand',
       action: (doc: any) => console.log('brand click', doc)
     },
@@ -170,22 +187,20 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.price < doc.price,
+      display: (doc: Record<string, string>) => Number(doc.price) < Number(doc.price),
       html: (doc: Record<string, string>) => {
-        const discountPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
-        const regularPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
-        const discount = `<span class="lupa-discount">${discountPrice} €</span>`
-        const regular = `<span class="lupa-regular">${regularPrice} €</span>`
-        return discount + regular
+        const disc = formatPrice(doc.discountPriceKey ?? doc.price)
+        const reg = formatPrice(doc.regularPriceKey ?? doc.price)
+        return `<span class="lupa-discount">${disc}</span><span class="lupa-regular">${reg}</span>`
       },
       action: (doc: any) => console.log('price 1 click', doc)
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => doc.price >= doc.price,
+      display: (doc: Record<string, string>) => Number(doc.price) >= Number(doc.price),
       html: (doc: Record<string, string>) => {
-        const price = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
-        return `<span class="lupa-final">${price} €</span>`
+        const finalPrice = formatPrice(doc.price)
+        return `<span class="lupa-final">${finalPrice}</span>`
       },
       action: (doc: any) => console.log('price 2 click', doc)
     }
@@ -196,5 +211,18 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     handler: async (ids: string[]) => {
       console.log('requesting dynamic data for ids', ids)
     }
+  },
+  redirections: {
+    enabled: true,
+    queryKey: 'jnovl7k0kkvd',
+    cacheSeconds: 3600,
+    urlTransformer: (url: string) => {
+      return `${url}`
+    }
+  },
+  scrollToResults: {
+    enabled: true,
+    timeout: 500,
+    scrollToContainerSelector: '#app'
   }
 }

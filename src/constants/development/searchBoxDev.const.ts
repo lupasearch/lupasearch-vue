@@ -1,10 +1,17 @@
 import { SdkOptions } from '@/types/General'
 import { SearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
 
 export const SEARCH_BOX_CONFIGURATION = {
   options: {
-    environment: 'production'
-  } as SdkOptions,
+    environment: 'production',
+    selected: 'usd',
+    currencies: [
+      { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+      { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+    ]
+  } as SdkOptions & MultiCurrencyConfig,
+
   minInputLength: 2,
   showTotalCount: true,
   inputAttributes: {
@@ -18,7 +25,8 @@ export const SEARCH_BOX_CONFIGURATION = {
     currency: '€',
     priceSeparator: ',',
     defaultFacetLabel: 'Brand:',
-    close: 'Close'
+    close: 'Close',
+    searchInputAriaLabel: 'Search for products'
   },
   links: {
     searchResults: '/catalogsearch/result'
@@ -30,6 +38,9 @@ export const SEARCH_BOX_CONFIGURATION = {
   callbacks: {
     onSearchBoxResults: (context) => {
       console.log('searchBoxResults', context)
+    },
+    onSearchResultsNavigate: (context) => {
+      console.log('searchBoxNavigate', context)
     }
   },
   panels: [
@@ -37,7 +48,10 @@ export const SEARCH_BOX_CONFIGURATION = {
       type: 'suggestion',
       queryKey: '0qe99gfdyrrp',
       highlight: true,
-      limit: 10
+      limit: 10,
+      labels: {
+        topResultsTitle: 'Popular searches:'
+      }
     },
     {
       type: 'document',
@@ -49,8 +63,11 @@ export const SEARCH_BOX_CONFIGURATION = {
       },
       titleKey: 'name',
       idKey: 'id',
-      isInStock: (doc: any): boolean => {
-        return Boolean(doc)
+      customDocumentHtmlAttributes: (doc: any) => {
+        return {
+          'data-id': doc.id,
+          'data-name': doc.name
+        }
       },
       elements: [
         {
@@ -89,6 +106,7 @@ export const SEARCH_BOX_CONFIGURATION = {
   history: {
     labels: {
       clear: 'Clear History'
-    }
+    },
+    historyLimit: 5
   }
 }

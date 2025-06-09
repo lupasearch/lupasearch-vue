@@ -2,29 +2,14 @@ import { DocumentElement } from '@/types/DocumentElement'
 import { SdkOptions } from '@/types/General'
 import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
-import type { MultiCurrencyConfig } from '@/utils/price.utils' 
-import { formatPrice }     from '@/utils/price.utils'   
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
+import { formatPrice } from '@/utils/price.utils'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
- options: {
-     environment: 'production',
-   selected: 'eur',
-     currencies: [
-       { key: 'eur', 
-         symbol: '€', 
-         template: '{1} €', 
-         separator: ',', 
-         multiplier: 1
-       },
-       { key: 'usd', 
-         symbol: '$', 
-         template: '$ {1}', 
-        separator: '.', 
-         multiplier: 1.12
-       }
-   ]
-   } as SdkOptions & MultiCurrencyConfig,
-   
+  options: {
+    environment: 'production'
+  } as SdkOptions,
+
   queryKey: 'jnovl7k0kkvd',
   labels: {
     pageSize: 'Page size:',
@@ -197,23 +182,25 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'customHtml',
-      display: (doc: Record<string, string>) => Number(doc.price) < Number(doc.price),
-      html:    (doc: Record<string, string>) => {
-        const disc = formatPrice(doc.discountPriceKey  ?? doc.price)
-        const reg  = formatPrice(doc.regularPriceKey   ?? doc.price)
-        return `<span class="lupa-discount">${disc}</span><span class="lupa-regular">${reg}</span>`
-       },
-      action:  (doc: any) => console.log('price 1 click', doc)
+      display: (doc: Record<string, string>) => doc.price < doc.price,
+      html: (doc: Record<string, string>) => {
+        const discountPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
+        const regularPrice = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
+        const discount = `<span class="lupa-discount">${discountPrice} </span>`
+        const regular = `<span class="lupa-regular">${regularPrice} </span>`
+        return discount + regular
+      },
+      action: (doc: any) => console.log('price 1 click', doc)
     },
-      {
-        type: 'customHtml',
-        display: (doc: Record<string, string>) => Number(doc.price) >= Number(doc.price),
-        html:    (doc: Record<string, string>) => {
-          const finalPrice = formatPrice(doc.price)
-          return `<span class="lupa-final">${finalPrice}</span>`
-        },
-        action:  (doc: any) => console.log('price 2 click', doc)
-        }
+    {
+      type: 'customHtml',
+      display: (doc: Record<string, string>) => doc.price >= doc.price,
+      html: (doc: Record<string, string>) => {
+        const price = parseFloat(doc.price)?.toFixed(2)?.replace('.', ',')
+        return `<span class="lupa-final">${price}</span>`
+      },
+      action: (doc: any) => console.log('price 2 click', doc)
+    }
   ] as DocumentElement[],
   breadcrumbs: [{ label: 'Main', link: '/link-to-someplace/' }, { label: 'Search: {1}' }],
   dynamicData: {

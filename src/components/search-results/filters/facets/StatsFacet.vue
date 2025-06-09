@@ -9,6 +9,7 @@ import type { FacetGroupTypeStats, FilterGroupItemTypeRange } from '@getlupa/cli
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import Slider from '@vueform/slider'
+import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -32,21 +33,6 @@ const rangeLabelFrom = computed((): string => {
 
 const rangeLabelTo = computed((): string => {
   return props.options.stats?.labels?.to ?? ''
-})
-
-const currency = computed(() => {
-  const cfg = optionsStore.multiCurrency.currencies.find(
-    (c) => c.key === optionsStore.multiCurrency.selected
-  )
-  // fall back to your label if someone hasn’t configured currencies
-  return cfg?.symbol ?? searchResultOptions.value?.labels.currency
-})
-
-const currencyTemplate = computed(() => {
-  const cfg = optionsStore.multiCurrency.currencies.find(
-    (c) => c.key === optionsStore.multiCurrency.selected
-  )
-  return cfg?.template ?? searchResultOptions.value?.labels.currencyTemplate
 })
 
 const priceKeys = computed((): string[] => {
@@ -154,7 +140,7 @@ const facetMax = computed((): number => {
 const statsSummary = computed((): string => {
   const [min, max] = sliderRange.value
   return isPrice.value
-    ? formatPriceSummary([min, max], currency.value, separator.value, currencyTemplate.value)
+    ? formatPriceSummary([min, max])
     : formatRange({ gte: min, lte: max })
 })
 
@@ -225,6 +211,13 @@ const handleChange = (): void => {
   })
 }
 
+const currentCurrencySymbol = computed(() => {
+  const cfg = GLOBAL_CURRENCY_CONFIG.currencies.find(
+    (c) => c.key === GLOBAL_CURRENCY_CONFIG.selected
+  )
+  return cfg?.symbol ?? ''   // “” if not found
+})
+
 const handleDragging = (value: number[]): void => {
   innerSliderRange.value = value
 }
@@ -250,7 +243,7 @@ const handleDragging = (value: number[]): void => {
             :pattern="sliderInputFormat"
             :aria-label="ariaLabelFrom"
           />
-          <span v-if="isPrice">{{ currency }}</span>
+          <span v-if="isPrice">{{ currentCurrencySymbol   }}</span>
         </div>
       </div>
       <div class="lupa-stats-separator"></div>
@@ -268,7 +261,7 @@ const handleDragging = (value: number[]): void => {
             :pattern="sliderInputFormat"
             :aria-label="ariaLabelTo"
           />
-          <span v-if="isPrice">{{ currency }}</span>
+          <span v-if="isPrice">{{ currentCurrencySymbol  }}</span>
         </div>
       </div>
     </div>

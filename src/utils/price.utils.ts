@@ -1,4 +1,6 @@
 import { addParamsToLabel } from './string.utils'
+import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
+
 export interface CurrencyConfig {
   key: string
   symbol: string
@@ -27,60 +29,49 @@ export const formatPrice = (
   price?: string | number,
   currency = '€',
   separator = ',',
-  currencyTemplate = '',
-  multiCurrency?: MultiCurrencyConfig
+  currencyTemplate = ''
 ): string => {
   if (price !== 0 && !price) {
     return ''
   }
 
-  let cfgCurrency = currency
-  let cfgSeparator = separator
-  let cfgTemplate = currencyTemplate
-  let multiplier = 1
-  if (multiCurrency) {
-    const { selected, currencies } = multiCurrency
-    const cfg = currencies.find((c) => c.key === selected)
-    if (cfg) {
-      cfgCurrency = cfg.symbol
-      cfgSeparator = cfg.separator
-      cfgTemplate = cfg.template ?? currencyTemplate
-      multiplier = cfg.multiplier
+  const cfg = GLOBAL_CURRENCY_CONFIG.currencies.find(
+    (c) => c.key === GLOBAL_CURRENCY_CONFIG.selected
+  )
+  if (cfg && price != null) {
+    currency = cfg.symbol
+    separator = cfg.separator
+    currencyTemplate = cfg.template ?? currencyTemplate
+    const raw = typeof price === 'number' ? price : parseFloat(price)
+    if (!isNaN(raw)) {
+      price = raw * cfg.multiplier
     }
   }
 
-  const raw = typeof price === 'number' ? price : parseFloat(price)
-  if (isNaN(raw)) return ''
-  const adjusted = raw * multiplier
-
-  const amount = getAmount(adjusted, cfgSeparator)
-  if (!amount) return ''
-
-  if (cfgTemplate) {
-    return addParamsToLabel(cfgTemplate, amount)
+  const amount = getAmount(price, separator)
+  if (!amount) {
+    return ''
   }
-
-  return `${amount} ${cfgCurrency}`
+  if (currencyTemplate) {
+    return addParamsToLabel(currencyTemplate, amount)
+  }
+  return `${amount} ${currency}`
 }
 
 export const formatPriceSummary = (
   [min, max]: [min?: number | string, max?: number | string],
   currency?: string,
   separator = ',',
-  currencyTemplate = '',
-  multiCurrency?: MultiCurrencyConfig
+  currencyTemplate = ''
 ): string => {
   if (min !== undefined && max !== undefined) {
-    return `${formatPrice(
-      min,
-      currency,
-      separator,
-      currencyTemplate,
-      multiCurrency
-    )} - ${formatPrice(max, currency, separator, currencyTemplate, multiCurrency)}`
+    return (
+      `${formatPrice(min, currency, separator, currencyTemplate)} - ` +
+      `${formatPrice(max, currency, separator, currencyTemplate)}`
+    )
   }
   if (min !== undefined) {
-    return `> ${formatPrice(min, currency, separator, currencyTemplate, multiCurrency)}`
+    return `> ${formatPrice(min, currency, separator, currencyTemplate)}`
   }
-  return `< ${formatPrice(max, currency, separator, currencyTemplate, multiCurrency)}`
+  return `< ${formatPrice(max, currency, separator, currencyTemplate)}`
 }
