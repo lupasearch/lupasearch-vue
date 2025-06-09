@@ -9,7 +9,7 @@ export interface CurrencyConfig {
   multiplier: number
 }
 
-export interface MultiCurrencyConfig {
+export type MultiCurrencyConfig = {
   selected: string
   currencies: CurrencyConfig[]
 }
