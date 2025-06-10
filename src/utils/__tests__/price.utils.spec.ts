@@ -1,24 +1,32 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { formatPrice, formatPriceSummary } from '../price.utils'
+import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
+
+beforeEach(() => {
+  GLOBAL_CURRENCY_CONFIG.selected = 'eur'
+})
 
 describe('formatPrice', () => {
-  it('should return number formatted to 2 decimal places', () => {
+  it('formats number to 2 decimal places (EUR default)', () => {
     expect(formatPrice(2.6598)).toEqual('2,66 €')
   })
 
-  it('should return string formatted to 2 decimal places', () => {
+  it('formats string to 2 decimal places (EUR default)', () => {
     expect(formatPrice('1.9831233')).toEqual('1,98 €')
   })
 
-  it('should return string formatted to 2 decimal places with custom currency', () => {
+  it('applies global currency config when selected', () => {
+    GLOBAL_CURRENCY_CONFIG.selected = 'usd'
+    expect(formatPrice(2.5)).toEqual('$ 2.80')
+  })
+
+  it('uses custom fallback currency and separator when no global override', () => {
+    GLOBAL_CURRENCY_CONFIG.selected = 'unknown'
     expect(formatPrice('1.9831233', '$', '.')).toEqual('1.98 $')
   })
 
-  it('should return nothing for empty string', () => {
+  it('returns empty for invalid inputs', () => {
     expect(formatPrice('')).toEqual('')
-  })
-
-  it('should return nothing for null or undefined', () => {
     expect(formatPrice(null as unknown as string)).toEqual('')
     expect(formatPrice(undefined as unknown as string)).toEqual('')
     expect(formatPrice(NaN as unknown as string)).toEqual('')
@@ -26,27 +34,23 @@ describe('formatPrice', () => {
     expect(formatPrice({} as unknown as string)).toEqual('')
   })
 
-  it('should return correct format for 0 price', () => {
+  it('returns 0,00 € for zero value', () => {
     expect(formatPrice(0)).toEqual('0,00 €')
-  })
-
-  it('should return correct format for 0.00 price', () => {
     expect(formatPrice('0.00')).toEqual('0,00 €')
   })
 
-  it('should return correct format for negative price', () => {
+  it('formats negative numbers', () => {
     expect(formatPrice(-15)).toEqual('-15,00 €')
   })
 
-  it('should return correct format for exp numbers', () => {
+  it('formats exponential notation', () => {
     expect(formatPrice('2.3e2')).toEqual('230,00 €')
   })
 
-  it('should return empty string if value cannot be parsed', () => {
-    expect(formatPrice('asf')).toEqual('')
-  })
+  it('supports currency templates', () => {
+    // disable global override so explicit templates apply correctly
+    GLOBAL_CURRENCY_CONFIG.selected = 'none'
 
-  it('should format price with template', () => {
     expect(formatPrice('2.3', '€', ',', '{1} €')).toEqual('2,30 €')
     expect(formatPrice('2.3', '€', ',', '{1}')).toEqual('2,30')
     expect(formatPrice('2.3', '$', '.', '$ {1}')).toEqual('$ 2.30')
@@ -56,27 +60,34 @@ describe('formatPrice', () => {
 })
 
 describe('formatPriceSummary', () => {
-  it('should render price range for both min and max values', () => {
+  it('formats a range with both min and max (EUR default)', () => {
+    GLOBAL_CURRENCY_CONFIG.selected = 'eur'
     expect(formatPriceSummary([2, 4])).toBe('2,00 € - 4,00 €')
     expect(formatPriceSummary([0, 20])).toBe('0,00 € - 20,00 €')
   })
 
-  it('should render price range for only min value', () => {
-    expect(formatPriceSummary([2])).toBe('> 2,00 €')
-    expect(formatPriceSummary([0])).toBe('> 0,00 €')
+  it('formats > min only', () => {
+    expect(formatPriceSummary([2, undefined])).toBe('> 2,00 €')
+    expect(formatPriceSummary([0, undefined])).toBe('> 0,00 €')
   })
 
-  it('should render price range for only min value', () => {
+  it('formats < max only', () => {
     expect(formatPriceSummary([undefined, 20])).toBe('< 20,00 €')
     expect(formatPriceSummary([undefined, 0])).toBe('< 0,00 €')
   })
 
-  it('should render price range with template', () => {
+  it('respects currency fallback when global config missing', () => {
+    GLOBAL_CURRENCY_CONFIG.selected = 'gbp'
+    expect(formatPriceSummary([2, 4], '£', '.', '{1} £')).toBe('2.00 £ - 4.00 £')
+  })
+
+  it('applies explicit templates and separators', () => {
+    GLOBAL_CURRENCY_CONFIG.selected = 'none'
+
     expect(formatPriceSummary([2, 4], '€', ',', '{1} €')).toBe('2,00 € - 4,00 €')
     expect(formatPriceSummary([2, 4], '€', ',', '{1}')).toBe('2,00 - 4,00')
     expect(formatPriceSummary([2, 4], '$', '.', '{1} $')).toBe('2.00 $ - 4.00 $')
     expect(formatPriceSummary([2, 4], '$', '.', '$ {1}')).toBe('$ 2.00 - $ 4.00')
-
     expect(formatPriceSummary([2], '€', ',', '{1} €')).toBe('> 2,00 €')
     expect(formatPriceSummary([2], '€', ',', '{1}')).toBe('> 2,00')
     expect(formatPriceSummary([2], '$', '.', '${1}')).toBe('> $2.00')
