@@ -12,7 +12,7 @@ const emit  = defineEmits<{
 const facetKeyClass = computed(() => `lupa-facet-active-filter-${props.filter.key}`)
 
 const { searchResultOptions } = storeToRefs(useOptionsStore())
-const units = computed(() => searchResultOptions.value.filters.facets.stats.units ?? {})
+const units = computed(() => searchResultOptions.value?.filters?.facets?.stats?.units ?? {})
 
 function handleClick() {
   emit('remove', { filter: props.filter })
