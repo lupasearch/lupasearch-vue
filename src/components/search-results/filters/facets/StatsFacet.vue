@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
-import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
 import { useOptionsStore } from '@/stores/options'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { formatRange } from '@/utils/filter.utils'
@@ -26,7 +25,7 @@ const innerSliderRange = ref<number[]>([])
 
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
-
+const { multiCurrency } = storeToRefs(useOptionsStore())
 const rangeLabelFrom = computed(() => props.options.stats?.labels?.from ?? '')
 const rangeLabelTo = computed(() => props.options.stats?.labels?.to ?? '')
 const separator = computed(() => searchResultOptions.value?.labels?.priceSeparator ?? ',')
@@ -36,9 +35,7 @@ const priceKeys = computed(() => searchResultOptions.value?.priceKeys ?? [])
 const unit = computed(() => props.options.stats?.units?.[facetValue.value.key] ?? '')
 
 const currencySymbol = computed(() => {
-  const cfg = GLOBAL_CURRENCY_CONFIG.currencies.find(
-    (c) => c.key === GLOBAL_CURRENCY_CONFIG.selected
-  )
+  const cfg = multiCurrency.value.currencies.find((c) => c.key === multiCurrency.value.selected)
   return cfg?.symbol ?? currencyLabel.value
 })
 
@@ -141,7 +138,13 @@ const ariaLabelTo = computed(
 const statsSummary = computed<string>(() => {
   const [min, max] = sliderRange.value
   if (isPrice.value) {
-    return formatPriceSummary([min, max], currencySymbol.value, separator.value, currencyTpl.value)
+    return formatPriceSummary(
+      [min, max],
+      currencyLabel.value,
+      separator.value,
+      currencyTpl.value,
+      multiCurrency.value
+    )
   }
   if (unit.value) {
     return `${min} ${unit.value} – ${max} ${unit.value}`

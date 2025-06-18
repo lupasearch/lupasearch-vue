@@ -4,12 +4,17 @@ import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
 import type { MultiCurrencyConfig } from '@/utils/price.utils'
 import { formatPrice } from '@/utils/price.utils'
-import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
+import { useOptionsStore } from '@/stores/options'
+import { storeToRefs } from 'pinia'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
     environment: 'production',
-    ...GLOBAL_CURRENCY_CONFIG
+    selected: 'usd',
+    currencies: [
+      { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+      { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+    ]
   } as SdkOptions & MultiCurrencyConfig,
 
   queryKey: 'jnovl7k0kkvd',
@@ -55,7 +60,6 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     }
   },
 
-  // Sort options
   sort: [
     { key: 'relevance', label: 'Relevance', config: [{ _relevance: 'desc' }] },
     { key: 'nameDesc', label: 'Name (Descending)', config: [{ name: 'desc' }] },
@@ -64,7 +68,6 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     { key: 'priceAsc', label: 'Price (Low to High)', config: [{ price: 'asc' }] }
   ] as SearchResultsSortOptions[],
 
-  // Filters configuration
   filters: {
     currentFilters: {
       visibility: {
@@ -113,7 +116,6 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     }
   },
 
-  // Stock & custom attributes
   isInStock: (doc: any): boolean => Boolean(doc),
   customDocumentHtmlAttributes: (doc: any) => ({ 'data-id': doc.id, 'data-name': doc.name }),
 
@@ -121,7 +123,6 @@ export const SEARCH_RESULTS_CONFIGURATION = {
   idKey: 'id',
   titleKey: 'name',
 
-  // Document elements
   elements: [
     {
       type: 'image',
@@ -158,16 +159,13 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     }
   ] as DocumentElement[],
 
-  // Breadcrumbs
   breadcrumbs: [{ label: 'Main', link: '/link-to-someplace/' }, { label: 'Search: {1}' }],
 
-  // Dynamic data loading
   dynamicData: {
     enabled: true,
     handler: async (ids: string[]) => console.log('requesting dynamic data for ids', ids)
   },
 
-  // Redirections and scrolling
   redirections: {
     enabled: true,
     queryKey: 'jnovl7k0kkvd',

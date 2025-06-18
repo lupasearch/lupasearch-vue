@@ -1,10 +1,14 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { formatPrice, formatPriceSummary } from '../price.utils'
-import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
+import type { MultiCurrencyConfig } from '../price.utils'
 
-beforeEach(() => {
-  GLOBAL_CURRENCY_CONFIG.selected = 'eur'
-})
+const fakeMulti: MultiCurrencyConfig = {
+  selected: 'eur',
+  currencies: [
+    { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+    { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+  ]
+}
 
 describe('formatPrice', () => {
   it('formats number to 2 decimal places (EUR default)', () => {
@@ -15,13 +19,18 @@ describe('formatPrice', () => {
     expect(formatPrice('1.9831233')).toEqual('1,98 €')
   })
 
-  it('applies global currency config when selected', () => {
-    GLOBAL_CURRENCY_CONFIG.selected = 'usd'
-    expect(formatPrice(2.5)).toEqual('$ 2.80')
+  it('applies EUR stub when passing multiCurrency selected=eur', () => {
+    expect(formatPrice(2.5, undefined, undefined, undefined, fakeMulti)).toEqual('2,50 €')
+  })
+
+  it('applies USD stub in summary when selected=usd', () => {
+    const usdMulti = { ...fakeMulti, selected: 'usd' }
+    expect(formatPriceSummary([2, 4], undefined, undefined, undefined, usdMulti)).toBe(
+      '$ 2.40 - $ 4.80'
+    )
   })
 
   it('uses custom fallback currency and separator when no global override', () => {
-    GLOBAL_CURRENCY_CONFIG.selected = 'unknown'
     expect(formatPrice('1.9831233', '$', '.')).toEqual('1.98 $')
   })
 
@@ -48,9 +57,6 @@ describe('formatPrice', () => {
   })
 
   it('supports currency templates', () => {
-    // disable global override so explicit templates apply correctly
-    GLOBAL_CURRENCY_CONFIG.selected = 'none'
-
     expect(formatPrice('2.3', '€', ',', '{1} €')).toEqual('2,30 €')
     expect(formatPrice('2.3', '€', ',', '{1}')).toEqual('2,30')
     expect(formatPrice('2.3', '$', '.', '$ {1}')).toEqual('$ 2.30')
@@ -61,7 +67,6 @@ describe('formatPrice', () => {
 
 describe('formatPriceSummary', () => {
   it('formats a range with both min and max (EUR default)', () => {
-    GLOBAL_CURRENCY_CONFIG.selected = 'eur'
     expect(formatPriceSummary([2, 4])).toBe('2,00 € - 4,00 €')
     expect(formatPriceSummary([0, 20])).toBe('0,00 € - 20,00 €')
   })
@@ -77,13 +82,10 @@ describe('formatPriceSummary', () => {
   })
 
   it('respects currency fallback when global config missing', () => {
-    GLOBAL_CURRENCY_CONFIG.selected = 'gbp'
     expect(formatPriceSummary([2, 4], '£', '.', '{1} £')).toBe('2.00 £ - 4.00 £')
   })
 
   it('applies explicit templates and separators', () => {
-    GLOBAL_CURRENCY_CONFIG.selected = 'none'
-
     expect(formatPriceSummary([2, 4], '€', ',', '{1} €')).toBe('2,00 € - 4,00 €')
     expect(formatPriceSummary([2, 4], '€', ',', '{1}')).toBe('2,00 - 4,00')
     expect(formatPriceSummary([2, 4], '$', '.', '{1} $')).toBe('2.00 $ - 4.00 $')

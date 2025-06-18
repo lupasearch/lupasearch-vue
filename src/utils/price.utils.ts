@@ -1,5 +1,6 @@
-import { addParamsToLabel } from './string.utils'
-import { GLOBAL_CURRENCY_CONFIG } from '@/constants/currency.config'
+import { addParamsToLabel } from '@/utils/string.utils'
+import { useOptionsStore } from '@/stores/options'
+import { storeToRefs } from 'pinia'
 
 export interface CurrencyConfig {
   key: string
@@ -14,62 +15,80 @@ export type MultiCurrencyConfig = {
   currencies: CurrencyConfig[]
 }
 
-const getAmount = (price: string | number, separator = '.'): string => {
-  const raw = typeof price === 'number' ? price : parseFloat(price)
-  if (isNaN(raw)) {
+const getAmount = (price: string | number, separator = '.') => {
+  if (typeof price === 'number') {
+    return `${price.toFixed(2).replace('.', separator)}`
+  }
+  const value = parseFloat(price)
+  if (isNaN(value)) {
     return ''
   }
-  return raw.toFixed(2).replace('.', separator)
+  return value.toFixed(2).replace('.', separator)
 }
 
 export const formatPrice = (
   price?: string | number,
   currency = '€',
   separator = ',',
-  currencyTemplate = ''
+  currencyTemplate = '',
+  multiCurrency?: MultiCurrencyConfig
 ): string => {
   if (price !== 0 && !price) {
     return ''
   }
 
-  const { selected, currencies } = GLOBAL_CURRENCY_CONFIG
-  const cfg = currencies.find((c) => c.key === selected)
+  if (!multiCurrency) {
+    const store = useOptionsStore()
+    const { multiCurrency: mcRef } = storeToRefs(store)
+    multiCurrency = mcRef.value
+  }
 
-  if (cfg && price != null) {
-    currency = cfg.symbol
-    separator = cfg.separator
-    currencyTemplate = cfg.template ?? currencyTemplate
-    const raw = typeof price === 'number' ? price : parseFloat(price)
-    if (!isNaN(raw)) {
-      price = raw * cfg.multiplier
+  let symbol = currency
+  let sep = separator
+  let tpl = currencyTemplate
+  let mult = 1
+
+  if (multiCurrency) {
+    const cfg = multiCurrency.currencies.find((c) => c.key === multiCurrency.selected)
+    if (cfg && price != null) {
+      symbol = cfg.symbol
+      sep = cfg.separator
+      tpl = cfg.template ?? tpl
+      mult = cfg.multiplier
     }
   }
 
-  const amount = getAmount(price as string | number, separator)
-  if (!amount) {
-    return ''
-  }
+  const raw = typeof price === 'number' ? price : parseFloat(price)
+  if (isNaN(raw)) return ''
+  const adjusted = raw * mult
 
-  if (currencyTemplate) {
-    return addParamsToLabel(currencyTemplate, amount)
+  const amount = getAmount(adjusted, sep)
+  if (!amount) return ''
+
+  if (tpl) {
+    return addParamsToLabel(tpl, amount)
   }
-  return `${amount} ${currency}`
+  if (symbol === '$') {
+    return `${symbol}${amount}`
+  }
+  return `${amount} ${symbol}`
 }
 
 export const formatPriceSummary = (
   [min, max]: [min?: number | string, max?: number | string],
   currency?: string,
   separator = ',',
-  currencyTemplate = ''
+  currencyTemplate = '',
+  multiCurrency?: MultiCurrencyConfig
 ): string => {
-  if (min !== undefined && max !== undefined) {
+  if (min != null && max != null) {
     return [
-      formatPrice(min, currency, separator, currencyTemplate),
-      formatPrice(max, currency, separator, currencyTemplate)
+      formatPrice(min, currency, separator, currencyTemplate, multiCurrency),
+      formatPrice(max, currency, separator, currencyTemplate, multiCurrency)
     ].join(' - ')
   }
-  if (min !== undefined) {
-    return `> ${formatPrice(min, currency, separator, currencyTemplate)}`
+  if (min != null) {
+    return `> ${formatPrice(min, currency, separator, currencyTemplate, multiCurrency)}`
   }
-  return `< ${formatPrice(max, currency, separator, currencyTemplate)}`
+  return `< ${formatPrice(max!, currency, separator, currencyTemplate, multiCurrency)}`
 }
