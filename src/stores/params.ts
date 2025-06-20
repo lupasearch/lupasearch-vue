@@ -14,7 +14,7 @@ import {
   removeParams
 } from '@/utils/params.utils'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
-import { linksMatch } from '@/utils/link.utils'
+import { getSearchResultsLink, linksMatch } from '@/utils/link.utils'
 import { getFacetParam } from '@/utils/filter.toggle.utils'
 import { SortCallbackContext, SsrOptions } from '..'
 import { useRedirectionStore } from './redirections'
@@ -157,8 +157,9 @@ export const useParamsStore = defineStore('params', () => {
     const forceFullReload = optionsStore.searchBoxOptions.forceFullReloadOnParams?.some((p) =>
       getQueryParam(p)
     )
+    const currentUrl = getSearchResultsLink(searchResultsLink.value, optionsStore.getQueryParamName)
     if (
-      (!searchResultsLink.value || linksMatch(searchResultsLink.value, window.location.pathname)) &&
+      (!searchResultsLink.value || linksMatch(searchResultsLink.value, currentUrl)) &&
       !forceFullReload
     ) {
       const singleFacetParam = facet ? getFacetParam(facet.key, [facet.title]) : undefined
@@ -172,7 +173,7 @@ export const useParamsStore = defineStore('params', () => {
             }
           ]
         : []
-      const limitParam = params.value[QUERY_PARAMS_PARSED.LIMIT] 
+      const limitParam = params.value[QUERY_PARAMS_PARSED.LIMIT]
         ? [
             {
               name: optionsStore.getQueryParamName(QUERY_PARAMS.LIMIT),

@@ -34,11 +34,15 @@ export const redirectToResultsPage = (
 
 export const getPageUrl = (pathnameOverride?: string, ssr?: SsrOptions): URL => {
   // If window is defined, we're in a browser environment
-  if (typeof window !== 'undefined') {
-    const pathname = pathnameOverride || window.location.pathname
-    const origin = window.location.origin
-    const search = window.location.search
-    return new URL(origin + pathname + search)
+  if (typeof window === 'undefined') {
+    return new URL(ssr.url, ssr.baseUrl)
   }
-  return new URL(ssr.url, ssr.baseUrl)
+  let pathname = pathnameOverride || window.location.pathname
+  if (pathname.includes('?')) {
+    // find only root pathname, without query params
+    pathname = pathname.split('?')[0]
+  }
+  const origin = window.location.origin
+  const search = window.location.search
+  return new URL(origin + pathname + search)
 }
