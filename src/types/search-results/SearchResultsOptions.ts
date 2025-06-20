@@ -9,6 +9,7 @@ import { RedirectionSuggestionOptions } from './RedirectionSuggestionOptionts'
 import { FilterGroup, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { DataExtraction } from '../DataExtraction'
 import { FilterTranslationOptions } from './FilterTranslationOptions'
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -23,7 +24,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     redirections?: RedirectionOptions
     scrollToResults?: ScrollToResultsOptions
     initialFilters?: FilterGroup | Record<string, DataExtraction>
-  }
+  } & Partial<MultiCurrencyConfig>
 
 export type ScrollToResultsOptions = {
   enabled?: boolean
@@ -248,7 +249,7 @@ export type ResultFacetOptions = {
       ariaTo?: string
       sliderDotAriaLabel?: string
     }
-    units?: Record<string,string>
+    units?: Record<string, string>
   }
   facetValueCountLimit?: number
   showDocumentCount?: boolean

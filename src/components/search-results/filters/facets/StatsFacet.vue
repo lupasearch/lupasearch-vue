@@ -15,107 +15,62 @@ const props = defineProps<{
   facet?: FacetGroupTypeStats
   currentFilters?: FilterGroupItemTypeRange
 }>()
+const emit = defineEmits<{
+  (e: 'select', payload: { key: string; value: number[]; type: 'range' }): void
+}>()
 
 const facetValue = computed(() => props.facet ?? { key: '', min: 0, max: 100 })
 const currentFilters = computed(() => props.currentFilters ?? {})
-
-const emit = defineEmits(['select'])
-
-const innerSliderRange = ref([] as number[])
+const innerSliderRange = ref<number[]>([])
 
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
+const { multiCurrency } = storeToRefs(useOptionsStore())
+const rangeLabelFrom = computed(() => props.options.stats?.labels?.from ?? '')
+const rangeLabelTo = computed(() => props.options.stats?.labels?.to ?? '')
+const separator = computed(() => searchResultOptions.value?.labels?.priceSeparator ?? ',')
+const currencyLabel = computed(() => searchResultOptions.value?.labels.currency ?? '')
+const currencyTpl = computed(() => searchResultOptions.value?.labels.currencyTemplate ?? '')
+const priceKeys = computed(() => searchResultOptions.value?.priceKeys ?? [])
+const unit = computed(() => props.options.stats?.units?.[facetValue.value.key] ?? '')
 
-const rangeLabelFrom = computed((): string => {
-  return props.options.stats?.labels?.from ?? ''
+const currencySymbol = computed(() => {
+  const cfg = multiCurrency.value.currencies.find((c) => c.key === multiCurrency.value.selected)
+  return cfg?.symbol ?? currencyLabel.value
 })
 
-const rangeLabelTo = computed((): string => {
-  return props.options.stats?.labels?.to ?? ''
-})
+const isSliderVisible = computed(() => Boolean(props.options.stats?.slider ?? true))
+const isInputVisible = computed(() => Boolean(props.options.stats?.inputs))
 
-const currency = computed((): string => {
-  return searchResultOptions.value?.labels.currency
-})
+const isPrice = computed(
+  () =>
+    facetValue.value.key.includes(CURRENCY_KEY_INDICATOR) ||
+    priceKeys.value.includes(facetValue.value.key)
+)
+const pricePrecision = computed(() => props.options.stats?.pricePrecisionDigits ?? 2)
 
-const currencyTemplate = computed((): string => {
-  return searchResultOptions.value?.labels.currencyTemplate
-})
+const facetMin = computed(() => Math.floor(facetValue.value.min))
+const facetMax = computed(() => Math.ceil(facetValue.value.max))
 
-const priceKeys = computed((): string[] => {
-  return searchResultOptions.value?.priceKeys ?? []
-})
-
-const isSliderVisible = computed((): boolean => {
-  return Boolean(props.options.stats?.slider ?? true)
-})
-
-const isInputVisible = computed((): boolean => {
-  return Boolean(props.options.stats?.inputs)
-})
-
-const pricePrecision = computed((): number => {
-  return props.options.stats?.pricePrecisionDigits ?? 2
-})
-
-const fromValue = computed({
-  get: () =>
-    isPrice.value
-      ? sliderRange.value[0].toFixed(pricePrecision.value).replace('.', separator.value)
-      : `${sliderRange.value[0]}`,
-      
-  set: (stringValue) => {
-    let value = normalizeFloat(stringValue)
-    if (value < facetMin.value) {
-      value = facetMin.value
-    }
-    if (!value || value > facetMax.value) {
-      return
-    }
-    innerSliderRange.value = [sliderRange.value[1], value]
-    handleInputChange()
-  }
-})
-
-const toValue = computed({
-  get: () =>
-    isPrice.value
-      ? sliderRange.value[1].toFixed(pricePrecision.value).replace('.', separator.value)
-      : `${sliderRange.value[1]}`,
-  set: (stringValue) => {
-    let value = normalizeFloat(stringValue)
-    if (value > facetMax.value) {
-      value = facetMax.value
-    }
-    if (!value || value < facetMin.value) {
-      return
-    }
-    innerSliderRange.value = [sliderRange.value[0], value]
-    handleInputChange()
-  }
-})
-
-const currentGte = computed((): number | undefined => {
-  return typeof currentFilters.value.gte === 'string'
+const currentGte = computed<number | undefined>(() =>
+  typeof currentFilters.value.gte === 'string'
     ? parseFloat(currentFilters.value.gte)
     : currentFilters.value.gte
-})
-
-const currentLte = computed((): number | undefined => {
-  return typeof currentFilters.value.lte === 'string'
+)
+const currentLte = computed<number | undefined>(() =>
+  typeof currentFilters.value.lte === 'string'
     ? parseFloat(currentFilters.value.lte)
     : currentFilters.value.lte
-})
+)
 
-const currentMinValue = computed((): number => {
-  return currentGte.value ? Math.max(currentGte.value, facetMin.value) : facetMin.value
-})
+const currentMinValue = computed(() =>
+  currentGte.value != null ? Math.max(currentGte.value, facetMin.value) : facetMin.value
+)
+const currentMaxValue = computed(() =>
+  currentLte.value != null ? Math.min(currentLte.value, facetMax.value) : facetMax.value
+)
 
-const currentMaxValue = computed((): number => {
-  return currentLte.value ? Math.min(currentLte.value, facetMax.value) : facetMax.value
-})
-
-const sliderRange = computed({
+const sliderRange = computed<number[]>({
   get: () => {
     if (!innerSliderRange.value.length) {
       return [currentMinValue.value, currentMaxValue.value]
@@ -125,176 +80,159 @@ const sliderRange = computed({
       Math.min(innerSliderRange.value[1], facetMax.value)
     ]
   },
-  set: (value) => {
-    innerSliderRange.value = value
+  set: (v) => {
+    innerSliderRange.value = v
   }
 })
 
-const isPrice = computed((): boolean => {
-  return (
-    facetValue.value?.key?.includes(CURRENCY_KEY_INDICATOR) ||
-    priceKeys.value?.includes(facetValue.value.key)
-  )
+const fromValue = computed<string>({
+  get: () =>
+    isPrice.value
+      ? sliderRange.value[0].toFixed(pricePrecision.value).replace('.', separator.value)
+      : `${sliderRange.value[0]}`,
+  set: (sv) => {
+    let v = normalizeFloat(sv)
+    if (v < facetMin.value) v = facetMin.value
+    if (!v || v > facetMax.value) return
+    innerSliderRange.value = [v, sliderRange.value[1]]
+    handleInputChange()
+  }
+})
+const toValue = computed<string>({
+  get: () =>
+    isPrice.value
+      ? sliderRange.value[1].toFixed(pricePrecision.value).replace('.', separator.value)
+      : `${sliderRange.value[1]}`,
+  set: (sv) => {
+    let v = normalizeFloat(sv)
+    if (v > facetMax.value) v = facetMax.value
+    if (!v || v < facetMin.value) return
+    innerSliderRange.value = [sliderRange.value[0], v]
+    handleInputChange()
+  }
 })
 
-const facetMin = computed((): number => {
-  return Math.floor(facetValue.value.min)
-})
+const isIntegerRange = computed(
+  () => Number.isInteger(currentMinValue.value) && Number.isInteger(currentMaxValue.value)
+)
+const customInterval = computed(() => props.options.stats?.interval)
+const interval = computed(() => customInterval.value ?? (isIntegerRange.value ? 1 : -1))
 
-const facetMax = computed((): number => {
-  return Math.ceil(facetValue.value.max)
-})
+const sliderInputFormat = computed<string | undefined>(() =>
+  isPrice.value ? `[0-9]+([${separator.value}][0-9]{1,2})?` : undefined
+)
 
-const statsSummary = computed((): string => {
+const sliderAria = computed(() => ({
+  'aria-label': props.options.stats?.labels?.sliderDotAriaLabel
+    ? `${props.options.stats.labels.sliderDotAriaLabel} – ${props.facet?.label}`
+    : `Range slider control for ${props.facet?.label}`
+}))
+const ariaLabelFrom = computed(
+  () =>
+    `${props.facet?.label ?? ''} ${props.options.stats?.labels?.ariaFrom ?? rangeLabelFrom.value}`
+)
+const ariaLabelTo = computed(
+  () => `${props.facet?.label ?? ''} ${props.options.stats?.labels?.ariaTo ?? rangeLabelTo.value}`
+)
+
+const statsSummary = computed<string>(() => {
   const [min, max] = sliderRange.value
- if (isPrice.value) {
+  if (isPrice.value) {
     return formatPriceSummary(
       [min, max],
-      currency.value,
+      currencyLabel.value,
       separator.value,
-      currencyTemplate.value
+      currencyTpl.value,
+      multiCurrency.value
     )
   }
-
   if (unit.value) {
-    return `${min} ${unit.value} - ${max} ${unit.value}`
+    return `${min} ${unit.value} – ${max} ${unit.value}`
   }
-
   return formatRange({ gte: min, lte: max })
-})
-
-const separator = computed((): string => {
-  return searchResultOptions.value?.labels?.priceSeparator ?? ','
-})
-
-const isIntegerRange = computed((): boolean => {
-  return Number.isInteger(currentMinValue.value) && Number.isInteger(currentMaxValue.value)
-})
-
-const customInterval = computed((): number | undefined => {
-  return props.options.stats?.interval
-})
-
-const interval = computed((): number => {
-  if (customInterval.value) {
-    return customInterval.value
-  }
-  return isIntegerRange.value ? 1 : -1
-})
-
-const sliderInputFormat = computed((): string | undefined => {
-  return isPrice.value ? `[0-9]+([${separator.value}][0-9]{1,2})?` : undefined
-})
-
-const sliderAria = computed((): object => {
-  return {
-    'aria-label': props.options.stats?.labels?.sliderDotAriaLabel
-      ? `${props.options.stats?.labels?.sliderDotAriaLabel} - ${props.facet?.label}`
-      : `Range slider control dot for ${props.facet?.label}`
-  }
-})
-
-const ariaLabelFrom = computed((): string => {
-  return `${props.facet?.label ?? ''} ${
-    props.options.stats?.labels?.ariaFrom ?? rangeLabelFrom.value
-  }`
-})
-
-const ariaLabelTo = computed((): string => {
-  return `${props.facet?.label ?? ''} ${props.options.stats?.labels?.ariaTo ?? rangeLabelTo.value}`
 })
 
 watch(currentMinValue, () => {
   innerSliderRange.value = []
 })
-
 watch(currentMaxValue, () => {
   innerSliderRange.value = []
 })
 
-const handleInputChange = (): void => {
-  if (innerSliderRange.value.length < 1) {
-    return
-  }
-  if (sliderRange.value[0] === currentGte.value && sliderRange.value[1] === currentLte.value) {
-    return
-  }
-  handleChange()
+function handleInputChange() {
+  if (innerSliderRange.value.length < 2) return
+  if (sliderRange.value[0] === currentGte.value && sliderRange.value[1] === currentLte.value) return
+  applyChange()
 }
-
-const handleChange = (): void => {
+function applyChange() {
   emit('select', {
     key: facetValue.value.key,
     value: sliderRange.value,
     type: 'range'
   })
 }
-
-const handleDragging = (value: number[]): void => {
-  innerSliderRange.value = value
+function handleDragging(v: number[]) {
+  innerSliderRange.value = v
 }
-
-const unit = computed(() =>
-  props.options.stats?.units?.[props.facet?.key ?? ''] ?? ''
-)
 </script>
 
 <template>
   <div class="lupa-search-result-facet-stats-values">
     <div class="lupa-stats-facet-summary" v-if="!isInputVisible">
       {{ statsSummary }}
-   </div>
+    </div>
+
     <div class="lupa-stats-facet-summary-input" v-else>
-      <div>
+      <div class="lupa-stats-from">
         <div class="lupa-stats-range-label" v-if="rangeLabelFrom">
           {{ rangeLabelFrom }}
         </div>
-        <div class="lupa-stats-from">
-          <input
-            v-model.lazy="fromValue"
-            type="text"
-            maxlength="8"
-            :max="facetMax"
-            :min="facetMin"
-            :pattern="sliderInputFormat"
-            :aria-label="ariaLabelFrom"
-          />
-          <span v-if="isPrice">{{ currency }}</span><span v-if="unit"> {{ unit }}</span>
-        </div>
+        <input
+          v-model.lazy="fromValue"
+          type="text"
+          maxlength="8"
+          :min="facetMin"
+          :max="facetMax"
+          :pattern="sliderInputFormat"
+          :aria-label="ariaLabelFrom"
+        />
+        <span v-if="isPrice">{{ currencySymbol }}</span>
+        <span v-if="unit"> {{ unit }}</span>
       </div>
+
       <div class="lupa-stats-separator"></div>
-      <div>
+
+      <div class="lupa-stats-to">
         <div class="lupa-stats-range-label" v-if="rangeLabelTo">
           {{ rangeLabelTo }}
         </div>
-        <div class="lupa-stats-to">
-          <input
-            v-model.lazy="toValue"
-            type="text"
-            maxlength="8"
-            :max="facetMax"
-            :min="facetMin"
-            :pattern="sliderInputFormat"
-            :aria-label="ariaLabelTo"
-          />
-          <span v-if="isPrice">{{ currency }}</span><span v-if="unit"> {{ unit }}</span>
-        </div>
+        <input
+          v-model.lazy="toValue"
+          type="text"
+          maxlength="8"
+          :min="facetMin"
+          :max="facetMax"
+          :pattern="sliderInputFormat"
+          :aria-label="ariaLabelTo"
+        />
+        <span v-if="isPrice">{{ currencySymbol }}</span>
+        <span v-if="unit"> {{ unit }}</span>
       </div>
     </div>
+
     <div class="lupa-stats-slider-wrapper" v-if="isSliderVisible">
       <Slider
         class="slider"
         :tooltips="false"
         :min="facetMin"
         :max="facetMax"
-        :lazy="true"
         :step="interval"
+        :lazy="true"
         :aria="sliderAria"
         v-model="sliderRange"
         @slide="handleDragging"
-        @set="handleChange"
-      >
-      </Slider>
+        @set="applyChange"
+      />
     </div>
   </div>
 </template>

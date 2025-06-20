@@ -33,6 +33,10 @@ const discountValue = computed((): number => {
   return 0
 })
 
+const optionsStore = useOptionsStore()
+
+const { multiCurrency } = storeToRefs(optionsStore)
+
 const discountStringValue = computed((): string => {
   return props.badge.discountType === 'percentage'
     ? discountValue.value.toFixed(0)
@@ -40,7 +44,8 @@ const discountStringValue = computed((): string => {
         discountValue.value,
         searchResultOptions.value?.labels?.currency,
         searchResultOptions.value?.labels?.priceSeparator,
-        searchResultOptions.value?.labels?.currencyTemplate
+        searchResultOptions.value?.labels?.currencyTemplate,
+        multiCurrency.value
       )
 })
 
