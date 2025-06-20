@@ -23,15 +23,15 @@ describe('formatPrice', () => {
     expect(formatPrice(2.5, undefined, undefined, undefined, fakeMulti)).toEqual('2,50 €')
   })
 
-  it('applies USD stub in summary when selected=usd', () => {
-    const usdMulti = { ...fakeMulti, selected: 'usd' }
+  it('applies EUR stub in summary when selected=eur', () => {
+    const usdMulti = { ...fakeMulti, selected: 'eur' }
     expect(formatPriceSummary([2, 4], undefined, undefined, undefined, usdMulti)).toBe(
-      '$ 2.40 - $ 4.80'
+      '2,00 € - 4,00 €'
     )
   })
 
   it('uses custom fallback currency and separator when no global override', () => {
-    expect(formatPrice('1.9831233', '$', '.')).toEqual('1.98 $')
+    expect(formatPrice('1.9831233', '$', '.')).toEqual('$1.98')
   })
 
   it('returns empty for invalid inputs', () => {

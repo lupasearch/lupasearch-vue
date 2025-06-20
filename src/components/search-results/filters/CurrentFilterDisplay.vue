@@ -10,10 +10,7 @@ const emit = defineEmits<{ (e: 'remove', payload: { filter: LabeledFilter }): vo
 
 const facetKeyClass = computed(() => `lupa-facet-active-filter-${props.filter.key}`)
 
-const optionsStore = useOptionsStore()
-
 const { searchResultOptions } = storeToRefs(useOptionsStore())
-const { multiCurrency } = storeToRefs(useOptionsStore())
 const units = computed(() => searchResultOptions.value.filters.facets.stats.units ?? {})
 const priceKeys = computed(() => searchResultOptions.value.priceKeys ?? [])
 
@@ -47,8 +44,7 @@ const displayValue = computed(() => {
         [gte, lte],
         searchResultOptions.value.labels.currency,
         searchResultOptions.value.labels.priceSeparator,
-        searchResultOptions.value.labels.currencyTemplate,
-        multiCurrency.value
+        searchResultOptions.value.labels.currencyTemplate
       )
     }
     return formatFilterValue(f)

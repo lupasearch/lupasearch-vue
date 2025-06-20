@@ -34,7 +34,16 @@ export const useOptionsStore = defineStore('options', () => {
   )
 
   const multiCurrency = computed<MultiCurrencyConfig>(() => {
-    return envOptions.value as MultiCurrencyConfig
+    if (searchBoxOptions.value.selected != null) {
+      return {
+        selected: searchBoxOptions.value.selected,
+        currencies: searchBoxOptions.value.currencies || []
+      }
+    }
+    return {
+      selected: searchResultOptions.value.selected,
+      currencies: searchResultOptions.value.currencies || []
+    }
   })
   const classMap = computed(() => searchResultOptions.value.classMap ?? {})
 

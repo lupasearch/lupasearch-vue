@@ -8,14 +8,14 @@ import { useOptionsStore } from '@/stores/options'
 import { storeToRefs } from 'pinia'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
+  selected: 'eur',
+  currencies: [
+    { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+    { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+  ],
   options: {
-    environment: 'production',
-    selected: 'usd',
-    currencies: [
-      { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
-      { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
-    ]
-  } as SdkOptions & MultiCurrencyConfig,
+    environment: 'production'
+  } as SdkOptions,
 
   queryKey: 'jnovl7k0kkvd',
 

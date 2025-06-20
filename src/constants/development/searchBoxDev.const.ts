@@ -3,14 +3,14 @@ import { SearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import type { MultiCurrencyConfig } from '@/utils/price.utils'
 
 export const SEARCH_BOX_CONFIGURATION = {
+  selected: 'eur',
+  currencies: [
+    { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+    { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+  ],
   options: {
-    environment: 'production',
-    selected: 'usd',
-    currencies: [
-      { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
-      { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
-    ]
-  } as SdkOptions & MultiCurrencyConfig,
+    environment: 'production'
+  } as SdkOptions,
 
   minInputLength: 2,
   showTotalCount: true,

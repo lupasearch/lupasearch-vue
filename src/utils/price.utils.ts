@@ -1,6 +1,4 @@
 import { addParamsToLabel } from '@/utils/string.utils'
-import { useOptionsStore } from '@/stores/options'
-import { storeToRefs } from 'pinia'
 
 export interface CurrencyConfig {
   key: string
@@ -35,12 +33,6 @@ export const formatPrice = (
 ): string => {
   if (price !== 0 && !price) {
     return ''
-  }
-
-  if (!multiCurrency) {
-    const store = useOptionsStore()
-    const { multiCurrency: mcRef } = storeToRefs(store)
-    multiCurrency = mcRef.value
   }
 
   let symbol = currency
