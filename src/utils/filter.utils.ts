@@ -14,6 +14,7 @@ import { formatPriceSummary } from './price.utils'
 import { capitalize, getNormalizedString } from './string.utils'
 import { getTranslatedFacetValue } from './translation.utils'
 import { FilterTranslationOptions } from '@/types/search-results/FilterTranslationOptions'
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
 
 export const formatRange = (filter: FilterGroupItemTypeRange): string => {
   const lt = filter.lt ?? filter.lte
@@ -48,6 +49,7 @@ const unfoldRangeFilter = (
     currency?: string
     separator?: string
     currencyTemplate?: string
+    multiCurrency?: MultiCurrencyConfig
   } = {}
 ): UnfoldedFilter[] => {
   const gt = filter.gte || filter.gt
@@ -60,7 +62,8 @@ const unfoldRangeFilter = (
           [gt, lt],
           price.currency,
           price.separator,
-          price.currencyTemplate
+          price.currencyTemplate,
+          price.multiCurrency
         ),
         type: 'range'
       }
@@ -77,6 +80,7 @@ const unfoldFilter = (
     currency?: string
     separator?: string
     currencyTemplate?: string
+    multiCurrency?: MultiCurrencyConfig
   } = {}
 ): UnfoldedFilter[] => {
   if (Array.isArray(filter)) {
@@ -98,6 +102,7 @@ export const unfoldFilters = (
     currency?: string
     separator?: string
     currencyTemplate?: string
+    multiCurrency?: MultiCurrencyConfig
   } = {}
 ): UnfoldedFilter[] => {
   if (!filters) {
@@ -119,7 +124,7 @@ export const getLabeledFilters = (
       facets?.find((ft) => ft.key === f.key)?.label ??
       capitalize(f.key),
     value: getTranslatedFacetValue({ key: f.key }, { title: f.value }, translations),
-    originalValue: f.value,
+    originalValue: f.value
   }))
 }
 
