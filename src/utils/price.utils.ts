@@ -36,29 +36,31 @@ export const formatPrice = (
   }
 
   let symbol = currency
-  let sep = separator
-  let tpl = currencyTemplate
-  let mult = 1
+  let separate = separator
+  let template = currencyTemplate
+  let multiply = 1
 
   if (multiCurrency) {
     const cfg = multiCurrency.currencies.find((c) => c.key === multiCurrency.selected)
     if (cfg && price != null) {
       symbol = cfg.symbol
-      sep = cfg.separator
-      tpl = cfg.template ?? tpl
-      mult = cfg.multiplier
+      separate = cfg.separator
+      template = cfg.template ?? template
+      multiply = cfg.multiplier
     }
   }
 
   const raw = typeof price === 'number' ? price : parseFloat(price)
   if (isNaN(raw)) return ''
-  const adjusted = raw * mult
+  const adjusted = raw * multiply
 
-  const amount = getAmount(adjusted, sep)
-  if (!amount) return ''
+  const amount = getAmount(adjusted, separate)
+  if (!amount) {
+    return ''
+  }
 
-  if (tpl) {
-    return addParamsToLabel(tpl, amount)
+  if (template) {
+    return addParamsToLabel(template, amount)
   }
   if (symbol === '$') {
     return `${symbol}${amount}`
