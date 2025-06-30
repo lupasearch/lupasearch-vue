@@ -135,6 +135,30 @@ const elementGroups = computed((): string[] =>
 function getGroupElements(group: string): DocumentElement[] {
   return props.panelOptions.elements?.filter((e) => e.group === group) ?? []
 }
+
+const imageElements = computed(
+  (): DocumentElement[] =>
+    props.panelOptions.elements?.filter((e) => e.type === DocumentElementType.IMAGE && !e.group) ??
+    []
+)
+
+const detailElements = computed(
+  (): DocumentElement[] =>
+    props.panelOptions.elements?.filter(
+      (e) =>
+        e.type !== DocumentElementType.IMAGE && e.type !== DocumentElementType.ADDTOCART && !e.group
+    ) ?? []
+)
+
+const elementGroups = computed((): string[] =>
+  Array.from(
+    new Set(props.panelOptions.elements?.map((e) => e.group).filter((g): g is string => Boolean(g)))
+  )
+)
+
+function getGroupElements(group: string): DocumentElement[] {
+  return props.panelOptions.elements?.filter((e) => e.group === group) ?? []
+}
 </script>
 
 <template>
