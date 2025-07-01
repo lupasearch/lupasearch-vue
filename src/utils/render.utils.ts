@@ -1,6 +1,6 @@
 import sanitizeHtml from 'sanitize-html'
 import Mustache from 'mustache'
-import { DisplayCondition, DynamicAttribute } from '@/types/DocumentElement'
+import { DisplayCondition, DynamicAttribute, DisplayOption } from '@/types/DocumentElement'
 import { escapeHtml } from './string.utils'
 
 export const renderHtmlTemplate = (
@@ -89,4 +89,19 @@ export const processDisplayCondition = (
     default:
       return false // Unsupported condition
   }
+}
+
+export function shouldDisplay<T = any>(
+  displayOpt: DisplayOption<T> | undefined,
+  doc: Record<string, unknown>
+): boolean {
+  if (!displayOpt) return true
+
+  if (typeof displayOpt === 'function') {
+    return (displayOpt as (d: T) => boolean)(doc as T)
+  }
+
+  const rules = Array.isArray(displayOpt) ? displayOpt : [displayOpt]
+
+  return rules.every((rule) => processDisplayCondition(rule as DisplayCondition, doc))
 }

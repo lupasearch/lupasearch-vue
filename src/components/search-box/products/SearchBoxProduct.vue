@@ -12,7 +12,7 @@ import {
 } from '@/types/DocumentElement'
 import SearchResultsBadgeWrapper from '@/components/search-results/products/product-card/badges/SearchResultsBadgeWrapper.vue'
 import { BadgeOptions } from '@/types/search-results/BadgeOptions'
-import { processDisplayCondition } from '@/utils/render.utils'
+import { processDisplayCondition, shouldDisplay } from '@/utils/render.utils'
 
 const isInStock = ref(true)
 
@@ -88,14 +88,10 @@ onMounted((): void => {
   checkIfIsInStock()
 })
 
-const processIsInStock = () => {
-  return typeof props.panelOptions.isInStock === 'function'
-    ? props.panelOptions.isInStock(props.item)
-    : processDisplayCondition(props.panelOptions.isInStock, props.item)
-}
+const processIsInStock = computed(() => shouldDisplay(props.panelOptions.isInStock, props.item))
 
 const checkIfIsInStock = async (): Promise<void> => {
-  isInStock.value = props.panelOptions.isInStock ? processIsInStock() : true
+  isInStock.value = props.panelOptions.isInStock ? processIsInStock.value : true
 }
 </script>
 
