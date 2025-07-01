@@ -12,6 +12,11 @@ export enum DocumentElementType {
   CUSTOM_HTML = 'customHtml'
 }
 
+export type DisplayOption<T = any> =
+  | DisplayCondition
+  | DisplayCondition[]
+  | ((document: T) => boolean)
+
 export type DisplayCondition = {
   condition:
     | 'exists'
@@ -33,7 +38,7 @@ export type DynamicAttribute = {
 export type DocumentElementBase<T = any> = {
   type: DocumentElementType
   key?: string
-  display?: DisplayCondition | ((document: T) => boolean)
+  display?: DisplayOption<T>
   isHtml?: boolean
   group?: string
   dynamic?: boolean
@@ -100,7 +105,7 @@ export type RatingElement<T = any> = DocumentElementBase<T> & {
   labels: RatingLabels
   links?: RatingLinks
   totalKey: string
-  getRatingPercentage?: (doc: T) => number,
+  getRatingPercentage?: (doc: T) => number
   maxRating?: number
   key: string
 }
@@ -137,7 +142,7 @@ export type CustomHtmlElement<T = any> = DocumentElementBase<T> & {
   html: string | ((document: T) => string)
   className: string
   action?: (document: T) => Promise<unknown> | undefined
-  reportEventOnClick?: string,
+  reportEventOnClick?: string
   emitEventToClick?: string
 }
 
