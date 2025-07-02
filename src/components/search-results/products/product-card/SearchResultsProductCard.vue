@@ -132,10 +132,10 @@ const getGroupElements = (group: string): DocumentElement[] => {
   return props.options.elements?.filter((e) => e.group === group) ?? []
 }
 
-const processIsInStock = computed(() => shouldDisplay(props.options.isInStock, props.product))
+const shouldShowInStock = computed(() => shouldDisplay(props.options.isInStock, props.product))
 
 const checkIfIsInStock = (): void => {
-  isInStock.value = props.options.isInStock ? processIsInStock.value : true
+  isInStock.value = props.options.isInStock ? shouldShowInStock.value : true
 }
 
 const handleClick = (): void => {
