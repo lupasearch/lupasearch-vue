@@ -34,10 +34,6 @@ const badgeOptions = computed((): BadgeOptions => {
   return { ...props.panelOptions.badges, product: props.item }
 })
 
-const imageElements = computed((): DocumentElement[] => {
-  return props.panelOptions.elements?.filter((e) => e.type === DocumentElementType.IMAGE) ?? []
-})
-
 const mainImageElement = computed((): ImageDocumentElement | undefined => {
   return imageElements.value[0] as ImageDocumentElement
 })
@@ -58,14 +54,6 @@ const imageStyleOverride = computed(() => {
         minWidth: widthOverride.value ? `${widthOverride.value + 10}px` : undefined
       }
     : {}
-})
-
-const detailElements = computed((): DocumentElement[] => {
-  return (
-    props.panelOptions.elements?.filter(
-      (e) => e.type !== DocumentElementType.IMAGE && e.type !== DocumentElementType.ADDTOCART
-    ) ?? []
-  )
 })
 
 const addToCartElement = computed(() => {
@@ -97,6 +85,30 @@ const processIsInStock = () => {
 const checkIfIsInStock = async (): Promise<void> => {
   isInStock.value = props.panelOptions.isInStock ? processIsInStock() : true
 }
+
+const imageElements = computed(
+  (): DocumentElement[] =>
+    props.panelOptions.elements?.filter((e) => e.type === DocumentElementType.IMAGE && !e.group) ??
+    []
+)
+
+const detailElements = computed(
+  (): DocumentElement[] =>
+    props.panelOptions.elements?.filter(
+      (e) =>
+        e.type !== DocumentElementType.IMAGE && e.type !== DocumentElementType.ADDTOCART && !e.group
+    ) ?? []
+)
+
+const elementGroups = computed((): string[] =>
+  Array.from(
+    new Set(props.panelOptions.elements?.map((e) => e.group).filter((g): g is string => Boolean(g)))
+  )
+)
+
+function getGroupElements(group: string): DocumentElement[] {
+  return props.panelOptions.elements?.filter((e) => e.group === group) ?? []
+}
 </script>
 
 <template>
@@ -112,28 +124,41 @@ const checkIfIsInStock = async (): Promise<void> => {
       <SearchBoxProductElement
         class="lupa-search-box-product-element"
         v-for="element in imageElements"
+        :key="element.key"
         :item="item"
         :element="element"
-        :key="element.key"
         :labels="labels"
         :link="link"
       />
     </div>
 
     <div class="lupa-search-box-product-details-section">
-      <template v-for="element in detailElements" :key="element.key">
-        <SearchBoxProductElement
-          class="lupa-search-box-product-element"
-          :item="item"
-          :element="element"
-          :labels="labels"
-          :link="link"
-        >
-          <template #badges v-if="badgeOptions && badgeOptions?.anchorElementKey === element.key">
-            <SearchResultsBadgeWrapper :options="badgeOptions" position="card" />
-          </template>
-        </SearchBoxProductElement>
-      </template>
+      <SearchBoxProductElement
+        class="lupa-search-box-product-element"
+        v-for="element in detailElements"
+        :key="element.key"
+        :item="item"
+        :element="element"
+        :labels="labels"
+        :link="link"
+      >
+        <template #badges v-if="badgeOptions?.anchorElementKey === element.key">
+          <SearchResultsBadgeWrapper :options="badgeOptions" position="card" />
+        </template>
+      </SearchBoxProductElement>
+    </div>
+
+    <div v-for="group in elementGroups" :key="group" :class="`lupa-search-box-group-${group}`">
+      <SearchBoxProductElement
+        class="lupa-search-box-product-element"
+        v-for="element in getGroupElements(group)"
+        :key="element.key"
+        :item="item"
+        :element="element"
+        :labels="labels"
+        :link="link"
+        :isInStock="isInStock"
+      />
     </div>
 
     <div v-if="addToCartElement" class="lupa-search-box-product-add-to-cart-section">
