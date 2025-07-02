@@ -3,7 +3,7 @@ import { SearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import type { MultiCurrencyConfig } from '@/utils/price.utils'
 
 export const SEARCH_BOX_CONFIGURATION = {
-  sselectedCurrency: 'eur',
+  selectedCurrency: 'usd',
   currencies: [
     { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
     { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }

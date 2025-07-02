@@ -3,16 +3,20 @@ import { useOptionsStore } from '@/stores/options'
 import type { LabeledFilter } from '@/types/search-results/Filters'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { formatPriceSummary } from '@/utils/price.utils'
+import { formatPriceSummary, MultiCurrencyConfig } from '@/utils/price.utils'
+import { SEARCH_RESULTS_CONFIGURATION } from '@/constants/development/searchResultsDev.const'
 
 const props = defineProps<{ filter: LabeledFilter }>()
 const emit = defineEmits<{ (e: 'remove', payload: { filter: LabeledFilter }): void }>()
-
 const facetKeyClass = computed(() => `lupa-facet-active-filter-${props.filter.key}`)
+
+const multiCurrencyConfig = computed<MultiCurrencyConfig>(() => ({
+  selected: SEARCH_RESULTS_CONFIGURATION.selected,
+  currencies: SEARCH_RESULTS_CONFIGURATION.currencies
+}))
 
 const { searchResultOptions } = storeToRefs(useOptionsStore())
 const units = computed(() => searchResultOptions.value.filters.facets.stats.units ?? {})
-const priceKeys = computed(() => searchResultOptions.value.priceKeys ?? [])
 
 function handleClick(): void {
   emit('remove', { filter: props.filter })
@@ -35,21 +39,25 @@ function formatFilterValue(filter: LabeledFilter): string {
   return `${filter.value} ${unit}`.trim()
 }
 
-const displayValue = computed(() => {
+const displayValue = computed<string>(() => {
   const f = props.filter
-  if (f.type === 'range' && typeof f.value === 'object') {
-    const { gte, lte } = f.value as { gte: number; lte: number }
-    if (priceKeys.value.includes(f.key)) {
-      return formatPriceSummary(
-        [gte, lte],
-        searchResultOptions.value.labels.currency,
-        searchResultOptions.value.labels.priceSeparator,
-        searchResultOptions.value.labels.currencyTemplate
-      )
-    }
-    return formatFilterValue(f)
+  let minNum: number | null = null
+  let maxNum: number | null = null
+
+  if (Array.isArray(f.value)) {
+    minNum = Number(f.value[0])
+    maxNum = Number(f.value[1])
+  } else if (typeof f.value === 'string' && f.value.includes('-')) {
+    const [a, b] = f.value.split('-').map((s) => parseFloat(s.trim()))
+    minNum = a
+    maxNum = b
+  } else if (typeof f.value === 'object') {
+    ;({ gte: minNum, lte: maxNum } = f.value as any)
   }
-  return String(f.value)
+  if (minNum != null && maxNum != null) {
+    return formatPriceSummary([minNum, maxNum], '', '', '', multiCurrencyConfig.value)
+  }
+  return formatFilterValue(f)
 })
 </script>
 

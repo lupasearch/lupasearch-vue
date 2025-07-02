@@ -48,10 +48,19 @@ const isPrice = computed(
     priceKeys.value.includes(facetValue.value.key)
 )
 const pricePrecision = computed(() => props.options.stats?.pricePrecisionDigits ?? 2)
+const currencyConfig = computed(
+  () =>
+    multiCurrency.value.currencies.find((c) => c.key === multiCurrency.value.selected) ?? {
+      key: '',
+      symbol: currencyLabel.value,
+      multiplier: 1
+    }
+)
 
-const facetMin = computed(() => Math.floor(facetValue.value.min))
-const facetMax = computed(() => Math.ceil(facetValue.value.max))
+const currencyMultiplier = computed(() => currencyConfig.value.multiplier)
 
+const facetMin = computed(() => Math.floor(facetValue.value.min * currencyMultiplier.value))
+const facetMax = computed(() => Math.ceil(facetValue.value.max * currencyMultiplier.value))
 const currentGte = computed<number | undefined>(() =>
   typeof currentFilters.value.gte === 'string'
     ? parseFloat(currentFilters.value.gte)
@@ -73,7 +82,10 @@ const currentMaxValue = computed(() =>
 const sliderRange = computed<number[]>({
   get: () => {
     if (!innerSliderRange.value.length) {
-      return [currentMinValue.value, currentMaxValue.value]
+      return [
+        currentMinValue.value * currencyMultiplier.value,
+        currentMaxValue.value * currencyMultiplier.value
+      ]
     }
     return [
       Math.max(innerSliderRange.value[0], facetMin.value),
@@ -165,9 +177,10 @@ function handleInputChange() {
   applyChange()
 }
 function applyChange() {
+  const toBase = (x: number) => x / currencyMultiplier.value
   emit('select', {
     key: facetValue.value.key,
-    value: sliderRange.value,
+    value: sliderRange.value.map(toBase) as [number, number],
     type: 'range'
   })
 }

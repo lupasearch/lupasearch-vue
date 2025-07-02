@@ -8,7 +8,7 @@ import { useOptionsStore } from '@/stores/options'
 import { storeToRefs } from 'pinia'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
-  selected: 'eur',
+  selected: 'usd',
   currencies: [
     { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
     { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
@@ -138,25 +138,8 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     { type: 'title', key: 'name', isHtml: false, link: false, className: 'bold', maxLines: 2 },
     { type: 'description', key: 'description', maxLines: 3 },
-    {
-      type: 'customHtml',
-      display: (doc: Record<string, string>) =>
-        parseFloat(doc.discountPriceKey ?? doc.price) < parseFloat(doc.price),
-      html: (doc: Record<string, string>) => {
-        const discount = formatPrice(doc.discountPriceKey ?? doc.price)
-        const regular = formatPrice(doc.regularPriceKey ?? doc.price)
-        return `<span class=\"lupa-discount\">${discount}</span><span class=\"lupa-regular\">${regular}</span>`
-      },
-      action: (doc: any) => console.log('price 1 click', doc)
-    },
-    {
-      type: 'customHtml',
-      display: (doc: Record<string, string>) =>
-        parseFloat(doc.price) >= parseFloat(doc.discountPriceKey ?? doc.price),
-      html: (doc: Record<string, string>) =>
-        `<span class=\"lupa-final\">${formatPrice(doc.price)}</span>`,
-      action: (doc: any) => console.log('price 2 click', doc)
-    }
+    { type: 'price', key: 'price', className: 'lupa-price', isHtml: false, link: false },
+    { type: 'price', key: 'price', className: 'lupa-price', isHtml: false, link: false }
   ] as DocumentElement[],
 
   breadcrumbs: [{ label: 'Main', link: '/link-to-someplace/' }, { label: 'Search: {1}' }],
