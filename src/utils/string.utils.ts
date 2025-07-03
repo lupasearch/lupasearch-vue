@@ -11,7 +11,7 @@ export const getNormalizedString = (str?: string | number): string => {
     : transformedStr
         .toLocaleLowerCase()
         .normalize('NFKD')
-        .replace(/[^\w\s.-_/]/g, '')
+        .replace(/[^\p{L}\p{N}\s]/gu, '')
         ?.trim()
 }
 
