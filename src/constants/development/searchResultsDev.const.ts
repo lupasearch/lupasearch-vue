@@ -5,7 +5,7 @@ import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSo
 
 export const SEARCH_RESULTS_CONFIGURATION = {
   options: {
-    environment: 'production',
+    environment: 'production'
   } as SdkOptions,
   queryKey: 'jnovl7k0kkvd',
   labels: {
@@ -25,7 +25,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     similarQuery: 'Search results for phrase {1}',
     similarQueries: 'Similar queries:',
     aiSuggestions: 'Other suggestions:',
-    similarResultsLabel: "Related to your query:"
+    similarResultsLabel: 'Related to your query:'
   },
   toolbar: {
     layoutSelector: false,
