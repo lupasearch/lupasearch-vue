@@ -81,16 +81,13 @@ const currentMaxValue = computed(() =>
 
 const sliderRange = computed<number[]>({
   get: () => {
-    if (!innerSliderRange.value.length) {
+    if (innerSliderRange.value.length === 2) {
       return [
-        currentMinValue.value * currencyMultiplier.value,
-        currentMaxValue.value * currencyMultiplier.value
+        Math.max(innerSliderRange.value[0], facetMin.value),
+        Math.min(innerSliderRange.value[1], facetMax.value)
       ]
     }
-    return [
-      Math.max(innerSliderRange.value[0], facetMin.value),
-      Math.min(innerSliderRange.value[1], facetMax.value)
-    ]
+    return [facetMin.value, facetMax.value]
   },
   set: (v) => {
     innerSliderRange.value = v
@@ -162,13 +159,6 @@ const statsSummary = computed<string>(() => {
     return `${min} ${unit.value} – ${max} ${unit.value}`
   }
   return formatRange({ gte: min, lte: max })
-})
-
-watch(currentMinValue, () => {
-  innerSliderRange.value = []
-})
-watch(currentMaxValue, () => {
-  innerSliderRange.value = []
 })
 
 function handleInputChange() {

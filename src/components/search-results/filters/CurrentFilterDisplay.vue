@@ -54,7 +54,7 @@ const displayValue = computed<string>(() => {
   } else if (typeof f.value === 'object') {
     ;({ gte: minNum, lte: maxNum } = f.value as any)
   }
-  if (minNum != null && maxNum != null) {
+  if (minNum != null && maxNum != null && multiCurrencyConfig.value.currencies?.length) {
     return formatPriceSummary([minNum, maxNum], '', '', '', multiCurrencyConfig.value)
   }
   return formatFilterValue(f)
