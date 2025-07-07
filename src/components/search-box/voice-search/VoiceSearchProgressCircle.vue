@@ -28,7 +28,7 @@ const getProgressBarColor = (progressBarStyle: any) => {
 }
 
 const startProgressBar = () => {
-  if (!progressBar.value || !props.isRecording) {
+  if (!progressBar.value) {
     return
   }
 
