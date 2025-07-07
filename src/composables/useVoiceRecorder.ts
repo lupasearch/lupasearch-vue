@@ -8,6 +8,7 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
   const mediaStream = ref<MediaStream | null>(null)
   const mediaRecorder = ref<MediaRecorder | null>(null)
   const isRecording = ref(false)
+  const isSocketReady = ref(false)
   const errorRef = ref<string | null>(null)
   const transcription = ref('')
   const timeSliceLength = computed(() => options.timesliceLength ?? 1000)
@@ -23,36 +24,53 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
   ) => {
     socket.value = new WebSocket(url)
 
-    socket.value.onopen = async () => {
-      if (mediaRecorder.value?.state !== 'recording') {
-        await startRecording()
+    socket.value.onmessage = async (event) => {
+      try {
+        const msg = JSON.parse(event.data)
+
+        if (msg.event === 'ready') {
+          if (mediaRecorder.value?.state !== 'recording') {
+            try {
+              isSocketReady.value = true
+              await startRecording()
+            } catch (error) {
+              console.error('Recording failed to start:', error)
+              closeSocket()
+            }
+          }
+        } else if (msg.event === 'transcription') {
+          transcription.value = msg.transcription
+          onMessage?.(msg.transcription)
+          stopSocketConnection()
+        } else if (msg.event === 'error') {
+          errorRef.value = msg.message || 'An error occurred during transcription'
+          isSocketReady.value = false
+          stopRecording()
+          closeSocket()
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error)
       }
     }
 
-    socket.value.onmessage = (event) => {
-      const msg = JSON.parse(event.data)
-      if (msg.event === 'transcription') {
-        transcription.value = msg.transcription
-        onMessage?.(msg.transcription)
-        stopSocketConnection()
-      } else if (msg.event === 'error') {
-        errorRef.value = 'Server error during transcription'
-        stopRecording()
+    socket.value.onclose = (event) => {
+      if (event.code === 4001) {
+        errorRef.value = event.reason || 'Connection closed by server'
       }
-    }
-
-    socket.value.onclose = () => {
       stopRecording()
     }
 
     socket.value.onerror = () => {
-      stopRecording()
       errorRef.value = 'Service connection error'
+      stopRecording()
     }
   }
 
   const onMediaRecorderDataAvailable = async (event: BlobEvent) => {
-    if (mediaRecorder.value?.state !== 'recording') return
+    if (!isSocketReady.value || socket.value?.readyState !== WebSocket.OPEN) {
+      console.warn('Skipping audio chunk: socket not ready.')
+      return
+    }
 
     const audioBuffer = await event.data.arrayBuffer()
     const header = buildSocketMessageFrameHeader('audio-chunk', audioBuffer.byteLength)
@@ -63,26 +81,35 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
   }
   
   const startRecording = async () => {
-    mediaStream.value = await navigator.mediaDevices.getUserMedia({
-      video: false,
-      audio: {
-        channelCount: 1,
-        echoCancellation: true,
-        sampleRate: 16000,
-      },
-    })
+    try {
+      mediaStream.value = await navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: {
+          channelCount: 1,
+          echoCancellation: true,
+          sampleRate: options.sampleRate || 16000,
+        },
+      })
 
-    mediaRecorder.value = new MediaRecorder(mediaStream.value, {
-      mimeType: 'audio/webm; codecs=opus',
-    })
-    
-    mediaRecorder.value.ondataavailable = onMediaRecorderDataAvailable
-    
-    // Send time slice every second
-    mediaRecorder.value.start(timeSliceLength.value)
-    isRecording.value = true
+      mediaRecorder.value = new MediaRecorder(mediaStream.value, {
+        mimeType: 'audio/webm; codecs=opus',
+      })
+      
+      mediaRecorder.value.ondataavailable = onMediaRecorderDataAvailable
+      
+      // Send time slice every second
+      mediaRecorder.value.start(timeSliceLength.value)
+      isRecording.value = true
+    } catch (error) {
+      if (error.name === 'NotAllowedError') {
+        errorRef.value = 
+          options.labels?.microphoneNotAllowed || 'Microphone access denied. Please allow microphone access in your browser settings.'
+      } else if (error.name === 'NotFoundError') {
+        errorRef.value = 
+          options.labels?.microphoneNotFound || 'No microphone found. Please connect a microphone and try again.'
+      }
+    }
   }
-  
   
   const stopRecording = () => {
     mediaRecorder.value?.stop()
@@ -105,6 +132,7 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
   const closeSocket = () => {
     socket.value?.close()
     socket.value = null
+    isSocketReady.value = false
   }
 
   const reset = () => {
@@ -113,10 +141,12 @@ export function useVoiceRecorder(options: VoiceSearchOptions) {
     transcription.value = ''
     errorRef.value = null
     isRecording.value = false
+    isSocketReady.value = false
   }
 
   return { 
     isRecording,
+    isSocketReady,
     transcription,
     errorRef,
     initSocket,

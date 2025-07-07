@@ -16,6 +16,7 @@ const optionsStore = useOptionsStore()
 
 const {
   isRecording,
+  isSocketReady,
   transcription,
   errorRef,
   initSocket,
@@ -40,12 +41,11 @@ const labels = computed(() => props.options.labels ?? {});
 
 const description = computed(() => {
   if (errorRef.value) {
-    return labels.value.serviceError ?? errorRef.value
+    return errorRef.value
   }
 
-  if (!isRecording.value) {
-    return labels.value.microphoneOff ?? 
-      'Microphone is off. Try again.'
+  if (!isSocketReady.value || !isRecording.value) {
+    return labels.value.connecting ?? 'Connecting...'
   }
 
   // at the moment the full transcript text is returned
@@ -55,6 +55,15 @@ const description = computed(() => {
 
 watch(transcription, (newValue) => {
   emit('transcript-update', newValue)
+})
+
+watch(isRecording, (newVal) => {
+  console.log('isRecording changed:', newVal)
+  if (newVal === true) {
+    ;(voiceSearchProgressBar.value as any)?.startProgressBar()
+  } else {
+    ;(voiceSearchProgressBar.value as any)?.stopProgressBar()
+  }
 })
 
 const handleRecordingButtonClick = () => {
@@ -74,8 +83,7 @@ const handleRecordingButtonClick = () => {
   )
   const socketUrl =
     `${voiceServiceUrl}?clientId=${clientId.value}&queryKey=${props.options.queryKey}&languageCode=${props.options.language ?? "en-US"}&connectionType=write-first`
-  initSocket(socketUrl);;
-  (voiceSearchProgressBar.value as any)?.startProgressBar()
+  initSocket(socketUrl)
 
   setTimeout(() => {
     stopSocketConnection()

@@ -29,10 +29,14 @@ export const SEARCH_BOX_CONFIGURATION = {
     stopDelay: 700,
     timesliceLimit: 4,
     timesliceLength: 1000,
+    sampleRate: 16000,
     labels: {
       listening: 'Listening...',
       microphoneOff: 'Microphone is off. Try again.',
-      serviceError: 'Service error during transcription'
+      serviceError: 'Service error during transcription',
+      microphoneNotFound: 'No microphone found. Please connect a microphone and try again.',
+      microphoneNotAllowed: 'Microphone access denied. Please allow microphone access in your browser settings',
+      connecting: 'Connecting...'
     },
     customVoiceServiceUrl: 'ws://localhost:3001'
   },
