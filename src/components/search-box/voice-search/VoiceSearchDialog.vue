@@ -58,7 +58,6 @@ watch(transcription, (newValue) => {
 })
 
 watch(isRecording, (newVal) => {
-  console.log('isRecording changed:', newVal)
   if (newVal === true) {
     ;(voiceSearchProgressBar.value as any)?.startProgressBar()
   } else {
