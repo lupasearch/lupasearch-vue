@@ -76,7 +76,13 @@ onMounted((): void => {
   checkIfIsInStock()
 })
 
-const processIsInStock = computed(() => shouldDisplay(props.panelOptions.isInStock, props.item))
+const processIsInStock = computed(() => {
+  const raw = props.panelOptions.isInStock
+  if (!raw) return true
+  const rules = Array.isArray(raw) ? raw : [raw]
+
+  return rules.every((rule) => shouldDisplay(rule, props.item))
+})
 
 const checkIfIsInStock = async (): Promise<void> => {
   isInStock.value = props.panelOptions.isInStock ? processIsInStock.value : true

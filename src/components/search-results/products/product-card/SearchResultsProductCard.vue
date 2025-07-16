@@ -132,18 +132,23 @@ const getGroupElements = (group: string): DocumentElement[] => {
   return props.options.elements?.filter((e) => e.group === group) ?? []
 }
 
-const shouldShowInStock = () => {
-  return typeof props.options.isInStock === 'function'
-    ? props.options.isInStock(props.product)
-    : processDisplayCondition(props.options.isInStock, props.product)
+const shouldShowInStock = (): boolean => {
+  const raw = props.options.isInStock
+  if (!raw) return true
+
+  const rules = Array.isArray(raw) ? raw : [raw]
+  return rules.every((rule) =>
+    typeof rule === 'function' ? rule(props.product) : processDisplayCondition(rule, props.product)
+  )
 }
+
+const checkIfIsInStock = (): void => {
+  isInStock.value = shouldShowInStock()
+}
+
 onMounted((): void => {
   checkIfIsInStock()
 })
-
-const checkIfIsInStock = async (): Promise<void> => {
-  isInStock.value = props.options.isInStock ? await shouldShowInStock() : true
-}
 
 const handleClick = (): void => {
   const event = {
