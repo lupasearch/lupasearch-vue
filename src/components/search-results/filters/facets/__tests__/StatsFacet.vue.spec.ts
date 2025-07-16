@@ -58,7 +58,7 @@ describe('StatsFacet', () => {
 
   it('should include current filter in summary', () => {
     const wrapper = getComponent({}, {}, { gte: 10, lte: 20 })
-    expect(wrapper.find('.lupa-stats-facet-summary').text()).toEqual('0,00 € - 100,00 €')
+    expect(wrapper.find('.lupa-stats-facet-summary').text()).toEqual('10,00 € - 20,00 €')
   })
 
   it('should not render filter summary if inputs option is set to true', () => {

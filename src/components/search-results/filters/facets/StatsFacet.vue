@@ -7,7 +7,7 @@ import { formatPriceSummary } from '@/utils/price.utils'
 import { normalizeFloat } from '@/utils/string.utils'
 import type { FacetGroupTypeStats, FilterGroupItemTypeRange } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import Slider from '@vueform/slider'
 
 const props = defineProps<{
@@ -21,8 +21,6 @@ const emit = defineEmits<{
 
 const facetValue = computed(() => props.facet ?? { key: '', min: 0, max: 100 })
 const currentFilters = computed(() => props.currentFilters ?? {})
-const innerSliderRange = ref<number[]>([])
-
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
 const { multiCurrency } = storeToRefs(useOptionsStore())
@@ -57,7 +55,7 @@ const currencyConfig = computed(
     }
 )
 
-const currencyMultiplier = computed(() => currencyConfig.value.multiplier)
+const currencyMultiplier = computed(() => (isPrice.value ? currencyConfig.value.multiplier : 1))
 
 const facetMin = computed(() => Math.floor(facetValue.value.min * currencyMultiplier.value))
 const facetMax = computed(() => Math.ceil(facetValue.value.max * currencyMultiplier.value))
@@ -78,6 +76,8 @@ const currentMinValue = computed(() =>
 const currentMaxValue = computed(() =>
   currentLte.value != null ? Math.min(currentLte.value, facetMax.value) : facetMax.value
 )
+
+const innerSliderRange = ref<number[]>([currentMinValue.value, currentMaxValue.value])
 
 const sliderRange = computed<number[]>({
   get: () => {
@@ -177,6 +177,17 @@ function applyChange() {
 function handleDragging(v: number[]) {
   innerSliderRange.value = v
 }
+
+onMounted(() => {
+  innerSliderRange.value = [currentMinValue.value, currentMaxValue.value]
+})
+
+watch(
+  () => [currentMinValue.value, currentMaxValue.value],
+  ([newMin, newMax]) => {
+    innerSliderRange.value = [newMin, newMax]
+  }
+)
 </script>
 
 <template>

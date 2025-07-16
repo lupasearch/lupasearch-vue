@@ -5,10 +5,17 @@ import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { formatPriceSummary, MultiCurrencyConfig } from '@/utils/price.utils'
 import { SEARCH_RESULTS_CONFIGURATION } from '@/constants/development/searchResultsDev.const'
+import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
 
 const props = defineProps<{ filter: LabeledFilter }>()
 const emit = defineEmits<{ (e: 'remove', payload: { filter: LabeledFilter }): void }>()
 const facetKeyClass = computed(() => `lupa-facet-active-filter-${props.filter.key}`)
+
+const priceKeys = computed(() => searchResultOptions.value.priceKeys ?? [])
+const isPriceFilter = computed(
+  () =>
+    props.filter.key.includes(CURRENCY_KEY_INDICATOR) || priceKeys.value.includes(props.filter.key)
+)
 
 const multiCurrencyConfig = computed<MultiCurrencyConfig>(() => ({
   selected: SEARCH_RESULTS_CONFIGURATION.selected,
@@ -54,8 +61,12 @@ const displayValue = computed<string>(() => {
   } else if (typeof f.value === 'object') {
     ;({ gte: minNum, lte: maxNum } = f.value as any)
   }
-  if (minNum != null && maxNum != null && multiCurrencyConfig.value.currencies?.length) {
-    return formatPriceSummary([minNum, maxNum], '', '', '', multiCurrencyConfig.value)
+  if (minNum != null && maxNum != null) {
+    if (isPriceFilter.value) {
+      return formatPriceSummary([minNum, maxNum], '', '', '', multiCurrencyConfig.value)
+    }
+    const u = units.value[f.key] || ''
+    return `${minNum} ${u} – ${maxNum} ${u}`.trim()
   }
   return formatFilterValue(f)
 })
