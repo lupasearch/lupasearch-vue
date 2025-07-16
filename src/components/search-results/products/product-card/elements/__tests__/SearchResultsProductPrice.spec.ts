@@ -2,9 +2,11 @@ import { shallowMount } from '@vue/test-utils'
 import SearchResultsProductPrice from '../SearchResultsProductPrice.vue'
 import { vi } from 'vitest'
 import { DocumentElementType } from '@/types/DocumentElement'
+import { createPinia, setActivePinia } from 'pinia'
 
 describe('SearchResultsProductPrice.vue', () => {
   beforeEach(() => {
+    setActivePinia(createPinia())
     vi.mock('@/utils/price.utils', () => ({ formatPrice: vi.fn().mockReturnValue('0.15 $') }))
   })
 
