@@ -53,7 +53,7 @@ onMounted(() => {
 })
 
 watch(relatedSourceIdsString, () => {
-  if (mounted) {
+  if (mounted.value) {
     getItemsDebounced()
   }
 })
