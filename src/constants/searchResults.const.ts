@@ -19,6 +19,7 @@ export const DEFAULT_OPTIONS_RESULTS = {
     searchResults: 'Search Query: ',
     emptyResults: 'There are no results for the query:',
     mobileFilterButton: 'Filter',
+    mobileFilterCloseButton: 'Close',
     htmlTitleTemplate: "Search Query: '{1}'",
     noResultsSuggestion: 'No results found for this query: {1}',
     didYouMean: 'Did you mean to search: {1}',
