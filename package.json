@@ -44,7 +44,7 @@
     "@vueform/slider": "^2.1.10",
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "^10.3.0",
-    "happy-dom": "^18.0.1",
+    "happy-dom": "^9.20.3",
     "jest-junit": "^16.0.0",
     "jsdom": "^26.1.0",
     "lodash": "^4.17.21",
