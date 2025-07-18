@@ -18,13 +18,24 @@ const isPriceFilter = computed(
 )
 
 const multiCurrencyConfig = computed<MultiCurrencyConfig>(() => ({
-  selected: SEARCH_RESULTS_CONFIGURATION.selected,
-  currencies: SEARCH_RESULTS_CONFIGURATION.currencies
+  selected: SEARCH_RESULTS_CONFIGURATION.selected?.length
+    ? SEARCH_RESULTS_CONFIGURATION.selected
+    : ['EUR'],
+
+  currencies: SEARCH_RESULTS_CONFIGURATION.currencies?.length
+    ? SEARCH_RESULTS_CONFIGURATION.currencies
+    : [
+        {
+          code: 'EUR',
+          symbol: '€',
+          name: 'Euro',
+          rate: 1
+        }
+      ]
 }))
 
 const { searchResultOptions } = storeToRefs(useOptionsStore())
-const units = computed(() => searchResultOptions.value.filters.facets.stats.units ?? {})
-
+const units = computed(() => searchResultOptions.value.filters?.facets?.stats?.units ?? {})
 function handleClick(): void {
   emit('remove', { filter: props.filter })
 }
@@ -62,8 +73,14 @@ const displayValue = computed<string>(() => {
     ;({ gte: minNum, lte: maxNum } = f.value as any)
   }
   if (minNum != null && maxNum != null) {
-    if (isPriceFilter.value) {
-      return formatPriceSummary([minNum, maxNum], '', '', '', multiCurrencyConfig.value)
+    if (isPriceFilter.value && multiCurrencyConfig.value.currencies.length > 0) {
+      return formatPriceSummary(
+        [minNum, maxNum],
+        undefined,
+        undefined,
+        undefined,
+        multiCurrencyConfig.value
+      )
     }
     const u = units.value[f.key] || ''
     return `${minNum} ${u} – ${maxNum} ${u}`.trim()
