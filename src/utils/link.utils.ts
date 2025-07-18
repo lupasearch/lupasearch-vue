@@ -1,9 +1,24 @@
 import { FACET_PARAMS_TYPE, QUERY_PARAMS } from '@/constants/queryParams.const'
 import type { InputSuggestionFacet } from '@/types/search-box/Common'
-import { encodeParam } from './params.utils'
+import { encodeParam, getRemovableParams, removeParams } from './params.utils'
 import { LupaQueryParamValue } from '@/types/General'
+import { getPageUrl } from './routing.utils'
 
 const PATH_REPLACE_REGEXP = /{(.*?)}/gm
+
+export const getSearchResultsLink = (
+  configuredSearchResultsLink: string,
+  getQueryParamName?: (param: LupaQueryParamValue) => string
+) => {
+  // If search results link includes query parameters, we need to include location search params
+  if (configuredSearchResultsLink?.includes('?')) {
+    const url = getPageUrl()
+    const lupaQueryParams = getRemovableParams(url, getQueryParamName, 'all')
+    removeParams(url, lupaQueryParams)
+    return `${url.pathname}${url.search}`
+  }
+  return window.location.pathname
+}
 
 export const generateLink = (linkPattern: string, document: Record<string, unknown>): string => {
   const matches = linkPattern.match(PATH_REPLACE_REGEXP)
@@ -28,10 +43,13 @@ export const generateResultLink = (
   if (!searchText) {
     return link
   }
+  const linkHasParams = link?.includes('?')
+  const paramPrefix = linkHasParams ? '&' : '?'
+
   const facetParam = facet
     ? `&${FACET_PARAMS_TYPE.TERMS}${encodeParam(facet.key)}=${encodeParam(facet.title)}`
     : ''
-  const queryParam = `?${
+  const queryParam = `${paramPrefix}${
     getQueryParamName ? getQueryParamName(QUERY_PARAMS.QUERY) : QUERY_PARAMS.QUERY
   }=${encodeParam(searchText)}`
   return `${link}${queryParam}${facetParam}`
