@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Document } from '@getlupa/client-sdk/Types'
-import { getDynamicAttributes, processDisplayCondition } from '@/utils/render.utils'
+import { getDynamicAttributes, processDisplayCondition, shouldDisplay } from '@/utils/render.utils'
 import type { DocumentElement } from '@/types/DocumentElement'
 import { DocumentElementType } from '@/types/DocumentElement'
 import { useDynamicDataStore } from '@/stores/dynamicData'
@@ -61,16 +61,9 @@ const enhancedItem = computed((): Document => {
   }
 })
 
-const displayElement = computed((): boolean => {
-  const element = props.element
-  const item = enhancedItem.value
-  if (!element.display) {
-    return true
-  }
-  return typeof element.display === 'function'
-    ? element.display(item)
-    : processDisplayCondition(element.display, item)
-})
+const displayElement = computed((): boolean =>
+  shouldDisplay(props.element.display, enhancedItem.value)
+)
 
 const dynamicAttributes = computed((): Record<string, unknown> => {
   return getDynamicAttributes(props.element.dynamicAttributes, enhancedItem.value)

@@ -10,7 +10,7 @@ import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 import type { SearchResultsOptionLabels } from '@/types/search-results/SearchResultsOptions'
 import type { SearchResultsProductCardOptions } from '@/types/search-results/SearchResultsProductCardOptions'
 import { generateLink } from '@/utils/link.utils'
-import { processDisplayCondition } from '@/utils/render.utils'
+import { processDisplayCondition, shouldDisplay } from '@/utils/render.utils'
 import { handleRoutingEvent } from '@/utils/routing.utils'
 import type { Document, ReportableEventType } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
@@ -132,19 +132,23 @@ const getGroupElements = (group: string): DocumentElement[] => {
   return props.options.elements?.filter((e) => e.group === group) ?? []
 }
 
-const processIsInStock = () => {
-  return typeof props.options.isInStock === 'function'
-    ? props.options.isInStock(props.product)
-    : processDisplayCondition(props.options.isInStock, props.product)
+const shouldShowInStock = (): boolean => {
+  const raw = props.options.isInStock
+  if (!raw) return true
+
+  const rules = Array.isArray(raw) ? raw : [raw]
+  return rules.every((rule) =>
+    typeof rule === 'function' ? rule(props.product) : processDisplayCondition(rule, props.product)
+  )
+}
+
+const checkIfIsInStock = (): void => {
+  isInStock.value = shouldShowInStock()
 }
 
 onMounted((): void => {
   checkIfIsInStock()
 })
-
-const checkIfIsInStock = async (): Promise<void> => {
-  isInStock.value = props.options.isInStock ? await processIsInStock() : true
-}
 
 const handleClick = (): void => {
   const event = {

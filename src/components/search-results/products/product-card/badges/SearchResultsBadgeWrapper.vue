@@ -7,7 +7,7 @@ import {
 import SearchResultGeneratedBadges from './SearchResultGeneratedBadges.vue'
 import { computed } from 'vue'
 import type { AnchorPosition } from '@/types/search-results/SearchResultsProductCardOptions'
-import { processDisplayCondition } from '@/utils/render.utils'
+import { processDisplayCondition, shouldDisplay } from '@/utils/render.utils'
 
 const props = defineProps<{ position?: 'card' | 'image'; options: BadgeOptions }>()
 
@@ -36,9 +36,7 @@ const displayBadge = (element: BadgeElement) => {
   if (!element.display) {
     return true
   }
-  return typeof element.display === 'function'
-    ? element.display(item)
-    : processDisplayCondition(element.display, item)
+  return shouldDisplay(element.display, item)
 }
 
 const badges = computed((): BadgeElement[] => {
