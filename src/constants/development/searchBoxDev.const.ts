@@ -24,8 +24,28 @@ export const SEARCH_BOX_CONFIGURATION = {
     currency: '€',
     priceSeparator: ',',
     defaultFacetLabel: 'Brand:',
-    close: 'Close',
-    searchInputAriaLabel: 'Search for products'
+    close: 'Close'
+  },
+  links: {
+    searchResults: '/catalogsearch/result'
+  },
+  voiceSearch: {
+    enabled: true,
+    queryKey: 'jnovl7k0kkvd',
+    stopDelay: 700,
+    timesliceLimit: 4,
+    timesliceLength: 1000,
+    sampleRate: 16000,
+    labels: {
+      listening: 'Listening...',
+      microphoneOff: 'Microphone is off. Try again.',
+      serviceError: 'Service error during transcription',
+      microphoneNotFound: 'No microphone found. Please connect a microphone and try again.',
+      microphoneNotAllowed:
+        'Microphone access denied. Please allow microphone access in your browser settings',
+      connecting: 'Connecting...'
+    },
+    customVoiceServiceUrl: 'ws://localhost:3001'
   },
 
   links: { searchResults: '/catalogsearch/result' },

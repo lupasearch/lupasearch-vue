@@ -39,6 +39,26 @@ export type SearchBoxOptionLinks = {
   searchResults: string
 }
 
+export type VoiceSearchLabels = {
+  listening?: string
+  serviceError?: string
+  connecting?: string
+  microphoneNotFound?: string
+  microphoneNotAllowed?: string
+}
+
+export type VoiceSearchOptions = {
+  enabled: boolean
+  queryKey: string
+  stopDelay?: number
+  timesliceLimit?: number
+  timesliceLength?: number
+  sampleRate?: number
+  labels?: VoiceSearchLabels
+  language?: string
+  customVoiceServiceUrl?: string
+}
+
 export type SearchBoxInputOptions = {
   minInputLength: number
   labels: SearchBoxOptionLabels
