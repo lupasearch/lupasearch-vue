@@ -244,6 +244,16 @@ describe('extractValue', () => {
     expect(result).toBe('defaultValue')
   })
 
+  test('should return default value if there is no cookie', () => {
+    const cookieOptions: ExtractFromCookie = {
+      extractFrom: 'cookie',
+      default: 'defaultValue',
+      cookieName: 'testCookie'
+    }
+    const result = extractValue(cookieOptions)
+    expect(result).toBe('defaultValue')
+  })
+
   test('should extract simple value from cookie', () => {
     const cookieOptions: ExtractFromCookie = {
       extractFrom: 'cookie',
@@ -274,16 +284,6 @@ describe('extractValue', () => {
       cookieName: 'nonExistingCookie'
     }
     document.cookie = 'testCookie=cookieValue'
-    const result = extractValue(cookieOptions)
-    expect(result).toBe('defaultValue')
-  })
-
-  test('should return default value if there is no cookie', () => {
-    const cookieOptions: ExtractFromCookie = {
-      extractFrom: 'cookie',
-      default: 'defaultValue',
-      cookieName: 'testCookie'
-    }
     const result = extractValue(cookieOptions)
     expect(result).toBe('defaultValue')
   })
