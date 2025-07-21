@@ -37,7 +37,8 @@ describe('SearchBoxMainPanel', () => {
 
   it('main panel should display child panels from options', async () => {
     mainPanel = mountMainPanel(getInput())
-    for (const panel of mainPanel.props().options.panels as SearchBoxPanel[]) {
+    const options = mainPanel.getComponent(SearchBoxMainPanel).props().options as SearchBoxOptions
+    for (const panel of options.panels as SearchBoxPanel[]) {
       switch (panel.type) {
         case SearchBoxPanelType.SUGGESTION:
           expect(mainPanel.findComponent(SearchBoxSuggestionsWrapper).exists()).toBeTruthy()

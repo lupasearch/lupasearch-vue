@@ -4,7 +4,7 @@ import { useSearchResultStore } from '@/stores/searchResult'
 import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 import type {
   ResultCurrentFilterOptions,
-  SearchResultsProductOptions,
+  SearchResultsOptions,
   SearchResultsSimilarQueriesLabels,
   SearchResultsSimilarResultsLabels
 } from '@/types/search-results/SearchResultsOptions'
@@ -31,7 +31,7 @@ import RefinersLoadingNotice from './RefinersLoadingNotice.vue'
 import RelatedQueriesApi from '../related-queries/RelatedQueriesApi.vue'
 
 const props = defineProps<{
-  options: SearchResultsProductOptions
+  options: SearchResultsOptions
   ssr?: boolean
 }>()
 

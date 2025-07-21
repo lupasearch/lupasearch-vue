@@ -25,10 +25,12 @@ describe('SearchResultsProductAddToCart.vue', () => {
           labels: {
             addToCart: 'Add to Cart'
           },
-          action
+          emitEvent: 'add-to-cart',
+          action,
         },
         item: { name: 'test' },
-        inStock: true
+        inStock: true,
+        dynamicAttributes: {},
       }
     })
     wrapperVm = wrapper.vm as any

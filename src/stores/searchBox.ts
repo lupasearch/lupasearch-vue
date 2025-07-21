@@ -53,6 +53,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       : historyStore.count
   )
 
+  // eslint-disable-next-line vue/return-in-computed-property
   const highlightedItem = computed(() => {
     let i = 0
     for (const panel of panelItemCounts.value) {

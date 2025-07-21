@@ -29,7 +29,6 @@ import { bindSearchTriggers, unbindSearchTriggers } from '@/utils/event.utils'
 import { useRedirectionStore } from '@/stores/redirections'
 import { isDelayedClickTracking } from '@/utils/tracking.utils'
 import { generateLink } from '@/utils/link.utils'
-import { processExtractionObject } from '@/utils/extraction.utils'
 
 const defaultSuggestedValue = {
   item: { suggestion: '' },

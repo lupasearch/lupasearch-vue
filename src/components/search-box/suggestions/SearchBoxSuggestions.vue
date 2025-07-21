@@ -66,7 +66,7 @@ watch(highlightedItem, () => {
   if (highlightedIndex.value < 0) {
     return
   }
-  const selected = props.items[highlightedIndex.value] ?? { suggestion: {}, facet: undefined }
+  const selected = props.items[highlightedIndex.value] ?? { suggestion: { suggestion: "" }, facet: undefined }
   handleSelect({
     suggestion: selected.suggestion,
     facet: selected.facet,

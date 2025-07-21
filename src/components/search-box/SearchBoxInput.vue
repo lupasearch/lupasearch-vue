@@ -18,7 +18,7 @@ const paramStore = useParamsStore()
 const searchBoxStore = useSearchBoxStore()
 const { query } = storeToRefs(paramStore)
 
-const emit = defineEmits(['input', 'focus', 'search'])
+const emit = defineEmits(['input', 'focus', 'search', 'close'])
 
 const mainInput = ref(null)
 const voiceDialogOverlay = ref(null)

@@ -93,8 +93,8 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
     itemCount: string
     emptyResults: string
     mobileFilterButton: string
-    mobileFilterButtonActive: string
-    mobileFilterButtonOpen: string
+    mobileFilterButtonActive?: string
+    mobileFilterButtonOpen?: string
     mobileFilterCloseButton: string
     htmlTitleTemplate: string
     outOfStock?: string

@@ -4,7 +4,6 @@ import { DEFAULT_OPTIONS_RESULTS } from '@/constants/searchResults.const'
 import { mount, VueWrapper } from '@vue/test-utils'
 import SearchResultsPageSize from '../SearchResultsPageSize.vue'
 import { createTestingPinia } from '@pinia/testing'
-import { vi } from 'vitest'
 import { useParamsStore } from '@/stores/params'
 
 describe('SearchResultsPageSize', () => {
@@ -19,7 +18,10 @@ describe('SearchResultsPageSize', () => {
         plugins: [createTestingPinia({ stubActions: false })]
       },
       props: {
-        label: DEFAULT_OPTIONS_RESULTS.labels.pageSize,
+        labels: {
+          pageSize: DEFAULT_OPTIONS_RESULTS.labels.pageSize,
+          itemCount: DEFAULT_OPTIONS_RESULTS.labels.itemCount,
+        },
         options: {
           sizes: DEFAULT_OPTIONS_RESULTS.pagination.sizeSelection.sizes,
           selectedSize: DEFAULT_OPTIONS_RESULTS.pagination.sizeSelection.sizes[1]
@@ -38,7 +40,7 @@ describe('SearchResultsPageSize', () => {
 
   it('should change select value when option is selected', async () => {
     wrapper.find('select').trigger('click')
-    wrapper.findAll('option').at(2).setSelected()
+    wrapper.findAll('option').at(2).setValue(pageSizes[2].toString())
 
     const select = wrapper.find('select').element as HTMLSelectElement
     expect(select.value).toBe(pageSizes[2].toString())

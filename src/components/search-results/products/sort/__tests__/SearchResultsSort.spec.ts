@@ -5,9 +5,7 @@ import { DEFAULT_OPTIONS_RESULTS } from '@/constants/searchResults.const'
 import { mount, VueWrapper } from '@vue/test-utils'
 import SearchResultsSort from '../SearchResultsSort.vue'
 import { createTestingPinia } from '@pinia/testing'
-import { vi } from 'vitest'
 import { useParamsStore } from '@/stores/params'
-import { useOptionsStore } from '@/stores/options'
 
 const sort = [
   { key: 's1', label: '', config: [] },
@@ -44,7 +42,7 @@ describe('SearchResultsSort', () => {
     const paramStore = useParamsStore()
 
     wrapper.find('select').trigger('click')
-    wrapper.findAll('option').at(1).setSelected()
+    wrapper.findAll('option').at(1).setValue(sort[1].key)
 
     const select = wrapper.find('select').element as HTMLSelectElement
     expect(select.value).toBe(sort[1].key)

@@ -37,7 +37,9 @@ const emit = defineEmits([
   'clear-history-item',
   'clear-history',
   'fetched',
-  'itemSelect'
+  'itemSelect',
+  'product-click',
+  'close',
 ])
 
 const displayResults = computed(() => props.inputValue?.length >= props.options.minInputLength)
