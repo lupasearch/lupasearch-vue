@@ -8,6 +8,9 @@ import {
 } from '@vue/eslint-config-typescript'
 
 export default defineConfigWithVueTs(
+  {
+    ignores: ["node_modules", "dist"],
+  },
   pluginVue.configs['flat/recommended'],
   js.configs.recommended,
   vueTsConfigs.recommended,
@@ -29,6 +32,5 @@ export default defineConfigWithVueTs(
     plugins: {
       vue: pluginVue,
     },
-    ignores: ["node_modules", "dist", "migrations/*.js"],
   },
 )
