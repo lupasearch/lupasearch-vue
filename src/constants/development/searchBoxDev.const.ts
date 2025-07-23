@@ -48,7 +48,6 @@ export const SEARCH_BOX_CONFIGURATION = {
     customVoiceServiceUrl: 'ws://localhost:3001'
   },
 
-  links: { searchResults: '/catalogsearch/result' },
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,
   showNoResultsPanel: true,

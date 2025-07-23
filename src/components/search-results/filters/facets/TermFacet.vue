@@ -145,6 +145,7 @@ const getFacetValueClass = (item: FacetGroupItem): string => {
     <div
       v-if="displayShowMore"
       class="lupa-facet-term lupa-show-more-facet-results"
+      :class="{ 'lupa-show-less-facet-results': showAll }"
       data-cy="lupa-facet-term"
       @click="toggleShowAll"
     >
