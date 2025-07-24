@@ -8,6 +8,7 @@ import { DisplaySuggestion } from './Common'
 import { QueryParams } from '../search-results/QueryParams'
 import { RedirectionOptions } from '../redirections/RedirectionOptions'
 import { DataExtraction } from '../DataExtraction'
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
 
 export type SearchBoxOptions = SearchBoxPanelOptions & {
   inputSelector: string
@@ -19,7 +20,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   redirections?: RedirectionOptions
   queryParameterNames?: Record<LupaQueryParamValue, string>
   keepOpen?: boolean
-}
+} & Partial<MultiCurrencyConfig>
 
 export type SearchBoxOptionLabels = {
   placeholder: string
@@ -64,7 +65,6 @@ export type SearchBoxInputOptions = {
   links: SearchBoxOptionLinks
   inputAttributes?: Record<string, string>
   showSubmitButton?: boolean
-  voiceSearch?: VoiceSearchOptions
 }
 
 export type SearchBoxResultCallbackContext = {

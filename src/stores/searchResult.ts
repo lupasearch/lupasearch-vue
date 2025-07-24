@@ -42,7 +42,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const paramsStore = useParamsStore()
   const screenStore = useScreenStore()
 
-  const { searchResultOptions } = storeToRefs(optionsStore)
+  const { searchResultOptions, multiCurrency } = storeToRefs(optionsStore)
 
   const facets = computed(() => searchResult.value.facets)
 
@@ -80,7 +80,8 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         keys: priceKeys.value,
         currency: currency.value,
         separator: priceSeparator.value,
-        currencyTemplate: currencyTemplate.value
+        currencyTemplate: currencyTemplate.value,
+        multiCurrency: multiCurrency.value
       }),
       facets.value,
       filterTranslations.value
