@@ -2,16 +2,13 @@ import { DocumentElement } from '@/types/DocumentElement'
 import { SdkOptions } from '@/types/General'
 import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
-import type { MultiCurrencyConfig } from '@/utils/price.utils'
-import { formatPrice } from '@/utils/price.utils'
-import { useOptionsStore } from '@/stores/options'
-import { storeToRefs } from 'pinia'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
-  selected: 'eur',
+  selectedCurrency: 'eur',
   currencies: [
     { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
-    { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }
+    { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 },
+    { key: 'gbp', symbol: '£', template: '£ {1}', separator: '.', multiplier: 0.85 }
   ],
   options: {
     environment: 'production'
@@ -100,7 +97,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       },
       stats: {
         slider: true,
-        inputs: true,
+        inputs: false,
         labels: {
           from: 'From:',
           to: 'To:',

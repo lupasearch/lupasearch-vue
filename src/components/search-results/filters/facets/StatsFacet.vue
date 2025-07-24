@@ -3,7 +3,7 @@ import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
 import { useOptionsStore } from '@/stores/options'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { formatRange } from '@/utils/filter.utils'
-import { formatPriceSummary } from '@/utils/price.utils'
+import { formatPriceSummary, getAdjustedNumber } from '@/utils/price.utils'
 import { normalizeFloat } from '@/utils/string.utils'
 import type { FacetGroupTypeStats, FilterGroupItemTypeRange } from '@getlupa/client-sdk/Types'
 import { storeToRefs } from 'pinia'
@@ -22,8 +22,7 @@ const emit = defineEmits<{
 const facetValue = computed(() => props.facet ?? { key: '', min: 0, max: 100 })
 const currentFilters = computed(() => props.currentFilters ?? {})
 const optionsStore = useOptionsStore()
-const { searchResultOptions } = storeToRefs(optionsStore)
-const { multiCurrency } = storeToRefs(useOptionsStore())
+const { searchResultOptions, multiCurrency } = storeToRefs(optionsStore)
 const rangeLabelFrom = computed(() => props.options.stats?.labels?.from ?? '')
 const rangeLabelTo = computed(() => props.options.stats?.labels?.to ?? '')
 const separator = computed(() => searchResultOptions.value?.labels?.priceSeparator ?? ',')
@@ -33,7 +32,9 @@ const priceKeys = computed(() => searchResultOptions.value?.priceKeys ?? [])
 const unit = computed(() => props.options.stats?.units?.[facetValue.value.key] ?? '')
 
 const currencySymbol = computed(() => {
-  const cfg = multiCurrency.value.currencies.find((c) => c.key === multiCurrency.value.selected)
+  const cfg = multiCurrency.value.currencies.find(
+    (c) => c.key === multiCurrency.value.selectedCurrency
+  )
   return cfg?.symbol ?? currencyLabel.value
 })
 
@@ -48,33 +49,35 @@ const isPrice = computed(
 const pricePrecision = computed(() => props.options.stats?.pricePrecisionDigits ?? 2)
 const currencyConfig = computed(
   () =>
-    multiCurrency.value.currencies.find((c) => c.key === multiCurrency.value.selected) ?? {
+    multiCurrency.value.currencies.find((c) => c.key === multiCurrency.value.selectedCurrency) ?? {
       key: '',
       symbol: currencyLabel.value,
       multiplier: 1
     }
 )
 
-const currencyMultiplier = computed(() => (isPrice.value ? currencyConfig.value.multiplier : 1))
+const currencyMultiplier = computed(() =>
+  isPrice.value ? currencyConfig.value?.multiplier ?? 1 : 1
+)
 
 const facetMin = computed(() => Math.floor(facetValue.value.min * currencyMultiplier.value))
 const facetMax = computed(() => Math.ceil(facetValue.value.max * currencyMultiplier.value))
-const currentGte = computed<number | undefined>(() =>
-  typeof currentFilters.value.gte === 'string'
-    ? parseFloat(currentFilters.value.gte)
-    : currentFilters.value.gte
+const currentGte = computed(() =>
+  getAdjustedNumber(currentFilters.value.gte, currencyMultiplier.value)
 )
-const currentLte = computed<number | undefined>(() =>
-  typeof currentFilters.value.lte === 'string'
-    ? parseFloat(currentFilters.value.lte)
-    : currentFilters.value.lte
+const currentLte = computed(() =>
+  getAdjustedNumber(currentFilters.value.lte, currencyMultiplier.value)
 )
 
 const currentMinValue = computed(() =>
-  currentGte.value != null ? Math.max(currentGte.value, facetMin.value) : facetMin.value
+  currentGte.value != null && typeof currentGte.value === 'number'
+    ? Math.max(currentGte.value, facetMin.value)
+    : facetMin.value
 )
 const currentMaxValue = computed(() =>
-  currentLte.value != null ? Math.min(currentLte.value, facetMax.value) : facetMax.value
+  currentLte.value != null && typeof currentLte.value === 'number'
+    ? Math.min(currentLte.value, facetMax.value)
+    : facetMax.value
 )
 
 const innerSliderRange = ref<number[]>([currentMinValue.value, currentMaxValue.value])
@@ -92,6 +95,16 @@ const sliderRange = computed<number[]>({
   set: (v) => {
     innerSliderRange.value = v
   }
+})
+
+const originalSliderRange = computed(() => {
+  return innerSliderRange.value.length === 2 &&
+    (currentFilters.value.gte || currentFilters.value.lte)
+    ? [
+        Math.max(+currentFilters.value.gte, facetValue.value.min),
+        Math.min(+currentFilters.value.lte, facetValue.value.max)
+      ]
+    : [facetValue.value.min, facetValue.value.max]
 })
 
 const fromValue = computed<string>({
@@ -145,7 +158,7 @@ const ariaLabelTo = computed(
 )
 
 const statsSummary = computed<string>(() => {
-  const [min, max] = sliderRange.value
+  const [min, max] = originalSliderRange.value
   if (isPrice.value) {
     return formatPriceSummary(
       [min, max],

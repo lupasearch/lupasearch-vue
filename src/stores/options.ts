@@ -30,19 +30,19 @@ export const useOptionsStore = defineStore('options', () => {
   const screenStore = useScreenStore()
 
   const envOptions = computed<SdkOptions & Partial<MultiCurrencyConfig>>(
-    () => searchBoxOptions.value.options ?? searchResultOptions.value.options
+    () => searchResultOptions.value.options ?? searchBoxOptions.value.options
   )
 
   const multiCurrency = computed<MultiCurrencyConfig>(() => {
-    if (searchBoxOptions.value.selected != null) {
+    if (searchResultOptions.value.selectedCurrency != null) {
       return {
-        selected: searchBoxOptions.value.selected,
-        currencies: searchBoxOptions.value.currencies || []
+        selectedCurrency: searchResultOptions.value.selectedCurrency,
+        currencies: searchResultOptions.value.currencies || []
       }
     }
     return {
-      selected: searchResultOptions.value.selected,
-      currencies: searchResultOptions.value.currencies || []
+      selectedCurrency: searchBoxOptions.value.selectedCurrency,
+      currencies: searchBoxOptions.value.currencies || []
     }
   })
   const classMap = computed(() => searchResultOptions.value.classMap ?? {})

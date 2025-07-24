@@ -3,7 +3,7 @@ import { formatPrice, formatPriceSummary } from '../price.utils'
 import type { MultiCurrencyConfig } from '../price.utils'
 
 const fakeMulti: MultiCurrencyConfig = {
-  selected: 'eur',
+  selectedCurrency: 'eur',
   currencies: [
     { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
     { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 }

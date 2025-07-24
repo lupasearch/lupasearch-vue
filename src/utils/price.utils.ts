@@ -9,7 +9,7 @@ export interface CurrencyConfig {
 }
 
 export type MultiCurrencyConfig = {
-  selected: string
+  selectedCurrency: string
   currencies: CurrencyConfig[]
 }
 
@@ -41,7 +41,7 @@ export const formatPrice = (
   let multiply = 1
 
   if (multiCurrency) {
-    const cfg = multiCurrency.currencies.find((c) => c.key === multiCurrency.selected)
+    const cfg = multiCurrency.currencies.find((c) => c.key === multiCurrency.selectedCurrency)
     if (cfg && price != null) {
       symbol = cfg.symbol
       separate = cfg.separator
@@ -51,7 +51,9 @@ export const formatPrice = (
   }
 
   const raw = typeof price === 'number' ? price : parseFloat(price)
-  if (isNaN(raw)) return ''
+  if (isNaN(raw)) {
+    return ''
+  }
   const adjusted = raw * multiply
 
   const amount = getAmount(adjusted, separate)
@@ -85,4 +87,21 @@ export const formatPriceSummary = (
     return `> ${formatPrice(min, currency, separator, currencyTemplate, multiCurrency)}`
   }
   return `< ${formatPrice(max!, currency, separator, currencyTemplate, multiCurrency)}`
+}
+
+export const getAdjustedNumber = (
+  value?: string | number,
+  multiplier?: number
+): number | string => {
+  if (!value) {
+    return value
+  }
+  if (typeof value === 'number') {
+    return multiplier ? value * multiplier : value
+  }
+  const parsed = parseFloat(value)
+  if (isNaN(parsed)) {
+    return value
+  }
+  return multiplier ? parsed * multiplier : parsed
 }
