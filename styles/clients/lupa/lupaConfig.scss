@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $primary: #3c53f4;
 $secondary: #3c53f4;
 $text-color: #161616;
@@ -11,7 +13,7 @@ $discount-color: #ec0b43;
 $recording-color: red;
 $white: #fff;
 $icon-font-family: "Material Design Icons"!default;
-$link: darken($primary, 15%);
+$link: color.adjust($primary, $lightness: -15%);
 $base-font-size: 16px;
 $size-s: 767px !default;
 $size-xxs: 350px !default;

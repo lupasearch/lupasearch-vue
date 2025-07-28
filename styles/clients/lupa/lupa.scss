@@ -1,5 +1,7 @@
 $icon-font-family: 'Material Design Icons' !default;
 
+@use 'sass:color';
+
 @use '../../../node_modules/@vueform/slider/themes/default.css';
 
 @use './lupaConfig.scss' with (
@@ -15,8 +17,8 @@ $icon-font-family: 'Material Design Icons' !default;
   $background: lupaConfig.$background,
   $font-family-base: lupaConfig.$font-family,
   $link: lupaConfig.$link,
-  $link-hover: darken(lupaConfig.$link, 10%),
-  $grey-100: lighten(lupaConfig.$primary, 10%),
+  $link-hover: color.adjust(lupaConfig.$link, $lightness: -10%),
+  $grey-100: color.adjust(lupaConfig.$primary, $lightness: 10%),
   $grey-200: lupaConfig.$primary
 );
 

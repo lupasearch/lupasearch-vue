@@ -24,7 +24,7 @@ const searchBoxStore = useSearchBoxStore()
 
 const mounted = ref(false)
 
-const emit = defineEmits(['fetched'])
+const emit = defineEmits(['fetched', 'product-click'])
 
 const { docResults } = storeToRefs(searchBoxStore)
 
@@ -53,7 +53,7 @@ onMounted(() => {
 })
 
 watch(relatedSourceIdsString, () => {
-  if (mounted) {
+  if (mounted.value) {
     getItemsDebounced()
   }
 })

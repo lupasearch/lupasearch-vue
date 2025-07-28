@@ -54,7 +54,7 @@ const extractFromUrl = (options: ExtractFromUrl): string | number | Record<strin
 // Function to handle localStorage/sessionStorage extraction
 const extractFromStorage = (
   options: ExtractFromStorage
-): string | number | Record<string, unknown> => {
+): string | number | Record<string, unknown> | unknown => {
   const storage = options.extractFrom === 'localStorage' ? localStorage : sessionStorage
   let rawValue = ''
   try {
