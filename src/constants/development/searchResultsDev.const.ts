@@ -19,7 +19,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     noItemsInPage: 'There are no results in this page',
     backToFirstPage: 'Go back to the first page',
     mobileFilterButton: 'Filter',
-    mobileFilterCloseButton: 'Close',
+    mobileFilterCloseButton: '',
     htmlTitleTemplate: "Search Query: '{1}' zeeawaw",
     noResultsSuggestion: 'No results found for this query: {1}',
     didYouMean: 'Did you mean to search: {1}',
