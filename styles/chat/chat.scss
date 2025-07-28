@@ -1,4 +1,5 @@
 @use '../clients/lupa/lupaConfig.scss';
+@use 'sass:color';
 
 @use '../base/general' with (
   $primary: lupaConfig.$primary,
@@ -9,8 +10,8 @@
   $background: lupaConfig.$background,
   $font-family-base: 'Lato',
   $link: lupaConfig.$link,
-  $link-hover: darken(lupaConfig.$link, 10%),
-  $grey-100: lighten(lupaConfig.$primary, 10%),
+  $link-hover: color.adjust(lupaConfig.$link, $lightness: -10%),
+  $grey-100: color.adjust(lupaConfig.$primary, $lightness: 10%),
   $grey-200: lupaConfig.$primary
 );
 

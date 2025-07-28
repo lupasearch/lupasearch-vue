@@ -59,6 +59,7 @@ export const useOptionsStore = defineStore('options', () => {
     () => currentResolutionPageSizes.value?.[0] ?? DEFAULT_PAGE_SIZE
   )
 
+  // eslint-disable-next-line vue/return-in-computed-property
   const currentResolutionPageSizes = computed(() => {
     const pageSizes =
       searchResultOptions.value?.pagination?.sizeSelection?.sizes ?? DEFAULT_PAGE_SIZE_SELECTION

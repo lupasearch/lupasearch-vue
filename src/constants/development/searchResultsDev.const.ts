@@ -27,6 +27,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     noItemsInPage: 'There are no results in this page',
     backToFirstPage: 'Go back to the first page',
     mobileFilterButton: 'Filter',
+    mobileFilterCloseButton: '',
     htmlTitleTemplate: "Search Query: '{1}' zeeawaw",
     noResultsSuggestion: 'No results found for this query: {1}',
     didYouMean: 'Did you mean to search: {1}',
@@ -52,8 +53,12 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       sizes: [15, 30, 45, 60]
     },
     pageSelection: {
-      position: { top: false, bottom: true },
-      display: 5
+      position: {
+        top: false,
+        bottom: true
+      },
+      display: 5,
+      displayMobile: 3
     }
   },
 
