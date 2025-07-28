@@ -56,13 +56,13 @@ describe('unfoldFilters', () => {
     expect(
       unfoldFilters({
         tag: ['books', 'journals'],
-        price: { gte: 10, lte: 25 },
+        price: { gte: 11.2, lte: 28 },
         rating: { gte: 2, lte: 4 }
       })
     ).toEqual([
       { key: 'tag', value: 'books', type: 'terms' },
       { key: 'tag', value: 'journals', type: 'terms' },
-      { key: 'price', value: '10,00 € - 25,00 €', type: 'range' },
+      { key: 'price', value: '11,20 € - 28,00 €', type: 'range' },
       { key: 'rating', value: '2 - 4', type: 'range' }
     ])
   })

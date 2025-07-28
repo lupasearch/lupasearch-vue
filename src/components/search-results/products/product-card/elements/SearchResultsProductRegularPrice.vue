@@ -4,6 +4,8 @@ import type { RegularPriceDocumentElement } from '@/types/DocumentElement'
 import type { SearchResultsOptionLabels } from '@/types/search-results/SearchResultsOptions'
 import { formatPrice } from '@/utils/price.utils'
 import type { Document } from '@getlupa/client-sdk/Types'
+import { storeToRefs } from 'pinia'
+import { useOptionsStore } from '@/stores/options'
 
 const props = defineProps<{
   item: Document
@@ -11,12 +13,16 @@ const props = defineProps<{
   labels: SearchResultsOptionLabels
 }>()
 
+const optionsStore = useOptionsStore()
+const { multiCurrency } = storeToRefs(optionsStore)
+
 const price = computed((): string => {
   return formatPrice(
     props.item[props.options.key] as string,
     props.labels?.currency,
     props.labels?.priceSeparator,
-    props.labels?.currencyTemplate
+    props.labels?.currencyTemplate,
+    multiCurrency.value
   )
 })
 </script>

@@ -9,6 +9,8 @@ import type { FilterGroup } from '@getlupa/client-sdk/Types'
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE_SELECTION } from '@/constants/global.const'
 import { useScreenStore } from './screen'
 import { ProductRecommendationOptions } from '@/types/recommendations/RecommendationsOptions'
+import type { MultiCurrencyConfig } from '@/utils/price.utils'
+import type { SdkOptions } from '@/types/General'
 
 export const useOptionsStore = defineStore('options', () => {
   const searchBoxOptions: Ref<SearchBoxOptions> = ref(
@@ -27,10 +29,22 @@ export const useOptionsStore = defineStore('options', () => {
 
   const screenStore = useScreenStore()
 
-  const envOptions = computed(
-    () => searchBoxOptions.value.options ?? searchResultOptions.value.options
+  const envOptions = computed<SdkOptions & Partial<MultiCurrencyConfig>>(
+    () => searchResultOptions.value.options ?? searchBoxOptions.value.options
   )
 
+  const multiCurrency = computed<MultiCurrencyConfig>(() => {
+    if (searchResultOptions.value.selectedCurrency != null) {
+      return {
+        selectedCurrency: searchResultOptions.value.selectedCurrency,
+        currencies: searchResultOptions.value.currencies || []
+      }
+    }
+    return {
+      selectedCurrency: searchBoxOptions.value.selectedCurrency,
+      currencies: searchBoxOptions.value.currencies || []
+    }
+  })
   const classMap = computed(() => searchResultOptions.value.classMap ?? {})
 
   const initialFilters = computed(() => searchResultInitialFilters.value)
@@ -101,6 +115,7 @@ export const useOptionsStore = defineStore('options', () => {
     searchResultOptions,
     trackingOptions,
     envOptions,
+    multiCurrency,
     classMap,
     initialFilters,
     boxRoutingBehavior,

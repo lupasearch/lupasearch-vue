@@ -4,10 +4,18 @@ import { FacetStyle } from '@/types/search-results/SearchResultsOptions'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
 
 export const SEARCH_RESULTS_CONFIGURATION = {
+  selectedCurrency: 'eur',
+  currencies: [
+    { key: 'eur', symbol: '€', template: '{1} €', separator: ',', multiplier: 1 },
+    { key: 'usd', symbol: '$', template: '$ {1}', separator: '.', multiplier: 1.12 },
+    { key: 'gbp', symbol: '£', template: '£ {1}', separator: '.', multiplier: 0.85 }
+  ],
   options: {
     environment: 'production'
   } as SdkOptions,
+
   queryKey: 'jnovl7k0kkvd',
+
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
@@ -28,26 +36,20 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     aiSuggestions: 'Other suggestions:',
     similarResultsLabel: 'Related to your query:'
   },
+
   toolbar: {
     layoutSelector: false,
     itemSummary: true,
     clearFilters: false
   },
+
   grid: {
-    columns: {
-      xl: 5,
-      l: 4,
-      md: 3,
-      sm: 3,
-      xs: 2
-    }
+    columns: { xl: 5, l: 4, md: 3, sm: 3, xs: 2 }
   },
+
   pagination: {
     sizeSelection: {
-      position: {
-        top: true,
-        bottom: false
-      },
+      position: { top: true, bottom: false },
       sizes: [15, 30, 45, 60]
     },
     pageSelection: {
@@ -59,33 +61,15 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       displayMobile: 3
     }
   },
+
   sort: [
-    {
-      key: 'relevance',
-      label: 'Relevance',
-      config: [{ _relevance: 'desc' }]
-    },
-    {
-      key: 'nameDesc',
-      label: 'Name (Descending)',
-      config: [{ name: 'desc' }]
-    },
-    {
-      key: 'nameAsc',
-      label: 'Name (Ascending)',
-      config: [{ name: 'asc' }]
-    },
-    {
-      key: 'priceDesc',
-      label: 'Price (High to Low)',
-      config: [{ price: 'desc' }]
-    },
-    {
-      key: 'priceAsc',
-      label: 'Price (Low to High)',
-      config: [{ price: 'asc' }]
-    }
+    { key: 'relevance', label: 'Relevance', config: [{ _relevance: 'desc' }] },
+    { key: 'nameDesc', label: 'Name (Descending)', config: [{ name: 'desc' }] },
+    { key: 'nameAsc', label: 'Name (Ascending)', config: [{ name: 'asc' }] },
+    { key: 'priceDesc', label: 'Price (High to Low)', config: [{ price: 'desc' }] },
+    { key: 'priceAsc', label: 'Price (Low to High)', config: [{ price: 'asc' }] }
   ] as SearchResultsSortOptions[],
+
   filters: {
     currentFilters: {
       visibility: {
@@ -102,9 +86,7 @@ export const SEARCH_RESULTS_CONFIGURATION = {
         showFilterCount: false,
         activeFiltersExpanded: true
       },
-      desktopToolbar: {
-        activeFiltersExpanded: true
-      }
+      desktopToolbar: { activeFiltersExpanded: true }
     },
     facets: {
       labels: {
@@ -120,30 +102,29 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       },
       stats: {
         slider: true,
-        inputs: true,
+        inputs: false,
         labels: {
           from: 'From:',
-          to: 'To:'
+          to: 'To:',
+          ariaFrom: 'From',
+          ariaTo: 'To',
+          sliderDotAriaLabel: 'Slider dot'
         }
       },
-      filterable: {
-        minValues: 10
-      },
+      filterable: { minValues: 10 },
       facetValueCountLimit: 15,
       showDocumentCount: true,
-      style: {
-        type: 'sidebar' as FacetStyle
-      }
+      style: { type: 'sidebar' as FacetStyle }
     }
   },
-  isInStock: (doc: any): boolean => {
-    return Boolean(doc)
-  },
-  links: {
-    details: '{url}'
-  },
+
+  isInStock: (doc: any): boolean => Boolean(doc),
+  customDocumentHtmlAttributes: (doc: any) => ({ 'data-id': doc.id, 'data-name': doc.name }),
+
+  links: { details: '{url}' },
   idKey: 'id',
   titleKey: 'name',
+
   elements: [
     {
       type: 'image',
@@ -153,23 +134,12 @@ export const SEARCH_RESULTS_CONFIGURATION = {
     },
     {
       type: 'custom',
-      key: 'id',
+      key: 'brand',
       className: 'lupa-custom-brand',
       action: (doc: any) => console.log('brand click', doc)
     },
-    {
-      type: 'title',
-      key: 'name',
-      isHtml: false,
-      link: false,
-      className: 'bold',
-      maxLines: 2
-    },
-    {
-      type: 'description',
-      key: 'description',
-      maxLines: 3
-    },
+    { type: 'title', key: 'name', isHtml: false, link: false, className: 'bold', maxLines: 2 },
+    { type: 'description', key: 'description', maxLines: 3 },
     {
       type: 'customHtml',
       display: (doc: Record<string, string>) => doc.price < doc.price,
@@ -192,11 +162,23 @@ export const SEARCH_RESULTS_CONFIGURATION = {
       action: (doc: any) => console.log('price 2 click', doc)
     }
   ] as DocumentElement[],
+
   breadcrumbs: [{ label: 'Main', link: '/link-to-someplace/' }, { label: 'Search: {1}' }],
+
   dynamicData: {
     enabled: true,
-    handler: async (ids: string[]) => {
-      console.log('requesting dynamic data for ids', ids)
-    }
+    handler: async (ids: string[]) => console.log('requesting dynamic data for ids', ids)
+  },
+
+  redirections: {
+    enabled: true,
+    queryKey: 'jnovl7k0kkvd',
+    cacheSeconds: 3600,
+    urlTransformer: (url: string) => `${url}`
+  },
+  scrollToResults: {
+    enabled: true,
+    timeout: 500,
+    scrollToContainerSelector: '#app'
   }
 }
