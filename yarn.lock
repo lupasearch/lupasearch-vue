@@ -362,10 +362,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@getlupa/client-sdk@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@getlupa/client-sdk/-/client-sdk-1.9.0.tgz#48815187c27695579046dc996c96b9d20d9c811f"
-  integrity sha512-s7rpQv4GGGaB+qx0+ZngzfdtYaT/Q+W3LJJXuzMyuBjIiyVg7rYGPoiFyzt/8IB77sc7+A6zvjP2mgAN7OTuOg==
+"@getlupa/client-sdk@^1.9.2":
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/@getlupa/client-sdk/-/client-sdk-1.9.2.tgz#d9dc4bd13ce8eeace2b00240826385f5bdbe6242"
+  integrity sha512-0gvgAHNZL9OJpijEl5RBjxk31yX4S6TQMxnyKERtlJJAbIhxmKRJryXhEsioufsdnnfzbVL4U7Wzir81BTsdRQ==
   dependencies:
     jquery-param "^1.2.3"
     ts-loader "^9.2.6"

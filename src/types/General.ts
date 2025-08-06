@@ -9,7 +9,7 @@ export type SdkOptions = {
   customUrl?: string
   customPayload?: Record<string, unknown>
   customHeaders?: Record<string, string>
-  customParams?: Record<string, unknown>
+  customParams?: Record<string, string | string[]>
   onError?: (err: unknown) => unknown
 }
 
