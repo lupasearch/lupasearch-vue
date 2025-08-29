@@ -62,11 +62,18 @@ const getSuggestionKey = (suggestion: DisplaySuggestion): string => {
   return `${suggestion.display}${suggestion.facet?.key}${suggestion.facet?.title}`
 }
 
+const doesSuggestionHaveFacet = (suggestion: DisplaySuggestion): boolean => {
+  return suggestion.facet !== undefined && suggestion.facet.key !== undefined
+}
+
 watch(highlightedItem, () => {
   if (highlightedIndex.value < 0) {
     return
   }
-  const selected = props.items[highlightedIndex.value] ?? { suggestion: { suggestion: "" }, facet: undefined }
+  const selected = props.items[highlightedIndex.value] ?? {
+    suggestion: { suggestion: '' },
+    facet: undefined
+  }
   handleSelect({
     suggestion: selected.suggestion,
     facet: selected.facet,
@@ -80,7 +87,11 @@ watch(highlightedItem, () => {
     <SearchBoxSuggestion
       v-for="(item, index) in items"
       :key="getSuggestionKey(item)"
-      :class="['lupa-suggestion', index === highlightedIndex ? 'lupa-suggestion-highlighted' : '']"
+      :class="[
+        'lupa-suggestion',
+        index === highlightedIndex ? 'lupa-suggestion-highlighted' : '',
+        doesSuggestionHaveFacet(item) ? 'lupa-faceted-suggestion' : 'lupa-plain-suggestion'
+      ]"
       :suggestion="item"
       :highlight="highlight"
       :labels="labels"
