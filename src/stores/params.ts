@@ -8,6 +8,7 @@ import { getPageUrl, redirectToResultsPage } from '@/utils/routing.utils'
 import { isFacetKey } from '@/utils/filter.utils'
 import {
   appendParam,
+  encodeParam,
   getQueryParam,
   getRemovableParams,
   parseParams,
@@ -194,7 +195,7 @@ export const useParamsStore = defineStore('params', () => {
       const routing = optionsStore.boxRoutingBehavior ?? 'direct-link'
       redirectToResultsPage(
         searchResultsLink.value,
-        searchText,
+        encodeParam(searchText),
         optionsStore.getQueryParamName,
         facet,
         routing
@@ -230,6 +231,7 @@ export const useParamsStore = defineStore('params', () => {
     lastChangedParams.value = findChangedParams(params.value, updatedParams)
     params.value = updatedParams
     searchString.value = url.search
+    console.log('Updated params 2', url.search, url.searchParams.get('q'))
   }
 
   const setDefaultLimit = (newDefaultLimit: number) => {
