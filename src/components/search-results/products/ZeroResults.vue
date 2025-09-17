@@ -18,14 +18,14 @@ const { searchResult } = storeToRefs(searchResultStore)
 const showDefaultZeroResultsTemplate = computed(() => {
   return (
     (props.emptyResultsLabel && props.zeroResults?.customHtml === undefined) ||
-    (props.hasSimilarQueries && !props.zeroResults.showWithSimilarQueries)
+    (props.hasSimilarQueries && !props.zeroResults?.showWithSimilarQueries)
   )
 })
 
 const showCustomZeroResultsTemplate = computed(() => {
   return (
     props.zeroResults?.customHtml !== undefined &&
-    (!props.hasSimilarQueries || props.zeroResults.showWithSimilarQueries)
+    (!props.hasSimilarQueries || props.zeroResults?.showWithSimilarQueries)
   )
 })
 
