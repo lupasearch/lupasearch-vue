@@ -24,7 +24,13 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     redirections?: RedirectionOptions
     scrollToResults?: ScrollToResultsOptions
     initialFilters?: FilterGroup | Record<string, DataExtraction>
+    zeroResults?: ZeroResultsOptions
   } & Partial<MultiCurrencyConfig>
+
+export type ZeroResultsOptions = {
+  customHtml?: (context: SearchQueryResult) => string
+  showWithSimilarQueries?: boolean
+}
 
 export type ScrollToResultsOptions = {
   enabled?: boolean
