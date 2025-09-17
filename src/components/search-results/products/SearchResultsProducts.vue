@@ -29,6 +29,7 @@ import RedirectionSuggestions from '../redirection-suggestions/RedirectionSugges
 import { EventSourceMetadata } from '@/types/search-box/Common'
 import RefinersLoadingNotice from './RefinersLoadingNotice.vue'
 import RelatedQueriesApi from '../related-queries/RelatedQueriesApi.vue'
+import ZeroResults from './ZeroResults.vue'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -248,7 +249,12 @@ const filter = () => {
       data-cy="lupa-no-results"
       v-else-if="!loading && currentQueryText"
     >
-      {{ options.labels.emptyResults }} <span>{{ currentQueryText }}</span>
+      <ZeroResults
+        :emptyResultsLabel="options.labels?.emptyResults"
+        :currentQueryText="currentQueryText"
+        :hasSimilarQueries="hasSimilarQueries || hasSimilarResults"
+        :zeroResults="options?.zeroResults"
+      />
     </div>
     <RefinersLoadingNotice :labels="options.labels" />
     <div v-if="hasSimilarQueries">
