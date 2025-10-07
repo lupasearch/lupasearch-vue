@@ -94,7 +94,6 @@ const handleCancelShowAll = () => {
     <div
       v-if="itemLimit < filteredValues.length"
       class="lupa-facet-term lupa-show-more-facet-results"
-      :class="{ 'lupa-show-less-facet-results': showAll }"
       data-cy="lupa-facet-term"
       @click="handleShowAll"
     >
@@ -102,7 +101,7 @@ const handleCancelShowAll = () => {
     </div>
     <div
       v-else-if="showAll"
-      class="lupa-facet-term lupa-show-more-facet-results"
+      class="lupa-facet-term lupa-show-more-facet-results lupa-show-less-facet-results"
       @click="handleCancelShowAll"
     >
       {{ options.labels.showLess }}
