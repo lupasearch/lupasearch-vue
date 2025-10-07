@@ -45,6 +45,10 @@ export type VoiceSearchLabels = {
   connecting?: string
   microphoneNotFound?: string
   microphoneNotAllowed?: string
+  aria?: {
+    openDialog?: string
+    microphone?: string
+  }
 }
 
 export type VoiceSearchOptions = {
@@ -65,6 +69,7 @@ export type SearchBoxInputOptions = {
   links: SearchBoxOptionLinks
   inputAttributes?: Record<string, string>
   showSubmitButton?: boolean
+  voiceSearch?: VoiceSearchOptions
 }
 
 export type SearchBoxResultCallbackContext = {

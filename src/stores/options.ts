@@ -59,6 +59,10 @@ export const useOptionsStore = defineStore('options', () => {
     () => currentResolutionPageSizes.value?.[0] ?? DEFAULT_PAGE_SIZE
   )
 
+  const ariaLabels = computed(() => {
+    return searchResultOptions.value.labels?.aria ?? {}
+  })
+
   // eslint-disable-next-line vue/return-in-computed-property
   const currentResolutionPageSizes = computed(() => {
     const pageSizes =
@@ -123,6 +127,7 @@ export const useOptionsStore = defineStore('options', () => {
     defaultSearchResultPageSize,
     currentResolutionPageSizes,
     productRecommendationOptions,
+    ariaLabels,
     setSearchBoxOptions,
     setTrackingOptions,
     setSearchResultOptions,
