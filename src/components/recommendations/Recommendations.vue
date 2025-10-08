@@ -158,6 +158,10 @@ const itemId = computed(() => {
     : extractValue<string | string[]>(props.options.itemId)
 })
 
+const wrapAround = computed(() => {
+  return carouselOptions.value?.wrapAround ?? true
+})
+
 const loadLupaRecommendations = async (): Promise<void> => {
   recommendationsType.value = 'recommendations_lupasearch'
   try {
@@ -190,7 +194,7 @@ defineExpose({ fetch })
     <template v-if="hasRecommendations">
       <h2 class="lupa-recommendation-section-title" v-if="title">{{ title }}</h2>
       <div v-if="!loading" class="lupa-recommended-products" data-cy="lupa-recommended-products">
-        <Carousel v-if="layoutType === 'carousel'" v-bind="carouselOptions" :wrap-around="true">
+        <Carousel v-if="layoutType === 'carousel'" v-bind="carouselOptions" :wrap-around="wrapAround">
           <Slide
             v-for="(product, index) in recommendations"
             :key="getProductKeyAction(index, product)"
