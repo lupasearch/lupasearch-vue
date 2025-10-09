@@ -7,7 +7,10 @@ import type {
   SortOptions
 } from '@/types/search-results/SearchResultsSort'
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
-import { SearchResultEventCallbacks } from '@/types/search-results/SearchResultsOptions'
+import {
+  SearchResultEventCallbacks,
+  SearchResultsOptionLabels
+} from '@/types/search-results/SearchResultsOptions'
 import { useOptionsStore } from '@/stores/options'
 
 const props = defineProps<{
@@ -17,7 +20,9 @@ const props = defineProps<{
 
 const paramStore = useParamsStore()
 const optionStore = useOptionsStore()
+
 const { sort } = storeToRefs(paramStore)
+const { ariaLabels } = storeToRefs(optionStore)
 
 const selectedKey = ref('')
 const previousKey = ref('')
@@ -63,10 +68,11 @@ const handleSelect = (): void => {
 <template>
   <div id="lupa-search-results-sort" class="lupa-search-results-sort">
     <div id="lupa-select">
-      <label class="lupa-select-label">{{ options.label }}</label>
+      <label class="lupa-select-label" for="lupa-sort-select-dropdown">{{ options.label }}</label>
       <select
+        id="lupa-sort-select-dropdown"
         class="lupa-select-dropdown"
-        :aria-label="options.label"
+        :aria-label="ariaLabels?.sortBySelect ?? options.label"
         data-cy="lupa-sort-select-dropdown"
         v-model="selectedKey"
         @change="handleSelect"

@@ -87,6 +87,11 @@ export type SearchResultEventCallbacks = {
   onMounted?: () => unknown
 }
 
+export type SearchResultsAriaLabels = {
+  pageSizeSelect?: string
+  sortBySelect?: string
+}
+
 export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
   SearchResultsDidYouMeanLabels &
   SearchResultsSimilarQueriesLabels &
@@ -110,6 +115,7 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
     toolbarRightLabel?: string
     toolbarLeftLabel?: string
     refinersLoadingNotice?: string
+    aria?: SearchResultsAriaLabels
   }
 
 export type SearchResultsAdditionalPanels = {

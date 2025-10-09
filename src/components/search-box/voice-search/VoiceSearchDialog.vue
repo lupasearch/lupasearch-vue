@@ -128,6 +128,8 @@ defineExpose({
             class="lupa-mic-button"
             :class="{ recording: isRecording }"
             @click="handleRecordingButtonClick"
+            aria-controls="voice-search-microphone"
+            :aria-label="labels?.aria?.microphone || 'Toggle microphone'"
           ></button>
           <VoiceSearchProgressCircle
             ref="voiceSearchProgressBar"
