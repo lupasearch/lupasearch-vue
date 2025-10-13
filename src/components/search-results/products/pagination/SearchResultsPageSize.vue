@@ -5,6 +5,7 @@ import { useParamsStore } from '@/stores/params'
 import type { PaginationPageSize } from '@/types/search-results/PaginationOptions'
 import { computed, ref } from 'vue'
 import type { SearchResultsPaginationLabels } from '@/types/search-results/SearchResultsPagination'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps<{
   labels: SearchResultsPaginationLabels
@@ -13,6 +14,8 @@ const props = defineProps<{
 
 const paramsStore = useParamsStore()
 const optionsStore = useOptionsStore()
+
+const { ariaLabels } = storeToRefs(optionsStore)
 
 const select = ref(null)
 
@@ -34,10 +37,11 @@ const handleSelect = (e: Event): void => {
 <template>
   <div id="lupa-search-results-page-size" data-cy="lupa-search-results-page-size">
     <div id="lupa-select">
-      <label class="lupa-select-label">{{ label }}</label>
+      <label class="lupa-select-label" for="lupa-page-size-select-dropdown">{{ label }}</label>
       <select
+        id="lupa-page-size-select-dropdown"
         class="lupa-select-dropdown"
-        :aria-label="label"
+        :aria-label="ariaLabels?.pageSizeSelect ?? label ?? 'Select page size'"
         data-cy="lupa-page-size-select-dropdown"
         @change="handleSelect"
         ref="select"

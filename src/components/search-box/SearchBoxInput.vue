@@ -56,6 +56,10 @@ const inputAttributes = computed(() => ({
 
 const ariaLabel = computed(() => labels.value.searchInputAriaLabel ?? 'Search input')
 
+const voiceSearchAriaLabel = computed(() => {
+  return props.options.voiceSearch?.labels?.aria?.openDialog ?? 'Open voice search dialog'
+})
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutsideVoiceDialogOverlay)
 })
@@ -125,21 +129,18 @@ const stopRecognition = (trascription: string) => {
   setTimeout(() => {
     isVoiceDialogOpen.value = false
     handleVoiceSearchOutput(trascription)
-  }, 500);
+  }, 500)
 }
 
 const handleClickOutsideVoiceDialogOverlay = (event) => {
-  if(event.target.classList.contains('lupa-voice-search-button')) {
+  if (event.target.classList.contains('lupa-voice-search-button')) {
     return
   }
 
-  if (
-    voiceDialogOverlay.value && 
-    voiceDialogOverlay.value.$el.contains(event.target)
-  ) {
+  if (voiceDialogOverlay.value && voiceDialogOverlay.value.$el.contains(event.target)) {
     return
   }
-  
+
   if (isVoiceDialogOpen.value) {
     closeDialog()
   }
@@ -184,12 +185,15 @@ defineExpose({ focus })
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>
     </div>
     <div v-if="isVoiceSearchEnabled">
-      <button 
-        @click="openVoiceSearchDialog" 
+      <button
+        @click="openVoiceSearchDialog"
         class="lupa-voice-search-button"
+        aria-haspopup="dialog"
+        aria-controls="voice-search-dialog"
+        :aria-label="voiceSearchAriaLabel"
       ></button>
     </div>
-    <VoiceSearchDialog 
+    <VoiceSearchDialog
       v-if="isVoiceSearchEnabled"
       ref="voiceDialogOverlay"
       :isOpen="isVoiceDialogOpen"
