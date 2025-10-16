@@ -191,6 +191,23 @@ describe('extractValue', () => {
     expect(result).toBe('defaultText')
   })
 
+  test('should extract 0 value from HTML element text', () => {
+    const elementOptions: ExtractFromHtmlElementText = {
+      extractFrom: 'htmlElementText',
+      default: 'defaultText',
+      querySelector: '.test-element'
+    }
+
+    // Mock document.querySelector
+    const mockElement = {
+      textContent: '0'
+    } as HTMLElement
+    vi.spyOn(document, 'querySelector').mockReturnValue(mockElement)
+
+    const result = extractValue(elementOptions)
+    expect(result).toBe('0')
+  })
+
   test('should extract value from HTML element attribute using regex', () => {
     const elementOptions: ExtractFromHtmlElementAttribute = {
       extractFrom: 'htmlElementAttribute',
@@ -244,6 +261,25 @@ describe('extractValue', () => {
 
     const result = extractValue(elementOptions)
     expect(result).toBe('actual-value')
+  })
+
+  test('should extract 0 value from HTML element attribute', () => {
+    const elementOptions: ExtractFromHtmlElementAttribute = {
+      extractFrom: 'htmlElementAttribute',
+      default: 'defaultValue',
+      querySelector: '.test-element',
+      attribute: 'data-test',
+      regex: '\\[(\\d+)\\]'
+    }
+
+    // Mock document.querySelector
+    const mockElement = {
+      getAttribute: vi.fn().mockReturnValue('[0]')
+    } as unknown as HTMLElement
+    vi.spyOn(document, 'querySelector').mockReturnValue(mockElement)
+
+    const result = extractValue(elementOptions)
+    expect(result).toBe('0')
   })
 
   test('should return default value when HTML element attribute does not exist', () => {

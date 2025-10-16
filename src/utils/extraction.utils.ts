@@ -99,7 +99,7 @@ const extractFromHtmlElementAttribute = (
 
   const attributeValue = element.getAttribute(attr)
 
-  if (!attributeValue) {
+  if (attributeValue === null || attributeValue === undefined) {
     return options.default
   }
 
