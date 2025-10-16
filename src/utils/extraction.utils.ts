@@ -97,7 +97,19 @@ const extractFromHtmlElementAttribute = (
     return (element as HTMLInputElement).value
   }
 
-  return element.getAttribute(attr) || options.default
+  const attributeValue = element.getAttribute(attr)
+
+  if (attributeValue === null || attributeValue === undefined) {
+    return options.default
+  }
+
+  if (options.regex) {
+    const regex = new RegExp(options.regex)
+    const match = attributeValue.match(regex)
+    return match ? match[1] : options.default
+  }
+
+  return attributeValue
 }
 
 // Helper function to get a nested value using a dot notation path
