@@ -191,6 +191,25 @@ describe('extractValue', () => {
     expect(result).toBe('defaultText')
   })
 
+  test('should extract value from HTML element attribute using regex', () => {
+    const elementOptions: ExtractFromHtmlElementAttribute = {
+      extractFrom: 'htmlElementAttribute',
+      default: 'defaultValue',
+      querySelector: '.test-element',
+      attribute: 'data-test',
+      regex: 'value-(\\d+)'
+    }
+
+    // Mock document.querySelector
+    const mockElement = {
+      getAttribute: vi.fn().mockReturnValue('value-12345')
+    } as unknown as HTMLElement
+    vi.spyOn(document, 'querySelector').mockReturnValue(mockElement)
+
+    const result = extractValue(elementOptions)
+    expect(result).toBe('12345')
+  })
+
   test('should extract value from HTML element id attribute', () => {
     const elementOptions: ExtractFromHtmlElementAttribute = {
       extractFrom: 'htmlElementAttribute',
