@@ -4,6 +4,7 @@ import StatsFacet from './StatsFacet.vue'
 import HierarchyFacet from './HierarchyFacet.vue'
 import { useOptionsStore } from '@/stores/options'
 import { getTranslatedFacetKey } from '@/utils/translation.utils'
+import { useScreenStore } from '@/stores/screen'
 
 export default {
   components: {
@@ -39,12 +40,22 @@ const currentFilters = computed(() => props.currentFilters ?? {})
 
 const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
+const screenStore = useScreenStore()
 const { currentFilterKeys } = storeToRefs(searchResultStore)
 const { searchResultOptions } = storeToRefs(optionsStore)
 
+const { isMobileWidth } = storeToRefs(screenStore)
+
 const emit = defineEmits(['select', 'clear'])
 
-const isOpen = ref(props.options.expand?.includes(props.facet.key) ?? false)
+const allExpanded = computed((): boolean => {
+  if (isMobileWidth.value) {
+    return props.options?.expandAll?.mobile ?? false
+  }
+  return props.options?.expandAll?.desktop ?? false
+})
+
+const isOpen = ref((props.options?.expand?.includes(props.facet.key) || allExpanded.value) ?? false)
 
 const facetPanel = ref(null)
 
