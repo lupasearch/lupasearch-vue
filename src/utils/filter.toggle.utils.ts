@@ -99,7 +99,7 @@ export const toggleRangeFilter = (
     currentFilters?.[facetAction.key] as FilterGroupItemTypeRange,
     FACET_RANGE_SEPARATOR
   )
-  let facetValue = facetAction.value.join(FACET_RANGE_SEPARATOR)
+  let facetValue = facetAction?.value?.join(FACET_RANGE_SEPARATOR) ?? ''
   facetValue = currentFilter === facetValue ? '' : facetValue
   const paramsToRemove = getQueryParamName
     ? [getQueryParamName(QUERY_PARAMS.PAGE)]
