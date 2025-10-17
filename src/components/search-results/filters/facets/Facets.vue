@@ -70,6 +70,7 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
     case 'range':
       toggleRangeFilter(
         paramStore.appendParams as any,
+        paramStore.removeParameters as any,
         facetAction,
         optionsStore.getQueryParamName,
         filters.value

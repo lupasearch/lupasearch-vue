@@ -46,13 +46,15 @@ describe('toggleTermFilter', () => {
 
 describe('toggleRangeFilter', () => {
   let append: any
+  let remove: any
 
   beforeEach(() => {
     append = vi.fn()
+    remove = vi.fn()
   })
 
   it('should append param to empty filters', () => {
-    toggleRangeFilter(append, {
+    toggleRangeFilter(append, remove, {
       type: 'range',
       value: ['2', '5'],
       key: 'price'
@@ -61,6 +63,28 @@ describe('toggleRangeFilter', () => {
       params: [{ name: 'fr.price', value: '2:5' }],
       paramsToRemove: [QUERY_PARAMS.PAGE],
       encode: false
+    })
+  })
+
+  it('should remove range filter if it already exists', () => {
+    toggleRangeFilter(
+      append,
+      remove,
+      {
+        type: 'range',
+        value: ['10', '20'],
+        key: 'price'
+      },
+      undefined,
+      {
+        price: {
+          gte: '10',
+          lt: '20'
+        }
+      }
+    )
+    expect(remove).toHaveBeenCalledWith({
+      paramsToRemove: ['fr.price', QUERY_PARAMS.PAGE]
     })
   })
 })
