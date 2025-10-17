@@ -42,6 +42,14 @@ const hasLink = computed((): boolean => {
   return Boolean(props.link && props.options.link)
 })
 
+const addToCartButtonClass = computed((): Record<string, boolean> => {
+  return {
+    [props.options.className]: Boolean(props.options.className),
+    'lupa-add-to-cart-loading': loading.value,
+    'lupa-add-to-cart': !loading.value
+  }
+})
+
 const handleClick = async (e: Event): Promise<void> => {
   if (productCardIsClickable.value && !hasLink.value) {
     e.preventDefault()
@@ -68,7 +76,7 @@ const handleClick = async (e: Event): Promise<void> => {
     <div class="lupa-search-results-product-addtocart">
       <button
         v-if="hasLink"
-        :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
+        :class="addToCartButtonClass"
         data-cy="lupa-add-to-cart"
         :disabled="!inStockValue || loading"
         v-bind="dynamicAttributes"
@@ -81,7 +89,7 @@ const handleClick = async (e: Event): Promise<void> => {
       <button
         v-else
         :id="id"
-        :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
+        :class="addToCartButtonClass"
         data-cy="lupa-add-to-cart"
         :disabled="!inStockValue || loading"
         v-bind="dynamicAttributes"
