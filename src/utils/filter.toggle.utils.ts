@@ -25,7 +25,7 @@ type AppendParams = ({
   paramsToRemove,
   encode
 }: {
-  params: { name: string; value: string | string[] }[]
+  params?: { name: string; value: string | string[] }[]
   paramsToRemove?: string[]
   encode?: boolean
 }) => unknown
@@ -90,6 +90,7 @@ export const toggleHierarchyFilter = (
 
 export const toggleRangeFilter = (
   appendParams: AppendParams,
+  removeParameters: AppendParams,
   facetAction: RangeFacetAction,
   getQueryParamName?: (param: LupaQueryParamValue) => string,
   currentFilters?: FilterGroup
@@ -100,9 +101,21 @@ export const toggleRangeFilter = (
   )
   let facetValue = facetAction.value.join(FACET_RANGE_SEPARATOR)
   facetValue = currentFilter === facetValue ? '' : facetValue
+  const paramsToRemove = getQueryParamName
+    ? [getQueryParamName(QUERY_PARAMS.PAGE)]
+    : [QUERY_PARAMS.PAGE]
+  if (!facetValue) {
+    removeParameters({
+      paramsToRemove: [
+        getFacetParam(facetAction.key, '', FACET_PARAMS_TYPE.RANGE).name,
+        ...paramsToRemove
+      ]
+    })
+    return
+  }
   appendParams({
     params: [getFacetParam(facetAction.key, facetValue, FACET_PARAMS_TYPE.RANGE)],
-    paramsToRemove: [getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE],
+    paramsToRemove: paramsToRemove,
     encode: false
   })
 }
