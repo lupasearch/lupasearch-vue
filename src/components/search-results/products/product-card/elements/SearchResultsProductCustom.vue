@@ -31,7 +31,11 @@ const isHtml = computed((): boolean => {
   return props.options.isHtml ?? false
 })
 
-const handleClick = async (): Promise<void> => {
+const handleClick = async (e: MouseEvent): Promise<void> => {
+   if (e && props.options.stopPropagationOnClick) {
+    e.stopPropagation()
+    e.preventDefault()
+  }
   if (!props.options.action) {
     return
   }
