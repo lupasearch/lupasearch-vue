@@ -271,6 +271,10 @@ export type ResultFacetOptions = {
   exclude?: string[]
   excludeValues?: Record<string, Record<string, string[]>>
   expand?: string[]
+  expandAll?: {
+    desktop?: boolean
+    mobile?: boolean
+  }
   facetFilterQueries?: Record<string, FacetFilterQuery>
 }
 
