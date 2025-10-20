@@ -9,6 +9,7 @@ import type { QueryParams } from '@/types/search-results/QueryParams'
 import { isFacetKey } from './filter.utils'
 import { reverseKeyValue } from './picker.utils'
 import { LupaQueryParamValue } from '@/types/General'
+import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
 
 const parseParam = (key: string, params: URLSearchParams) => {
   const value = params.get(key)
@@ -47,14 +48,15 @@ const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
     return searchParams.getAll(key)?.map((v) => decodeURIComponent(v)) ?? []
   }
   if (key.startsWith(FACET_PARAMS_TYPE.RANGE)) {
+    const isPrice = key?.includes(CURRENCY_KEY_INDICATOR)
     const range = searchParams.get(key)
     if (!range) {
       return {}
     }
     const [min, max] = range.split(FACET_RANGE_SEPARATOR)
     return {
-      gte: min,
-      lte: max
+      gte: min || undefined,
+      [isPrice ? 'lte' : 'lt']: max || undefined
     }
   }
   if (key.startsWith(FACET_PARAMS_TYPE.HIERARCHY)) {
