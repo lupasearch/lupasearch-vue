@@ -216,3 +216,18 @@
   justify-content: center;
   border: searchResults.$facet-term-filter-border;
 }
+
+@media (max-width: searchResults.$size-s) {
+  .lupa-mobile-filter-sidebar .lupa-facets-filter-button-wrapper {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 15px;
+    background: white;
+  }
+
+  .lupa-search-result-facet-section {
+    margin-bottom: 80px;
+  }
+}

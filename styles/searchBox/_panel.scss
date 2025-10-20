@@ -35,7 +35,7 @@
     minmax(searchBox.$panel-left-min-width, searchBox.$panel-left-max-width)
     minmax(searchBox.$panel-right-min-width, searchBox.$panel-right-max-width);
   @media (max-width: searchBox.$size-s) {
-    display: block;
+    display: block !important;
   }
 }
 
