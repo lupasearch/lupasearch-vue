@@ -43,6 +43,7 @@ export type DocumentElementBase<T = any> = {
   group?: string
   dynamic?: boolean
   dynamicAttributes?: DynamicAttribute[]
+  className: string
 }
 
 export type ImageDocumentElement<T = any> = DocumentElementBase<T> & {
@@ -76,13 +77,11 @@ export type DescriptionDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.DESCRIPTION
   maxLines?: number
   key: string
-  className?: string
 }
 
 export type CustomDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.CUSTOM
   maxLines?: number
-  className?: string
   key: string
   label?: string
   action?: (document: T) => Promise<unknown> | undefined
@@ -90,13 +89,11 @@ export type CustomDocumentElement<T = any> = DocumentElementBase<T> & {
 
 export type PriceElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.PRICE
-  className?: string
   key: string
 }
 
 export type RegularPriceDocumentElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.REGULARPRICE
-  className?: string
   key: string
 }
 

@@ -22,6 +22,14 @@ const emit = defineEmits(['productEvent'])
 
 const loading = ref(false)
 
+const addToCartButtonClass = computed((): Record<string, boolean> => {
+  return {
+    [props.options.className]: Boolean(props.options.className),
+    'lupa-add-to-cart-loading': loading.value,
+    'lupa-add-to-cart': !loading.value
+  }
+})
+
 const label = computed((): string => {
   return props.options.labels.addToCart
 })
@@ -52,7 +60,7 @@ const hasLink = computed((): boolean => {
     <div class="lupa-search-box-product-addtocart">
       <button
         v-if="hasLink"
-        :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
+        :class="addToCartButtonClass"
         data-cy="lupa-add-to-cart"
         :disabled="!inStockValue || loading"
         v-bind="dynamicAttributes"
@@ -65,7 +73,7 @@ const hasLink = computed((): boolean => {
       <button
         v-else
         @click.stop.prevent="handleClick"
-        :class="loading ? 'lupa-add-to-cart-loading' : 'lupa-add-to-cart'"
+        :class="addToCartButtonClass"
         data-cy="lupa-add-to-cart"
         type="button"
         :disabled="!inStockValue || loading"
