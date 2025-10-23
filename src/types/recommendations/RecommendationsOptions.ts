@@ -24,11 +24,11 @@ export type ProductRecommendationOptions = SearchResultsProductOptions & {
   itemId: DataExtraction | (string[] | string)
   abTesting?: RecommendationABTestingOptions
   carousel?: RecommenderCarouselOptions
-  recommendationFilters?: FilterGroup
+  recommendationFilters?: FilterGroup | Record<string, DataExtraction | (string[] | string)>
   layoutType?: 'carousel' | 'grid'
   recommendationLabels?: {
     title?: string
-  },
+  }
   recommendationCallbacks?: RecommendationCallbacks
 }
 
