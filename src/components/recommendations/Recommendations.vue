@@ -58,6 +58,10 @@ const title = computed(() => {
   return props.options.recommendationLabels?.title ?? ''
 })
 
+const hasTitleLink = computed(() => {
+  return Boolean(props.options.recommendationLabels?.titleLink)
+})
+
 const hasRecommendations = computed(() => {
   return recommendations.value.length > 0
 })
@@ -192,9 +196,24 @@ defineExpose({ fetch })
 <template>
   <div class="lupa-search-product-recommendations-wrapper" ref="rootElement">
     <template v-if="hasRecommendations">
-      <h2 class="lupa-recommendation-section-title" v-if="title">{{ title }}</h2>
+      <h2 class="lupa-recommendation-section-title" v-if="title">
+        <template v-if="!hasTitleLink">
+          {{ title }}
+        </template>
+        <template v-else>
+          <a
+            :href="options.recommendationLabels?.titleLink"
+          >
+            {{ title }}
+          </a>
+        </template>
+      </h2>
       <div v-if="!loading" class="lupa-recommended-products" data-cy="lupa-recommended-products">
-        <Carousel v-if="layoutType === 'carousel'" v-bind="carouselOptions" :wrap-around="wrapAround">
+        <Carousel
+          v-if="layoutType === 'carousel'"
+          v-bind="carouselOptions"
+          :wrap-around="wrapAround"
+        >
           <Slide
             v-for="(product, index) in recommendations"
             :key="getProductKeyAction(index, product)"
