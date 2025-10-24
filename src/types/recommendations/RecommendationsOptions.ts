@@ -27,8 +27,9 @@ export type ProductRecommendationOptions = SearchResultsProductOptions & {
   recommendationFilters?: FilterGroup | Record<string, DataExtraction | (string[] | string)>
   layoutType?: 'carousel' | 'grid'
   recommendationLabels?: {
-    title?: string
-  }
+    title?: string,
+    titleLink?: string,
+  },
   recommendationCallbacks?: RecommendationCallbacks
 }
 

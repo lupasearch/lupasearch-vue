@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { MAX_FACET_VALUES } from '@/constants/global.const'
-import { FACET_TERM_RANGE_SEPARATOR } from '@/constants/queryParams.const'
+import { FACET_RANGE_SEPARATOR, FACET_TERM_RANGE_SEPARATOR } from '@/constants/queryParams.const'
 import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { rangeFilterToString } from '@/utils/filter.utils'
 import { getDisplayValue, getNormalizedString, slugifyClass } from '@/utils/string.utils'
@@ -61,7 +61,7 @@ const filteredValues = computed((): FacetGroupItem[] => {
     ? allValues.value?.filter((v) =>
         getNormalizedString(v.title)?.includes(getNormalizedString(termFilter.value))
       )
-    : allValues.value ?? []
+    : (allValues.value ?? [])
 })
 
 const isFilterable = computed((): boolean => {
@@ -80,9 +80,7 @@ const displayShowMore = computed((): boolean => {
 })
 
 const handleFacetClick = (item: FacetGroupItem): void => {
-  const value = isRange.value
-    ? item.title.split(FACET_TERM_RANGE_SEPARATOR)
-    : item.title?.toString()
+  const value = isRange.value ? [item.from, item.to] : item.title?.toString()
   emit('select', {
     key: facet.value.key,
     value: value,
@@ -100,7 +98,11 @@ const isChecked = (item: FacetGroupItem): boolean => {
     isRange.value && selectedItems
       ? [rangeFilterToString(selectedItems as FilterGroupItemTypeRange)]
       : selectedItems
-  return selectedItems?.includes(item.title?.toString())
+  if (isRange.value) {
+    return selectedItems?.includes(rangeFilterToString({ gte: item.from, lt: item.to }))
+  } else {
+    return selectedItems?.includes(item.title?.toString())
+  }
 }
 
 const getItemLabel = (item: FacetGroupItem) => {

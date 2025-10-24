@@ -69,7 +69,7 @@ const unfoldRangeFilter = (
       }
     ]
   }
-  return [{ key, value: `${gt} - ${lt}`, type: 'range' }]
+  return [{ key, value: `${gt ?? '*'} - ${lt ?? '*'}`, type: 'range' }]
 }
 
 const unfoldFilter = (
@@ -86,7 +86,12 @@ const unfoldFilter = (
   if (Array.isArray(filter)) {
     return unfoldTermFilter(key, filter)
   }
-  if ((filter as FilterGroupItemTypeRange).gte) {
+  if (
+    (filter as FilterGroupItemTypeRange).gte ||
+    (filter as FilterGroupItemTypeRange).lte ||
+    (filter as FilterGroupItemTypeRange).gt ||
+    (filter as FilterGroupItemTypeRange).lt
+  ) {
     return unfoldRangeFilter(key, filter as FilterGroupItemTypeRange, price)
   }
   if ((filter as FilterGroupItemTypeHierarchy).terms) {
@@ -176,6 +181,6 @@ export const rangeFilterToString = (
 ): string => {
   separator = separator || FACET_TERM_RANGE_SEPARATOR
   return rangeFilter && Object.keys(rangeFilter).length
-    ? rangeFilter.gte + separator + (rangeFilter.lte || rangeFilter.lt)
+    ? (rangeFilter.gte ?? '') + separator + ((rangeFilter.lte ?? '') || (rangeFilter.lt ?? ''))
     : ''
 }
