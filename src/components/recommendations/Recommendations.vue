@@ -12,7 +12,7 @@ import SearchResultsProductCard from '../search-results/products/product-card/Se
 import { useSearchResultStore } from '@/stores/searchResult'
 import { storeToRefs } from 'pinia'
 import { useScreenStore } from '@/stores/screen'
-import { extractValue } from '@/utils/extraction.utils'
+import { extractValue, processExtractionObject } from '@/utils/extraction.utils'
 import { useDynamicDataStore } from '@/stores/dynamicData'
 
 const props = defineProps<{
@@ -166,6 +166,12 @@ const wrapAround = computed(() => {
   return carouselOptions.value?.wrapAround ?? true
 })
 
+const recommendationFilters = computed(() => {
+  return {
+    ...processExtractionObject(props.options.recommendationFilters)
+  }
+})
+
 const loadLupaRecommendations = async (): Promise<void> => {
   recommendationsType.value = 'recommendations_lupasearch'
   try {
@@ -173,7 +179,7 @@ const loadLupaRecommendations = async (): Promise<void> => {
     const result = await lupaSearchSdk.recommend(
       props.options.queryKey,
       itemId.value,
-      props.options.recommendationFilters,
+      recommendationFilters.value,
       props.options.options
     )
     if (!result.success) {

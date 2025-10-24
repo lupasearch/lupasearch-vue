@@ -31,6 +31,7 @@ export type ExtractFromHtmlElementAttribute = BaseExtractFrom & {
   extractFrom: 'htmlElementAttribute'
   querySelector: string
   attribute: string
+  regex?: string
 }
 
 export type ExtractFromCookie = BaseExtractFrom & {
