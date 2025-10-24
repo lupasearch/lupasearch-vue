@@ -84,6 +84,7 @@ export type CustomDocumentElement<T = any> = DocumentElementBase<T> & {
   maxLines?: number
   key: string
   label?: string
+  stopPropagationOnClick?: boolean
   action?: (document: T) => Promise<unknown> | undefined
 }
 
@@ -141,6 +142,7 @@ export type CustomHtmlElement<T = any> = DocumentElementBase<T> & {
   action?: (document: T) => Promise<unknown> | undefined
   reportEventOnClick?: string
   emitEventToClick?: string
+  stopPropagationOnClick?: boolean
 }
 
 export type DocumentElement =

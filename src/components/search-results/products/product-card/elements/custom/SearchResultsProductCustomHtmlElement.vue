@@ -18,7 +18,11 @@ const className = computed((): string => {
   return props.options.className
 })
 
-const handleClick = async (): Promise<void> => {
+const handleClick = async (e: MouseEvent): Promise<void> => {
+  if (e && props.options.stopPropagationOnClick) {
+    e.stopPropagation()
+    e.preventDefault()
+  }
   if (!props.options.action) {
     return
   }
