@@ -223,8 +223,10 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 15px;
     background: white;
+    .lupa-facets-button-filter {
+      margin: 15px;
+    }
   }
 
   .lupa-search-result-facet-section {
