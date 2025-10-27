@@ -1,4 +1,4 @@
-@use "../base/searchResults";
+@use '../base/searchResults';
 
 .lupa-search-result-current-filters {
   font-family: searchResults.$facets-font-family;
@@ -93,5 +93,11 @@
 
   .filter-values {
     display: flex;
+  }
+}
+
+@media (max-width: searchResults.$size-s) {
+  .lupa-search-result-current-filters {
+    padding: 10px;
   }
 }
