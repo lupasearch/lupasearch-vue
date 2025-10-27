@@ -86,7 +86,8 @@ const paginationOptions = computed((): PaginationOptions => {
       count: getPageCount(searchResult.value.total, limit.value),
       selectedPage: page.value,
       display: pageSelect.display,
-      displayMobile: pageSelect.displayMobile
+      displayMobile: pageSelect.displayMobile,
+      renderAsLinks: pageSelect.renderAsLinks ?? false
     },
     labels: optionsValue.value.labels
   }
@@ -100,7 +101,7 @@ const searchSummaryLabel = computed((): string => {
   const defaultLabel = paginationOptions.value?.labels?.itemCount ?? ''
   return !hasAnyFilter.value || !showFilterClear.value
     ? defaultLabel
-    : paginationOptions.value?.labels?.filteredItemCount ?? defaultLabel
+    : (paginationOptions.value?.labels?.filteredItemCount ?? defaultLabel)
 })
 
 const toolbarLeftLabel = computed((): string => {

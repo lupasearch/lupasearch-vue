@@ -79,7 +79,28 @@ const scrollToResultsOptions = computed(() => ({
   timeout: searchResultOptions.value.scrollToResults?.timeout ?? 500
 }))
 
-const handlePageChange = (page: number): void => {
+const tagName = computed((): string => {
+  return props.options.renderAsLinks ? 'a' : 'div'
+})
+
+const getPageUrlWithNewParams = (page: number): string => {
+  return paramStore.getPageUrlWithNewParams({
+    params: [{ name: optionsStore.getQueryParamName(QUERY_PARAMS.PAGE), value: page.toString() }]
+  })
+}
+
+const getHref = (page: number): string => {
+  if (props.options.renderAsLinks) {
+    return getPageUrlWithNewParams(page)
+  }
+  return null
+}
+
+const handlePageChange = (e: MouseEvent, page: number): void => {
+  // we still want frontend handling even if rendered as links for max speed while preserving SEO links
+  if (e && props.options.renderAsLinks) {
+    e.preventDefault()
+  }
   if (page > 0) {
     paramStore.appendParams({
       params: [{ name: optionsStore.getQueryParamName(QUERY_PARAMS.PAGE), value: page.toString() }]
@@ -100,23 +121,32 @@ const handlePageChange = (page: number): void => {
     data-cy="lupa-search-results-page-select"
     v-if="showPagination"
   >
-    <div
+    <component
+      :is="tagName"
       v-if="showBack"
       :class="firstPageLabel === '<' ? 'lupa-page-arrow' : 'lupa-show-less'"
-      @click="() => handlePageChange(options.selectedPage - 1)"
+      :href="getHref(options.selectedPage - 1)"
+      @click="(e) => handlePageChange(e, options.selectedPage - 1)"
     >
       {{ firstPageLabel }}
-    </div>
+    </component>
     <template v-if="showFirstPage">
-      <div class="lupa-page-number lupa-page-number-first" @click="() => handlePageChange(1)">
+      <component
+        :is="tagName"
+        :href="getHref(1)"
+        class="lupa-page-number lupa-page-number-first"
+        @click="(e) => handlePageChange(e, 1)"
+      >
         1
-      </div>
+      </component>
       <div v-if="showFirstPageSeparator" class="lupa-page-number-separator">...</div>
     </template>
-    <div
+    <component
+      :is="tagName"
       v-for="page in pages"
       :key="page"
-      @click="() => handlePageChange(page)"
+      :href="getHref(page)"
+      @click="(e) => handlePageChange(e, page)"
       :class="[
         'lupa-page-number',
         page === options.selectedPage ? 'lupa-page-number-selected' : ''
@@ -124,23 +154,27 @@ const handlePageChange = (page: number): void => {
       data-cy="lupa-page-number"
     >
       {{ page }}
-    </div>
+    </component>
     <template v-if="showLastPage">
       <div v-if="showLastPageSeparator" class="lupa-page-number-separator">...</div>
-      <div
+      <component
+        :is="tagName"
+        :href="getHref(lastPage ?? 1)"
         class="lupa-page-number lupa-page-number-last"
-        @click="() => handlePageChange(lastPage ?? 1)"
+        @click="(e) => handlePageChange(e, lastPage ?? 1)"
       >
         {{ lastPage }}
-      </div>
+      </component>
     </template>
-    <div
+    <component
       v-if="options.selectedPage < options.count"
+      :is="tagName"
       :class="lastPageLabel === '>' ? 'lupa-page-arrow' : 'lupa-show-more'"
+      :href="getHref(options.selectedPage + 1)"
       data-cy="lupa-show-more"
-      @click="() => handlePageChange(options.selectedPage + 1)"
+      @click="(e) => handlePageChange(e, options.selectedPage + 1)"
     >
       {{ lastPageLabel }}
-    </div>
+    </component>
   </div>
 </template>

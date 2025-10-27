@@ -190,6 +190,7 @@ export type SearchResultsPagination = {
     position: SearchResultsPaginationPosition
     display: number
     displayMobile: number
+    renderAsLinks?: boolean
   }
 }
 
