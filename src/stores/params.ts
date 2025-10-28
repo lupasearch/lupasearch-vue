@@ -96,6 +96,24 @@ export const useParamsStore = defineStore('params', () => {
     searchString.value = url.search
   }
 
+  const getPageUrlWithNewParams = ({
+    params: newParams,
+    paramsToRemove,
+    encode = true,
+    searchResultsLink
+  }: {
+    params: { name: string; value: string }[]
+    paramsToRemove?: 'all' | string[]
+    encode?: boolean
+    searchResultsLink?: string
+  }) => {
+    const url = getPageUrl(searchResultsLink)
+    paramsToRemove = getRemovableParams(url, optionsStore.getQueryParamName, paramsToRemove)
+    removeParams(url, paramsToRemove)
+    newParams.forEach((p) => appendParam(url, p, encode))
+    return url.search
+  }
+
   const removeParameters = ({
     paramsToRemove,
     save = true
@@ -267,6 +285,7 @@ export const useParamsStore = defineStore('params', () => {
     sortParams,
     lastChangedParams,
     skipFacetReload,
+    getPageUrlWithNewParams,
     add,
     removeAllFilters,
     removeParameters,

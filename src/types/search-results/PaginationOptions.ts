@@ -16,6 +16,7 @@ export type PaginationPageSelect = {
   selectedPage: number
   display: number
   displayMobile: number
+  renderAsLinks?: boolean
 }
 
 export type PaginationDisplay = {
