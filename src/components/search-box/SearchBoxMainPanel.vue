@@ -39,8 +39,10 @@ const emit = defineEmits([
   'fetched',
   'itemSelect',
   'product-click',
-  'close',
+  'close'
 ])
+
+const isSearchEmpty = computed(() => !props.inputValue || props.inputValue.length < 1)
 
 const displayResults = computed(() => props.inputValue?.length >= props.options.minInputLength)
 
@@ -50,6 +52,13 @@ const displayHistory = computed(
     props.inputValue?.length < 1 &&
     props.options.minInputLength > 0
 )
+
+const displayShowMoreResultsButton = computed(() => {
+  if (isSearchEmpty.value && props.options.hideMoreResultsButtonOnEmptyQuery) {
+    return false
+  }
+  return hasAnyResults.value || !props.options.hideMoreResultsButtonOnNoResults
+})
 
 const displayPanels = computed(() =>
   props.isSearchContainer
@@ -243,7 +252,7 @@ export default {
       </div>
       <SearchBoxNoResults v-if="!hasAnyResults && options.showNoResultsPanel" :labels="labels" />
       <SearchBoxMoreResults
-        v-if="hasAnyResults || !options.hideMoreResultsButtonOnNoResults"
+        v-if="displayShowMoreResultsButton"
         :labels="labels"
         :options="options"
         @go-to-results="$emit('go-to-results')"
