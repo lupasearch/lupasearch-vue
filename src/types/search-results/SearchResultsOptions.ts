@@ -122,6 +122,17 @@ export type SearchResultsAdditionalPanels = {
   additionalPanels?: SearchResultsAdditionalPanelOptions[]
 }
 
+export type SortStyleOptions = {
+  type: 'default' | 'drawer'
+  drawer?: {
+    labels?: {
+      title?: string
+      clearLabel?: string
+      applyLabel?: string
+    }
+  }
+}
+
 export type SearchResultsProductOptions = SearchResultsProductCardOptions &
   SearchResultsAdditionalPanels & {
     grid: ProductGrid
@@ -129,6 +140,7 @@ export type SearchResultsProductOptions = SearchResultsProductCardOptions &
     queryKey: string
     pagination: SearchResultsPagination
     sort: SearchResultsSortOptions[]
+    sortStyle?: SortStyleOptions
     filters?: SearchResultsFilterOptions
     searchTitlePosition?: string
     hideResultsOnReload?: boolean
@@ -220,7 +232,7 @@ export type ResultCurrentFilterOptions = {
   }
 }
 
-export type FacetStyle = 'sidebar' | 'top-dropdown'
+export type FacetStyle = 'sidebar' | 'top-dropdown' | 'drawer'
 
 export type FilterBehavior = 'immediate' | 'withFilterButton'
 
@@ -236,6 +248,7 @@ export type ResultFacetOptions = {
     facetFilter: string
     facetClear?: string
     facetFilterButton?: string
+    facetClearAllButton?: string
   }
   hideFiltersOnExactMatchForKeys?: string[]
   disableMobileBodyScrollLock?: boolean
@@ -268,6 +281,10 @@ export type ResultFacetOptions = {
   showDocumentCount?: boolean
   style?: {
     type: FacetStyle
+    drawer?: {
+      sidebarCloseDelay?: number
+      expandSidebarOnFacetClick?: boolean
+    }
   }
   exclude?: string[]
   excludeValues?: Record<string, Record<string, string[]>>

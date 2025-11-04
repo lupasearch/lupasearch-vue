@@ -35,6 +35,7 @@ import SearchResultsProducts from './products/SearchResultsProducts.vue'
 import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
 import { processExtractionObject } from '@/utils/extraction.utils'
 import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
+import SortDrawer from './filters/SortDrawer.vue'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -64,7 +65,7 @@ const {
   currentQueryText,
   hasResults,
   currentFilterCount,
-  isMobileSidebarVisible,
+  isFilterSidebarVisible,
   layout,
   loadingFacets,
   loadingRefiners
@@ -95,7 +96,7 @@ const isTitleResultTopPosition = computed((): boolean => {
 
 const indicatorClasses = computed(() => {
   return {
-    'lupa-mobile-sidebar-visible': isMobileSidebarVisible.value,
+    'lupa-mobile-sidebar-visible': isFilterSidebarVisible.value,
     'lupa-layout-grid': !layout.value || layout.value === ResultsLayoutEnum.GRID,
     'lupa-layout-list': layout.value === ResultsLayoutEnum.LIST
   }
@@ -386,6 +387,7 @@ defineExpose({ handleMounted, handleUrlChange })
       :options="options.filters"
       @filter="handleParamsChange"
     />
+    <SortDrawer v-if="options.sort" />
     <SearchResultsBreadcrumbs
       v-if="currentQueryText || isProductList"
       :breadcrumbs="options.breadcrumbs"

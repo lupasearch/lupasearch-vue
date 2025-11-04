@@ -1,0 +1,35 @@
+@use '../base/searchResults';
+
+.lupa-search-results-sort-list {
+  font-family: searchResults.$facets-font-family;
+  padding: 15px;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    font-size: searchResults.$facet-label-font-size + 2;
+    line-height: searchResults.$facet-label-line-height;
+    font-weight: searchResults.$facet-label-font-weight;
+    padding: searchResults.$facet-label-padding;
+    color: searchResults.$facet-label-color;
+    cursor: pointer;
+    label {
+      cursor: pointer;
+    }
+
+    &:not(:last-child) {
+      border-bottom: searchResults.$facet-border;
+    }
+    &:hover {
+      color: searchResults.$facet-label-color-hover;
+    }
+  }
+}
+
+.lupa-sidebar-sort-actions {
+  display: flex;
+}

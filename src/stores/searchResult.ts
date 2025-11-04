@@ -30,7 +30,9 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   const loadingFacets = ref(false)
   const loadingRefiners = ref(false)
   const loadingRelatedQueries = ref(false)
-  const isMobileSidebarVisible = ref(false)
+  const isFilterSidebarVisible = ref(false)
+  const isSidebarClosing = ref(false)
+  const isSortingSidebarVisible = ref(false)
   const relatedCategoryChildren = ref([])
   const lastRequestId = ref('')
   const searchRequestResults = ref<Record<string, Partial<SearchQueryResult>>>({})
@@ -113,19 +115,43 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     () => hasResults.value && (searchResult.value.offset ?? 0) >= totalItems.value
   )
 
+  const toggleSidebarState = ({
+    visible,
+    sidebar = 'filter'
+  }: {
+    visible: boolean
+    sidebar?: 'filter' | 'sorting'
+  }) => {
+    if (sidebar === 'sorting') {
+      isSortingSidebarVisible.value = visible
+      return
+    }
+    isFilterSidebarVisible.value = visible
+  }
+
   const setSidebarState = ({
     visible,
-    disableBodyScrolling = true
+    disableBodyScrolling = true,
+    sidebar = 'filter'
   }: {
     visible: boolean
     disableBodyScrolling?: boolean
+    sidebar?: 'filter' | 'sorting'
   }) => {
     if (visible && disableBodyScrolling) {
       disableBodyScroll()
     } else {
       enableBodyScroll()
     }
-    isMobileSidebarVisible.value = visible
+    if (visible || !searchResultOptions?.value.filters?.facets?.style?.drawer?.sidebarCloseDelay) {
+      toggleSidebarState({ visible, sidebar })
+    } else {
+      isSidebarClosing.value = true
+      setTimeout(() => {
+        toggleSidebarState({ visible, sidebar })
+        isSidebarClosing.value = false
+      }, searchResultOptions.value.filters.facets.style.drawer.sidebarCloseDelay)
+    }
   }
 
   const queryFacet = async ({ queryKey, facetKey }: { queryKey: string; facetKey: string }) => {
@@ -285,7 +311,9 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   }
 
   return {
-    isMobileSidebarVisible,
+    isFilterSidebarVisible,
+    isSortingSidebarVisible,
+    isSidebarClosing,
     searchResult,
     columnCount,
     addToCartAmount,

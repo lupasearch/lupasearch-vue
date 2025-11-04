@@ -9,7 +9,8 @@ const props = defineProps<{ options: SearchResultsFilterOptions }>()
 
 const searchResultStore = useSearchResultStore()
 
-const { currentFilterCount } = storeToRefs(searchResultStore)
+const { currentFilterCount, isFilterSidebarVisible, isSidebarClosing } =
+  storeToRefs(searchResultStore)
 
 const emit = defineEmits(['filter'])
 
@@ -23,8 +24,6 @@ const isFilterCountVisible = computed((): boolean => {
     currentFilterCount.value > 0
   )
 })
-
-const isMobileSidebarVisible = computed(() => searchResultStore.isMobileSidebarVisible)
 
 const isActiveFiltersExpanded = computed((): boolean => {
   return !props.options.currentFilters?.mobileSidebar?.activeFiltersExpanded
@@ -41,7 +40,11 @@ const filter = () => {
 </script>
 
 <template>
-  <div class="lupa-mobile-filter-sidebar" v-if="isMobileSidebarVisible">
+  <div
+    class="lupa-mobile-filter-sidebar"
+    :class="{ 'lupa-mobile-filter-sidebar-is-closing': isSidebarClosing }"
+    v-if="isFilterSidebarVisible"
+  >
     <div class="lupa-sidebar-close" @click.stop="handleMobileToggle"></div>
     <div class="lupa-mobile-sidebar-content">
       <div class="lupa-sidebar-top">
@@ -57,6 +60,7 @@ const filter = () => {
         <SearchResultsFilters
           :options="options"
           :expandable="isActiveFiltersExpanded"
+          :style="'sidebar'"
           @filter="filter"
         />
       </div>

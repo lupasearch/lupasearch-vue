@@ -25,9 +25,21 @@ export const useOptionsStore = defineStore('options', () => {
 
   const searchResultInitialFilters: Ref<FilterGroup> = ref({})
 
+  const expandedFacetsInner = ref<string[]>([])
+
   const productRecommendationOptions: Ref<Partial<ProductRecommendationOptions>> = ref({})
 
   const screenStore = useScreenStore()
+
+  const expandedFacets = computed<string[] | undefined>({
+    get: () =>
+      expandedFacetsInner.value?.length
+        ? expandedFacetsInner.value
+        : (searchResultOptions.value?.filters?.facets?.expand ?? []),
+    set: (value: string[] | undefined) => {
+      expandedFacetsInner.value = value
+    }
+  })
 
   const envOptions = computed<SdkOptions & Partial<MultiCurrencyConfig>>(
     () => searchResultOptions.value.options ?? searchBoxOptions.value.options
@@ -128,6 +140,7 @@ export const useOptionsStore = defineStore('options', () => {
     currentResolutionPageSizes,
     productRecommendationOptions,
     ariaLabels,
+    expandedFacets,
     setSearchBoxOptions,
     setTrackingOptions,
     setSearchResultOptions,

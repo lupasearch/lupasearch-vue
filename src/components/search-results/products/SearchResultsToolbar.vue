@@ -28,7 +28,7 @@ const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
 
 const { page, limit } = storeToRefs(paramStore)
-const { hasAnyFilter, searchResult, isMobileSidebarVisible } = storeToRefs(searchResultStore)
+const { hasAnyFilter, searchResult, isFilterSidebarVisible } = storeToRefs(searchResultStore)
 const { currentResolutionPageSizes } = storeToRefs(optionsStore)
 
 const isBottomLocation = computed((): boolean => {
@@ -169,7 +169,7 @@ const handleClearAll = (): void => {
       <SearchResultsSort v-if="sortOptions" :options="sortOptions" :callbacks="callbacks" />
       <div v-else></div>
       <SearchResultsMobileFilterClose
-        v-if="showFiltersCloseButton && isMobileSidebarVisible"
+        v-if="showFiltersCloseButton && isFilterSidebarVisible"
         :label="optionsValue.labels.mobileFilterCloseButton"
       />
     </div>
