@@ -2,7 +2,7 @@
 import { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { merge } from '@/utils/merger.utils'
 import { FacetResult } from '@getlupa/client-sdk/Types'
-import { shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import FacetDisplay from '../FacetDisplay.vue'
 import { createTestingPinia } from '@pinia/testing'
 
@@ -25,9 +25,17 @@ const getComponent = (
   facet: Partial<FacetResult> = {},
   options: Partial<ResultFacetOptions> = {}
 ) => {
-  return shallowMount(FacetDisplay, {
+  return mount(FacetDisplay, {
     global: {
-      plugins: [createTestingPinia({})]
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            options: {
+              expandedFacetsInner: options.expand ?? []
+            }
+          }
+        })
+      ]
     },
     props: {
       options: { ...baseOptions, ...options },

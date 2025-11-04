@@ -57,7 +57,6 @@ const allExpanded = computed((): boolean => {
 })
 
 const isOpen = ref((expandedFacets.value?.includes(props.facet.key) || allExpanded.value) ?? false)
-console.log(facet.value.key, isOpen.value)
 
 const facetPanel = ref(null)
 
