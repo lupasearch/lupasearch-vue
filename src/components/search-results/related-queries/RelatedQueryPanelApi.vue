@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { RelatedQueryOptions } from '@/types/search-results/RelatedQueryOptions'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, Ref, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useOptionsStore } from '@/stores/options'
 import { DocumentElementType } from '@/types/DocumentElement'
-import type { Document, RelatedQuery, SearchQueryResult } from '@getlupa/client-sdk/Types'
-import lupaSearchSdk from '@getlupa/client-sdk'
+import type { Document, RelatedQuery } from '@getlupa/client-sdk/Types'
 import ProductImage from '@/components/common/ProductImage.vue'
-import { useSearchResultStore } from '@/stores/searchResult'
 
 const props = defineProps<{
   relatedQuery: RelatedQuery
