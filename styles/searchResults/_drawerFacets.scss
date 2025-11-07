@@ -1,0 +1,18 @@
+@use '../base/searchResults';
+
+.lupa-search-result-facet-list {
+  .lupa-desktop-toggle {
+    border: searchResults.$facet-border;
+    font-weight: 700;
+    line-height: 24px;
+    font-size: searchResults.$facet-title-font-size;
+    color: searchResults.$facet-label-color;
+    padding: searchResults.$facet-label-padding;
+    margin: searchResults.$facet-dropdown-margin;
+    cursor: pointer;
+
+    &.lupa-has-filter {
+      border-width: searchResults.$facet-dropdown-active-border-width;
+    }
+  }
+}

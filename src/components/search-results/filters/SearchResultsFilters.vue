@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { SearchResultsFilterOptions } from '@/types/search-results/SearchResultsOptions'
+import type {
+  FacetStyle,
+  SearchResultsFilterOptions
+} from '@/types/search-results/SearchResultsOptions'
 import { computed, ref } from 'vue'
 import CurrentFilters from './CurrentFilters.vue'
 import CategoryFilter from '@/components/product-list/CategoryFilter.vue'
@@ -7,7 +10,11 @@ import Facets from './facets/Facets.vue'
 
 const categoryFilters = ref(null)
 
-const props = defineProps<{ options: SearchResultsFilterOptions; expandable?: boolean }>()
+const props = defineProps<{
+  options: SearchResultsFilterOptions
+  expandable?: boolean
+  style?: FacetStyle
+}>()
 
 const emit = defineEmits(['filter'])
 
@@ -49,6 +56,6 @@ defineExpose({ fetch })
       :expandable="expandable ?? false"
     />
     <CategoryFilter v-if="options.categories" :options="options.categories" ref="categoryFilters" />
-    <Facets v-if="options.facets" :options="options.facets" @filter="filter" />
+    <Facets v-if="options.facets" :options="options.facets" :facet-style="style" @filter="filter" />
   </div>
 </template>

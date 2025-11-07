@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import { FacetResult } from '@getlupa/client-sdk/Types'
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import FacetList from '../FacetList.vue'
 import FacetDisplay from '../FacetDisplay.vue'
+import { createTestingPinia } from '@pinia/testing'
 
 const baseOptions: ResultFacetOptions = {
   labels: {
@@ -14,7 +15,10 @@ const baseOptions: ResultFacetOptions = {
 }
 
 const getComponent = (facets: FacetResult[] = []) => {
-  return shallowMount(FacetList, {
+  return mount(FacetList, {
+    global: {
+      plugins: [createTestingPinia({ stubActions: false })]
+    },
     props: {
       options: baseOptions,
       facets

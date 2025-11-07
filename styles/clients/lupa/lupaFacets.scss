@@ -163,6 +163,10 @@
   border-radius: 8px;
 }
 
+.lupa-desktop-toggle {
+  border-radius: 8px;
+}
+
 .lupa-search-result-top-filters {
   margin: 16px 0 6px;
 
@@ -227,37 +231,39 @@
   }
 }
 
+.lupa-mobile-filter-sidebar,
+.lupa-sort-sidebar {
+  .lupa-search-result-filters {
+    padding-right: 0;
+  }
+  .lupa-filter-title-text {
+    margin-bottom: 0;
+  }
+  .filter-values {
+    margin-top: 10px;
+  }
+  .lupa-search-result-current-filters {
+    padding: 16px;
+  }
+  .lupa-search-result-facet-display {
+    border: 1px solid lupaConfig.$border-color;
+    border-radius: 8px;
+    margin: 10px 20px 20px;
+  }
+  .lupa-clear-all-filters {
+    margin-top: 10px;
+  }
+  .lupa-facet-label-text,
+  .lupa-facet-label-caret {
+    display: flex;
+    align-items: center;
+  }
+}
+
 @media (max-width: lupaConfig.$size-s) {
   .lupa-toolbar-filters {
     padding: 16px;
     margin-right: 0;
-  }
-  .lupa-mobile-filter-sidebar {
-    .lupa-search-result-filters {
-      padding-right: 0;
-    }
-    .lupa-filter-title-text {
-      margin-bottom: 0;
-    }
-    .filter-values {
-      margin-top: 10px;
-    }
-    .lupa-search-result-current-filters {
-      padding: 16px;
-    }
-    .lupa-search-result-facet-display {
-      border: 1px solid lupaConfig.$border-color;
-      border-radius: 8px;
-      margin: 10px 20px 20px;
-    }
-    .lupa-clear-all-filters {
-      margin-top: 10px;
-    }
-    .lupa-facet-label-text,
-    .lupa-facet-label-caret {
-      display: flex;
-      align-items: center;
-    }
   }
 }
 

@@ -206,7 +206,10 @@
   }
 }
 
-.lupa-facets-button-filter {
+.lupa-facets-button-filter,
+.lupa-facets-button-clear,
+.lupa-sidebar-sort-clear,
+.lupa-sidebar-sort-apply {
   background-color: #fff;
   border-radius: 24px;
   padding: 9px 0;
@@ -215,16 +218,23 @@
   align-items: center;
   justify-content: center;
   border: searchResults.$facet-term-filter-border;
+  cursor: pointer;
+}
+
+.lupa-facets-filter-button-wrapper {
+  display: flex;
 }
 
 @media (max-width: searchResults.$size-s) {
-  .lupa-mobile-filter-sidebar .lupa-facets-filter-button-wrapper {
-    display: block;
+  .lupa-mobile-filter-sidebar .lupa-facets-filter-button-wrapper,
+  .lupa-sort-sidebar .lupa-facets-filter-button-wrapper {
+    display: flex;
     position: fixed;
     bottom: 0;
     width: 100%;
     background: white;
-    .lupa-facets-button-filter {
+    .lupa-facets-button-filter,
+    .lupa-facets-button-clear {
       margin: 15px;
     }
   }

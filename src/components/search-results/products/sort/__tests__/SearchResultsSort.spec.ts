@@ -19,7 +19,18 @@ describe('SearchResultsSort', () => {
   beforeEach(() => {
     wrapper = mount(SearchResultsSort, {
       global: {
-        plugins: [createTestingPinia({ stubActions: false })]
+        plugins: [
+          createTestingPinia({
+            stubActions: false,
+            initialState: {
+              options: {
+                searchResultOptions: {
+                  sort
+                }
+              }
+            }
+          })
+        ]
       },
       props: {
         options: {

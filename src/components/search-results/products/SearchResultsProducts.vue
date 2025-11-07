@@ -44,7 +44,7 @@ const {
   hasResults,
   currentQueryText,
   isPageEmpty,
-  isMobileSidebarVisible,
+  isFilterSidebarVisible,
   columnCount,
   searchResult,
   layout,
@@ -79,7 +79,7 @@ const similarResultsLabels = computed((): SearchResultsSimilarResultsLabels => {
 })
 
 const showTopFilters = computed((): boolean => {
-  return props.options.filters?.facets?.style?.type === 'top-dropdown'
+  return props.options.filters?.facets?.style?.type !== 'sidebar'
 })
 
 const showMobileFilters = computed((): boolean => {
@@ -170,7 +170,7 @@ const filter = () => {
 </script>
 <template>
   <div id="lupa-search-results-products">
-    <Spinner class="lupa-loader" v-if="loading && !isMobileSidebarVisible" />
+    <Spinner class="lupa-loader" v-if="loading && !isFilterSidebarVisible" />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
     <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
     <RelatedQueries v-if="showLocalRelatedQueries" :options="options.relatedQueries" />
