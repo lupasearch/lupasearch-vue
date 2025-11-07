@@ -29,9 +29,16 @@ const getComponent = (
     global: {
       plugins: [
         createTestingPinia({
+          stubActions: false,
           initialState: {
             options: {
-              expandedFacetsInner: options.expand ?? []
+              searchResultOptions: {
+                filters: {
+                  facets: {
+                    expand: options.expand || []
+                  }
+                }
+              }
             }
           }
         })
