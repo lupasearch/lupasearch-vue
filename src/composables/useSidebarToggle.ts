@@ -16,7 +16,7 @@ export const useSidebarToggle = () => {
   })
 
   const showMobileFilterCount = computed(
-    () => searchResultOptions.value.filters?.currentFilters.mobileSidebar.showFilterCount ?? false
+    () => searchResultOptions.value.filters?.currentFilters?.mobileSidebar?.showFilterCount ?? false
   )
 
   const disableMobileBodyScrollLock = computed(
