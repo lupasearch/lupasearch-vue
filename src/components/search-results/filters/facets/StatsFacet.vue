@@ -9,6 +9,7 @@ import type { FacetGroupTypeStats, FilterGroupItemTypeRange } from '@getlupa/cli
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch, onMounted } from 'vue'
 import Slider from '@vueform/slider'
+import { roundToMaxDecimals } from '@/utils/number.utils'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -57,7 +58,7 @@ const currencyConfig = computed(
 )
 
 const currencyMultiplier = computed(() =>
-  isPrice.value ? currencyConfig.value?.multiplier ?? 1 : 1
+  isPrice.value ? (currencyConfig.value?.multiplier ?? 1) : 1
 )
 
 const facetMin = computed(() => Math.floor(facetValue.value.min * currencyMultiplier.value))
@@ -102,7 +103,7 @@ const originalSliderRange = computed(() => {
     (currentFilters.value.gte || currentFilters.value.lte)
     ? [
         Math.max(+currentFilters.value.gte, facetValue.value.min),
-        Math.min(+currentFilters.value.lte, facetValue.value.max)
+        Math.min(+(currentFilters.value.lt || currentFilters.value.lte), facetValue.value.max)
       ]
     : [facetValue.value.min, facetValue.value.max]
 })
@@ -168,10 +169,12 @@ const statsSummary = computed<string>(() => {
       multiCurrency.value
     )
   }
+  const minValue = roundToMaxDecimals(min, customInterval.value ?? 0.1)
+  const maxValue = roundToMaxDecimals(max, customInterval.value ?? 0.1)
   if (unit.value) {
-    return `${min} ${unit.value} – ${max} ${unit.value}`
+    return `${minValue} ${unit.value} – ${maxValue} ${unit.value}`
   }
-  return formatRange({ gte: min, lte: max })
+  return formatRange({ gte: minValue, lte: maxValue })
 })
 
 function handleInputChange() {
