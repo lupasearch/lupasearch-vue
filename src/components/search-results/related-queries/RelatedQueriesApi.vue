@@ -17,7 +17,7 @@ const searchResultStore = useSearchResultStore()
 const paramsStore = useParamsStore()
 const optionsStore = useOptionsStore()
 
-const { searchResult, relatedQueriesResult } = storeToRefs(searchResultStore)
+const { searchResult, relatedQueriesResult, relatedQueryFacetKeys } = storeToRefs(searchResultStore)
 
 const relatedQueries = computed((): RelatedQuery[] => {
   const allQueries = relatedQueriesResult.value?.relatedQueries ?? []
@@ -44,7 +44,7 @@ const handleFilter = (query: { key: string; value: string }) => {
     { type: 'terms', key: query.key, value: query.value },
     optionsStore.getQueryParamName,
     {},
-    relatedQueries.value?.map((q) => `f.${q.facetKey}`)
+    relatedQueryFacetKeys.value?.map((key) => `f.${key}`)
   )
 }
 

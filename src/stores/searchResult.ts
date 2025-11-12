@@ -253,6 +253,16 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     relatedCategoryChildren.value = [...children]
   }
 
+  const preconfiguredRelatedQueryKeys = computed(() => {
+    return searchResultOptions.value?.relatedQueries?.source?.queries?.map((q) => q.facetKey) ?? []
+  })
+
+  const relatedQueryFacetKeys = computed(() => {
+    const keysFromRelatedResults =
+      relatedQueriesResult.value?.relatedQueries?.map((rq) => rq.facetKey) ?? []
+    return Array.from(new Set([...preconfiguredRelatedQueryKeys.value, ...keysFromRelatedResults]))
+  })
+
   const queryRelatedQueries = async (
     queryKey: string,
     publicQuery: PublicQuery,
@@ -262,9 +272,15 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     loadingRelatedQueries.value = true
     const context = getLupaTrackingContext()
     const searchText = result.suggestedSearchText ?? result.searchText ?? ''
+    const publicQueryFiltersWithoutRelatedKeys = { ...(publicQuery.filters ?? {}) }
+    relatedQueryFacetKeys.value.forEach((facetKey) => {
+      delete publicQueryFiltersWithoutRelatedKeys[facetKey]
+    })
+    const hasRemainingFilters = Object.keys(publicQueryFiltersWithoutRelatedKeys ?? {}).length > 0
     const query = {
       ...publicQuery,
       searchText,
+      filters: hasRemainingFilters ? publicQueryFiltersWithoutRelatedKeys : undefined,
       ...context,
       modifiers: { facets: false, refiners: true }
     }
@@ -311,6 +327,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     relatedQueriesResult,
     relatedQueriesApiEnabled,
     lastResultsSource,
+    relatedQueryFacetKeys,
     setSidebarState,
     queryFacet,
     setLastRequestId,
