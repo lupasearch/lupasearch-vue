@@ -64,7 +64,7 @@ const clear = (facet: FacetResult): void => {
         @expand="handleFilterSidebarToggle"
       />
       <DesktopFacetToggle v-if="facetStyle === 'drawer'" />
-      <DesktopSortToggle v-if="facetStyle === 'drawer'" />
+      <DesktopSortToggle v-if="facetStyle === 'drawer' || facetStyle === 'top-dropdown'" />
     </div>
   </div>
 </template>

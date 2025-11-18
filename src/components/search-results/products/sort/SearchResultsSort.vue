@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { useSorting } from '@/composables/useSorting'
+import { useScreenStore } from '@/stores/screen'
+import { storeToRefs } from 'pinia'
 
 const {
   sortItems,
@@ -16,8 +18,11 @@ onMounted(() => {
   setSortValue()
 })
 
+const screenStore = useScreenStore()
+const { isMobileWidth } = storeToRefs(screenStore)
+
 const showDefaultSort = computed((): boolean => {
-  return !sortStyle.value || sortStyle.value?.type !== 'drawer'
+  return isMobileWidth.value || !sortStyle.value || sortStyle.value?.type !== 'drawer'
 })
 </script>
 <template>
