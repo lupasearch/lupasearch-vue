@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SearchResultsOptionLabels } from '@/types/search-results/SearchResultsOptions'
 import { useSidebarToggle } from '@/composables/useSidebarToggle'
 
 const {

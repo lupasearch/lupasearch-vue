@@ -15,6 +15,7 @@ import type { SortOptions } from '@/types/search-results/SearchResultsSort'
 import type { PaginationDisplay, PaginationOptions } from '@/types/search-results/PaginationOptions'
 import { useOptionsStore } from '@/stores/options'
 import { getPageCount } from '@/utils/picker.utils'
+import SearchResultsSortDrawerToggle from './SearchResultsSortDrawerToggle.vue'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -156,10 +157,8 @@ const handleClearAll = (): void => {
       <div v-if="toolbarRightLabel" class="lupa-toolbar-right-title">
         {{ toolbarRightLabel }}
       </div>
-      <SearchResultsMobileToggle
-        :labels="optionsValue.labels"
-        :show-filter-count="showMobileFilterCount"
-      />
+      <SearchResultsMobileToggle />
+      <SearchResultsSortDrawerToggle />
       <SearchResultsPageSize
         v-if="paginationDisplay.pageSize"
         :options="paginationOptions.pageSize"

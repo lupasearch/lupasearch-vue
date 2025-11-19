@@ -45,7 +45,7 @@ export const useSidebarToggle = () => {
   })
 
   const sortToggleVisible = computed(() => {
-    return searchResultOptions.value.sortStyle?.type === 'drawer'
+    return searchResultOptions.value?.sortStyle?.type === 'drawer'
   })
 
   const handleFilterSidebarToggle = (): void => {
