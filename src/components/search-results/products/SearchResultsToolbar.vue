@@ -15,6 +15,7 @@ import type { SortOptions } from '@/types/search-results/SearchResultsSort'
 import type { PaginationDisplay, PaginationOptions } from '@/types/search-results/PaginationOptions'
 import { useOptionsStore } from '@/stores/options'
 import { getPageCount } from '@/utils/picker.utils'
+import SearchResultsSortDrawerToggle from './SearchResultsSortDrawerToggle.vue'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -28,7 +29,7 @@ const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
 
 const { page, limit } = storeToRefs(paramStore)
-const { hasAnyFilter, searchResult, isMobileSidebarVisible } = storeToRefs(searchResultStore)
+const { hasAnyFilter, searchResult, isFilterSidebarVisible } = storeToRefs(searchResultStore)
 const { currentResolutionPageSizes } = storeToRefs(optionsStore)
 
 const isBottomLocation = computed((): boolean => {
@@ -156,10 +157,8 @@ const handleClearAll = (): void => {
       <div v-if="toolbarRightLabel" class="lupa-toolbar-right-title">
         {{ toolbarRightLabel }}
       </div>
-      <SearchResultsMobileToggle
-        :labels="optionsValue.labels"
-        :show-filter-count="showMobileFilterCount"
-      />
+      <SearchResultsMobileToggle />
+      <SearchResultsSortDrawerToggle />
       <SearchResultsPageSize
         v-if="paginationDisplay.pageSize"
         :options="paginationOptions.pageSize"
@@ -169,7 +168,7 @@ const handleClearAll = (): void => {
       <SearchResultsSort v-if="sortOptions" :options="sortOptions" :callbacks="callbacks" />
       <div v-else></div>
       <SearchResultsMobileFilterClose
-        v-if="showFiltersCloseButton && isMobileSidebarVisible"
+        v-if="showFiltersCloseButton && isFilterSidebarVisible"
         :label="optionsValue.labels.mobileFilterCloseButton"
       />
     </div>

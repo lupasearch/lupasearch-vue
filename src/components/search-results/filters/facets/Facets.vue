@@ -18,6 +18,8 @@ import FacetList from './FacetList.vue'
 import FacetsButton from './FacetsButton.vue'
 import { useOptionsStore } from '@/stores/options'
 import { RESULT_ROOT_SELECTOR } from '@/constants/global.const'
+import FacetsClearButton from './FacetsClearButton.vue'
+import { useSidebarToggle } from '@/composables/useSidebarToggle'
 
 const props = defineProps<{
   options: ResultFacetOptions
@@ -28,6 +30,8 @@ const props = defineProps<{
 const paramStore = useParamsStore()
 const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
+
+const { handleFilterSidebarToggle } = useSidebarToggle()
 
 const { filters } = storeToRefs(paramStore)
 const { facets, loadingFacets } = storeToRefs(searchResultStore)
@@ -54,7 +58,7 @@ const scrollToResultsOptions = computed(() => ({
 }))
 
 const showFilterButton = computed(() => {
-  return props.options.filterBehavior === 'withFilterButton'
+  return props.options.filterBehavior === 'withFilterButton' && props.facetStyle === 'sidebar'
 })
 
 const handleFacetSelect = (facetAction: FacetAction): void => {
@@ -98,6 +102,11 @@ const clear = (facet: FacetResult): void => {
   paramStore.removeParameters({ paramsToRemove: [param] })
 }
 
+const clearAll = () => {
+  paramStore.removeAllFilters()
+  handleFilterSidebarToggle()
+}
+
 const filter = () => {
   emit('filter')
 }
@@ -118,6 +127,7 @@ const filter = () => {
       @clear="clear"
     />
     <div class="lupa-facets-filter-button-wrapper">
+      <FacetsClearButton v-if="showFilterButton" :options="options" @clear="clearAll" />
       <FacetsButton v-if="showFilterButton" :options="options" @filter="filter" />
     </div>
   </div>

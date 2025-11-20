@@ -2,7 +2,8 @@
 
 // Mobile sidebar
 
-.lupa-mobile-filter-sidebar {
+.lupa-mobile-filter-sidebar,
+.lupa-sort-sidebar {
   position: fixed;
   width: 100%;
   height: var(--lupa-full-height);
@@ -12,16 +13,17 @@
   z-index: searchResults.$mobile-sidebar-z-index;
   background: transparent;
   display: flex;
-  .lupa-mobile-sidebar-content {
+  .lupa-mobile-sidebar-content,
+  .lupa-sort-sidebar-content {
     height: var(--lupa-full-height);
-    width: 100%;
+    width: 30%;
     z-index: searchResults.$mobile-sidebar-z-index;
     background: searchResults.$mobile-sidebar-background;
   }
   .lupa-sidebar-close {
     background: searchResults.$mobile-sidebar-fade-background;
     height: var(--lupa-full-height);
-    width: 30px;
+    width: 70%;
   }
 }
 
@@ -49,6 +51,7 @@
 }
 
 .lupa-filter-toggle-mobile {
+  cursor: pointer;
   &:after {
     font-size: searchResults.$mobile-sidebar-toggle-size;
     color: searchResults.$mobile-sidebar-toggle-color;
@@ -159,7 +162,8 @@
   .lupa-search-result-filters {
     display: none;
   }
-  .lupa-mobile-filter-sidebar {
+  .lupa-mobile-filter-sidebar,
+  .lupa-sort-sidebar {
     .lupa-search-result-filters {
       display: flex;
       flex-direction: column;
@@ -224,6 +228,14 @@
 }
 
 @media (max-width: searchResults.$size-md) {
+  .lupa-mobile-filter-sidebar .lupa-mobile-sidebar-content,
+  .lupa-sort-sidebar .lupa-sort-sidebar-content {
+    width: 100%;
+  }
+  .lupa-mobile-filter-sidebar .lupa-sidebar-close,
+  .lupa-sort-sidebar .lupa-sidebar-close {
+    width: 30px;
+  }
   #lupa-search-results-badges > #lupa-badges {
     top: searchResults.$badge-position-top-md;
     .lupa-badge {

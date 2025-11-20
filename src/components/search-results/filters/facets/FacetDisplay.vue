@@ -17,7 +17,7 @@ export default {
 
 <script lang="ts" setup>
 import { useSearchResultStore } from '@/stores/searchResult'
-import type { ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
+import type { FacetStyle, ResultFacetOptions } from '@/types/search-results/SearchResultsOptions'
 import type {
   FacetGroup,
   FacetGroupTypeStats,
@@ -33,6 +33,7 @@ const props = defineProps<{
   facet: FacetResult
   currentFilters?: FilterGroup
   clearable?: boolean
+  currentFacetStyle?: FacetStyle
 }>()
 
 const facet = computed(() => props.facet ?? { type: '', key: '' })
@@ -42,11 +43,11 @@ const searchResultStore = useSearchResultStore()
 const optionsStore = useOptionsStore()
 const screenStore = useScreenStore()
 const { currentFilterKeys } = storeToRefs(searchResultStore)
-const { searchResultOptions } = storeToRefs(optionsStore)
+const { searchResultOptions, expandedFacets } = storeToRefs(optionsStore)
 
 const { isMobileWidth } = storeToRefs(screenStore)
 
-const emit = defineEmits(['select', 'clear'])
+const emit = defineEmits(['select', 'clear', 'expand'])
 
 const allExpanded = computed((): boolean => {
   if (isMobileWidth.value) {
@@ -55,7 +56,7 @@ const allExpanded = computed((): boolean => {
   return props.options?.expandAll?.desktop ?? false
 })
 
-const isOpen = ref((props.options?.expand?.includes(props.facet.key) || allExpanded.value) ?? false)
+const isOpen = ref((expandedFacets.value?.includes(props.facet.key) || allExpanded.value) ?? false)
 
 const facetPanel = ref(null)
 
@@ -106,8 +107,15 @@ const facetLabel = computed(() => {
   return getTranslatedFacetKey(props.facet, searchResultOptions.value.filters?.translations)
 })
 
+const expandSidebarOnFacetClick = computed(() => {
+  if (!props.currentFacetStyle || props.currentFacetStyle === 'sidebar') {
+    return false
+  }
+  return props.options.style?.drawer?.expandSidebarOnFacetClick ?? false
+})
+
 onMounted(() => {
-  if (props.options.style?.type === 'top-dropdown') {
+  if (props.options.style?.type === 'top-dropdown' || props.options?.style?.type === 'drawer') {
     window.addEventListener('click', handleMouseClick)
   }
 })
@@ -118,7 +126,7 @@ onBeforeUnmount(() => {
 
 const handleMouseClick = (e: MouseEvent): void => {
   const el = facetPanel.value as HTMLElement | null
-  if (!el) {
+  if (!el || !props.currentFacetStyle || props.currentFacetStyle === 'sidebar') {
     return
   }
   const isOutsideElement = el && !el.contains(e.target as Node)
@@ -132,6 +140,11 @@ watch(activeFilterKeys, () => {
 })
 
 const toggleFacet = (): void => {
+  if (expandSidebarOnFacetClick.value) {
+    expandedFacets.value = [facet.value.key]
+    emit('expand')
+    return
+  }
   isOpen.value = !isOpen.value
   handleFacetQueryFilter()
 }
@@ -171,7 +184,11 @@ const clear = (): void => {
       <div class="lupa-facet-label-text">{{ facetLabel }}</div>
       <div class="lupa-facet-label-caret" :class="isOpen && 'open'"></div>
     </div>
-    <div class="lupa-facet-content" data-cy="lupa-facet-content" v-if="isOpen">
+    <div
+      class="lupa-facet-content"
+      data-cy="lupa-facet-content"
+      v-if="isOpen && !expandSidebarOnFacetClick"
+    >
       <component
         :is="facetType"
         :facet="facet"
