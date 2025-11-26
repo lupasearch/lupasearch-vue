@@ -8,6 +8,7 @@ import {
 import type {
   HierarchyFacetAction,
   RangeFacetAction,
+  PartialRangeFacetAction,
   TermFacetAction
 } from '@/types/search-results/FacetAction'
 import type { FilterType } from '@/types/search-results/Filters'
@@ -30,7 +31,7 @@ type AppendParams = ({
   encode?: boolean
 }) => unknown
 
-export const getFacetKey = (key: string, type: FilterType): string => {
+export const getFacetKey = (key: string, type: string): string => {
   return `${FACET_FILTER_MAP[type]}${key}`
 }
 
@@ -91,10 +92,12 @@ export const toggleHierarchyFilter = (
 export const toggleRangeFilter = (
   appendParams: AppendParams,
   removeParameters: AppendParams,
-  facetAction: RangeFacetAction,
+  facetAction: RangeFacetAction | PartialRangeFacetAction,
   getQueryParamName?: (param: LupaQueryParamValue) => string,
   currentFilters?: FilterGroup
 ): void => {
+  const baseFacetQueryParamName =
+    facetAction.type === 'partialRange' ? FACET_PARAMS_TYPE.PARTIAL_RANGE : FACET_PARAMS_TYPE.RANGE
   const currentFilter = rangeFilterToString(
     currentFilters?.[facetAction.key] as FilterGroupItemTypeRange,
     FACET_RANGE_SEPARATOR
@@ -107,14 +110,14 @@ export const toggleRangeFilter = (
   if (!facetValue) {
     removeParameters({
       paramsToRemove: [
-        getFacetParam(facetAction.key, '', FACET_PARAMS_TYPE.RANGE).name,
+        getFacetParam(facetAction.key, '', baseFacetQueryParamName).name,
         ...paramsToRemove
       ]
     })
     return
   }
   appendParams({
-    params: [getFacetParam(facetAction.key, facetValue, FACET_PARAMS_TYPE.RANGE)],
+    params: [getFacetParam(facetAction.key, facetValue, baseFacetQueryParamName)],
     paramsToRemove: paramsToRemove,
     encode: false
   })

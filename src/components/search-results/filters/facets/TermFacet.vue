@@ -84,7 +84,7 @@ const handleFacetClick = (item: FacetGroupItem): void => {
   emit('select', {
     key: facet.value.key,
     value: value,
-    type: facet.value.type
+    type: facet.value.type === 'range' ? 'partialRange' : facet.value.type
   })
 }
 
