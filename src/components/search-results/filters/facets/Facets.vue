@@ -80,6 +80,15 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
         filters.value
       )
       break
+    case 'partialRange':
+      toggleRangeFilter(
+        paramStore.appendParams as any,
+        paramStore.removeParameters as any,
+        facetAction,
+        optionsStore.getQueryParamName,
+        filters.value
+      )
+      break
     case 'hierarchy':
       toggleHierarchyFilter(
         paramStore.appendParams as any,
@@ -98,8 +107,14 @@ const handleFacetSelect = (facetAction: FacetAction): void => {
 }
 
 const clear = (facet: FacetResult): void => {
-  const param = getFacetKey(facet.key, facet.type as FilterType)
-  paramStore.removeParameters({ paramsToRemove: [param] })
+  if (facet.type === 'range') {
+    paramStore.removeParameters({
+      paramsToRemove: [getFacetKey(facet.key, 'range'), getFacetKey(facet.key, 'partialRange')]
+    })
+  } else {
+    const param = getFacetKey(facet.key, facet.type as FilterType)
+    paramStore.removeParameters({ paramsToRemove: [param] })
+  }
 }
 
 const clearAll = () => {

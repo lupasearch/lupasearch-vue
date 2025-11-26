@@ -18,9 +18,7 @@ defineProps<{
 
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
-const units = computed(
-  () => searchResultOptions?.value?.filters?.facets?.stats?.units ?? {}
-)
+const units = computed(() => searchResultOptions?.value?.filters?.facets?.stats?.units ?? {})
 
 const isOpen = ref(false)
 
@@ -79,7 +77,8 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
       paramsStore.removeParameters({
         paramsToRemove: [
           optionStore.getQueryParamName(QUERY_PARAMS.PAGE),
-          `${FACET_PARAMS_TYPE.RANGE}${filter.key}`
+          `${FACET_PARAMS_TYPE.RANGE}${filter.key}`,
+          `${FACET_PARAMS_TYPE.PARTIAL_RANGE}${filter.key}`
         ]
       })
       break
@@ -102,7 +101,7 @@ const handleRemove = ({ filter }: { filter: LabeledFilter }): void => {
     </div>
     <div class="filter-values" v-if="!expandable || isOpen">
       <div class="lupa-current-filter-list">
-         <CurrentFilterDisplay
+        <CurrentFilterDisplay
           v-for="filter of currentDisplayFilters"
           :key="filter.key + '_' + filter.value"
           :filter="filter"

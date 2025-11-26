@@ -47,8 +47,7 @@ const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
   if (key.startsWith(FACET_PARAMS_TYPE.TERMS)) {
     return searchParams.getAll(key)?.map((v) => decodeURIComponent(v)) ?? []
   }
-  if (key.startsWith(FACET_PARAMS_TYPE.RANGE)) {
-    const isPrice = key?.includes(CURRENCY_KEY_INDICATOR)
+  if (key.startsWith(FACET_PARAMS_TYPE.RANGE) || key.startsWith(FACET_PARAMS_TYPE.PARTIAL_RANGE)) {
     const range = searchParams.get(key)
     if (!range) {
       return {}
@@ -56,7 +55,7 @@ const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
     const [min, max] = range.split(FACET_RANGE_SEPARATOR)
     return {
       gte: min || undefined,
-      [isPrice ? 'lte' : 'lt']: max || undefined
+      [key.startsWith(FACET_PARAMS_TYPE.PARTIAL_RANGE) ? 'lt' : 'lte']: max || undefined
     }
   }
   if (key.startsWith(FACET_PARAMS_TYPE.HIERARCHY)) {

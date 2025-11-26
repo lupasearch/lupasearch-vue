@@ -17,4 +17,14 @@ export type RangeFacetAction = {
   key: string
 }
 
-export type FacetAction = TermFacetAction | RangeFacetAction | HierarchyFacetAction
+export type PartialRangeFacetAction = {
+  type: 'partialRange'
+  value: string[]
+  key: string
+}
+
+export type FacetAction =
+  | TermFacetAction
+  | RangeFacetAction
+  | HierarchyFacetAction
+  | PartialRangeFacetAction

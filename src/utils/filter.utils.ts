@@ -136,7 +136,8 @@ export const getLabeledFilters = (
 export const isFacetKey = (key: string): boolean =>
   key.startsWith(FACET_PARAMS_TYPE.RANGE) ||
   key.startsWith(FACET_PARAMS_TYPE.TERMS) ||
-  key.startsWith(FACET_PARAMS_TYPE.HIERARCHY)
+  key.startsWith(FACET_PARAMS_TYPE.HIERARCHY) ||
+  key.startsWith(FACET_PARAMS_TYPE.PARTIAL_RANGE)
 
 export const isArrayKey = (key: string): boolean =>
   key.startsWith(FACET_PARAMS_TYPE.TERMS) || key.startsWith(FACET_PARAMS_TYPE.HIERARCHY)
