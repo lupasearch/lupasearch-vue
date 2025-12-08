@@ -62,7 +62,7 @@ const currencyMultiplier = computed(() =>
 )
 
 const facetMin = computed(() => Math.floor(facetValue.value.min * currencyMultiplier.value))
-const facetMax = computed(() => Math.ceil(facetValue.value.max * currencyMultiplier.value))
+const facetMax = computed(() => Number((facetValue.value.max * currencyMultiplier.value).toFixed(2)))
 const currentGte = computed(() =>
   getAdjustedNumber(currentFilters.value.gte, currencyMultiplier.value)
 )
