@@ -190,6 +190,10 @@ const handleProductEvent = (item: { type: ReportableEventType }): void => {
       itemId: id.value,
       searchQuery: query.value,
       type: item.type,
+      options:
+        props.lupaClickTrackingType === 'recommendedItemClick'
+          ? { allowEmptySearchQuery: true }
+          : undefined,
       analytics:
         item.type === 'addToCart'
           ? {
