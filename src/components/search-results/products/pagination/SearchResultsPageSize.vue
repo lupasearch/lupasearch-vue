@@ -16,6 +16,7 @@ const paramsStore = useParamsStore()
 const optionsStore = useOptionsStore()
 
 const { ariaLabels } = storeToRefs(optionsStore)
+const { limit } = storeToRefs(paramsStore)
 
 const select = ref(null)
 
@@ -39,6 +40,7 @@ const handleSelect = (e: Event): void => {
     <div id="lupa-select">
       <label class="lupa-select-label" for="lupa-page-size-select-dropdown">{{ label }}</label>
       <select
+        :value="limit"
         id="lupa-page-size-select-dropdown"
         class="lupa-select-dropdown"
         :aria-label="ariaLabels?.pageSizeSelect ?? label ?? 'Select page size'"
