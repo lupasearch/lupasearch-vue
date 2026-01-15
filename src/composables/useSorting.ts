@@ -50,6 +50,7 @@ export const useSorting = () => {
   }
 
   watch(sort, () => setSortValue())
+  watch(sortOptions, () => setSortValue())
 
   const handleSelect = (): void => {
     const value = sortItems.value.find((x) => x.key === selectedKey.value)?.key
@@ -66,12 +67,15 @@ export const useSorting = () => {
   }
 
   return {
+    sort,
     sotyByTitleLabel,
     sortItems,
     selectedKey,
+    previousKey,
     ariaLabels,
     sortOptions,
     sortStyle,
+    defaultSortValue,
     handleSelect,
     setSortValue
   }
