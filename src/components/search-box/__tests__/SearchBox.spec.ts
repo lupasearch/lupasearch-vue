@@ -61,6 +61,7 @@ describe('SearchBox.vue', () => {
       showMoreResultsButton: undefined,
       showNoResultsPanel: undefined,
       expandOnSinglePanel: undefined,
+      noResultsCustomHtml: undefined,
     })
   })
 
