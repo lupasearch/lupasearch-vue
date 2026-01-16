@@ -44,6 +44,8 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   showGoToResults?: boolean
   isInStock?: DisplayCondition | ((doc: Document) => boolean)
   programmaticNavigation?: boolean
+  uncollapsedDocumentCount?: number
+  appendCustomHtml?: string
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 

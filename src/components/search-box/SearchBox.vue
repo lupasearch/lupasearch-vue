@@ -71,7 +71,7 @@ const inputOptions = computed(
       'links',
       'inputAttributes',
       'showSubmitButton',
-      'voiceSearch',
+      'voiceSearch'
     ])
 )
 
@@ -90,7 +90,8 @@ const panelOptions = computed(
       'hideMoreResultsButtonOnEmptyQuery',
       'showNoResultsPanel',
       'expandOnSinglePanel',
-      'showMoreResultsButton'
+      'showMoreResultsButton',
+      'noResultsCustomHtml'
     ])
 )
 
@@ -168,21 +169,32 @@ const close = (e?: Event) => {
   }
 }
 
+const fillInputWithSuggestion = (): void => {
+  if (suggestedValue?.value?.item?.suggestion) {
+    selectSuggestion({ ...suggestedValue.value, override: true })
+  }
+}
+
+const goToResults = (): void => {
+  handleSearch()
+  resetValues()
+}
+
 const handleKeyDown = (e: KeyboardEvent): void => {
   if (!focused.value) {
     return
   }
   switch (e.key) {
     case 'Tab':
-      if (suggestedValue?.value?.item?.suggestion) {
-        e.preventDefault()
-        selectSuggestion({ ...suggestedValue.value, override: true })
-      }
+      fillInputWithSuggestion()
       break
     case 'Enter':
       e.preventDefault()
-      handleSearch()
-      resetValues()
+      if (props.options.disableNavigationToSearchResults) {
+        fillInputWithSuggestion()
+      } else {
+        goToResults()
+      }
       break
     case 'Escape':
       opened.value = false
@@ -256,7 +268,11 @@ const selectSuggestion = (inputSuggestion: InputSuggestion, shouldSearch = false
     inputValue.value = inputSuggestion.override ? inputSuggestion.item.suggestion : inputValue.value
   }
   if (shouldSearch) {
-    handleSearch()
+    if (props.options.disableNavigationToSearchResults) {
+      fillInputWithSuggestion()
+    } else {
+      handleSearch()
+    }
   }
 }
 

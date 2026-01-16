@@ -1,8 +1,18 @@
 <script lang="ts" setup>
-import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
+import type { SearchBoxOptionLabels, SearchBoxOptions, SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
+import { computed } from 'vue'
 
-defineProps<{ labels: SearchBoxOptionLabels }>()
+const props = defineProps<{ options: SearchBoxPanelOptions }>()
+
+const customHtml = computed<string | undefined>(() => {
+  return props.options.noResultsCustomHtml
+})
+
+const labels = computed<SearchBoxOptionLabels>(() => {
+  return props.options.labels
+})
 </script>
 <template>
-  <p class="lupa-search-box-no-results">{{ labels.noResults }}</p>
+  <div v-if="customHtml" class="lupa-search-box-no-results" v-html="customHtml"></div>
+  <p v-else class="lupa-search-box-no-results">{{ labels?.noResults }}</p>
 </template>

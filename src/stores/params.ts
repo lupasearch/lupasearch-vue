@@ -51,6 +51,10 @@ export const useParamsStore = defineStore('params', () => {
     return page <= 0 ? 1 : page
   })
 
+  const disableNavigationToSearchResults = computed(() => {
+    return optionsStore.searchBoxOptions?.disableNavigationToSearchResults || false
+  })
+
   const limit = computed(() => {
     return (
       Number(params.value[QUERY_PARAMS_PARSED.LIMIT]) ||
@@ -171,6 +175,9 @@ export const useParamsStore = defineStore('params', () => {
       optionsStore.boxRoutingBehavior
     )
     if (redirectionApplied) {
+      return
+    }
+    if (disableNavigationToSearchResults.value) {
       return
     }
     const forceFullReload = optionsStore.searchBoxOptions.forceFullReloadOnParams?.some((p) =>
