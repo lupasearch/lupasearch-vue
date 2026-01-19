@@ -293,7 +293,8 @@ const handleUrlChange = (params?: URLSearchParams): void => {
   const publicQuery = createPublicQuery(
     parseParams(optionStore.getQueryParamName, searchParams),
     props.options.sort,
-    defaultSearchResultPageSize.value
+    defaultSearchResultPageSize.value,
+    props.options.selectFields
   )
   searchResultStore.setLoading(true)
   const finalPublicQuery = getPublicQuery(publicQuery, initialFilters.value, props.isProductList)

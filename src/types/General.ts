@@ -1,5 +1,5 @@
 import type { AnalyticsOptions } from './AnalyticsOptions'
-import type { Environment as SdkEnvironment, Document } from '@getlupa/client-sdk/Types'
+import type { Environment as SdkEnvironment, Document, Transform } from '@getlupa/client-sdk/Types'
 
 export type CustomDocumentHtmlAttributes = (doc: Document) => Record<string, unknown>
 
@@ -11,6 +11,7 @@ export type SdkOptions = {
   customHeaders?: Record<string, string>
   customParams?: Record<string, string | string[]>
   onError?: (err: unknown) => unknown
+  transform?: Transform
 }
 
 export type TrackingOptions = {
