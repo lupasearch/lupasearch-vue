@@ -37,7 +37,8 @@ export const getInitialSearchResults = async (
   const publicQuery = createPublicQuery(
     parseParams(getQueryParamName, searchParams),
     options.sort,
-    defaultData?.pageSize
+    defaultData?.pageSize,
+    options.selectFields
   )
   const query = getPublicQuery(publicQuery, defaultData?.filters ?? {}, false)
   try {

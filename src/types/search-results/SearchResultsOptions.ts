@@ -25,6 +25,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     scrollToResults?: ScrollToResultsOptions
     initialFilters?: FilterGroup | Record<string, DataExtraction>
     zeroResults?: ZeroResultsOptions
+    selectFields?: string[]
   } & Partial<MultiCurrencyConfig>
 
 export type ZeroResultsOptions = {

@@ -74,6 +74,7 @@ const searchForRelatedQuery = async (): Promise<void> => {
     limit: 3,
     filters: relatedQueryFilters.value,
     trackTerm: false,
+    selectFields: searchResultOptions.value?.selectFields,
     modifiers: {
       facets: false,
       refiners: false

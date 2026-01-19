@@ -7,7 +7,8 @@ import type { FilterGroup, PublicQuery, SortDirection } from '@getlupa/client-sd
 export const createPublicQuery = (
   queryParams: QueryParams,
   sortOptions?: SearchResultsSortOptions[], // will be removed when vuex is implemented
-  defaultPageSize?: number
+  defaultPageSize?: number,
+  selectFields?: string[]
 ): PublicQuery => {
   const publicQuery: PublicQuery = {} as PublicQuery
 
@@ -18,7 +19,7 @@ export const createPublicQuery = (
     }
     switch (param) {
       case QUERY_PARAMS_PARSED.QUERY:
-        publicQuery.searchText = Array.isArray(value) ? value[0] : value ?? ''
+        publicQuery.searchText = Array.isArray(value) ? value[0] : (value ?? '')
         break
       case QUERY_PARAMS_PARSED.LIMIT:
         publicQuery.limit = Number(value) || defaultPageSize
@@ -47,6 +48,9 @@ export const createPublicQuery = (
   publicQuery.sort =
     publicQuery.sort || (getDefaultSort(sortOptions) as Record<string, SortDirection>[])
   publicQuery.filters = queryParams.filters
+  if (selectFields) {
+    publicQuery.selectFields = selectFields
+  }
   return publicQuery
 }
 

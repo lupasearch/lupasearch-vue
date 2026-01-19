@@ -46,6 +46,7 @@ export type DocumentSearchBoxPanel = SearchBoxPanelBase & {
   programmaticNavigation?: boolean
   uncollapsedDocumentCount?: number
   appendCustomHtml?: string
+  selectFields?: string[]
   customDocumentHtmlAttributes?: CustomDocumentHtmlAttributes
 }
 
