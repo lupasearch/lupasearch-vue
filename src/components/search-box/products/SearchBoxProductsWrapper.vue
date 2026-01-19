@@ -70,6 +70,7 @@ const getItems = (): void => {
         searchText: props.inputValue,
         limit: props.panel.limit,
         filters: extractedInitialFilters.value,
+        selectFields: props.panel.selectFields,
         modifiers: {
           facets: false,
           refiners: false,
