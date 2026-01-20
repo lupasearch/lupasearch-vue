@@ -206,7 +206,11 @@ export default {
 </script>
 <template>
   <div ref="panelContainer">
-    <div v-if="displayResults" id="lupa-search-box-panel">
+    <div
+      v-if="displayResults"
+      id="lupa-search-box-panel"
+      :class="{ 'lupa-search-text-empty': isSearchEmpty }"
+    >
       <a v-if="labels.closePanel" class="lupa-search-box-close-panel" @click="$emit('close')">
         {{ labels.closePanel }}
       </a>
@@ -231,8 +235,8 @@ export default {
             {{ panel.labels?.title }}
           </div>
           <component
-            v-if="panel.queryKey && canShowPanel(panel)"
             :is="getComponent(panel.type)"
+            v-if="panel.queryKey && canShowPanel(panel)"
             :panel="panel"
             :search-box-options="options"
             :options="sdkOptions"
@@ -250,7 +254,7 @@ export default {
           </component>
         </div>
       </div>
-      <SearchBoxNoResults v-if="!hasAnyResults && options.showNoResultsPanel" :labels="labels" />
+      <SearchBoxNoResults v-if="!hasAnyResults && options.showNoResultsPanel" :options="options" />
       <SearchBoxMoreResults
         v-if="displayShowMoreResultsButton"
         :labels="labels"
@@ -258,7 +262,11 @@ export default {
         @go-to-results="$emit('go-to-results')"
       ></SearchBoxMoreResults>
     </div>
-    <div id="lupa-search-box-panel" v-else-if="displayHistory">
+    <div
+      v-else-if="displayHistory"
+      id="lupa-search-box-panel"
+      :class="{ 'lupa-search-text-empty': isSearchEmpty }"
+    >
       <SearchBoxHistoryPanel
         :options="options.history"
         :history="history"

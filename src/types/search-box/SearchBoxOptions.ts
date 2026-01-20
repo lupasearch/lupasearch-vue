@@ -20,6 +20,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   redirections?: RedirectionOptions
   queryParameterNames?: Record<LupaQueryParamValue, string>
   keepOpen?: boolean
+  disableNavigationToSearchResults?: boolean
 } & Partial<MultiCurrencyConfig>
 
 export type SearchBoxOptionLabels = {
@@ -33,6 +34,8 @@ export type SearchBoxOptionLabels = {
   close?: string
   searchInputAriaLabel?: string
   closePanel?: string
+  showMore?: string
+  showLess?: string
 }
 
 export type SearchBoxOptionLinks = {
@@ -108,4 +111,5 @@ export type SearchBoxPanelOptions = SearchBoxInputOptions & {
   expandOnSinglePanel?: boolean
   forceFullReloadOnParams?: string[]
   initialFilters?: FilterGroup | Record<string, DataExtraction>
+  noResultsCustomHtml?: string
 }

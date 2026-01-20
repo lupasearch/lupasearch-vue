@@ -5,7 +5,7 @@ import SearchBoxProduct from './SearchBoxProduct.vue'
 import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
 import type { DocumentSearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useHistoryStore } from '@/stores/history'
 import { useTrackingStore } from '@/stores/tracking'
 import { generateLink } from '@/utils/link.utils'
@@ -37,6 +37,32 @@ const highlightedIndex = computed((): number => {
     return -1
   }
   return highlightedItem.value?.index ?? -1
+})
+
+const showAll = ref(false)
+
+const hasResults = computed(() => {
+  return props.items && props.items.length > 0
+})
+
+const hasUncollapsedDocumentCountLimit = computed(() => {
+  return Boolean(props.panelOptions?.uncollapsedDocumentCount)
+})
+
+const showAllItemsToggleButton = computed(() => {
+  if (!hasUncollapsedDocumentCountLimit.value) {
+    return false
+  }
+  return props.items?.length > (props.panelOptions?.uncollapsedDocumentCount ?? 0)
+})
+
+const displayItems = computed(() => {
+  if (showAll.value) {
+    return props.items
+  }
+  const count =
+    props.panelOptions.uncollapsedDocumentCount ?? props.panelOptions.limit ?? props.items.length
+  return props.items.slice(0, count)
 })
 
 const handleProductClick = ({
@@ -94,11 +120,11 @@ const handleProductClick = ({
 </script>
 
 <template>
-  <div id="lupa-search-box-products">
+  <div id="lupa-search-box-products" :class="{ 'lupa-search-box-products-expanded': showAll }">
     <template v-if="$slots.productCard">
       <slot
+        v-for="(item, index) in displayItems"
         name="productCard"
-        v-for="(item, index) in items"
         :key="index"
         :item="item"
         :panelOptions="panelOptions"
@@ -110,7 +136,7 @@ const handleProductClick = ({
     </template>
     <template v-else>
       <SearchBoxProduct
-        v-for="(item, index) in items"
+        v-for="(item, index) in displayItems"
         :key="index"
         :item="item"
         :panelOptions="panelOptions"
@@ -120,6 +146,13 @@ const handleProductClick = ({
         @product-click="handleProductClick"
       />
     </template>
+    <div
+      v-if="hasResults && panelOptions?.appendCustomHtml && (showAll || !showAllItemsToggleButton)"
+      v-html="panelOptions.appendCustomHtml"
+    ></div>
+    <a v-if="showAllItemsToggleButton" class="lupa-search-box-expand" @click="showAll = !showAll">{{
+      showAll ? labels?.showLess : labels?.showMore
+    }}</a>
     <slot />
   </div>
 </template>
