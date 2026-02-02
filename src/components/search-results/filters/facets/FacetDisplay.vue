@@ -103,6 +103,10 @@ const facetKeyClass = computed((): string => {
   return `lupa-facet-${facet.value.key}`
 })
 
+const facetWrapperKeyClass = computed((): string => {
+  return `lupa-facet-wrapper-${facet.value.key}`
+})
+
 const facetLabel = computed(() => {
   return getTranslatedFacetKey(props.facet, searchResultOptions.value.filters?.translations)
 })
@@ -173,6 +177,7 @@ const clear = (): void => {
     ref="facetPanel"
     class="lupa-search-result-facet-display"
     data-cy="lupa-search-result-facet-display"
+    :class="{ [facetWrapperKeyClass]: true }"
     v-if="hasItems"
   >
     <div
