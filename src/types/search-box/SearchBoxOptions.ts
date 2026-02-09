@@ -66,12 +66,16 @@ export type VoiceSearchOptions = {
   customVoiceServiceUrl?: string
 }
 
+export type ClearButtonPosition = 'start-of-input' | 'end-of-input'
+
 export type SearchBoxInputOptions = {
   minInputLength: number
   labels: SearchBoxOptionLabels
   links: SearchBoxOptionLinks
   inputAttributes?: Record<string, string>
   showSubmitButton?: boolean
+  showClearButton?: boolean
+  clearButtonPosition?: ClearButtonPosition
   voiceSearch?: VoiceSearchOptions
 }
 

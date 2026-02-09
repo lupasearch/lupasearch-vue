@@ -50,6 +50,8 @@ export const SEARCH_BOX_CONFIGURATION = {
 
   searchTitlePosition: 'search-results-top',
   hideMoreResultsButtonOnNoResults: true,
+  showClearButton: true,
+  clearButtonPosition: 'end-of-input',
   showNoResultsPanel: true,
   expandOnSinglePanel: true,
 

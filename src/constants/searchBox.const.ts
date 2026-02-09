@@ -21,8 +21,9 @@ export const DEFAULT_SEARCH_BOX_OPTIONS = {
   },
   voiceSearch: {
     enabled: false,
-    queryKey: '',
+    queryKey: ''
   },
+  clearButtonPosition: 'start-of-input',
   panels: [
     {
       type: 'suggestion',

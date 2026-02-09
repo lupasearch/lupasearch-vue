@@ -105,6 +105,7 @@
       top: 12px;
       left: 16px;
     }
+
     &.lupa-input-clear-filled {
       cursor: pointer;
       &:hover {
@@ -112,7 +113,7 @@
       }
       &:after {
         @include lupaConfig.material-icon();
-        content: "\e5cd";
+        content: "\F0B5C";
         margin-right: 10px;
         font-size: 25px;
         position: absolute;
