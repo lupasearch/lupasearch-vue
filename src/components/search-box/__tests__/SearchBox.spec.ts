@@ -72,6 +72,7 @@ describe('SearchBox.vue', () => {
       links: DEFAULT_SEARCH_BOX_OPTIONS.links,
       inputAttributes: DEFAULT_SEARCH_BOX_OPTIONS.inputAttributes,
       showSubmitButton: undefined,
+      showClearButton: undefined,
       clearButtonPosition: 'start-of-input',
       voiceSearch: DEFAULT_SEARCH_BOX_OPTIONS.voiceSearch,
     })
