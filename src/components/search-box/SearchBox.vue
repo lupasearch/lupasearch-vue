@@ -71,6 +71,8 @@ const inputOptions = computed(
       'links',
       'inputAttributes',
       'showSubmitButton',
+      'clearButtonPosition',
+      'showClearButton',
       'voiceSearch'
     ])
 )

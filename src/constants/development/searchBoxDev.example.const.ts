@@ -36,7 +36,8 @@ export const SEARCH_BOX_CONFIGURATION = {
       microphoneOff: 'Microphone is off. Try again.',
       serviceError: 'Service error during transcription',
       microphoneNotFound: 'No microphone found. Please connect a microphone and try again.',
-      microphoneNotAllowed: 'Microphone access denied. Please allow microphone access in your browser settings',
+      microphoneNotAllowed:
+        'Microphone access denied. Please allow microphone access in your browser settings',
       connecting: 'Connecting...'
     },
     customVoiceServiceUrl: 'ws://localhost:3001'
@@ -45,6 +46,8 @@ export const SEARCH_BOX_CONFIGURATION = {
   hideMoreResultsButtonOnNoResults: true,
   showNoResultsPanel: true,
   expandOnSinglePanel: true,
+  showClearButton: true,
+  clearButtonPosition: 'start-of-input',
   callbacks: {
     onSearchBoxResults: (context) => {
       console.log('searchBoxResults', context)

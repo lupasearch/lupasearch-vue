@@ -6,7 +6,7 @@ import { FetchedData, InputSuggestion } from '@/types/search-box/Common'
 import {
   SearchBoxInputOptions,
   SearchBoxOptions,
-  SearchBoxPanelOptions
+  SearchBoxPanelOptions,
 } from '@/types/search-box/SearchBoxOptions'
 import { SearchBoxPanelType } from '@/types/search-box/SearchBoxPanel'
 import { Suggestion } from '@getlupa/client-sdk/Types'
@@ -72,6 +72,8 @@ describe('SearchBox.vue', () => {
       links: DEFAULT_SEARCH_BOX_OPTIONS.links,
       inputAttributes: DEFAULT_SEARCH_BOX_OPTIONS.inputAttributes,
       showSubmitButton: undefined,
+      showClearButton: undefined,
+      clearButtonPosition: 'start-of-input',
       voiceSearch: DEFAULT_SEARCH_BOX_OPTIONS.voiceSearch,
     })
   })

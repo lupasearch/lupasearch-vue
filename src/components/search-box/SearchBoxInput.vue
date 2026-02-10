@@ -60,6 +60,10 @@ const voiceSearchAriaLabel = computed(() => {
   return props.options.voiceSearch?.labels?.aria?.openDialog ?? 'Open voice search dialog'
 })
 
+const isClearButtonAtEndOfInput = computed(
+  () => props.options.clearButtonPosition === 'end-of-input'
+)
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutsideVoiceDialogOverlay)
 })
@@ -98,7 +102,8 @@ const handleSubmit = (): void => {
 }
 
 const clear = (): void => {
-  emit('input', '')
+  inputValue.value = ''
+  emit('input', inputValue.value)
 }
 
 const focus = (): void => {
@@ -150,13 +155,15 @@ defineExpose({ focus })
 </script>
 <template>
   <div id="lupa-search-box-input-container">
-    <div class="lupa-input-clear">
-      <div
-        class="lupa-input-clear-content"
-        :class="{ 'lupa-input-clear-filled': inputValue }"
-        @click="clear"
-      ></div>
-    </div>
+    <div
+      v-if="options.showClearButton && !isClearButtonAtEndOfInput"
+      class="lupa-input-clear"
+      :class="[
+        { 'lupa-input-clear-filled': inputValue },
+        `lupa-input-clear--${options.clearButtonPosition || 'default'}`
+      ]"
+      @click="clear"
+    ></div>
     <div id="lupa-search-box-input">
       <input
         class="lupa-hint"
@@ -177,6 +184,15 @@ defineExpose({ focus })
         @input="handleInput"
         @focus="handleFocus"
       />
+      <div
+        v-if="options.showClearButton && isClearButtonAtEndOfInput"
+        class="lupa-input-clear"
+        :class="[
+          { 'lupa-input-clear-filled': inputValue },
+          `lupa-input-clear--${options.clearButtonPosition || 'default'}`
+        ]"
+        @click="clear"
+      ></div>
       <button v-if="options.showSubmitButton" @click="handleSubmit">
         <span class="lupa-search-submit-icon"></span>
       </button>
