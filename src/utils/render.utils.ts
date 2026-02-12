@@ -25,9 +25,16 @@ export const getDynamicAttributes = (
   return parsedAttributes
 }
 
-const getFieldValue = (doc: Record<string, any>, field: string | number = '') => {
+const getFieldValue = (
+  doc: Record<string, any>,
+  field: string | number = '',
+  matchLiteral?: boolean
+) => {
   if (typeof field === 'number') {
     return +field // Literal numeric value
+  }
+  if (matchLiteral) {
+    return field // Literal string value
   }
   const value = field?.split('.')?.reduce((obj, key) => (obj ? obj[key] : undefined), doc)
   if (+value) {
@@ -59,32 +66,36 @@ export const processDisplayCondition = (
     case 'equals': {
       if (fields.length < 2) return false // At least two fields needed for comparison
       const [field1, field2] = fields
-      return getFieldValue(doc, field1) === getFieldValue(doc, field2)
+      return (
+        getFieldValue(doc, field1) === getFieldValue(doc, field2, displayCondition.matchLiteral)
+      )
     }
     case 'notEquals': {
       if (fields.length < 2) return false
       const [field1, field2] = fields
-      return getFieldValue(doc, field1) !== getFieldValue(doc, field2)
+      return (
+        getFieldValue(doc, field1) !== getFieldValue(doc, field2, displayCondition.matchLiteral)
+      )
     }
     case 'greaterThan': {
       if (fields.length < 2) return false
       const [field1, field2] = fields
-      return getFieldValue(doc, field1) > getFieldValue(doc, field2)
+      return getFieldValue(doc, field1) > getFieldValue(doc, field2, displayCondition.matchLiteral)
     }
     case 'lessThan': {
       if (fields.length < 2) return false
       const [field1, field2] = fields
-      return getFieldValue(doc, field1) < getFieldValue(doc, field2)
+      return getFieldValue(doc, field1) < getFieldValue(doc, field2, displayCondition.matchLiteral)
     }
     case 'greaterThanOrEquals': {
       if (fields.length < 2) return false
       const [field1, field2] = fields
-      return getFieldValue(doc, field1) >= getFieldValue(doc, field2)
+      return getFieldValue(doc, field1) >= getFieldValue(doc, field2, displayCondition.matchLiteral)
     }
     case 'lessThanOrEquals': {
       if (fields.length < 2) return false
       const [field1, field2] = fields
-      return getFieldValue(doc, field1) <= getFieldValue(doc, field2)
+      return getFieldValue(doc, field1) <= getFieldValue(doc, field2, displayCondition.matchLiteral)
     }
     default:
       return false // Unsupported condition
