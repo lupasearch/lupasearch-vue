@@ -14,10 +14,6 @@ const props = defineProps<{
 const searchResultsStore = useSearchResultStore()
 const { relatedCategoryChildren } = storeToRefs(searchResultsStore)
 
-const isPageTopPosition = computed((): boolean => {
-  return props.options.searchTitlePosition === 'page-top'
-})
-
 const hasBackButton = computed((): boolean => {
   return Boolean(props.options.categories?.back?.title)
 })
@@ -79,12 +75,6 @@ const getCategoryKey = (item: Record<string, string>): string => {
           :options="categoryOptions"
         />
       </div>
-      <SearchResultsToolbar
-        v-if="isPageTopPosition"
-        class="lupa-toolbar-mobile"
-        pagination-location="top"
-        :options="options"
-      />
     </div>
   </div>
 </template>

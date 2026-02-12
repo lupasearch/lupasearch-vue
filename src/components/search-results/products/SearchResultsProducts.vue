@@ -82,10 +82,6 @@ const showTopFilters = computed((): boolean => {
   return props.options.filters?.facets?.style?.type !== 'sidebar'
 })
 
-const showMobileFilters = computed((): boolean => {
-  return props.options.searchTitlePosition !== 'page-top'
-})
-
 const currentFilterToolbarVisible = computed((): boolean => {
   return Boolean(
     props.options.filters?.currentFilters?.visibility?.mobileToolbar ||
@@ -178,7 +174,6 @@ const filter = () => {
     <template v-if="hasResults">
       <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
       <SearchResultsToolbar
-        v-if="showMobileFilters"
         class="lupa-toolbar-mobile"
         :options="options"
         pagination-location="top"
