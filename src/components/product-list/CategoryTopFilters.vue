@@ -75,11 +75,6 @@ const getCategoryKey = (item: Record<string, string>): string => {
           :options="categoryOptions"
         />
       </div>
-      <SearchResultsToolbar
-        class="lupa-toolbar-mobile"
-        pagination-location="top"
-        :options="options"
-      />
     </div>
   </div>
 </template>
