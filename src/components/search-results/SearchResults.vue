@@ -382,7 +382,7 @@ defineExpose({ handleMounted, handleUrlChange })
         />
       </div>
     </template>
-    <CategoryTopFilters :options="options" />
+    <CategoryTopFilters v-if="isTitleResultTopPosition" :options="options" />
     <MobileFilterSidebar
       v-if="options.filters"
       :options="options.filters"
