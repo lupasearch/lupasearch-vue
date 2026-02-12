@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export enum DocumentElementType {
   IMAGE = 'image',
   TITLE = 'title',
@@ -28,6 +27,7 @@ export type DisplayCondition = {
     | 'greaterThanOrEquals'
     | 'lessThanOrEquals'
   fields: (string | number)[]
+  matchLiteral?: boolean
 }
 
 export type DynamicAttribute = {

@@ -196,6 +196,28 @@ describe('processDisplayCondition', () => {
     const result = processDisplayCondition(condition)
     expect(result).toBe(false)
   })
+
+  it('should work with literal string values in fields when matchLiteral is true', () => {
+    const condition: DisplayCondition = {
+      condition: 'equals',
+      fields: ['status', 'active'],
+      matchLiteral: true
+    }
+    const doc = { status: 'active' }
+    const result = processDisplayCondition(condition, doc)
+    expect(result).toBe(true)
+
+    const doc2 = { status: 'inactive' }
+    const result2 = processDisplayCondition(condition, doc2)
+    expect(result2).toBe(false)
+
+    const condition3: DisplayCondition = {
+      condition: 'equals',
+      fields: ['status', 'active']
+    }
+    const result3 = processDisplayCondition(condition3, doc)
+    expect(result3).toBe(false)
+  })
 })
 
 describe('getDynamicAttributes', () => {
@@ -362,7 +384,8 @@ describe('getDynamicAttributes', () => {
     const document = { unsafe: '<script>alert("XSS")</script>' }
     const result = getDynamicAttributes(dynamicAttributes, document)
     expect(result).toEqual({
-      'data-unsafe': '&amp;lt;script&amp;gt;alert(&amp;quot;XSS&amp;quot;)&amp;lt;&amp;#x2F;script&amp;gt;'
+      'data-unsafe':
+        '&amp;lt;script&amp;gt;alert(&amp;quot;XSS&amp;quot;)&amp;lt;&amp;#x2F;script&amp;gt;'
     })
   })
 
