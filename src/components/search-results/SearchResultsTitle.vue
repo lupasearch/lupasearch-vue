@@ -5,6 +5,9 @@ import { useSearchResultStore } from '@/stores/searchResult'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { addParamsToLabel } from '@/utils/string.utils'
+import LoadingBlock from '../common/skeleton/LoadingBlock.vue'
+import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
+import { useParamsStore } from '@/stores/params'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -13,7 +16,10 @@ const props = defineProps<{
 }>()
 
 const searchResultStore = useSearchResultStore()
+const paramsStore = useParamsStore()
 const { currentQueryText, totalItems, searchResult } = storeToRefs(searchResultStore)
+const { skeletonEnabled, loading } = useLoadingSkeleton()
+const { query } = storeToRefs(paramsStore)
 
 const suggestedSearchText = computed(() => searchResult.value.suggestedSearchText)
 
@@ -51,20 +57,27 @@ const searchResultsTitleTemplate = computed((): string => {
 </script>
 <template>
   <div>
-    <h1 class="lupa-result-page-title" data-cy="lupa-result-page-title" v-if="showSearchTitle">
-      {{ searchResultsTitleTemplate || options.labels.searchResults
-      }}<span v-if="queryText && !searchResultsTitleTemplate">'{{ queryText }}'</span>
-      <span v-if="showProductCount" class="lupa-results-total-count"
-        >({{ searchResultsCountLabel
-        }}<span class="lupa-results-total-count-number">{{ totalItems }}</span
-        >)</span
-      >
-    </h1>
-    <SearchResultsSummary v-if="showSummary" :label="summaryLabel" />
-    <div
-      class="lupa-result-page-description-top"
-      v-if="descriptionTop"
-      v-html="descriptionTop"
-    ></div>
+    <LoadingBlock
+      type="text"
+      :count="1"
+      :enabled="skeletonEnabled && Boolean(query)"
+      :loading="loading"
+    >
+      <h1 v-if="showSearchTitle" class="lupa-result-page-title" data-cy="lupa-result-page-title">
+        {{ searchResultsTitleTemplate || options.labels.searchResults
+        }}<span v-if="queryText && !searchResultsTitleTemplate">'{{ queryText }}'</span>
+        <span v-if="showProductCount" class="lupa-results-total-count"
+          >({{ searchResultsCountLabel
+          }}<span class="lupa-results-total-count-number">{{ totalItems }}</span
+          >)</span
+        >
+      </h1>
+      <SearchResultsSummary v-if="showSummary" :label="summaryLabel" />
+      <div
+        v-if="descriptionTop"
+        class="lupa-result-page-description-top"
+        v-html="descriptionTop"
+      ></div>
+    </LoadingBlock>
   </div>
 </template>

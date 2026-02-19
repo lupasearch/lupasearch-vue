@@ -115,9 +115,9 @@ const processLoadedItem = (query: { key: string; value: string }, item: Document
     <ul>
       <li
         v-for="query of relatedQueries"
+        v-show="querySourceResultMap[query.value] !== false"
         :key="query.value + query.key + currentSearchText"
         :class="getSelectedFilterClass(query)"
-        v-show="querySourceResultMap[query.value] !== false"
       >
         <a @click="handleRelatedQueryClick(query)">
           <RelatedQueryPanel

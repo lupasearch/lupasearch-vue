@@ -1,0 +1,115 @@
+@use '../base/searchResults';
+
+.lupa-skeleton-block-wrapper {
+  padding: 8px;
+  box-sizing: border-box;
+}
+.lupa-skeleton-block {
+  position: relative;
+  overflow: hidden;
+  display: block;
+
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+
+  min-height: 50px;
+}
+
+.lupa-skeleton-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 56px;
+}
+
+.lupa-skeleton-line {
+  position: relative;
+  overflow: hidden;
+  display: block;
+
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+
+  height: 16px;
+  width: 100%;
+}
+
+.lupa-skeleton-line__shimmer {
+  position: absolute;
+  inset: 0;
+
+  transform: translateX(-120%);
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  animation: lupa-shimmer 1.2s linear infinite;
+  will-change: transform;
+}
+
+.lupa-skeleton-block__shimmer {
+  position: absolute;
+  inset: 0;
+
+  // shimmer band (diagonal)
+  transform: translateX(-120%);
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  animation: lupa-shimmer 1.2s linear infinite;
+  will-change: transform;
+}
+
+@keyframes lupa-shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+/* Accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .lupa-skeleton-block__shimmer {
+    animation: none;
+    transform: none;
+    opacity: 0.35;
+  }
+}
+
+.lupa-skeleton-grid {
+  width: 100%;
+  display: flex;
+  align-self: flex-start;
+  flex-wrap: wrap;
+  .lupa-skeleton-block {
+    min-height: 350px;
+  }
+}
+
+.lupa-skeleton-filters {
+  .lupa-skeleton-block {
+    min-height: 480px;
+  }
+  .lupa-skeleton-block-wrapper {
+    padding: 0;
+  }
+}
+
+.lupa-skeleton-related-queries {
+  .lupa-skeleton-block {
+    min-height: 220px;
+  }
+}

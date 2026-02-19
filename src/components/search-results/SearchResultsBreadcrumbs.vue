@@ -22,6 +22,10 @@ const hasEventRouting = computed((): boolean => {
   return searchResultOptions.value.routingBehavior === 'event'
 })
 
+const hasBreadcrumbs = computed((): boolean => {
+  return breadcrumbsValue.value?.length > 0
+})
+
 const getLabel = (label: string): string => {
   return addParamsToLabel(label, `'${currentQueryText.value}'`)
 }
@@ -31,7 +35,7 @@ const handleNavigation = (event: Event, link: string): void => {
 }
 </script>
 <template>
-  <div id="lupa-search-results-breadcrumbs">
+  <div v-if="hasBreadcrumbs" id="lupa-search-results-breadcrumbs">
     <span
       class="lupa-search-results-breadcrumb"
       v-for="(breadcrumb, index) in breadcrumbsValue"

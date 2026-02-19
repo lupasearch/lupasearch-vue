@@ -2,8 +2,11 @@
 import type { SearchResultsFilterOptions } from '@/types/search-results/SearchResultsOptions'
 import Facets from './facets/Facets.vue'
 import { computed } from 'vue'
+import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
+import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
 
 const props = defineProps<{ options: SearchResultsFilterOptions }>()
+const { skeletonEnabled, loading } = useLoadingSkeleton()
 
 const emit = defineEmits(['filter'])
 
@@ -22,12 +25,19 @@ const visible = computed((): boolean => {
     id="lupa-search-result-filters"
     class="lupa-search-result-filters lupa-search-result-top-filters"
   >
-    <Facets
-      v-if="options.facets"
-      :options="options.facets"
-      :facet-style="options.facets.style?.type"
-      :clearable="true"
-      @filter="filter"
-    />
+    <LoadingBlock
+      class="lupa-skeleton-top-dropdown-filters"
+      :count="1"
+      :enabled="skeletonEnabled"
+      :loading="loading"
+    >
+      <Facets
+        v-if="options.facets"
+        :options="options.facets"
+        :facet-style="options.facets.style?.type"
+        :clearable="true"
+        @filter="filter"
+      />
+    </LoadingBlock>
   </div>
 </template>

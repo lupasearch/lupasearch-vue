@@ -356,6 +356,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     relatedQueriesApiEnabled,
     lastResultsSource,
     relatedQueryFacetKeys,
+    loadingRelatedQueries,
     setSidebarState,
     queryFacet,
     setLastRequestId,

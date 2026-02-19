@@ -26,6 +26,9 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     initialFilters?: FilterGroup | Record<string, DataExtraction>
     zeroResults?: ZeroResultsOptions
     selectFields?: string[]
+    loadingSkeleton?: {
+      enabled: boolean
+    }
   } & Partial<MultiCurrencyConfig>
 
 export type ZeroResultsOptions = {
