@@ -10,8 +10,13 @@ export const useLoadingSkeleton = () => {
   const searchResultStore = useSearchResultStore()
 
   const { limit } = storeToRefs(paramsStore)
-  const { searchResult, relatedQueriesResult, loading, loadingRelatedQueries } =
-    storeToRefs(searchResultStore)
+  const {
+    searchResult,
+    relatedQueriesResult,
+    loading,
+    loadingFacets: loadingFacetsBase,
+    loadingRelatedQueries
+  } = storeToRefs(searchResultStore)
   const { searchResultOptions } = storeToRefs(optionsStore)
 
   const skeletonEnabled = computed(() => {
@@ -26,16 +31,31 @@ export const useLoadingSkeleton = () => {
     )
   })
 
+  const facetSkeletonEnabled = computed(() => {
+    return (
+      searchResultOptions.value?.loadingSkeleton?.enabled && !searchResult.value?.facets?.length
+    )
+  })
+
+  const loadingFacets = computed(() => {
+    if (searchResultOptions.value?.splitExpensiveRequests) {
+      return loadingFacetsBase.value
+    }
+    return loading.value
+  })
+
   const loadingAny = computed(() => {
-    return loading.value || loadingRelatedQueries.value
+    return loading.value || loadingRelatedQueries.value || loadingFacets.value
   })
 
   return {
     loading,
     loadingRelatedQueries,
+    loadingFacets,
     loadingAny,
     limit,
     skeletonEnabled,
-    relatedQueriesSkeletonEnabled
+    relatedQueriesSkeletonEnabled,
+    facetSkeletonEnabled
   }
 }

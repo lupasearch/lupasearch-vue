@@ -55,7 +55,8 @@ const {
   relatedQueriesApiEnabled
 } = storeToRefs(searchResultStore)
 
-const { limit, skeletonEnabled, relatedQueriesSkeletonEnabled, loadingAny } = useLoadingSkeleton()
+const { limit, skeletonEnabled, relatedQueriesSkeletonEnabled, loadingRelatedQueries } =
+  useLoadingSkeleton()
 
 const emit = defineEmits(['filter'])
 
@@ -176,7 +177,7 @@ const filter = () => {
     <AdditionalPanels :options="options" location="top" :sdk-options="options.options" />
     <LoadingBlock
       :enabled="relatedQueriesSkeletonEnabled"
-      :loading="loadingAny"
+      :loading="loading || loadingRelatedQueries"
       :count="1"
       class="lupa-skeleton-related-queries"
     >

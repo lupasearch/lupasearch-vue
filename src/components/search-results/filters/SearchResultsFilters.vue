@@ -11,7 +11,7 @@ import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
 import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
 
 const categoryFilters = ref(null)
-const { skeletonEnabled, loading } = useLoadingSkeleton()
+const { facetSkeletonEnabled, loadingFacets } = useLoadingSkeleton()
 
 const props = defineProps<{
   options: SearchResultsFilterOptions
@@ -56,8 +56,8 @@ defineExpose({ fetch })
     <LoadingBlock
       class="lupa-skeleton-filters"
       :count="1"
-      :enabled="skeletonEnabled"
-      :loading="loading"
+      :enabled="facetSkeletonEnabled"
+      :loading="loadingFacets"
     >
       <CurrentFilters
         v-if="showCurrentFilters"

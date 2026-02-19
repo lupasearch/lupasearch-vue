@@ -6,7 +6,7 @@ import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
 import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
 
 const props = defineProps<{ options: SearchResultsFilterOptions }>()
-const { skeletonEnabled, loading } = useLoadingSkeleton()
+const { facetSkeletonEnabled, loadingFacets } = useLoadingSkeleton()
 
 const emit = defineEmits(['filter'])
 
@@ -28,8 +28,8 @@ const visible = computed((): boolean => {
     <LoadingBlock
       class="lupa-skeleton-top-dropdown-filters"
       :count="1"
-      :enabled="skeletonEnabled"
-      :loading="loading"
+      :enabled="facetSkeletonEnabled"
+      :loading="loadingFacets"
     >
       <Facets
         v-if="options.facets"
