@@ -9,15 +9,20 @@ import type { QueryParams } from '@/types/search-results/QueryParams'
 import { isFacetKey } from './filter.utils'
 import { reverseKeyValue } from './picker.utils'
 import { LupaQueryParamValue } from '@/types/General'
-import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
 
-const parseParam = (key: string, params: URLSearchParams) => {
-  const value = params.get(key)
-  if (!value) return undefined
+const decodeParam = (value?: string) => {
+  if (!value) {
+    return undefined
+  }
 
-  // let's check if value was double-encoded
-  if (!/%[0-9A-Fa-f]{2}/.test(value)) {
-    return value // new/correct URL
+  try {
+    // let's check if value was double-encoded
+    if (!/%[0-9A-Fa-f]{2}/.test(value)) {
+      return value // new/correct URL
+    }
+  } catch {
+    // if regex fails, we can assume it's not encoded and return the value as is
+    return value
   }
 
   try {
@@ -25,6 +30,11 @@ const parseParam = (key: string, params: URLSearchParams) => {
   } catch {
     return value
   }
+}
+
+const parseParam = (key: string, params: URLSearchParams) => {
+  const value = params.get(key)
+  return decodeParam(value ?? undefined)
 }
 
 const parseRegularKeys = (
@@ -48,7 +58,7 @@ const parseRegularKeys = (
 
 const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
   if (key.startsWith(FACET_PARAMS_TYPE.TERMS)) {
-    return searchParams.getAll(key)?.map((v) => decodeURIComponent(v)) ?? []
+    return searchParams.getAll(key)?.map((v) => decodeParam(v)) ?? []
   }
   if (key.startsWith(FACET_PARAMS_TYPE.RANGE) || key.startsWith(FACET_PARAMS_TYPE.PARTIAL_RANGE)) {
     const range = searchParams.get(key)
@@ -64,7 +74,7 @@ const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
   if (key.startsWith(FACET_PARAMS_TYPE.HIERARCHY)) {
     return {
       level: 0,
-      terms: searchParams.getAll(key)?.map((v) => decodeURIComponent(v)) ?? []
+      terms: searchParams.getAll(key)?.map((v) => decodeParam(v)) ?? []
     }
   }
   return []
