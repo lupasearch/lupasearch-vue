@@ -13,14 +13,17 @@ import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
 
 const parseParam = (key: string, params: URLSearchParams) => {
   const value = params.get(key)
-  if (!value) {
-    return undefined
+  if (!value) return undefined
+
+  // let's check if value was double-encoded
+  if (!/%[0-9A-Fa-f]{2}/.test(value)) {
+    return value // new/correct URL
   }
+
   try {
-    return decodeURIComponent(value)
+    return decodeURIComponent(value) // one extra decode for backward compatibility
   } catch {
-    // Invalid parameter, possibly out of LupaSearch plugin scope, return undefined
-    return undefined
+    return value
   }
 }
 
@@ -100,22 +103,17 @@ export const parseParams = (
 
 export const appendParam = (
   url: URL,
-  { name, value }: { name: string; value: string | string[] },
-  encode = true
+  { name, value }: { name: string; value: string | string[] }
 ): void => {
   if (Array.isArray(value)) {
     appendArrayParams(url, { name, value })
   } else {
-    appendSingleParam(url, { name, value }, encode)
+    appendSingleParam(url, { name, value })
   }
 }
 
-const appendSingleParam = (
-  url: URL,
-  param: { name: string; value: string },
-  encode = true
-): void => {
-  const valueToAppend = encode ? encodeParam(param.value) : param.value
+const appendSingleParam = (url: URL, param: { name: string; value: string }): void => {
+  const valueToAppend = param.value
   if (url.searchParams.has(param.name)) {
     url.searchParams.set(param.name, valueToAppend)
   } else {
@@ -125,7 +123,7 @@ const appendSingleParam = (
 
 const appendArrayParams = (url: URL, param: { name: string; value: string[] }) => {
   url.searchParams.delete(param.name)
-  param.value.forEach((v) => url.searchParams.append(param.name, encodeParam(v)))
+  param.value.forEach((v) => url.searchParams.append(param.name, v))
 }
 
 export const getRemovableParams = (
