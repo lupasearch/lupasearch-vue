@@ -20,6 +20,49 @@ describe('parseParams', () => {
       }
     })
   })
+
+  it('should return decoded params', () => {
+    expect(
+      parseParams(
+        undefined,
+        new URLSearchParams('l=10&q=abc%20def&f.category1=Category%20with%20spaces')
+      )
+    ).toEqual({
+      query: 'abc def',
+      limit: '10',
+      filters: {
+        category1: ['Category with spaces']
+      }
+    })
+  })
+
+  it('should work with doubly-encoded params', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=%25C4%25AErankis'))).toEqual({
+      query: 'Įrankis',
+      filters: {}
+    })
+  })
+
+  it('should work with single-encoded params', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=%C4%AErankis'))).toEqual({
+      query: 'Įrankis',
+      filters: {}
+    })
+  })
+
+  it('should be able to decode valid percentage searches', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=100%25%20cotton'))).toEqual({
+      query: '100% cotton',
+      filters: {}
+    })
+  })
+
+  it('should return same string if the encoding is invalid', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=abc%2'))).toEqual({
+      query: 'abc%2',
+      filters: {}
+    })
+  })
 })
 
 describe('getRemovableParams', () => {
