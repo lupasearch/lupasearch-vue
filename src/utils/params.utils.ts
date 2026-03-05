@@ -9,19 +9,32 @@ import type { QueryParams } from '@/types/search-results/QueryParams'
 import { isFacetKey } from './filter.utils'
 import { reverseKeyValue } from './picker.utils'
 import { LupaQueryParamValue } from '@/types/General'
-import { CURRENCY_KEY_INDICATOR } from '@/constants/global.const'
 
-const parseParam = (key: string, params: URLSearchParams) => {
-  const value = params.get(key)
+const decodeParam = (value?: string) => {
   if (!value) {
     return undefined
   }
+
   try {
-    return decodeURIComponent(value)
+    // let's check if value was double-encoded
+    if (!/%[0-9A-Fa-f]{2}/.test(value)) {
+      return value // new/correct URL
+    }
   } catch {
-    // Invalid parameter, possibly out of LupaSearch plugin scope, return undefined
-    return undefined
+    // if regex fails, we can assume it's not encoded and return the value as is
+    return value
   }
+
+  try {
+    return decodeURIComponent(value) // one extra decode for backward compatibility
+  } catch {
+    return value
+  }
+}
+
+const parseParam = (key: string, params: URLSearchParams) => {
+  const value = params.get(key)
+  return decodeParam(value ?? undefined)
 }
 
 const parseRegularKeys = (
@@ -45,7 +58,7 @@ const parseRegularKeys = (
 
 const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
   if (key.startsWith(FACET_PARAMS_TYPE.TERMS)) {
-    return searchParams.getAll(key)?.map((v) => decodeURIComponent(v)) ?? []
+    return searchParams.getAll(key)?.map((v) => decodeParam(v)) ?? []
   }
   if (key.startsWith(FACET_PARAMS_TYPE.RANGE) || key.startsWith(FACET_PARAMS_TYPE.PARTIAL_RANGE)) {
     const range = searchParams.get(key)
@@ -61,7 +74,7 @@ const parseFacetKey = (key: string, searchParams: URLSearchParams) => {
   if (key.startsWith(FACET_PARAMS_TYPE.HIERARCHY)) {
     return {
       level: 0,
-      terms: searchParams.getAll(key)?.map((v) => decodeURIComponent(v)) ?? []
+      terms: searchParams.getAll(key)?.map((v) => decodeParam(v)) ?? []
     }
   }
   return []
@@ -100,22 +113,17 @@ export const parseParams = (
 
 export const appendParam = (
   url: URL,
-  { name, value }: { name: string; value: string | string[] },
-  encode = true
+  { name, value }: { name: string; value: string | string[] }
 ): void => {
   if (Array.isArray(value)) {
     appendArrayParams(url, { name, value })
   } else {
-    appendSingleParam(url, { name, value }, encode)
+    appendSingleParam(url, { name, value })
   }
 }
 
-const appendSingleParam = (
-  url: URL,
-  param: { name: string; value: string },
-  encode = true
-): void => {
-  const valueToAppend = encode ? encodeParam(param.value) : param.value
+const appendSingleParam = (url: URL, param: { name: string; value: string }): void => {
+  const valueToAppend = param.value
   if (url.searchParams.has(param.name)) {
     url.searchParams.set(param.name, valueToAppend)
   } else {
@@ -125,7 +133,7 @@ const appendSingleParam = (
 
 const appendArrayParams = (url: URL, param: { name: string; value: string[] }) => {
   url.searchParams.delete(param.name)
-  param.value.forEach((v) => url.searchParams.append(param.name, encodeParam(v)))
+  param.value.forEach((v) => url.searchParams.append(param.name, v))
 }
 
 export const getRemovableParams = (
