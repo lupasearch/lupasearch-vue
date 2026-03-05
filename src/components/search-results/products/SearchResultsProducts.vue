@@ -30,6 +30,9 @@ import { EventSourceMetadata } from '@/types/search-box/Common'
 import RefinersLoadingNotice from './RefinersLoadingNotice.vue'
 import RelatedQueriesApi from '../related-queries/RelatedQueriesApi.vue'
 import ZeroResults from './ZeroResults.vue'
+import LoadingGrid from '@/components/common/skeleton/LoadingGrid.vue'
+import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
+import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -51,6 +54,9 @@ const {
   loading,
   relatedQueriesApiEnabled
 } = storeToRefs(searchResultStore)
+
+const { limit, skeletonEnabled, relatedQueriesSkeletonEnabled, loadingRelatedQueries } =
+  useLoadingSkeleton()
 
 const emit = defineEmits(['filter'])
 
@@ -117,15 +123,15 @@ const desktopFiltersExpanded = computed((): boolean => {
   return props.options?.filters?.currentFilters?.desktopToolbar?.activeFiltersExpanded ?? false
 })
 
-const columnSize = computed((): string => {
+const columnSize = computed((): Record<string, string> => {
   // Programic grid disabled when ssr is on
   if (props.ssr) {
-    return ''
+    return {}
   }
   if (layout.value === ResultsLayoutEnum.LIST) {
-    return 'width: 100%'
+    return { width: '100%' }
   }
-  return `width: ${100 / columnCount.value}%`
+  return { width: `${100 / columnCount.value}%` }
 })
 
 const hasSimilarQueries = computed(() => Boolean(searchResult.value.similarQueries?.length))
@@ -166,11 +172,18 @@ const filter = () => {
 </script>
 <template>
   <div id="lupa-search-results-products">
-    <Spinner class="lupa-loader" v-if="loading && !isFilterSidebarVisible" />
+    <Spinner v-if="!skeletonEnabled && loading && !isFilterSidebarVisible" class="lupa-loader" />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
-    <AdditionalPanels :options="options" location="top" :sdkOptions="options.options" />
-    <RelatedQueries v-if="showLocalRelatedQueries" :options="options.relatedQueries" />
-    <RelatedQueriesApi v-if="showApiRelatedQueries" :options="options.relatedQueries" />
+    <AdditionalPanels :options="options" location="top" :sdk-options="options.options" />
+    <LoadingBlock
+      :enabled="relatedQueriesSkeletonEnabled"
+      :loading="loading || loadingRelatedQueries"
+      :count="1"
+      class="lupa-skeleton-related-queries"
+    >
+      <RelatedQueries v-if="showLocalRelatedQueries" :options="options.relatedQueries" />
+      <RelatedQueriesApi v-if="showApiRelatedQueries" :options="options.relatedQueries" />
+    </LoadingBlock>
     <template v-if="hasResults">
       <FiltersTopDropdown v-if="showTopFilters" :options="options.filters ?? {}" />
       <SearchResultsToolbar
@@ -197,31 +210,38 @@ const filter = () => {
         :expandable="!desktopFiltersExpanded"
       />
       <div class="lupa-products" data-cy="lupa-products">
-        <template v-if="$slots.productCard">
-          <slot
-            name="productCard"
-            v-for="(product, index) in searchResult.items"
-            :style="columnSize"
-            :key="getProductKeyAction(index, product)"
-            :product="product"
-            :options="productCardOptions"
-          />
-        </template>
-        <template v-else>
-          <SearchResultsProductCard
-            v-for="(product, index) in searchResult.items"
-            :style="columnSize"
-            :key="getProductKeyAction(index, product)"
-            :product="product"
-            :options="productCardOptions"
-            :analytics-metadata="clickMetadata"
-          />
-        </template>
+        <LoadingGrid
+          :enabled="skeletonEnabled"
+          :loading="loading"
+          :count="limit ?? 12"
+          :style="columnSize"
+        >
+          <template v-if="$slots.productCard">
+            <slot
+              v-for="(product, index) in searchResult.items"
+              :key="getProductKeyAction(index, product)"
+              name="productCard"
+              :style="columnSize"
+              :product="product"
+              :options="productCardOptions"
+            />
+          </template>
+          <template v-else>
+            <SearchResultsProductCard
+              v-for="(product, index) in searchResult.items"
+              :key="getProductKeyAction(index, product)"
+              :style="columnSize"
+              :product="product"
+              :options="productCardOptions"
+              :analytics-metadata="clickMetadata"
+            />
+          </template>
+        </LoadingGrid>
       </div>
       <div
+        v-if="isPageEmpty && options.labels.noItemsInPage"
         class="lupa-empty-results"
         data-cy="lupa-no-results-in-page"
-        v-if="isPageEmpty && options.labels.noItemsInPage"
       >
         {{ options.labels.noItemsInPage }}
         <span
@@ -237,33 +257,33 @@ const filter = () => {
         :options="options"
         pagination-location="bottom"
       />
-      <AdditionalPanels :options="options" location="bottom" :sdkOptions="options.options" />
+      <AdditionalPanels :options="options" location="bottom" :sdk-options="options.options" />
     </template>
     <div
+      v-else-if="!loading && currentQueryText"
       class="lupa-empty-results"
       data-cy="lupa-no-results"
-      v-else-if="!loading && currentQueryText"
     >
       <ZeroResults
-        :emptyResultsLabel="options.labels?.emptyResults"
-        :currentQueryText="currentQueryText"
-        :hasSimilarQueries="hasSimilarQueries || hasSimilarResults"
-        :zeroResults="options?.zeroResults"
+        :empty-results-label="options.labels?.emptyResults"
+        :current-query-text="currentQueryText"
+        :has-similar-queries="hasSimilarQueries || hasSimilarResults"
+        :zero-results="options?.zeroResults"
       />
     </div>
     <RefinersLoadingNotice :labels="options.labels" />
     <div v-if="hasSimilarQueries">
       <SearchResultsSimilarQueries
         :labels="similarQueriesLabels"
-        :columnSize="columnSize"
-        :productCardOptions="productCardOptions"
+        :column-size="columnSize"
+        :product-card-options="productCardOptions"
       />
     </div>
     <div v-if="hasSimilarResults">
       <SearchResultsSimilarResults
         :labels="similarResultsLabels"
-        :columnSize="columnSize"
-        :productCardOptions="productCardOptions"
+        :column-size="columnSize"
+        :product-card-options="productCardOptions"
       />
     </div>
     <slot name="append" />

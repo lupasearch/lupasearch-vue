@@ -10,7 +10,7 @@ import SearchResultsProductCard from '../product-card/SearchResultsProductCard.v
 import { EventSourceMetadata } from '@/types/search-box/Common'
 
 const props = defineProps<{
-  columnSize: string
+  columnSize: Record<string, string>
   labels: SearchResultsSimilarResultsLabels
   productCardOptions: SearchResultsProductCardOptions
 }>()

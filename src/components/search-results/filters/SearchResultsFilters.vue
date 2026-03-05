@@ -7,8 +7,11 @@ import { computed, ref } from 'vue'
 import CurrentFilters from './CurrentFilters.vue'
 import CategoryFilter from '@/components/product-list/CategoryFilter.vue'
 import Facets from './facets/Facets.vue'
+import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
+import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
 
 const categoryFilters = ref(null)
+const { facetSkeletonEnabled, loadingFacets } = useLoadingSkeleton()
 
 const props = defineProps<{
   options: SearchResultsFilterOptions
@@ -50,12 +53,28 @@ defineExpose({ fetch })
 
 <template>
   <div v-if="visible" id="lupa-search-result-filters" class="lupa-search-result-filters">
-    <CurrentFilters
-      v-if="showCurrentFilters"
-      :options="options.currentFilters"
-      :expandable="expandable ?? false"
-    />
-    <CategoryFilter v-if="options.categories" :options="options.categories" ref="categoryFilters" />
-    <Facets v-if="options.facets" :options="options.facets" :facet-style="style" @filter="filter" />
+    <LoadingBlock
+      class="lupa-skeleton-filters"
+      :count="1"
+      :enabled="facetSkeletonEnabled"
+      :loading="loadingFacets"
+    >
+      <CurrentFilters
+        v-if="showCurrentFilters"
+        :options="options.currentFilters"
+        :expandable="expandable ?? false"
+      />
+      <CategoryFilter
+        v-if="options.categories"
+        :options="options.categories"
+        ref="categoryFilters"
+      />
+      <Facets
+        v-if="options.facets"
+        :options="options.facets"
+        :facet-style="style"
+        @filter="filter"
+      />
+    </LoadingBlock>
   </div>
 </template>

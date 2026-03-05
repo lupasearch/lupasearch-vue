@@ -12,7 +12,7 @@ import SearchResultsProductCard from '../product-card/SearchResultsProductCard.v
 
 const props = defineProps<{
   labels: SearchResultsSimilarQueriesLabels
-  columnSize: string
+  columnSize: Record<string, string>
   productCardOptions: SearchResultsProductCardOptions
 }>()
 
