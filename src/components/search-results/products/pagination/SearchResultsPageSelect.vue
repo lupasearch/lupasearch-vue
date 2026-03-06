@@ -87,7 +87,11 @@ const tagName = computed((): string => {
 const getPageUrlWithNewParams = (page: number): string => {
   if (page === 1) {
     // for SEO reasons we want to remove page param for first page
-    return getPageUrl().pathname;
+    const url = paramStore.getPageUrlWithNewParams({
+      params: [],
+      paramsToRemove: [optionsStore.getQueryParamName(QUERY_PARAMS.PAGE)]
+    })
+    return url ? url : getPageUrl().pathname
   }
   return paramStore.getPageUrlWithNewParams({
     params: [{ name: optionsStore.getQueryParamName(QUERY_PARAMS.PAGE), value: page.toString() }]
