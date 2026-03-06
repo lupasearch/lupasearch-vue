@@ -9,6 +9,7 @@ import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import { scrollToSearchResults } from '@/utils/scroll.utils'
 import { useOptionsStore } from '@/stores/options'
 import { RESULT_ROOT_SELECTOR } from '@/constants/global.const'
+import { getPageUrl } from '@/utils/routing.utils'
 
 const props = defineProps<{
   lastPageLabel?: string
@@ -84,6 +85,14 @@ const tagName = computed((): string => {
 })
 
 const getPageUrlWithNewParams = (page: number): string => {
+  if (page === 1) {
+    // for SEO reasons we want to remove page param for first page
+    const url = paramStore.getPageUrlWithNewParams({
+      params: [],
+      paramsToRemove: [optionsStore.getQueryParamName(QUERY_PARAMS.PAGE)]
+    })
+    return url ? url : getPageUrl().pathname
+  }
   return paramStore.getPageUrlWithNewParams({
     params: [{ name: optionsStore.getQueryParamName(QUERY_PARAMS.PAGE), value: page.toString() }]
   })
@@ -117,9 +126,9 @@ const handlePageChange = (e: MouseEvent, page: number): void => {
 
 <template>
   <div
+    v-if="showPagination"
     id="lupa-search-results-page-select"
     data-cy="lupa-search-results-page-select"
-    v-if="showPagination"
   >
     <component
       :is="tagName"
@@ -146,12 +155,12 @@ const handlePageChange = (e: MouseEvent, page: number): void => {
       v-for="page in pages"
       :key="page"
       :href="getHref(page)"
-      @click="(e) => handlePageChange(e, page)"
       :class="[
         'lupa-page-number',
         page === options.selectedPage ? 'lupa-page-number-selected' : ''
       ]"
       data-cy="lupa-page-number"
+      @click="(e) => handlePageChange(e, page)"
     >
       {{ page }}
     </component>
@@ -167,8 +176,8 @@ const handlePageChange = (e: MouseEvent, page: number): void => {
       </component>
     </template>
     <component
-      v-if="options.selectedPage < options.count"
       :is="tagName"
+      v-if="options.selectedPage < options.count"
       :class="lastPageLabel === '>' ? 'lupa-page-arrow' : 'lupa-show-more'"
       :href="getHref(options.selectedPage + 1)"
       data-cy="lupa-show-more"
