@@ -28,6 +28,11 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     selectFields?: string[]
     loadingSkeleton?: {
       enabled: boolean
+      showOnEveryFetch?: {
+        results?: boolean
+        facets?: boolean
+        relatedQueries?: boolean
+      }
     }
   } & Partial<MultiCurrencyConfig>
 

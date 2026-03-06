@@ -19,22 +19,28 @@ export const useLoadingSkeleton = () => {
   } = storeToRefs(searchResultStore)
   const { searchResultOptions } = storeToRefs(optionsStore)
 
+  const enabled = computed(() => {
+    return searchResultOptions.value?.loadingSkeleton?.enabled
+  })
+
+  const showOnEveryFetch = computed(() => {
+    return searchResultOptions.value?.loadingSkeleton?.showOnEveryFetch
+  })
+
   const skeletonEnabled = computed(() => {
-    return searchResultOptions.value?.loadingSkeleton?.enabled && !searchResult.value?.items?.length
+    return enabled.value && (!searchResult.value?.items?.length || showOnEveryFetch.value?.results)
   })
 
   const relatedQueriesSkeletonEnabled = computed(() => {
     return (
-      searchResultOptions.value?.loadingSkeleton?.enabled &&
+      enabled.value &&
       Boolean(searchResultOptions.value?.relatedQueries) &&
-      !relatedQueriesResult.value?.relatedQueries?.length
+      (!relatedQueriesResult.value?.relatedQueries?.length || showOnEveryFetch.value?.relatedQueries)
     )
   })
 
   const facetSkeletonEnabled = computed(() => {
-    return (
-      searchResultOptions.value?.loadingSkeleton?.enabled && !searchResult.value?.facets?.length
-    )
+    return enabled.value && (!searchResult.value?.facets?.length || showOnEveryFetch.value?.facets)
   })
 
   const loadingFacets = computed(() => {
