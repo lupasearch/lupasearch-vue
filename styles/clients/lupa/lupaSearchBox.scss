@@ -80,6 +80,15 @@
   cursor: pointer;
 }
 
+.lupa-search-box-close-panel-input {
+  text-align: right;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  padding: 10px 16px;
+}
+
 .lupa-input-clear {
   cursor: pointer;
   position: absolute;
@@ -105,7 +114,7 @@
     }
     &:after {
       @include lupaConfig.material-icon();
-      content: "\F0B5C";
+      content: '\F0B5C';
       font-size: 24px;
       position: absolute;
     }

@@ -63,6 +63,8 @@ const searchValue = computed((): string => {
   return suggestedValue.value.override ? suggestedValue.value.item.suggestion : inputValue.value
 })
 
+const emit = defineEmits(['close'])
+
 const inputOptions = computed(
   (): SearchBoxInputOptions =>
     pick(props.options, [
@@ -169,6 +171,7 @@ const close = (e?: Event) => {
   if (props.options.callbacks?.onClosed) {
     props.options.callbacks?.onClosed()
   }
+  emit('close')
 }
 
 const fillInputWithSuggestion = (): void => {
@@ -429,16 +432,17 @@ const onBlur = () => {
   <div id="lupa-search-box" :class="{ 'lupa-search-box-opened': opened }">
     <div class="lupa-search-box-wrapper">
       <SearchBoxInput
+        ref="searchBoxInput"
         :options="inputOptions"
-        :suggestedValue="suggestedValue"
+        :suggested-value="suggestedValue"
         :can-close="isSearchContainer ?? false"
         :emit-input-on-focus="!isSearchContainer"
-        ref="searchBoxInput"
+        :opened="opened"
         @input="handleInput"
         @blur="onBlur"
         @focus="onFocus"
         @search="handleSearch"
-        @close="$emit('close')"
+        @close="close"
       />
       <SearchBoxMainPanel
         v-if="opened || isSearchContainer"

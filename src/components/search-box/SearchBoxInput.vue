@@ -11,7 +11,8 @@ const props = defineProps<{
   options: SearchBoxInputOptions
   canClose?: boolean
   emitInputOnFocus?: boolean
-  suggestedValue: InputSuggestion
+  suggestedValue: InputSuggestion,
+  opened?: boolean
 }>()
 
 const paramStore = useParamsStore()
@@ -197,6 +198,13 @@ defineExpose({ focus })
         <span class="lupa-search-submit-icon"></span>
       </button>
     </div>
+    <a
+      v-if="opened && labels.closePanelInput"
+      class="lupa-search-box-close-panel-input"
+      @click="$emit('close')"
+    >
+      {{ labels.closePanelInput }}
+    </a>
     <div v-if="canClose" class="lupa-close-search-container" @click="$emit('close')">
       <span v-if="labels.close" class="lupa-close-label">{{ labels.close }}</span>
     </div>
