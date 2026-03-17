@@ -34,6 +34,7 @@ export type SearchBoxOptionLabels = {
   close?: string
   searchInputAriaLabel?: string
   closePanel?: string
+  closePanelInput?: string
   showMore?: string
   showLess?: string
 }
