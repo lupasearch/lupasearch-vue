@@ -33,7 +33,7 @@ const currentFiltersValue = computed(() => props.currentFilters ?? [])
 const showAll = ref(false)
 const termFilter = ref('')
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'showMoreClicked', 'filterFocused'])
 
 const itemLimit = computed((): number => {
   return showAll.value || !props.options.facetValueCountLimit
@@ -90,6 +90,9 @@ const handleFacetClick = (item: FacetGroupItem): void => {
 
 const toggleShowAll = (): void => {
   showAll.value = !showAll.value
+  if (showAll.value) {
+    emit('showMoreClicked', facet.value.key)
+  }
 }
 
 const isChecked = (item: FacetGroupItem): boolean => {
@@ -125,6 +128,7 @@ const getFacetValueClass = (item: FacetGroupItem): string => {
       data-cy="lupa-term-filter"
       v-model="termFilter"
       :placeholder="options.labels.facetFilter"
+      @focus="$emit('filterFocused')"
     />
     <div class="lupa-terms-list">
       <div
