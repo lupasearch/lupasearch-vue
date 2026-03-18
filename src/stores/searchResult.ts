@@ -155,7 +155,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
   }
 
   const queryFacet = async ({ queryKey, facetKey }: { queryKey: string; facetKey: string }) => {
-    const query = { searchText: '', filters: { ...filters.value } }
+    const query = { searchText: currentQueryText.value || '', filters: { ...filters.value } }
     const options = optionsStore.envOptions ?? { environment: 'production' }
     const result = await lupaSearchSdk.query(queryKey, query, options)
     if (!result.success) {
