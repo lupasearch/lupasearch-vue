@@ -7,6 +7,7 @@ export type SdkOptions = {
   environment: SdkEnvironment
   customBaseUrl?: string
   customUrl?: string
+  customRelatedQueriesUrl?: string
   customPayload?: Record<string, unknown>
   customHeaders?: Record<string, string>
   customParams?: Record<string, string | string[]>
