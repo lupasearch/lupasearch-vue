@@ -36,6 +36,7 @@ import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
 import { processExtractionObject } from '@/utils/extraction.utils'
 import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 import SortDrawer from './filters/SortDrawer.vue'
+import { SdkOptions } from '@/types/General'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -204,12 +205,10 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
         searchResultStore.add(requestId, { ...res })
         searchResultStore.setRelatedQueriesApiEnabled(res.hasRelatedQueries ?? false)
         if (res.hasRelatedQueries && Boolean(props.options.relatedQueries)) {
-          searchResultStore.queryRelatedQueries(
-            props.options.queryKey,
-            publicQuery,
-            res,
-            props.options.options
-          )
+          searchResultStore.queryRelatedQueries(props.options.queryKey, publicQuery, res, {
+            ...(props.options?.options ?? {}),
+            customUrl: props.options?.options?.customRelatedQueriesUrl || undefined
+          } as SdkOptions)
         }
         if (props.options.splitExpensiveRequests && res.refinementThreshold >= res.total) {
           queryRefiners(requestId, publicQuery)
