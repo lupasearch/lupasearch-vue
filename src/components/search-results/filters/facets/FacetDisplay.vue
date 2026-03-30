@@ -200,6 +200,8 @@ const clear = (): void => {
         :currentFilters="currentFilters[facet.key]"
         :options="options"
         @select="handleFacetSelect"
+        @show-more-clicked="handleFacetQueryFilter"
+        @filter-focused="handleFacetQueryFilter"
       />
       <div
         class="lupa-single-facet-clear"
