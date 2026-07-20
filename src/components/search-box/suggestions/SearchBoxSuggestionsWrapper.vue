@@ -3,7 +3,10 @@ import { computed, onMounted, watch } from 'vue'
 import SearchBoxSuggestions from './SearchBoxSuggestions.vue'
 import type { SuggestionSearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import type { SdkOptions } from '@/types/General'
-import type { SearchBoxOptionLabels, SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
+import type {
+  SearchBoxOptionLabels,
+  SearchBoxPanelOptions
+} from '@/types/search-box/SearchBoxOptions'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import { storeToRefs } from 'pinia'
 import { debounce } from '@/utils/debounce.utils'
@@ -27,10 +30,12 @@ const emit = defineEmits(['fetched', 'itemSelect'])
 const searchResult = computed(() => suggestionResults.value[props.panel.queryKey] ?? [])
 
 onMounted(() => {
+  searchBoxStore.setQueryKeyLoading({ queryKey: props.panel.queryKey, loading: true })
   getSuggestionsDebounced()
 })
 
 watch(inputValueProp, () => {
+  searchBoxStore.setQueryKeyLoading({ queryKey: props.panel.queryKey, loading: true })
   getSuggestionsDebounced()
 })
 
