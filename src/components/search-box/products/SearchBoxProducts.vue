@@ -2,8 +2,11 @@
 import type { Document } from '@getlupa/client-sdk/Types'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import SearchBoxProduct from './SearchBoxProduct.vue'
-import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
-import type { DocumentSearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
+import type {
+  SearchBoxOptionLabels,
+  SearchBoxPanelOptions
+} from '@/types/search-box/SearchBoxOptions'
+import type { DocumentSearchBoxPanel, SearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useHistoryStore } from '@/stores/history'
@@ -13,12 +16,14 @@ import { useOptionsStore } from '@/stores/options'
 import { handleRoutingEvent } from '@/utils/routing.utils'
 import { TrackableEventData } from '@/types/search-box/Common'
 import { isDelayedClickTracking } from '@/utils/tracking.utils'
+import SearchBoxNoResults from '../SearchBoxNoResults.vue'
 
 const props = defineProps<{
   items: Document[]
   inputValue: string
   panelOptions: DocumentSearchBoxPanel
   labels?: SearchBoxOptionLabels
+  searchBoxOptions?: SearchBoxPanelOptions
 }>()
 
 const searchBoxStore = useSearchBoxStore()
@@ -30,7 +35,7 @@ const { boxRoutingBehavior } = storeToRefs(optionsStore)
 
 const emit = defineEmits(['product-click'])
 
-const { highlightedItem } = storeToRefs(searchBoxStore)
+const { highlightedItem, anyPanelLoading } = storeToRefs(searchBoxStore)
 
 const highlightedIndex = computed((): number => {
   if (props.panelOptions.queryKey !== highlightedItem.value?.queryKey) {
@@ -150,6 +155,15 @@ const handleProductClick = ({
       v-if="hasResults && panelOptions?.appendCustomHtml && (showAll || !showAllItemsToggleButton)"
       v-html="panelOptions.appendCustomHtml"
     ></div>
+    <SearchBoxNoResults
+      v-if="
+        (items?.length ?? 0) === 0 &&
+        panelOptions?.showPanelZeroResults &&
+        searchBoxOptions &&
+        !anyPanelLoading
+      "
+      :options="searchBoxOptions"
+    />
     <a v-if="showAllItemsToggleButton" class="lupa-search-box-expand" @click="showAll = !showAll">{{
       showAll ? labels?.showLess : labels?.showMore
     }}</a>

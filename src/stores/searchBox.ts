@@ -16,6 +16,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
   const options: Ref<SearchBoxOptions> = ref(DEFAULT_SEARCH_BOX_OPTIONS as SearchBoxOptions)
   const docResults: Ref<Record<string, SearchQueryResult>> = ref({})
   const suggestionResults: Ref<Record<string, DisplaySuggestion[]>> = ref({})
+  const loadingResultsByQueryKey: Ref<Record<string, boolean>> = ref({})
   const highlightedIndex = ref(-1)
   const inputValue = ref('')
   const resultInputValue = ref('')
@@ -49,7 +50,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
 
   const totalCount = computed(() =>
     resultsVisible.value
-      ? panelItemCounts.value?.reduce((a, c) => a + c.count, 0) ?? 0
+      ? (panelItemCounts.value?.reduce((a, c) => a + c.count, 0) ?? 0)
       : historyStore.count
   )
 
@@ -80,6 +81,10 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     }
   })
 
+  const anyPanelLoading = computed(() =>
+    Object.values(loadingResultsByQueryKey.value).some((v) => v)
+  )
+
   const querySuggestions = async ({
     queryKey,
     publicQuery,
@@ -95,6 +100,10 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       latestRequestIdByQueryKey[queryKey] = currentRequestId
 
       const context = getLupaTrackingContext()
+      loadingResultsByQueryKey.value = {
+        ...(loadingResultsByQueryKey.value ?? {}),
+        [queryKey]: true
+      }
       const result = await lupaSearchSdk.suggestions(
         queryKey,
         { ...publicQuery, ...context },
@@ -125,6 +134,11 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
         options.onError(err)
       }
       return { suggestions: undefined }
+    } finally {
+      loadingResultsByQueryKey.value = {
+        ...(loadingResultsByQueryKey.value ?? {}),
+        [queryKey]: false
+      }
     }
   }
 
@@ -155,6 +169,10 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       const currentRequestId = Date.now()
       latestRequestIdByQueryKey[queryKey] = currentRequestId
 
+      loadingResultsByQueryKey.value = {
+        ...(loadingResultsByQueryKey.value ?? {}),
+        [queryKey]: true
+      }
       const context = getLupaTrackingContext()
       const result = await lupaSearchSdk.query(queryKey, { ...publicQuery, ...context }, options)
 
@@ -175,6 +193,11 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
         options.onError(err)
       }
       return { queryKey, result: { items: [] } }
+    } finally {
+      loadingResultsByQueryKey.value = {
+        ...(loadingResultsByQueryKey.value ?? {}),
+        [queryKey]: false
+      }
     }
   }
 
@@ -210,6 +233,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     highlightedItem,
     highlightedDocument,
     hasAnyResults,
+    anyPanelLoading,
     querySuggestions,
     queryDocuments,
     highlightChange,

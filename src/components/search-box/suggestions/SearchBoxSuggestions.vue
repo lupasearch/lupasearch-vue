@@ -1,17 +1,24 @@
 <script lang="ts" setup>
 import type { DisplaySuggestion, InputSuggestionFacet } from '@/types/search-box/Common'
 import SearchBoxSuggestion from './SearchBoxSuggestion.vue'
-import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
+import type {
+  SearchBoxOptionLabels,
+  SearchBoxPanelOptions
+} from '@/types/search-box/SearchBoxOptions'
 import { computed, watch } from 'vue'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import { storeToRefs } from 'pinia'
 import type { Suggestion } from '@getlupa/client-sdk/Types'
+import { SearchBoxPanel } from '@/types/search-box/SearchBoxPanel.js'
+import SearchBoxNoResults from '../SearchBoxNoResults.vue'
 
 const props = defineProps<{
   items: DisplaySuggestion[]
   highlight: boolean
   queryKey: string
   labels: SearchBoxOptionLabels
+  searchBoxOptions?: SearchBoxPanelOptions
+  panelOptions?: SearchBoxPanel
 }>()
 
 const items = computed(() => props.items ?? [])
@@ -29,7 +36,7 @@ const emit = defineEmits<{
 
 const searchBoxStore = useSearchBoxStore()
 
-const { highlightedItem } = storeToRefs(searchBoxStore)
+const { highlightedItem, anyPanelLoading } = storeToRefs(searchBoxStore)
 
 const highlightedIndex = computed(() => {
   if (props.queryKey !== highlightedItem.value?.queryKey) {
@@ -97,6 +104,15 @@ watch(highlightedItem, () => {
       :labels="labels"
       data-cy="lupa-suggestion"
       @select="handleSelect"
+    />
+    <SearchBoxNoResults
+      v-if="
+        (items?.length ?? 0) === 0 &&
+        panelOptions?.showPanelZeroResults &&
+        searchBoxOptions &&
+        !anyPanelLoading
+      "
+      :options="searchBoxOptions"
     />
   </div>
 </template>

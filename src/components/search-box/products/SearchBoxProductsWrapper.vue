@@ -98,9 +98,10 @@ watch(() => props.panel.limit, getItemsDebounced)
 <template>
   <SearchBoxProducts
     :items="searchResult?.items ?? []"
-    :panelOptions="panel"
+    :panel-options="panel"
     :labels="labels"
-    :inputValue="inputValue"
+    :input-value="inputValue"
+    :search-box-options="searchBoxOptions"
     @product-click="$emit('product-click')"
   >
     <template v-if="$slots.productCard" #productCard="props">

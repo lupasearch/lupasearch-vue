@@ -30,7 +30,8 @@ const panels = computed(() => props.options.panels)
 const sdkOptions = computed(() => props.options.options)
 
 const searchBoxStore = useSearchBoxStore()
-const { suggestionResults, hasAnyResults, panelItemCounts } = storeToRefs(searchBoxStore)
+const { suggestionResults, hasAnyResults, panelItemCounts, anyPanelLoading } =
+  storeToRefs(searchBoxStore)
 
 const emit = defineEmits([
   'go-to-results',
@@ -254,7 +255,10 @@ export default {
           </component>
         </div>
       </div>
-      <SearchBoxNoResults v-if="!hasAnyResults && options.showNoResultsPanel" :options="options" />
+      <SearchBoxNoResults
+        v-if="!hasAnyResults && options.showNoResultsPanel && !anyPanelLoading"
+        :options="options"
+      />
       <SearchBoxMoreResults
         v-if="displayShowMoreResultsButton"
         :labels="labels"
