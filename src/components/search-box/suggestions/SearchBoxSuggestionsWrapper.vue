@@ -3,13 +3,14 @@ import { computed, onMounted, watch } from 'vue'
 import SearchBoxSuggestions from './SearchBoxSuggestions.vue'
 import type { SuggestionSearchBoxPanel } from '@/types/search-box/SearchBoxPanel'
 import type { SdkOptions } from '@/types/General'
-import type { SearchBoxOptionLabels } from '@/types/search-box/SearchBoxOptions'
+import type { SearchBoxOptionLabels, SearchBoxPanelOptions } from '@/types/search-box/SearchBoxOptions'
 import { useSearchBoxStore } from '@/stores/searchBox'
 import { storeToRefs } from 'pinia'
 import { debounce } from '@/utils/debounce.utils'
 
 const props = defineProps<{
   panel: SuggestionSearchBoxPanel
+  searchBoxOptions: SearchBoxPanelOptions
   options: SdkOptions
   inputValue: string
   debounce?: number
@@ -61,6 +62,8 @@ watch(() => props.panel.limit, getSuggestionsDebounced)
     :highlight="panel.highlight"
     :queryKey="panel.queryKey"
     :labels="labels"
+    :search-box-options="searchBoxOptions"
+    :panel-options="panel"
     @suggestionSelect="(item) => $emit('itemSelect', item)"
   />
 </template>
