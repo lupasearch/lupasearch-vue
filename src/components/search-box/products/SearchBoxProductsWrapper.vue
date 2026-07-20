@@ -46,10 +46,12 @@ const extractedInitialFilters = computed(() => {
 const inputValueProp = computed(() => props.inputValue)
 
 onMounted(() => {
+  searchBoxStore.setQueryKeyLoading({ queryKey: props.panel.queryKey, loading: true })
   getItemsDebounced()
 })
 
 watch(inputValueProp, () => {
+  searchBoxStore.setQueryKeyLoading({ queryKey: props.panel.queryKey, loading: true })
   getItemsDebounced()
 })
 
@@ -73,7 +75,7 @@ const getItems = (): void => {
         selectFields: props.panel.selectFields,
         modifiers: {
           facets: false,
-          refiners: false,
+          refiners: false
         }
       },
       options: props.options

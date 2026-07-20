@@ -25,6 +25,13 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
 
   const resultsVisible = computed(() => inputValue.value?.length >= options.value.minInputLength)
 
+  const setQueryKeyLoading = ({ queryKey, loading }: { queryKey: string; loading: boolean }) => {
+    loadingResultsByQueryKey.value = {
+      ...(loadingResultsByQueryKey.value ?? {}),
+      [queryKey]: loading
+    }
+  }
+
   const panelItemCounts = computed(() =>
     options.value.panels.map((p) => {
       if (p.type === SearchBoxPanelType.SUGGESTION) {
@@ -100,10 +107,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       latestRequestIdByQueryKey[queryKey] = currentRequestId
 
       const context = getLupaTrackingContext()
-      loadingResultsByQueryKey.value = {
-        ...(loadingResultsByQueryKey.value ?? {}),
-        [queryKey]: true
-      }
+      setQueryKeyLoading({ queryKey, loading: true })
       const result = await lupaSearchSdk.suggestions(
         queryKey,
         { ...publicQuery, ...context },
@@ -135,10 +139,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       }
       return { suggestions: undefined }
     } finally {
-      loadingResultsByQueryKey.value = {
-        ...(loadingResultsByQueryKey.value ?? {}),
-        [queryKey]: false
-      }
+      setQueryKeyLoading({ queryKey, loading: false })
     }
   }
 
@@ -169,10 +170,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       const currentRequestId = Date.now()
       latestRequestIdByQueryKey[queryKey] = currentRequestId
 
-      loadingResultsByQueryKey.value = {
-        ...(loadingResultsByQueryKey.value ?? {}),
-        [queryKey]: true
-      }
+      setQueryKeyLoading({ queryKey, loading: true })
       const context = getLupaTrackingContext()
       const result = await lupaSearchSdk.query(queryKey, { ...publicQuery, ...context }, options)
 
@@ -194,10 +192,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
       }
       return { queryKey, result: { items: [] } }
     } finally {
-      loadingResultsByQueryKey.value = {
-        ...(loadingResultsByQueryKey.value ?? {}),
-        [queryKey]: false
-      }
+      setQueryKeyLoading({ queryKey, loading: false })
     }
   }
 
@@ -239,6 +234,7 @@ export const useSearchBoxStore = defineStore('searchBox', () => {
     highlightChange,
     saveInputValue,
     saveOptions,
-    resetHighlightIndex
+    resetHighlightIndex,
+    setQueryKeyLoading
   }
 })
