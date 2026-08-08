@@ -28,7 +28,8 @@ export const generateLink = (linkPattern: string, document: Record<string, unkno
   let link = linkPattern
   for (const match of matches) {
     const propertyKey = match.slice(1, match.length - 1)
-    const property = (document[propertyKey] || '') as string
+    const value = document[propertyKey] || ''
+    const property = Array.isArray(value) ? value.find(Boolean) : value
     link = link.replace(match, property)
   }
   return link
