@@ -1,8 +1,14 @@
 import { shallowMount } from '@vue/test-utils'
 import SearchBoxProductCustom from '../SearchBoxProductCustom.vue'
 import { DocumentElementType } from '@/types/DocumentElement'
+import { createTestingPinia } from '@pinia/testing'
+import { setActivePinia } from 'pinia'
 
 describe('SearchBoxProductCustom.vue', () => {
+  beforeEach(() => {
+    setActivePinia(createTestingPinia())
+  })
+
   it('should render item text as simple string with custom class name', () => {
     const wrapper = shallowMount(SearchBoxProductCustom, {
       propsData: {

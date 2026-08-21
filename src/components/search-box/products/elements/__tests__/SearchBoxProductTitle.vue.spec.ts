@@ -1,8 +1,14 @@
 import { shallowMount } from "@vue/test-utils";
 import SearchBoxProductTitle from "../SearchBoxProductTitle.vue";
 import { DocumentElementType } from "@/types/DocumentElement";
+import { createTestingPinia } from "@pinia/testing";
+import { setActivePinia } from "pinia";
 
 describe("SearchBoxProductTitle.vue", () => {
+  beforeEach(() => {
+    setActivePinia(createTestingPinia());
+  });
+
   it("should render item text as simple string", () => {
     const wrapper = shallowMount(SearchBoxProductTitle, {
       propsData: {

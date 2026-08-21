@@ -2,10 +2,18 @@
 import { computed } from 'vue'
 import type { CustomDocumentElement } from '@/types/DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
+import { escapeRawHtml } from '@/utils/string.utils'
+import { useAutoEscapeDocumentData } from '@/composables/useAutoEscapeDocumentData'
 
 const props = defineProps<{ item: Document; options: CustomDocumentElement }>()
 
+const { autoEscapeDocumentData } = useAutoEscapeDocumentData()
+
 const text = computed(() => props.item[props.options.key] as string)
+
+const htmlText = computed((): string =>
+  autoEscapeDocumentData.value && !props.options.useRawHtml ? escapeRawHtml(text.value) : text.value
+)
 
 const className = computed(() => props.options.className)
 
@@ -25,7 +33,7 @@ const handleClick = async (): Promise<void> => {
   <div
     :class="[className, 'lupa-search-box-product-custom']"
     v-if="isHtml"
-    v-html="text"
+    v-html="htmlText"
     v-on="options.action ? { click: handleClick } : {}"
   ></div>
   <div

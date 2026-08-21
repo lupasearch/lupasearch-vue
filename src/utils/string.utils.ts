@@ -90,6 +90,19 @@ export const normalizeFloat = (value?: string): number => {
   return +value?.replace(/[^0-9,.]/g, '')?.replace(',', '.')
 }
 
+export const escapeRawHtml = (value?: string): string => {
+  if (!value) {
+    return ''
+  }
+
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 export const escapeHtml = (value?: string): string => {
   if (!value) {
     return ''
@@ -105,12 +118,7 @@ export const escapeHtml = (value?: string): string => {
     }
 
     if (!isSkip) {
-      output += segment
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;')
+      output += escapeRawHtml(segment)
     }
 
     if (isSkip) {

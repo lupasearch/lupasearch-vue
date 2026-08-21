@@ -5,6 +5,8 @@ import sanitizeHtml from 'sanitize-html'
 import { useOptionsStore } from '@/stores/options'
 import type { TitleDocumentElement } from '@/types/DocumentElement'
 import { handleRoutingEvent } from '@/utils/routing.utils'
+import { escapeRawHtml } from '@/utils/string.utils'
+import { useAutoEscapeDocumentData } from '@/composables/useAutoEscapeDocumentData'
 import type { Document } from '@getlupa/client-sdk/Types'
 
 const props = defineProps<{
@@ -15,6 +17,8 @@ const props = defineProps<{
 
 const optionsStore = useOptionsStore()
 const { searchResultOptions } = storeToRefs(optionsStore)
+
+const { autoEscapeDocumentData } = useAutoEscapeDocumentData()
 
 const title = computed((): string => {
   return props.item[props.options.key] as string
@@ -33,7 +37,9 @@ const hasEventRouting = computed((): boolean => {
 })
 
 const sanitizedTitle = computed((): string => {
-  return sanitizeHtml(title.value) as string
+  return autoEscapeDocumentData.value && !props.options.useRawHtml
+    ? escapeRawHtml(title.value)
+    : (sanitizeHtml(title.value) as string)
 })
 
 const handleNavigation = (event?: Event): void => {

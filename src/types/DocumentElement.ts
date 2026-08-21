@@ -40,6 +40,7 @@ export type DocumentElementBase<T = any> = {
   key?: string
   display?: DisplayOption<T>
   isHtml?: boolean
+  useRawHtml?: boolean
   group?: string
   dynamic?: boolean
   dynamicAttributes?: DynamicAttribute[]
@@ -137,7 +138,7 @@ export type AddToCartElement<T = any> = DocumentElementBase<T> & {
 
 export type CustomHtmlElement<T = any> = DocumentElementBase<T> & {
   type: DocumentElementType.CUSTOM_HTML
-  html: string | ((document: T) => string)
+  html: string | ((document: T, rawDocument: T) => string)
   className: string
   action?: (document: T) => Promise<unknown> | undefined
   reportEventOnClick?: string
