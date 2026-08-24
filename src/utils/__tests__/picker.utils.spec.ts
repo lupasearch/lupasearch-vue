@@ -76,4 +76,22 @@ describe('getHint', () => {
   it('should only highlight the first occurrence of the phrase', () => {
     expect(getHint('long long low', 'lo')).toBe('<strong>lo</strong>ng long low')
   })
+
+  it('should escape HTML special characters found elsewhere in the suggestion', () => {
+    expect(getHint('<img src=x onerror=alert(1)> milk', 'mi')).toBe(
+      '&lt;img src=x onerror=alert(1)&gt; <strong>mi</strong>lk'
+    )
+  })
+
+  it('should escape HTML special characters surrounding the matched phrase', () => {
+    expect(getHint('<script>milk</script>', 'mi')).toBe(
+      '&lt;script&gt;<strong>mi</strong>lk&lt;/script&gt;'
+    )
+  })
+
+  it('should escape HTML special characters within the matched phrase itself', () => {
+    expect(getHint('promo <b>code</b>', '<b')).toBe(
+      'promo <strong>&lt;b</strong>&gt;code&lt;/b&gt;'
+    )
+  })
 })

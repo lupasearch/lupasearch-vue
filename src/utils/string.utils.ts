@@ -109,20 +109,12 @@ export const escapeHtml = (value?: string): string => {
   }
 
   let output = ''
-  let isSkip = false
 
-  value.split(/(<del>.*?<\/del>)/g).forEach((segment) => {
-    if (segment.startsWith('<del>') && segment.endsWith('</del>')) {
+  value.split(/(<del>|<\/del>)/g).forEach((segment) => {
+    if (segment === '<del>' || segment === '</del>') {
       output += segment
-      isSkip = true
-    }
-
-    if (!isSkip) {
+    } else {
       output += escapeRawHtml(segment)
-    }
-
-    if (isSkip) {
-      isSkip = false
     }
   })
 

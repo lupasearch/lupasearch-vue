@@ -116,6 +116,30 @@ describe('escapeHtml', () => {
     expect(escapeHtml('<script>')).toBe('&lt;script&gt;')
     expect(escapeHtml("value='123'")).toBe('value=&#039;123&#039;')
   })
+
+  it('should preserve <del> tags used for query-diff highlighting', () => {
+    expect(escapeHtml('iPhone <del>13</del> Pro')).toBe('iPhone <del>13</del> Pro')
+  })
+
+  it('should preserve multiple <del> tag pairs', () => {
+    expect(escapeHtml('<del>foo</del> and <del>bar</del>')).toBe('<del>foo</del> and <del>bar</del>')
+  })
+
+  it('should still escape HTML found inside <del> tags instead of passing it through raw', () => {
+    expect(escapeHtml('<del><img src=x onerror=alert(1)></del>')).toBe(
+      '<del>&lt;img src=x onerror=alert(1)&gt;</del>'
+    )
+  })
+
+  it('should escape a script tag disguised as del tag content', () => {
+    expect(escapeHtml('<del><script>alert(1)</script></del>')).toBe(
+      '<del>&lt;script&gt;alert(1)&lt;/script&gt;</del>'
+    )
+  })
+
+  it('should escape everything outside of del tags as usual', () => {
+    expect(escapeHtml('<b>bold</b> <del>13</del>')).toBe('&lt;b&gt;bold&lt;/b&gt; <del>13</del>')
+  })
 })
 
 describe('escapeRawHtml', () => {

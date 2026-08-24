@@ -14,7 +14,7 @@ function deleteAllCookies() {
     if (!name.trim()) {
       return
     }
-    document.cookie = `${name.trim()}=;expires=${new Date(0).toUTCString()};path=/`
+    document.cookie = `${name.trim()}=;expires=${new Date(0).toUTCString()}`
   })
 }
 
