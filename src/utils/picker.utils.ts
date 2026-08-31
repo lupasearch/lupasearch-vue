@@ -1,4 +1,4 @@
-import { escapeHtml } from './string.utils'
+import { escapeRawHtml } from './string.utils'
 
 export const pick = <T extends Record<string, unknown>, U extends keyof T>(
   obj: T,
@@ -12,15 +12,12 @@ export const pick = <T extends Record<string, unknown>, U extends keyof T>(
 }
 
 export const getHint = (suggestion: string, inputValue: string): string => {
+  const escapedSuggestion = escapeRawHtml(suggestion)
   if (!inputValue) {
-    return escapeHtml(suggestion)
+    return escapedSuggestion
   }
-  return (
-    suggestion?.replace(
-      inputValue?.toLocaleLowerCase(),
-      `<strong>${escapeHtml(inputValue?.toLocaleLowerCase())}</strong>`
-    ) ?? ''
-  )
+  const escapedInputValue = escapeRawHtml(inputValue.toLocaleLowerCase())
+  return escapedSuggestion.replace(escapedInputValue, `<strong>${escapedInputValue}</strong>`)
 }
 
 // https://stackoverflow.com/a/56781239

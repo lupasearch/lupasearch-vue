@@ -44,14 +44,13 @@
     "@vueform/slider": "^2.1.10",
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "^10.3.0",
-    "happy-dom": "^9.20.3",
+    "happy-dom": "^20.11.6",
     "jest-junit": "^16.0.0",
     "jsdom": "^26.1.0",
     "lodash": "^4.17.21",
     "npm-run-all": "^4.1.5",
     "pinia": "^3.0.3",
     "prettier": "^3.6.2",
-    "rollup-plugin-filesize": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-scss": "^3",
@@ -70,6 +69,22 @@
   "dependencies": {
     "mustache": "^4.2.0",
     "sanitize-html": "^2.17.0"
+  },
+  "resolutions": {
+    "eslint/**/ajv": "^6.15.0",
+    "**/micromatch/picomatch": "^2.3.2",
+    "minimatch": "^9.0.5",
+    "tar": "^7.5.21",
+    "sigstore": "^4.1.1",
+    "immutable": "^5.1.8",
+    "js-cookie": "^3.0.7",
+    "**/js-beautify/glob": "^10.5.0",
+    "**/cacache/glob": "^10.5.0",
+    "**/read-package-json/glob": "^10.5.0",
+    "uuid": "^11.1.1",
+    "@babel/runtime": "^7.26.10",
+    "http-proxy-agent": "^7.0.2",
+    "socks-proxy-agent": "^8.0.5"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

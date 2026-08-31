@@ -2,8 +2,12 @@
 import type { CustomDocumentElement } from '@/types/DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { computed } from 'vue'
+import { escapeRawHtml } from '@/utils/string.utils'
+import { useAutoEscapeDocumentData } from '@/composables/useAutoEscapeDocumentData'
 
 const props = defineProps<{ item: Document; options: CustomDocumentElement }>()
+
+const { autoEscapeDocumentData } = useAutoEscapeDocumentData()
 
 const value = computed((): unknown => {
   return props.item[props.options.key]
@@ -18,6 +22,10 @@ const text = computed((): string => {
     ? (props.item[props.options.key] as string[]).join(', ')
     : (props.item[props.options.key] as string)
 })
+
+const htmlText = computed((): string =>
+  autoEscapeDocumentData.value && !props.options.useRawHtml ? escapeRawHtml(text.value) : text.value
+)
 
 const className = computed((): string => {
   return props.options.className
@@ -46,7 +54,7 @@ const handleClick = async (e: MouseEvent): Promise<void> => {
   <div
     :class="className"
     v-if="isHtml"
-    v-html="text"
+    v-html="htmlText"
     v-on="options.action ? { click: handleClick } : {}"
   ></div>
   <div v-else :class="className" v-on="options.action ? { click: handleClick } : {}">

@@ -3,8 +3,12 @@ import type { DescriptionDocumentElement } from '@/types/DocumentElement'
 import type { Document } from '@getlupa/client-sdk/Types'
 import { computed } from 'vue'
 import sanitizeHtml from 'sanitize-html'
+import { escapeRawHtml } from '@/utils/string.utils'
+import { useAutoEscapeDocumentData } from '@/composables/useAutoEscapeDocumentData'
 
 const props = defineProps<{ item: Document; options: DescriptionDocumentElement }>()
+
+const { autoEscapeDocumentData } = useAutoEscapeDocumentData()
 
 const description = computed((): unknown => {
   return props.item[props.options.key]
@@ -19,7 +23,9 @@ const maxLines = computed((): number => {
 })
 
 const sanitizedDescription = computed((): string => {
-  return sanitizeHtml(description.value) as string
+  return autoEscapeDocumentData.value && !props.options.useRawHtml
+    ? escapeRawHtml(description.value as string)
+    : (sanitizeHtml(description.value) as string)
 })
 </script>
 

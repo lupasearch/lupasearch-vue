@@ -26,6 +26,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     initialFilters?: FilterGroup | Record<string, DataExtraction>
     zeroResults?: ZeroResultsOptions
     selectFields?: string[]
+    autoEscapeDocumentData?: boolean
     loadingSkeleton?: {
       enabled: boolean
       showOnEveryFetch?: {

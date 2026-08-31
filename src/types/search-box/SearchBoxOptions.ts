@@ -21,6 +21,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   queryParameterNames?: Record<LupaQueryParamValue, string>
   keepOpen?: boolean
   disableNavigationToSearchResults?: boolean
+  autoEscapeDocumentData?: boolean
 } & Partial<MultiCurrencyConfig>
 
 export type SearchBoxOptionLabels = {

@@ -4,6 +4,7 @@ import {
   addParamsToLabel,
   capitalize,
   escapeHtml,
+  escapeRawHtml,
   getDisplayValue,
   getNormalizedString,
   normalizeFloat,
@@ -114,6 +115,68 @@ describe('escapeHtml', () => {
   it('should return escaped characters', () => {
     expect(escapeHtml('<script>')).toBe('&lt;script&gt;')
     expect(escapeHtml("value='123'")).toBe('value=&#039;123&#039;')
+  })
+
+  it('should preserve <del> tags used for query-diff highlighting', () => {
+    expect(escapeHtml('iPhone <del>13</del> Pro')).toBe('iPhone <del>13</del> Pro')
+  })
+
+  it('should preserve multiple <del> tag pairs', () => {
+    expect(escapeHtml('<del>foo</del> and <del>bar</del>')).toBe('<del>foo</del> and <del>bar</del>')
+  })
+
+  it('should still escape HTML found inside <del> tags instead of passing it through raw', () => {
+    expect(escapeHtml('<del><img src=x onerror=alert(1)></del>')).toBe(
+      '<del>&lt;img src=x onerror=alert(1)&gt;</del>'
+    )
+  })
+
+  it('should escape a script tag disguised as del tag content', () => {
+    expect(escapeHtml('<del><script>alert(1)</script></del>')).toBe(
+      '<del>&lt;script&gt;alert(1)&lt;/script&gt;</del>'
+    )
+  })
+
+  it('should escape everything outside of del tags as usual', () => {
+    expect(escapeHtml('<b>bold</b> <del>13</del>')).toBe('&lt;b&gt;bold&lt;/b&gt; <del>13</del>')
+  })
+})
+
+describe('escapeRawHtml', () => {
+  it.each([
+    [undefined, ''],
+    [null, ''],
+    ['', ''],
+    [false, ''],
+    [NaN, '']
+  ])('should return empty string if value is falsy', (value: any, expected: string) => {
+    expect(escapeRawHtml(value)).toEqual(expected)
+  })
+
+  it('should escape all html-sensitive characters', () => {
+    expect(escapeRawHtml('<script>')).toBe('&lt;script&gt;')
+    expect(escapeRawHtml('</div>')).toBe('&lt;/div&gt;')
+    expect(escapeRawHtml('a & b')).toBe('a &amp; b')
+    expect(escapeRawHtml('"quoted"')).toBe('&quot;quoted&quot;')
+    expect(escapeRawHtml("value='123'")).toBe('value=&#039;123&#039;')
+  })
+
+  it('should escape ampersand before other entities', () => {
+    expect(escapeRawHtml('&lt;')).toBe('&amp;lt;')
+  })
+
+  it('should escape a full xss payload', () => {
+    expect(escapeRawHtml('<img src=x onerror="alert(\'x\')">')).toBe(
+      '&lt;img src=x onerror=&quot;alert(&#039;x&#039;)&quot;&gt;'
+    )
+  })
+
+  it('should not preserve del tags', () => {
+    expect(escapeRawHtml('<del>highlight</del>')).toBe('&lt;del&gt;highlight&lt;/del&gt;')
+  })
+
+  it('should return plain text unchanged', () => {
+    expect(escapeRawHtml('plain text 123')).toBe('plain text 123')
   })
 })
 

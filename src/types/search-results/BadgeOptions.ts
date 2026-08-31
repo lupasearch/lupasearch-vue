@@ -32,12 +32,13 @@ export type SearchResultBadgeElement<T = any> = {
   type: SearchResultBadgeType
   key: string
   isHtml?: boolean
+  useRawHtml?: boolean
   className?: string
   product?: T
   display?: DisplayCondition | ((document: T) => boolean)
   rootImageUrl?: string
   maxItems?: number
-  html?: string | ((doc: T) => string)
+  html?: string | ((doc: T, rawDoc: T) => string)
   position?: 'card' | 'image'
 }
 
@@ -60,7 +61,7 @@ export type ImageBadgeElement<T = any> = BaseBadgeElement<T> & {
 export type CustomHtmlBadgeElement<T = any> = BaseBadgeElement<T> & {
   type: 'customHtml'
   className?: string
-  html?: string | ((doc: T) => string)
+  html?: string | ((doc: T, rawDoc: T) => string)
 }
 
 export type DiscountBadgeElement<T = any> = BaseBadgeElement<T> & {
