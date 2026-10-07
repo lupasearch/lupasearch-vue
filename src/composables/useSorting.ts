@@ -33,7 +33,7 @@ export const useSorting = () => {
     return searchResultOptions.value.labels?.sortBy
   })
 
-  // Sort from the URL that matches no configured sort key, e.g. a sort suggested by AI search
+  // URL sort with no configured key, e.g. suggested by AI search
   const suggestedSortItem = computed((): SearchResultsSortOptions | undefined => {
     if (!sort.value || sortOptions.value?.some((x) => x.key === sort.value)) {
       return undefined

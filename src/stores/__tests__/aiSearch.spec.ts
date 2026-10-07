@@ -117,7 +117,7 @@ describe('aiSearch store', () => {
   })
 })
 
-describe('aiSearch store applyAiSearchResult', () => {
+describe('aiSearch store saveAiSearchResultToUrl', () => {
   const sortOptions = [
     { key: 'relevance', label: 'Relevance', config: [{ _relevance: 'desc' as const }] },
     { key: 'cheapest', label: 'Cheapest', config: [{ price: 'asc' as const }] }
@@ -146,7 +146,7 @@ describe('aiSearch store applyAiSearchResult', () => {
     const paramsStore = setUrl('?q=pigiausias+samsung+%C5%A1aldytuvas')
     const store = useAiSearchStore()
 
-    store.applyAiSearchResult({
+    store.saveAiSearchResultToUrl({
       query: { searchText: 'pigiausias samsung šaldytuvas' },
       result: aiResult({
         applied: true,
@@ -173,7 +173,7 @@ describe('aiSearch store applyAiSearchResult', () => {
     setUrl('?q=cheap')
     const store = useAiSearchStore()
 
-    store.applyAiSearchResult({
+    store.saveAiSearchResultToUrl({
       query: { searchText: 'cheap' },
       result: aiResult({ applied: true, sort: [{ price: 'asc' }], searchText: 'tv' }),
       sortOptions
@@ -188,7 +188,7 @@ describe('aiSearch store applyAiSearchResult', () => {
     setUrl('?q=cheap&s=relevance')
     const store = useAiSearchStore()
 
-    store.applyAiSearchResult({
+    store.saveAiSearchResultToUrl({
       query: { searchText: 'cheap' },
       result: aiResult({ applied: true, filters: { brand: ['LG'] }, searchText: '' }),
       sortOptions
@@ -201,7 +201,7 @@ describe('aiSearch store applyAiSearchResult', () => {
     setUrl('?q=tv')
     const store = useAiSearchStore()
 
-    store.applyAiSearchResult({
+    store.saveAiSearchResultToUrl({
       query: { searchText: 'tv' },
       result: aiResult({ applied: false, filters: { brand: ['LG'] } }),
       sortOptions
@@ -215,7 +215,7 @@ describe('aiSearch store applyAiSearchResult', () => {
     setUrl('?q=tv&adj=')
     const store = useAiSearchStore()
 
-    store.applyAiSearchResult({
+    store.saveAiSearchResultToUrl({
       query: { searchText: 'tv', adjustedSearchText: '' },
       result: aiResult({ applied: true, filters: { brand: ['LG'] }, searchText: '' }),
       sortOptions
@@ -267,7 +267,7 @@ describe('aiSearch store active AI search state', () => {
   it('should only return explanation for the search text it was received for', () => {
     setUrl('?q=cheap+tv')
     const store = useAiSearchStore()
-    store.applyAiSearchResult({
+    store.saveAiSearchResultToUrl({
       query: { searchText: 'cheap tv' },
       result: {
         success: true,

@@ -38,6 +38,5 @@ export const HIERARCHY_SEPARATOR = '>'
 
 export const FACET_TERM_RANGE_SEPARATOR = '-'
 
-// Serialized sort in the sort param, e.g. `in_stock:desc,price:asc`
 export const SORT_FIELD_SEPARATOR = ','
 export const SORT_DIRECTION_SEPARATOR = ':'

@@ -36,15 +36,12 @@ const hasFilterValue = (filter: unknown): boolean => {
 export const useAiSearchStore = defineStore('aiSearch', () => {
   const precheckAssisted = ref(false)
   const lastPrecheckRequestId = ref('')
-  // Only known right after AI search ran. Results restored with `adj` from the URL have none
   const explanation = ref<string | undefined>(undefined)
   const explanationSearchText = ref<string | undefined>(undefined)
 
-  // Best products (`bestProducts` and `clickToTrigger` modes): loaded once per search text
   const bestProductsRequest = ref<BestProductsRequest | null>(null)
   const bestProductsResult = ref<SearchQueryResult | null>(null)
   const bestProductsLoading = ref(false)
-  // Search text set by applyBestProductsSuggestions: best products are kept for it
   const bestProductsAppliedSearchText = ref<string | undefined>(undefined)
   const bestProductsExpanded = ref(true)
   let bestProductsRequestCounter = 0
@@ -61,7 +58,6 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
 
   const { adjustedSearchText, filters, query: searchText } = storeToRefs(paramsStore)
 
-  /** AI search result is kept: `adj` is in the URL and there is at least one filter */
   const aiSearchActive = computed(() => {
     return (
       adjustedSearchText.value !== undefined &&
@@ -69,12 +65,10 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     )
   })
 
-  /** Explanation for the current search text, if AI search ran for it in this session */
   const currentExplanation = computed(() => {
     return explanationSearchText.value === searchText.value ? explanation.value : undefined
   })
 
-  /** AI search metadata of the best products result, only when AI search was applied */
   const bestProductsAiSearch = computed(() => {
     const aiSearch = bestProductsResult.value?.executionMetadata?.aiSearch
     return aiSearch?.applied ? aiSearch : undefined
@@ -85,10 +79,6 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     return Boolean(Object.keys(aiSearch?.filters ?? {}).length || aiSearch?.sort?.length)
   })
 
-  /**
-   * Search text that applying suggestions sets. Undefined when it should not change: AI search
-   * returned none, or it is empty while empty queries are not allowed
-   */
   const bestProductsSuggestedSearchText = computed(() => {
     const aiSearchText = bestProductsAiSearch.value?.searchText
     if (aiSearchText === '' && optionsStore.searchResultOptions?.disallowEmptyQuery) {
@@ -97,7 +87,6 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     return aiSearchText
   })
 
-  /** True if suggested search text, filters and sort are already in the URL */
   const bestProductsSuggestionsApplied = computed(() => {
     const aiSearch = bestProductsAiSearch.value
     if (!aiSearch) {
@@ -119,10 +108,7 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     precheckAssisted.value = false
   }
 
-  /**
-   * Runs in parallel with the main search query, with the same body. Precheck is optional,
-   * so errors only reset the state and are not passed to `onError`.
-   */
+  /** Precheck is optional, so its errors are not passed to `onError` */
   const precheck = async ({
     requestId,
     queryKey,
@@ -150,11 +136,8 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     }
   }
 
-  /**
-   * When AI search was applied to a fresh search (no `adjustedSearchText` sent), stores its filters,
-   * sort and adjusted search text in the URL. Following requests then keep the AI search result.
-   */
-  const applyAiSearchResult = ({
+  /** Following requests send `adj` from the URL, so they keep the AI search result */
+  const saveAiSearchResultToUrl = ({
     query,
     result,
     sortOptions
@@ -188,7 +171,7 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     paramsStore.replaceParams({ params })
   }
 
-  /** Removes all filters and sort, keeps `adj`: the search then returns regular results */
+  /** Keeps `adj`, so AI search does not run again */
   const clearAiSearch = (): void => {
     const getQueryParamName = optionsStore.getQueryParamName
     const facetParams = Array.from(getPageUrl().searchParams.keys()).filter(isFacetKey)
@@ -243,10 +226,6 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     }
   }
 
-  /**
-   * Called with every main search. Best products are reset and prepared only when the search text
-   * changes. `autoLoad` loads them right away, otherwise `loadBestProducts` loads them on demand.
-   */
   const prepareBestProducts = ({
     autoLoad,
     ...request
@@ -271,11 +250,7 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     }
   }
 
-  /**
-   * Adds suggested filters and sort to the current search as regular filters and sort, and changes
-   * the search text to the one AI search ran with. Best products are kept for the new search text
-   * and collapsed, so the updated results are visible.
-   */
+  /** Best products are kept for the suggested search text and collapsed, so updated results are visible */
   const applyBestProductsSuggestions = (): void => {
     const aiSearch = bestProductsAiSearch.value
     if (!aiSearch) {
@@ -325,6 +300,6 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     clearAiSearch,
     precheck,
     resetPrecheck,
-    applyAiSearchResult
+    saveAiSearchResultToUrl
   }
 })

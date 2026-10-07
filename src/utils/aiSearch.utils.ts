@@ -42,10 +42,6 @@ const getRangeParam = (key: string, range: FilterGroupItemTypeRange): UrlParam |
   )
 }
 
-/**
- * URL params for filters added by AI search. Term and hierarchy values are merged with the values
- * already in the URL, ranges replace the current range.
- */
 export const getAiSearchFilterParams = (
   aiFilters: FilterGroup = {},
   currentFilters: FilterGroup = {}
@@ -80,7 +76,6 @@ export const getAiSearchFilterParams = (
 // SDK types do not include `aiSearch` yet; the SDK sends modifiers as they are
 export type QueryModifiers = NonNullable<PublicQuery['modifiers']> & { aiSearch?: boolean }
 
-/** Adds the `aiSearch` modifier when it is set. Undefined when there is nothing to send */
 export const withAiSearchModifier = (
   modifiers?: QueryModifiers,
   aiSearch?: boolean
@@ -91,7 +86,6 @@ export const withAiSearchModifier = (
   return { ...modifiers, aiSearch }
 }
 
-/** Adds `aiSearch: true` to click tracking metadata when results are AI search results */
 export const withAiSearchMetadata = (
   metadata: Record<string, unknown> | undefined,
   aiSearch: boolean
@@ -99,7 +93,6 @@ export const withAiSearchMetadata = (
   return aiSearch ? { ...metadata, aiSearch: true } : metadata
 }
 
-/** True if all AI filters are already selected in the current filters */
 export const areAiSearchFiltersApplied = (
   aiFilters: FilterGroup = {},
   currentFilters: FilterGroup = {}

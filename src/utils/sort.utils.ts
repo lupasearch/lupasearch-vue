@@ -17,10 +17,6 @@ export const serializeSort = (sort: SortConfig): string => {
     .join(SORT_FIELD_SEPARATOR)
 }
 
-/**
- * `in_stock:desc,price:asc` → `[{ in_stock: 'desc' }, { price: 'asc' }]`.
- * Undefined if the value is not a valid serialized sort
- */
 export const parseSerializedSort = (value?: string): SortConfig | undefined => {
   if (!value) {
     return undefined
@@ -49,7 +45,6 @@ export const findSortKey = (
   return sortOptions.find((option) => sortsMatch(option.config ?? [], sort))?.key
 }
 
-/** Sort param value: configured sort key if one matches, serialized sort otherwise */
 export const getSortParamValue = (
   sortOptions: SearchResultsSortOptions[] = [],
   sort: SortConfig

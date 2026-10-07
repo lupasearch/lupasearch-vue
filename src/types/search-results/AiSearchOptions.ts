@@ -67,6 +67,5 @@ export type AiSearchBestProductsLabels = {
   applyFilters?: string
   /** Toggle that shows collapsed products. Products collapse when suggestions are applied */
   expandProducts?: string
-  /** Toggle that hides products */
   collapseProducts?: string
 }

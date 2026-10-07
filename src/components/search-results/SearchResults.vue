@@ -255,7 +255,11 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
         if (isRegularMode.value && searchResultStore.lastRequestId === requestId) {
-          aiSearchStore.applyAiSearchResult({ query, result: res, sortOptions: props.options.sort })
+          aiSearchStore.saveAiSearchResultToUrl({
+            query,
+            result: res,
+            sortOptions: props.options.sort
+          })
         }
         searchResultStore.setRelatedQueriesApiEnabled(res.hasRelatedQueries ?? false)
         if (res.hasRelatedQueries && Boolean(props.options.relatedQueries)) {

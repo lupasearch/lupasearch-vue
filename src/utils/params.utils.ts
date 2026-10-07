@@ -52,7 +52,7 @@ const parseRegularKeys = (
   })
   for (const key of regularKeys) {
     const rawKey = keys[key] || key
-    // Empty adjusted search text is a valid value: `adj=` is not the same as no `adj`
+    // `adj=` differs from no `adj`, but decodeParam returns undefined for both
     params[rawKey] =
       rawKey === QUERY_PARAMS_PARSED.ADJUSTED
         ? (parseParam(key, searchParams) ?? '')

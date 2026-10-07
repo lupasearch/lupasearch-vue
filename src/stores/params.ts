@@ -27,7 +27,6 @@ export const useParamsStore = defineStore('params', () => {
 
   const searchResultsLink = ref('')
   const searchString = ref('')
-  // URL search set by replaceParams: results already match it, so it should not trigger a new search
   const silentSearchString: Ref<string | null> = ref(null)
 
   const optionsStore = useOptionsStore()
@@ -261,10 +260,7 @@ export const useParamsStore = defineStore('params', () => {
     searchString.value = url.search
   }
 
-  /**
-   * Updates the URL with `history.replaceState` and the parsed params, without triggering a new
-   * search: use when current results already match the new params
-   */
+  /** Updates the URL without triggering a search: use when current results already match it */
   const replaceParams = ({
     params: newParams,
     paramsToRemove
@@ -284,7 +280,6 @@ export const useParamsStore = defineStore('params', () => {
     }
   }
 
-  /** True if the search string change came from replaceParams and should not trigger a search */
   const consumeSilentSearchString = (value: string): boolean => {
     const isSilent = silentSearchString.value === value
     silentSearchString.value = null
