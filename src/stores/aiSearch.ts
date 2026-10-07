@@ -7,11 +7,18 @@ import type { SearchResultsSortOptions } from '@/types/search-results/SearchResu
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import { isFacetKey } from '@/utils/filter.utils'
 import { getPageUrl } from '@/utils/routing.utils'
-import { getAiSearchFilterParams } from '@/utils/aiSearch.utils'
+import { areAiSearchFiltersApplied, getAiSearchFilterParams } from '@/utils/aiSearch.utils'
 import { getSortParamValue } from '@/utils/sort.utils'
 import { useSearchResultStore } from './searchResult'
 import { useParamsStore } from './params'
 import { useOptionsStore } from './options'
+import { useDynamicDataStore } from './dynamicData'
+
+type BestProductsRequest = {
+  queryKey: string
+  query: PublicQuery
+  options?: SdkOptions
+}
 
 const hasFilterValue = (filter: unknown): boolean => {
   if (Array.isArray(filter)) {
@@ -33,9 +40,20 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
   const explanation = ref<string | undefined>(undefined)
   const explanationSearchText = ref<string | undefined>(undefined)
 
+  // Best products (`bestProducts` and `clickToTrigger` modes): loaded once per search text
+  const bestProductsRequest = ref<BestProductsRequest | null>(null)
+  const bestProductsResult = ref<SearchQueryResult | null>(null)
+  const bestProductsLoading = ref(false)
+  // Search text set by applyBestProductsSuggestions: best products are kept for it
+  const bestProductsAppliedSearchText = ref<string | undefined>(undefined)
+  const bestProductsExpanded = ref(true)
+  let bestProductsRequestCounter = 0
+  const lastBestProductsRequestId = ref(0)
+
   const searchResultStore = useSearchResultStore()
   const paramsStore = useParamsStore()
   const optionsStore = useOptionsStore()
+  const dynamicDataStore = useDynamicDataStore()
 
   const { loading } = storeToRefs(searchResultStore)
 
@@ -54,6 +72,46 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
   /** Explanation for the current search text, if AI search ran for it in this session */
   const currentExplanation = computed(() => {
     return explanationSearchText.value === searchText.value ? explanation.value : undefined
+  })
+
+  /** AI search metadata of the best products result, only when AI search was applied */
+  const bestProductsAiSearch = computed(() => {
+    const aiSearch = bestProductsResult.value?.executionMetadata?.aiSearch
+    return aiSearch?.applied ? aiSearch : undefined
+  })
+
+  const bestProductsHasSuggestions = computed(() => {
+    const aiSearch = bestProductsAiSearch.value
+    return Boolean(Object.keys(aiSearch?.filters ?? {}).length || aiSearch?.sort?.length)
+  })
+
+  /**
+   * Search text that applying suggestions sets. Undefined when it should not change: AI search
+   * returned none, or it is empty while empty queries are not allowed
+   */
+  const bestProductsSuggestedSearchText = computed(() => {
+    const aiSearchText = bestProductsAiSearch.value?.searchText
+    if (aiSearchText === '' && optionsStore.searchResultOptions?.disallowEmptyQuery) {
+      return undefined
+    }
+    return aiSearchText
+  })
+
+  /** True if suggested search text, filters and sort are already in the URL */
+  const bestProductsSuggestionsApplied = computed(() => {
+    const aiSearch = bestProductsAiSearch.value
+    if (!aiSearch) {
+      return false
+    }
+    const suggestedSearchText = bestProductsSuggestedSearchText.value
+    const searchTextApplied =
+      suggestedSearchText === undefined || (searchText.value ?? '') === suggestedSearchText
+    const sortApplied =
+      !aiSearch.sort?.length ||
+      paramsStore.sort === getSortParamValue(optionsStore.searchResultOptions?.sort, aiSearch.sort)
+    return (
+      searchTextApplied && sortApplied && areAiSearchFiltersApplied(aiSearch.filters, filters.value)
+    )
   })
 
   const resetPrecheck = () => {
@@ -143,7 +201,121 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     })
   }
 
+  const resetBestProducts = (): void => {
+    lastBestProductsRequestId.value = 0
+    bestProductsRequest.value = null
+    bestProductsResult.value = null
+    bestProductsLoading.value = false
+    bestProductsAppliedSearchText.value = undefined
+    bestProductsExpanded.value = true
+  }
+
+  const toggleBestProductsExpanded = (expanded = !bestProductsExpanded.value): void => {
+    bestProductsExpanded.value = expanded
+  }
+
+  const loadBestProducts = async (): Promise<void> => {
+    const request = bestProductsRequest.value
+    if (!request || bestProductsLoading.value || bestProductsResult.value) {
+      return
+    }
+    const requestId = ++bestProductsRequestCounter
+    lastBestProductsRequestId.value = requestId
+    bestProductsLoading.value = true
+    try {
+      const res = await lupaSearchSdk.query(request.queryKey, request.query, request.options)
+      if (lastBestProductsRequestId.value !== requestId) {
+        return
+      }
+      if (!res.success) {
+        request.options?.onError?.(res)
+        return
+      }
+      bestProductsResult.value = res as SearchQueryResult
+      dynamicDataStore.enhanceSearchResultsWithDynamicData({ result: res as SearchQueryResult })
+    } catch (err) {
+      console.error(err)
+      request.options?.onError?.(err)
+    } finally {
+      if (lastBestProductsRequestId.value === requestId) {
+        bestProductsLoading.value = false
+      }
+    }
+  }
+
+  /**
+   * Called with every main search. Best products are reset and prepared only when the search text
+   * changes. `autoLoad` loads them right away, otherwise `loadBestProducts` loads them on demand.
+   */
+  const prepareBestProducts = ({
+    autoLoad,
+    ...request
+  }: BestProductsRequest & { autoLoad: boolean }): void => {
+    const current = bestProductsRequest.value
+    const requestSearchText = request.query.searchText ?? ''
+    if (
+      current?.queryKey === request.queryKey &&
+      (current.query.searchText === requestSearchText ||
+        bestProductsAppliedSearchText.value === requestSearchText)
+    ) {
+      return
+    }
+    if (!requestSearchText) {
+      resetBestProducts()
+      return
+    }
+    resetBestProducts()
+    bestProductsRequest.value = request
+    if (autoLoad) {
+      loadBestProducts()
+    }
+  }
+
+  /**
+   * Adds suggested filters and sort to the current search as regular filters and sort, and changes
+   * the search text to the one AI search ran with. Best products are kept for the new search text
+   * and collapsed, so the updated results are visible.
+   */
+  const applyBestProductsSuggestions = (): void => {
+    const aiSearch = bestProductsAiSearch.value
+    if (!aiSearch) {
+      return
+    }
+    const getQueryParamName = optionsStore.getQueryParamName
+    const params = getAiSearchFilterParams(aiSearch.filters, filters.value)
+    const suggestedSearchText = bestProductsSuggestedSearchText.value
+    if (suggestedSearchText !== undefined) {
+      bestProductsAppliedSearchText.value = suggestedSearchText
+      params.unshift({ name: getQueryParamName(QUERY_PARAMS.QUERY), value: suggestedSearchText })
+    }
+    if (aiSearch.sort?.length) {
+      params.push({
+        name: getQueryParamName(QUERY_PARAMS.SORT),
+        value: getSortParamValue(optionsStore.searchResultOptions?.sort, aiSearch.sort)
+      })
+    }
+    bestProductsExpanded.value = false
+    paramsStore.appendParams({
+      params: params as { name: string; value: string }[],
+      paramsToRemove: [getQueryParamName(QUERY_PARAMS.PAGE)]
+    })
+  }
+
   return {
+    bestProductsRequest,
+    bestProductsResult,
+    bestProductsLoading,
+    bestProductsAppliedSearchText,
+    bestProductsExpanded,
+    toggleBestProductsExpanded,
+    bestProductsAiSearch,
+    bestProductsSuggestedSearchText,
+    bestProductsHasSuggestions,
+    bestProductsSuggestionsApplied,
+    prepareBestProducts,
+    loadBestProducts,
+    resetBestProducts,
+    applyBestProductsSuggestions,
     precheckAssisted,
     aiSearchLoading,
     aiSearchActive,

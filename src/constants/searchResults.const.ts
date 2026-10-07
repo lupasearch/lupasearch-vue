@@ -108,6 +108,8 @@ export const DEFAULT_OPTIONS_RESULTS = {
   breadcrumbs: []
 }
 
+export const DEFAULT_BEST_PRODUCTS_LIMIT = 3
+
 export const DEFAULT_AI_SEARCH_OPTIONS: AiSearchOptions = {
   enabled: false,
   mode: 'regular',
@@ -122,17 +124,19 @@ export const DEFAULT_AI_SEARCH_OPTIONS: AiSearchOptions = {
     }
   },
   bestProducts: {
-    limit: 3,
+    limit: DEFAULT_BEST_PRODUCTS_LIMIT,
     showProducts: true,
     showExplanation: true,
     showSuggestedFilters: true,
     labels: {
       title: 'Best matches for your search',
-      loading: 'Finding best matches...',
+      loading: 'Finding best matches',
       trigger: 'Find best matches with AI',
       explanationFallback: '',
       suggestedFiltersTitle: 'Suggested filters',
-      applyFilters: 'Apply suggested filters'
+      applyFilters: 'Apply suggested filters',
+      expandProducts: 'Show products',
+      collapseProducts: 'Hide products'
     }
   }
 }

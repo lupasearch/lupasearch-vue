@@ -11,6 +11,7 @@ import { useRedirectionStore } from '@/stores/redirections'
 import { useAiSearchStore } from '@/stores/aiSearch'
 import { useAiSearchOptions } from '@/composables/useAiSearchOptions'
 import { withAiSearchModifier } from '@/utils/aiSearch.utils'
+import { DEFAULT_BEST_PRODUCTS_LIMIT } from '@/constants/searchResults.const'
 import type {
   SearchResultsDidYouMeanLabels,
   SearchResultsOptions
@@ -59,10 +60,22 @@ const screenStore = useScreenStore()
 const redirectionStore = useRedirectionStore()
 const aiSearchStore = useAiSearchStore()
 
-const { precheckEnabled, isRegularMode } = useAiSearchOptions()
+const {
+  precheckEnabled,
+  isRegularMode,
+  isBestProductsMode,
+  isClickToTriggerMode,
+  bestProductsOptions
+} = useAiSearchOptions()
 
-// Sent with every regular mode search request: backend configuration may require it
-const aiSearchModifier = computed(() => (isRegularMode.value ? true : undefined))
+// Regular mode: sent with every search request, backend configuration may require it.
+// Best products modes: AI search runs only in the separate best products request
+const aiSearchModifier = computed(() => {
+  if (isRegularMode.value) {
+    return true
+  }
+  return isBestProductsMode.value ? false : undefined
+})
 
 const extractedInitialFilters = computed(() => {
   return {
@@ -207,6 +220,23 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
 
   if (!query.searchText && props.options.disallowEmptyQuery) {
     return
+  }
+  if (isBestProductsMode.value) {
+    aiSearchStore.prepareBestProducts({
+      queryKey: bestProductsOptions.value.queryKey || props.options.queryKey,
+      query: {
+        searchText: query.searchText,
+        filters: query.filters,
+        selectFields: query.selectFields,
+        ...context,
+        limit: bestProductsOptions.value.limit ?? DEFAULT_BEST_PRODUCTS_LIMIT,
+        modifiers: withAiSearchModifier(undefined, true)
+      },
+      options: props.options.options,
+      autoLoad: !isClickToTriggerMode.value
+    })
+  } else {
+    aiSearchStore.resetBestProducts()
   }
   if (precheckEnabled.value) {
     aiSearchStore.precheck({

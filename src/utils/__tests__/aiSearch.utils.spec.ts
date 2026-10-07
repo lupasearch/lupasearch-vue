@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  areAiSearchFiltersApplied,
   getAiSearchFilterParams,
   withAiSearchMetadata,
   withAiSearchModifier
@@ -110,5 +111,46 @@ describe('withAiSearchMetadata', () => {
     expect(
       withAiSearchMetadata({ _lupaEventSource: 'didYouMean', _lupaUpdatedQuery: 'tv' }, true)
     ).toEqual({ _lupaEventSource: 'didYouMean', _lupaUpdatedQuery: 'tv', aiSearch: true })
+  })
+})
+
+describe('areAiSearchFiltersApplied', () => {
+  it('should be applied without AI filters', () => {
+    expect(areAiSearchFiltersApplied(undefined, {})).toBe(true)
+  })
+
+  it('should check term values', () => {
+    const aiFilters = { brand: ['Samsung'], categories: ['Fridges'] }
+    expect(
+      areAiSearchFiltersApplied(aiFilters, { brand: ['Samsung', 'LG'], categories: ['Fridges'] })
+    ).toBe(true)
+    expect(areAiSearchFiltersApplied(aiFilters, { brand: ['Samsung'] })).toBe(false)
+    expect(areAiSearchFiltersApplied(aiFilters, { brand: ['LG'], categories: ['Fridges'] })).toBe(
+      false
+    )
+  })
+
+  it('should check hierarchy values', () => {
+    const aiFilters = { category: { level: 1, terms: ['TV > OLED'] } }
+    expect(
+      areAiSearchFiltersApplied(aiFilters, { category: { level: 0, terms: ['TV > OLED'] } })
+    ).toBe(true)
+    expect(areAiSearchFiltersApplied(aiFilters, { category: { level: 0, terms: ['TV'] } })).toBe(
+      false
+    )
+  })
+
+  it('should compare ranges parsed from URL', () => {
+    const aiFilters = { price: { gte: 100, lte: 500 } }
+    expect(areAiSearchFiltersApplied(aiFilters, { price: { gte: '100', lte: '500' } })).toBe(true)
+    expect(areAiSearchFiltersApplied(aiFilters, { price: { gte: '100', lte: '600' } })).toBe(false)
+    expect(areAiSearchFiltersApplied(aiFilters, {})).toBe(false)
+  })
+
+  it('should compare open and partial ranges', () => {
+    expect(areAiSearchFiltersApplied({ price: { lte: 500 } }, { price: { lte: '500' } })).toBe(true)
+    expect(
+      areAiSearchFiltersApplied({ price: { gte: 1, lt: 5 } }, { price: { gte: '1', lt: '5' } })
+    ).toBe(true)
   })
 })

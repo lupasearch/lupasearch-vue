@@ -35,6 +35,7 @@ import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
 import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
 import AiSearchLoadingPanel from '../ai-search/AiSearchLoadingPanel.vue'
 import AiSearchPanel from '../ai-search/AiSearchPanel.vue'
+import AiSearchBestProducts from '../ai-search/AiSearchBestProducts.vue'
 import { useAiSearchStore } from '@/stores/aiSearch'
 import { withAiSearchMetadata } from '@/utils/aiSearch.utils'
 
@@ -189,6 +190,7 @@ const filter = () => {
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
     <AiSearchLoadingPanel />
     <AiSearchPanel />
+    <AiSearchBestProducts :product-card-options="productCardOptions" :ssr="ssr" />
     <AdditionalPanels :options="options" location="top" :sdk-options="options.options" />
     <LoadingBlock
       :enabled="relatedQueriesSkeletonEnabled"

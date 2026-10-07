@@ -134,8 +134,7 @@
   line-height: 1.4;
 }
 
-.lupa-ai-search-panel-clear {
-  margin-left: auto;
+%lupa-ai-search-button {
   padding: searchResults.$ai-search-clear-padding;
   font: inherit;
   color: searchResults.$ai-search-clear-color;
@@ -153,6 +152,139 @@
     outline: 2px solid searchResults.$ai-search-icon-color;
     outline-offset: 2px;
   }
+}
+
+.lupa-ai-search-panel-clear {
+  @extend %lupa-ai-search-button;
+  margin-left: auto;
+}
+
+.lupa-ai-search-best-products {
+  margin: searchResults.$ai-search-panel-margin;
+  padding: searchResults.$ai-search-panel-padding;
+  box-sizing: border-box;
+  background: searchResults.$ai-search-panel-background;
+  border: searchResults.$ai-search-best-products-border;
+  border-radius: searchResults.$ai-search-panel-border-radius;
+  font-family: searchResults.$ai-search-font-family;
+  font-size: searchResults.$ai-search-panel-font-size;
+  color: searchResults.$ai-search-text-color;
+}
+
+.lupa-ai-search-best-products-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: searchResults.$ai-search-best-products-title-font-weight;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover .lupa-ai-search-best-products-trigger-label {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid searchResults.$ai-search-icon-color;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+}
+
+.lupa-ai-search-best-products-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lupa-ai-search-best-products-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 0;
+  font: inherit;
+  color: searchResults.$ai-search-text-color;
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+
+  &.lupa-ai-search-best-products-toggle-expanded::after {
+    transform: translateY(2px) rotate(-135deg);
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid searchResults.$ai-search-icon-color;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+.lupa-ai-search-best-products-title {
+  font-size: searchResults.$ai-search-best-products-title-font-size;
+  font-weight: searchResults.$ai-search-best-products-title-font-weight;
+}
+
+.lupa-ai-search-best-products-explanation {
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.lupa-ai-search-best-products-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lupa-ai-search-best-products-suggestions-title {
+  font-weight: searchResults.$ai-search-best-products-title-font-weight;
+}
+
+.lupa-ai-search-best-products-suggestion {
+  display: inline-flex;
+  gap: 4px;
+  padding: searchResults.$ai-search-suggestion-padding;
+  background: searchResults.$ai-search-suggestion-background;
+  border-radius: searchResults.$ai-search-suggestion-border-radius;
+  line-height: 1.3;
+}
+
+.lupa-ai-search-best-products-suggestion-label {
+  color: searchResults.$ai-search-suggestion-label-color;
+}
+
+.lupa-ai-search-best-products-apply {
+  @extend %lupa-ai-search-button;
+}
+
+.lupa-ai-search-best-products-items {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -#{searchResults.$product-item-padding};
 }
 
 .lupa-ai-search-loading-active .lupa-products {

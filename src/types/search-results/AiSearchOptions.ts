@@ -65,4 +65,8 @@ export type AiSearchBestProductsLabels = {
   suggestedFiltersTitle?: string
   /** Applies suggested filters and sort to the main results. Shown only after AI products load */
   applyFilters?: string
+  /** Toggle that shows collapsed products. Products collapse when suggestions are applied */
+  expandProducts?: string
+  /** Toggle that hides products */
+  collapseProducts?: string
 }

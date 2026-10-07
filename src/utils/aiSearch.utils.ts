@@ -98,3 +98,24 @@ export const withAiSearchMetadata = (
 ): Record<string, unknown> | undefined => {
   return aiSearch ? { ...metadata, aiSearch: true } : metadata
 }
+
+/** True if all AI filters are already selected in the current filters */
+export const areAiSearchFiltersApplied = (
+  aiFilters: FilterGroup = {},
+  currentFilters: FilterGroup = {}
+): boolean => {
+  return getAiSearchFilterParams(aiFilters).every((param) => {
+    const key = param.name.slice(param.name.indexOf('.') + 1)
+    const current = currentFilters[key]
+    if (Array.isArray(param.value)) {
+      const currentTerms = getCurrentTerms(current)
+      return param.value.every((value) => currentTerms.includes(value))
+    }
+    if (!current || Array.isArray(current) || isHierarchyFilter(current)) {
+      return false
+    }
+    const isPartial = param.name.startsWith(FACET_PARAMS_TYPE.PARTIAL_RANGE)
+    const max = isPartial ? current.lt : current.lte
+    return `${current.gte ?? ''}${FACET_RANGE_SEPARATOR}${max ?? ''}` === param.value
+  })
+}
