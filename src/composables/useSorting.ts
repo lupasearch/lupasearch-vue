@@ -1,4 +1,6 @@
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
+import { DEFAULT_OPTIONS_RESULTS } from '@/constants/searchResults.const'
+import { parseSerializedSort } from '@/utils/sort.utils'
 import { useOptionsStore } from '@/stores/options'
 import { useParamsStore } from '@/stores/params'
 import { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
@@ -31,12 +33,27 @@ export const useSorting = () => {
     return searchResultOptions.value.labels?.sortBy
   })
 
-  const sortItems = computed((): SearchResultsSortOptions[] => {
-    if (sortOptions.value && sortOptions.value.length) {
-      return sortOptions.value
-    } else {
-      return []
+  // Sort from the URL that matches no configured sort key, e.g. a sort suggested by AI search
+  const suggestedSortItem = computed((): SearchResultsSortOptions | undefined => {
+    if (!sort.value || sortOptions.value?.some((x) => x.key === sort.value)) {
+      return undefined
     }
+    const config = parseSerializedSort(sort.value)
+    if (!config) {
+      return undefined
+    }
+    return {
+      key: sort.value,
+      label:
+        searchResultOptions.value.labels?.suggestedSort ??
+        DEFAULT_OPTIONS_RESULTS.labels.suggestedSort,
+      config
+    }
+  })
+
+  const sortItems = computed((): SearchResultsSortOptions[] => {
+    const items = sortOptions.value?.length ? sortOptions.value : []
+    return suggestedSortItem.value ? [...items, suggestedSortItem.value] : items
   })
 
   const defaultSortValue = computed((): SearchResultsSortOptions => {

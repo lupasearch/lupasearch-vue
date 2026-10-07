@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AnchorPosition } from '@/types/search-results/SearchResultsProductCardOptions'
 import type { FacetStyle } from '@/types/search-results/SearchResultsOptions'
+import type { AiSearchOptions } from '@/types/search-results/AiSearchOptions'
 
 export const DEFAULT_OPTIONS_RESULTS = {
   options: {
@@ -12,6 +13,7 @@ export const DEFAULT_OPTIONS_RESULTS = {
   labels: {
     pageSize: 'Page size:',
     sortBy: 'Sort by:',
+    suggestedSort: 'Suggested sort',
     itemCount: 'Items {1} of {2}',
     filteredItemCount: '',
     currency: '€',
@@ -104,4 +106,33 @@ export const DEFAULT_OPTIONS_RESULTS = {
   },
   elements: [],
   breadcrumbs: []
+}
+
+export const DEFAULT_AI_SEARCH_OPTIONS: AiSearchOptions = {
+  enabled: false,
+  mode: 'regular',
+  regular: {
+    precheck: false,
+    loader: 'dialog',
+    showExplanation: true,
+    labels: {
+      loading: 'Searching with AI',
+      explanationFallback: 'Results refined by AI',
+      clear: 'Show all results'
+    }
+  },
+  bestProducts: {
+    limit: 3,
+    showProducts: true,
+    showExplanation: true,
+    showSuggestedFilters: true,
+    labels: {
+      title: 'Best matches for your search',
+      loading: 'Finding best matches...',
+      trigger: 'Find best matches with AI',
+      explanationFallback: '',
+      suggestedFiltersTitle: 'Suggested filters',
+      applyFilters: 'Apply suggested filters'
+    }
+  }
 }

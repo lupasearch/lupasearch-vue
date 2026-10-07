@@ -33,6 +33,9 @@ import ZeroResults from './ZeroResults.vue'
 import LoadingGrid from '@/components/common/skeleton/LoadingGrid.vue'
 import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
 import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
+import AiSearchLoadingPanel from '../ai-search/AiSearchLoadingPanel.vue'
+import AiSearchPanel from '../ai-search/AiSearchPanel.vue'
+import { useAiSearchStore } from '@/stores/aiSearch'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -42,6 +45,7 @@ const props = defineProps<{
 const searchResultStore = useSearchResultStore()
 const paramStore = useParamsStore()
 const optionStore = useOptionsStore()
+const aiSearchStore = useAiSearchStore()
 
 const {
   hasResults,
@@ -54,6 +58,7 @@ const {
   loading,
   relatedQueriesApiEnabled
 } = storeToRefs(searchResultStore)
+const { aiSearchLoading } = storeToRefs(aiSearchStore)
 
 const { limit, skeletonEnabled, relatedQueriesSkeletonEnabled, loadingRelatedQueries } =
   useLoadingSkeleton()
@@ -171,9 +176,17 @@ const filter = () => {
 }
 </script>
 <template>
-  <div id="lupa-search-results-products">
-    <Spinner v-if="!skeletonEnabled && loading && !isFilterSidebarVisible" class="lupa-loader" />
+  <div
+    id="lupa-search-results-products"
+    :class="{ 'lupa-ai-search-loading-active': aiSearchLoading }"
+  >
+    <Spinner
+      v-if="!skeletonEnabled && loading && !isFilterSidebarVisible && !aiSearchLoading"
+      class="lupa-loader"
+    />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
+    <AiSearchLoadingPanel />
+    <AiSearchPanel />
     <AdditionalPanels :options="options" location="top" :sdk-options="options.options" />
     <LoadingBlock
       :enabled="relatedQueriesSkeletonEnabled"

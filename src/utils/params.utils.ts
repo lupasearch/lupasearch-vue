@@ -47,11 +47,16 @@ const parseRegularKeys = (
     QUERY: getQueryParamName ? getQueryParamName(QUERY_PARAMS.QUERY) : QUERY_PARAMS.QUERY,
     LIMIT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.LIMIT) : QUERY_PARAMS.LIMIT,
     PAGE: getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE,
-    SORT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.SORT) : QUERY_PARAMS.SORT
+    SORT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.SORT) : QUERY_PARAMS.SORT,
+    ADJUSTED: getQueryParamName ? getQueryParamName(QUERY_PARAMS.ADJUSTED) : QUERY_PARAMS.ADJUSTED
   })
   for (const key of regularKeys) {
     const rawKey = keys[key] || key
-    params[rawKey] = parseParam(key, searchParams)
+    // Empty adjusted search text is a valid value: `adj=` is not the same as no `adj`
+    params[rawKey] =
+      rawKey === QUERY_PARAMS_PARSED.ADJUSTED
+        ? (parseParam(key, searchParams) ?? '')
+        : parseParam(key, searchParams)
   }
   return params
 }
@@ -146,7 +151,8 @@ export const getRemovableParams = (
       QUERY: getQueryParamName ? getQueryParamName(QUERY_PARAMS.QUERY) : QUERY_PARAMS.QUERY,
       LIMIT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.LIMIT) : QUERY_PARAMS.LIMIT,
       PAGE: getQueryParamName ? getQueryParamName(QUERY_PARAMS.PAGE) : QUERY_PARAMS.PAGE,
-      SORT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.SORT) : QUERY_PARAMS.SORT
+      SORT: getQueryParamName ? getQueryParamName(QUERY_PARAMS.SORT) : QUERY_PARAMS.SORT,
+      ADJUSTED: getQueryParamName ? getQueryParamName(QUERY_PARAMS.ADJUSTED) : QUERY_PARAMS.ADJUSTED
     }
     return [
       ...Object.values(params),

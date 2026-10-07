@@ -18,7 +18,7 @@ export type SearchBoxOptions = SearchBoxPanelOptions & {
   dynamicData?: DynamicData
   callbacks?: SearchBoxEventCallbacks
   redirections?: RedirectionOptions
-  queryParameterNames?: Record<LupaQueryParamValue, string>
+  queryParameterNames?: Partial<Record<LupaQueryParamValue, string>>
   keepOpen?: boolean
   disableNavigationToSearchResults?: boolean
   autoEscapeDocumentData?: boolean

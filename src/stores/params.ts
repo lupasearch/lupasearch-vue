@@ -27,6 +27,8 @@ export const useParamsStore = defineStore('params', () => {
 
   const searchResultsLink = ref('')
   const searchString = ref('')
+  // URL search set by replaceParams: results already match it, so it should not trigger a new search
+  const silentSearchString: Ref<string | null> = ref(null)
 
   const optionsStore = useOptionsStore()
   const redirectionStore = useRedirectionStore()
@@ -69,6 +71,10 @@ export const useParamsStore = defineStore('params', () => {
 
   const filters = computed(() => {
     return params.value.filters ?? {}
+  })
+
+  const adjustedSearchText = computed(() => {
+    return params.value[QUERY_PARAMS_PARSED.ADJUSTED] as string | undefined
   })
 
   const navigate = (url: URL) => {
@@ -255,6 +261,36 @@ export const useParamsStore = defineStore('params', () => {
     searchString.value = url.search
   }
 
+  /**
+   * Updates the URL with `history.replaceState` and the parsed params, without triggering a new
+   * search: use when current results already match the new params
+   */
+  const replaceParams = ({
+    params: newParams,
+    paramsToRemove
+  }: {
+    params: { name: string; value: string | string[] }[]
+    paramsToRemove?: 'all' | string[]
+  }) => {
+    const url = getPageUrl()
+    paramsToRemove = getRemovableParams(url, optionsStore.getQueryParamName, paramsToRemove)
+    removeParams(url, paramsToRemove)
+    newParams.forEach((p) => appendParam(url, p))
+    window.history.replaceState(window.history.state, '', url.pathname + url.search)
+    params.value = parseParams(optionsStore.getQueryParamName, url.searchParams)
+    if (url.search !== searchString.value) {
+      silentSearchString.value = url.search
+      searchString.value = url.search
+    }
+  }
+
+  /** True if the search string change came from replaceParams and should not trigger a search */
+  const consumeSilentSearchString = (value: string): boolean => {
+    const isSilent = silentSearchString.value === value
+    silentSearchString.value = null
+    return isSilent
+  }
+
   const setDefaultLimit = (newDefaultLimit: number) => {
     if (!newDefaultLimit) {
       return
@@ -286,6 +322,7 @@ export const useParamsStore = defineStore('params', () => {
     limit,
     sort,
     filters,
+    adjustedSearchText,
     sortParams,
     lastChangedParams,
     skipFacetReload,
@@ -296,6 +333,8 @@ export const useParamsStore = defineStore('params', () => {
     handleNoResultsFlag,
     goToResults,
     appendParams,
+    replaceParams,
+    consumeSilentSearchString,
     setDefaultLimit,
     setSearchResultsLink,
     setSortSettings

@@ -359,6 +359,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     loadingRelatedQueries,
     setSidebarState,
     queryFacet,
+    lastRequestId,
     setLastRequestId,
     add,
     addPartial,

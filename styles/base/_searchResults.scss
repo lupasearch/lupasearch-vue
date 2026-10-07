@@ -1,4 +1,4 @@
-@use "general";
+@use 'general';
 
 $size-md: general.$size-md;
 $size-s: general.$size-s;
@@ -87,7 +87,7 @@ $facet-label-padding-open: 10.5px 10.5px 0 !default;
 
 // Caret
 
-$facet-label-caret-content: "⌄" !default;
+$facet-label-caret-content: '⌄' !default;
 $facet-label-caret-font-family: $facets-font-family !default;
 $facet-label-caret-color: $facet-text-color !default;
 $facet-label-caret-color-hover: general.$text-color-hover !default;
@@ -223,8 +223,8 @@ $pagination-page-margin: 0 12px 0 0 !default;
 $pagination-selected-page-color: general.$text-color-primary !default;
 $pagination-selected-page-font-weight: 700 !default;
 
-$pagination-prev-arrow-content: "" !default;
-$pagination-next-arrow-content: "" !default;
+$pagination-prev-arrow-content: '' !default;
+$pagination-next-arrow-content: '' !default;
 $pagination-arrow-font-family: $pagination-font-family !default;
 $pagination-arrow-size: 11px !default;
 $pagination-arrow-font-weight: 700 !default;
@@ -308,7 +308,7 @@ $mobile-sidebar-padding: 0 13.5px 0 0 !default;
 
 $mobile-sidebar-toggle-size: 24px !default;
 $mobile-sidebar-toggle-color: general.$text-color-primary !default;
-$mobile-sidebar-toggle-content: "✖" !default;
+$mobile-sidebar-toggle-content: '✖' !default;
 $mobile-sidebar-toggle-font-family: general.$font-family-base !default;
 
 // Mobile toggle
@@ -388,3 +388,34 @@ $category-overview-margin: 30px 0 50px !default;
 $category-overview-title-margin: 0 0 15px !default;
 $category-overview-title-font-size: 14px !default;
 $category-overview-title-font-weight: 600 !default;
+
+// AI search
+
+$ai-search-font-family: general.$font-family-base !default;
+$ai-search-text-color: general.$text-color-primary !default;
+$ai-search-icon-color: general.$primary !default;
+$ai-search-loading-font-size: 15px !default;
+
+$ai-search-overlay-z-index: 1000 !default;
+$ai-search-overlay-background: rgba(0, 0, 0, 0.35) !default;
+
+$ai-search-dialog-background: general.$white !default;
+$ai-search-dialog-padding: 20px 28px !default;
+$ai-search-dialog-border-radius: 12px !default;
+$ai-search-dialog-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16) !default;
+
+$ai-search-panel-background: general.$white !default;
+$ai-search-panel-border: 1px solid rgba(0, 0, 0, 0.08) !default;
+$ai-search-panel-border-radius: 8px !default;
+$ai-search-panel-padding: 14px 16px !default;
+$ai-search-panel-margin: 0 0 16px !default;
+
+$ai-search-loading-products-opacity: 0.5 !default;
+
+$ai-search-panel-font-size: 14px !default;
+$ai-search-clear-padding: 6px 12px !default;
+$ai-search-clear-color: general.$text-color-primary !default;
+$ai-search-clear-background: general.$white !default;
+$ai-search-clear-background-hover: general.$color-bg-hover !default;
+$ai-search-clear-border: 1px solid rgba(0, 0, 0, 0.2) !default;
+$ai-search-clear-border-radius: 6px !default;
