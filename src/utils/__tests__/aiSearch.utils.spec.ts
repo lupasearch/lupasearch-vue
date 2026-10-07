@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { getAiSearchFilterParams, withAiSearchModifier } from '../aiSearch.utils'
+import {
+  getAiSearchFilterParams,
+  withAiSearchMetadata,
+  withAiSearchModifier
+} from '../aiSearch.utils'
 
 describe('getAiSearchFilterParams', () => {
   it('should return no params without filters', () => {
@@ -87,5 +91,24 @@ describe('withAiSearchModifier', () => {
     const modifiers = { facets: true }
     withAiSearchModifier(modifiers, true)
     expect(modifiers).toEqual({ facets: true })
+  })
+})
+
+describe('withAiSearchMetadata', () => {
+  it('should return metadata unchanged for regular results', () => {
+    expect(withAiSearchMetadata(undefined, false)).toBeUndefined()
+    expect(withAiSearchMetadata({ _lupaEventSource: 'didYouMean' }, false)).toEqual({
+      _lupaEventSource: 'didYouMean'
+    })
+  })
+
+  it('should add aiSearch flag for AI search results', () => {
+    expect(withAiSearchMetadata(undefined, true)).toEqual({ aiSearch: true })
+  })
+
+  it('should keep other metadata', () => {
+    expect(
+      withAiSearchMetadata({ _lupaEventSource: 'didYouMean', _lupaUpdatedQuery: 'tv' }, true)
+    ).toEqual({ _lupaEventSource: 'didYouMean', _lupaUpdatedQuery: 'tv', aiSearch: true })
   })
 })

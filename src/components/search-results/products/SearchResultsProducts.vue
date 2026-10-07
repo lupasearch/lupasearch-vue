@@ -36,6 +36,7 @@ import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
 import AiSearchLoadingPanel from '../ai-search/AiSearchLoadingPanel.vue'
 import AiSearchPanel from '../ai-search/AiSearchPanel.vue'
 import { useAiSearchStore } from '@/stores/aiSearch'
+import { withAiSearchMetadata } from '@/utils/aiSearch.utils'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -58,7 +59,7 @@ const {
   loading,
   relatedQueriesApiEnabled
 } = storeToRefs(searchResultStore)
-const { aiSearchLoading } = storeToRefs(aiSearchStore)
+const { aiSearchLoading, aiSearchActive } = storeToRefs(aiSearchStore)
 
 const { limit, skeletonEnabled, relatedQueriesSkeletonEnabled, loadingRelatedQueries } =
   useLoadingSkeleton()
@@ -143,14 +144,15 @@ const hasSimilarQueries = computed(() => Boolean(searchResult.value.similarQueri
 
 const hasSimilarResults = computed(() => Boolean(searchResult.value.similarResults?.items?.length))
 
-const clickMetadata: ComputedRef<EventSourceMetadata> = computed(() => {
+const clickMetadata: ComputedRef<Record<string, unknown> | undefined> = computed(() => {
   const hasDidYouMean = Boolean(searchResult.value.suggestedSearchText)
-  return hasDidYouMean
+  const eventSourceMetadata: EventSourceMetadata | undefined = hasDidYouMean
     ? {
         _lupaEventSource: 'didYouMean',
         _lupaUpdatedQuery: searchResult.value.suggestedSearchText
       }
     : undefined
+  return withAiSearchMetadata(eventSourceMetadata, aiSearchActive.value)
 })
 
 const showLocalRelatedQueries = computed((): boolean => {

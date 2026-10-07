@@ -90,3 +90,11 @@ export const withAiSearchModifier = (
   }
   return { ...modifiers, aiSearch }
 }
+
+/** Adds `aiSearch: true` to click tracking metadata when results are AI search results */
+export const withAiSearchMetadata = (
+  metadata: Record<string, unknown> | undefined,
+  aiSearch: boolean
+): Record<string, unknown> | undefined => {
+  return aiSearch ? { ...metadata, aiSearch: true } : metadata
+}
