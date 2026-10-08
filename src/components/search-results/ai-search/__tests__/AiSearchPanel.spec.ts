@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useOptionsStore } from '@/stores/options'
@@ -8,7 +9,11 @@ import type { AiSearchOptions } from '@/types/search-results/AiSearchOptions'
 import type { QueryParams } from '@/types/search-results/QueryParams'
 import AiSearchPanel from '../AiSearchPanel.vue'
 
-const activeParams = { query: 'tv', adjusted: '', filters: { brand: ['LG'] } } as QueryParams
+const activeParams = {
+  query: 'tv',
+  adjusted: '',
+  filters: { brand: ['LG'] }
+} as unknown as QueryParams
 
 const mountPanel = ({
   aiSearch = { enabled: true },
@@ -90,7 +95,7 @@ describe('AiSearchPanel', () => {
 
   it('should not show panel without filters', () => {
     const { wrapper } = mountPanel({
-      params: { query: 'tv', adjusted: '', filters: {} } as QueryParams
+      params: { query: 'tv', adjusted: '', filters: {} } as unknown as QueryParams
     })
 
     expect(wrapper.find('.lupa-ai-search-panel').exists()).toBe(false)
@@ -98,7 +103,7 @@ describe('AiSearchPanel', () => {
 
   it('should not show panel without adjusted search text', () => {
     const { wrapper } = mountPanel({
-      params: { query: 'tv', filters: { brand: ['LG'] } } as QueryParams
+      params: { query: 'tv', filters: { brand: ['LG'] } } as unknown as QueryParams
     })
 
     expect(wrapper.find('.lupa-ai-search-panel').exists()).toBe(false)

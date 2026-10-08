@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useOptionsStore } from '@/stores/options'
@@ -37,7 +38,7 @@ const mountBestProducts = ({
   bestProductsLoading = false,
   bestProductsExpanded = true,
   hasRequest = true,
-  params = { query: 'cheap samsung' } as QueryParams,
+  params = { query: 'cheap samsung' } as unknown as QueryParams,
   sort = [{ key: 'cheapest', label: 'Cheapest', config: [{ price: 'asc' }] }]
 }: {
   aiSearch?: AiSearchOptions
@@ -167,7 +168,7 @@ describe('AiSearchBestProducts', () => {
         query: 'cheap samsung',
         sort: 'cheapest',
         filters: { brand: ['Samsung'] }
-      } as QueryParams
+      } as unknown as QueryParams
     })
 
     expect(wrapper.find('.lupa-ai-search-best-products-suggestions').exists()).toBe(true)

@@ -5,7 +5,7 @@ import { useAiSearchStore } from '../aiSearch'
 import { useSearchResultStore } from '../searchResult'
 import { useParamsStore } from '../params'
 import { parseParams } from '@/utils/params.utils'
-import type { SearchQueryResult } from '@getlupa/client-sdk/Types'
+import type { PublicQuery, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { useOptionsStore } from '../options'
 import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
 
@@ -300,7 +300,7 @@ describe('aiSearch store best products', () => {
 
   const request = (searchText: string, autoLoad = true) => ({
     queryKey: 'qk',
-    query: { searchText, limit: 3, modifiers: { aiSearch: true } },
+    query: { searchText, limit: 3, modifiers: { aiSearch: true } } as PublicQuery,
     autoLoad
   })
 

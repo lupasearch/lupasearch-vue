@@ -41,14 +41,14 @@ describe('SearchResultsProducts AI search click metadata', () => {
       query: 'tv',
       adjusted: '',
       filters: { brand: ['LG'] }
-    } as QueryParams)
+    } as unknown as QueryParams)
 
     expect(card.props('analyticsMetadata')).toEqual({ aiSearch: true })
   })
 
   it('should combine aiSearch with did you mean metadata', () => {
     const card = mountProducts(
-      { query: 'tv', adjusted: '', filters: { brand: ['LG'] } } as QueryParams,
+      { query: 'tv', adjusted: '', filters: { brand: ['LG'] } } as unknown as QueryParams,
       { suggestedSearchText: 'tvs' }
     )
 
@@ -60,13 +60,16 @@ describe('SearchResultsProducts AI search click metadata', () => {
   })
 
   it('should not add aiSearch metadata without adjusted search text', () => {
-    const card = mountProducts({ query: 'tv', filters: { brand: ['LG'] } } as QueryParams)
+    const card = mountProducts({
+      query: 'tv',
+      filters: { brand: ['LG'] }
+    } as unknown as QueryParams)
 
     expect(card.props('analyticsMetadata')).toBeUndefined()
   })
 
   it('should not add aiSearch metadata without filters', () => {
-    const card = mountProducts({ query: 'tv', adjusted: '', filters: {} } as QueryParams)
+    const card = mountProducts({ query: 'tv', adjusted: '', filters: {} } as unknown as QueryParams)
 
     expect(card.props('analyticsMetadata')).toBeUndefined()
   })
