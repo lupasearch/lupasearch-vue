@@ -65,6 +65,37 @@ describe('parseParams', () => {
   })
 })
 
+describe('parseParams adjusted search text', () => {
+  it('should keep empty adjusted search text', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=tv&adj='))).toEqual({
+      query: 'tv',
+      adjusted: '',
+      filters: {}
+    })
+  })
+
+  it('should parse adjusted search text', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=cheap+tv&adj=tv'))).toEqual({
+      query: 'cheap tv',
+      adjusted: 'tv',
+      filters: {}
+    })
+  })
+
+  it('should not set adjusted search text when param is missing', () => {
+    expect(parseParams(undefined, new URLSearchParams('q=tv'))).not.toHaveProperty('adjusted')
+  })
+
+  it('should use renamed adjusted search text param', () => {
+    const getQueryParamName = (param: string) => (param === 'adj' ? 'ai' : param)
+    expect(parseParams(getQueryParamName, new URLSearchParams('q=tv&ai='))).toEqual({
+      query: 'tv',
+      adjusted: '',
+      filters: {}
+    })
+  })
+})
+
 describe('getRemovableParams', () => {
   it('should return passed parameters if they are not set to all', () => {
     const url = new URL('https://lupasearch.com/search?q=a&p=1&l=2&s=key')
@@ -73,7 +104,7 @@ describe('getRemovableParams', () => {
 
   it('should return all parameters if all is passed', () => {
     const url = new URL('https://lupasearch.com/search?q=a&p=1&l=2&s=key')
-    expect(getRemovableParams(url, undefined, 'all')).toEqual(['q', 'l', 'p', 's'])
+    expect(getRemovableParams(url, undefined, 'all')).toEqual(['q', 'l', 'p', 's', 'adj'])
   })
 
   it('should include filter params if all is passed', () => {
@@ -83,6 +114,7 @@ describe('getRemovableParams', () => {
       'l',
       'p',
       's',
+      'adj',
       'f.test',
       'fr.range'
     ])

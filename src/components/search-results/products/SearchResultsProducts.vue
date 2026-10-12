@@ -33,6 +33,11 @@ import ZeroResults from './ZeroResults.vue'
 import LoadingGrid from '@/components/common/skeleton/LoadingGrid.vue'
 import { useLoadingSkeleton } from '@/composables/useLoadingSkeleton'
 import LoadingBlock from '@/components/common/skeleton/LoadingBlock.vue'
+import AiSearchLoadingPanel from '../ai-search/AiSearchLoadingPanel.vue'
+import AiSearchPanel from '../ai-search/AiSearchPanel.vue'
+import AiSearchBestProducts from '../ai-search/AiSearchBestProducts.vue'
+import { useAiSearchStore } from '@/stores/aiSearch'
+import { withAiSearchMetadata } from '@/utils/aiSearch.utils'
 
 const props = defineProps<{
   options: SearchResultsOptions
@@ -42,6 +47,7 @@ const props = defineProps<{
 const searchResultStore = useSearchResultStore()
 const paramStore = useParamsStore()
 const optionStore = useOptionsStore()
+const aiSearchStore = useAiSearchStore()
 
 const {
   hasResults,
@@ -54,6 +60,7 @@ const {
   loading,
   relatedQueriesApiEnabled
 } = storeToRefs(searchResultStore)
+const { aiSearchLoading, aiSearchActive } = storeToRefs(aiSearchStore)
 
 const { limit, skeletonEnabled, relatedQueriesSkeletonEnabled, loadingRelatedQueries } =
   useLoadingSkeleton()
@@ -138,14 +145,15 @@ const hasSimilarQueries = computed(() => Boolean(searchResult.value.similarQueri
 
 const hasSimilarResults = computed(() => Boolean(searchResult.value.similarResults?.items?.length))
 
-const clickMetadata: ComputedRef<EventSourceMetadata> = computed(() => {
+const clickMetadata: ComputedRef<Record<string, unknown> | undefined> = computed(() => {
   const hasDidYouMean = Boolean(searchResult.value.suggestedSearchText)
-  return hasDidYouMean
+  const eventSourceMetadata: EventSourceMetadata | undefined = hasDidYouMean
     ? {
         _lupaEventSource: 'didYouMean',
         _lupaUpdatedQuery: searchResult.value.suggestedSearchText
       }
     : undefined
+  return withAiSearchMetadata(eventSourceMetadata, aiSearchActive.value)
 })
 
 const showLocalRelatedQueries = computed((): boolean => {
@@ -171,9 +179,18 @@ const filter = () => {
 }
 </script>
 <template>
-  <div id="lupa-search-results-products">
-    <Spinner v-if="!skeletonEnabled && loading && !isFilterSidebarVisible" class="lupa-loader" />
+  <div
+    id="lupa-search-results-products"
+    :class="{ 'lupa-ai-search-loading-active': aiSearchLoading }"
+  >
+    <Spinner
+      v-if="!skeletonEnabled && loading && !isFilterSidebarVisible && !aiSearchLoading"
+      class="lupa-loader"
+    />
     <RedirectionSuggestions :options="options.redirectionSuggestions" />
+    <AiSearchLoadingPanel />
+    <AiSearchPanel />
+    <AiSearchBestProducts :product-card-options="productCardOptions" :ssr="ssr" />
     <AdditionalPanels :options="options" location="top" :sdk-options="options.options" />
     <LoadingBlock
       :enabled="relatedQueriesSkeletonEnabled"

@@ -3,6 +3,7 @@ import { DEFAULT_OPTIONS_RESULTS } from '@/constants/searchResults.const'
 import type { QueryParams } from '@/types/search-results/QueryParams'
 import type { SearchResultsSortOptions } from '@/types/search-results/SearchResultsSort'
 import type { FilterGroup, PublicQuery, SortDirection } from '@getlupa/client-sdk/Types'
+import { parseSerializedSort } from './sort.utils'
 
 export const createPublicQuery = (
   queryParams: QueryParams,
@@ -14,7 +15,11 @@ export const createPublicQuery = (
 
   for (const param in queryParams) {
     const value = queryParams[param]
-    if (!value && param !== QUERY_PARAMS_PARSED.QUERY) {
+    if (
+      !value &&
+      param !== QUERY_PARAMS_PARSED.QUERY &&
+      !(param === QUERY_PARAMS_PARSED.ADJUSTED && value === '')
+    ) {
       continue
     }
     switch (param) {
@@ -33,14 +38,17 @@ export const createPublicQuery = (
         )
         break
       case QUERY_PARAMS_PARSED.SORT: {
-        const config = sortOptions?.find(
-          (x) => x.key === queryParams[QUERY_PARAMS_PARSED.SORT]
-        )?.config
+        const config =
+          sortOptions?.find((x) => x.key === queryParams[QUERY_PARAMS_PARSED.SORT])?.config ??
+          parseSerializedSort(queryParams[QUERY_PARAMS_PARSED.SORT])
         if (config) {
           publicQuery.sort = config as Record<string, SortDirection>[]
         }
         break
       }
+      case QUERY_PARAMS_PARSED.ADJUSTED:
+        publicQuery.adjustedSearchText = value as string
+        break
       default:
         break
     }

@@ -28,5 +28,5 @@ export type Environment = SdkEnvironment
 export type SortDirection = 'asc' | 'desc'
 export type ScreenSize = 'xs' | 'sm' | 'md' | 'l' | 'xl'
 
-export type LupaQueryParamName = 'QUERY' | 'PAGE' | 'LIMIT' | 'SORT'
-export type LupaQueryParamValue = 'q' | 'p' | 'l' | 's'
+export type LupaQueryParamName = 'QUERY' | 'PAGE' | 'LIMIT' | 'SORT' | 'ADJUSTED'
+export type LupaQueryParamValue = 'q' | 'p' | 'l' | 's' | 'adj'

@@ -8,6 +8,10 @@ import { useParamsStore } from '@/stores/params'
 import { useSearchResultStore } from '@/stores/searchResult'
 import { useTrackingStore } from '@/stores/tracking'
 import { useRedirectionStore } from '@/stores/redirections'
+import { useAiSearchStore } from '@/stores/aiSearch'
+import { useAiSearchOptions } from '@/composables/useAiSearchOptions'
+import { withAiSearchModifier } from '@/utils/aiSearch.utils'
+import { DEFAULT_BEST_PRODUCTS_LIMIT } from '@/constants/searchResults.const'
 import type {
   SearchResultsDidYouMeanLabels,
   SearchResultsOptions
@@ -36,6 +40,7 @@ import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
 import { processExtractionObject } from '@/utils/extraction.utils'
 import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 import SortDrawer from './filters/SortDrawer.vue'
+import AiSearchLoadingDialog from './ai-search/AiSearchLoadingDialog.vue'
 import { SdkOptions } from '@/types/General'
 
 const props = defineProps<{
@@ -53,6 +58,24 @@ const trackingStore = useTrackingStore()
 const dynamicDataStore = useDynamicDataStore()
 const screenStore = useScreenStore()
 const redirectionStore = useRedirectionStore()
+const aiSearchStore = useAiSearchStore()
+
+const {
+  precheckEnabled,
+  isRegularMode,
+  isBestProductsMode,
+  isClickToTriggerMode,
+  bestProductsOptions
+} = useAiSearchOptions()
+
+// Regular mode: sent with every search request, backend configuration may require it.
+// Best products modes: AI search runs only in the separate best products request
+const aiSearchModifier = computed(() => {
+  if (isRegularMode.value) {
+    return true
+  }
+  return isBestProductsMode.value ? false : undefined
+})
 
 const extractedInitialFilters = computed(() => {
   return {
@@ -180,9 +203,10 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
   })
   const context = getLupaTrackingContext()
   const limit = publicQuery.limit || defaultSearchResultPageSize.value
-  const modifiers = props.options.splitExpensiveRequests
-    ? { facets: false, refiners: false }
-    : undefined
+  const modifiers = withAiSearchModifier(
+    props.options.splitExpensiveRequests ? { facets: false, refiners: false } : undefined,
+    aiSearchModifier.value
+  )
   const query = { ...publicQuery, ...context, limit, modifiers }
 
   const redirectionApplied = redirectionStore.redirectOnKeywordIfConfigured(
@@ -197,12 +221,46 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
   if (!query.searchText && props.options.disallowEmptyQuery) {
     return
   }
+  if (isBestProductsMode.value) {
+    aiSearchStore.prepareBestProducts({
+      queryKey: bestProductsOptions.value.queryKey || props.options.queryKey,
+      query: {
+        searchText: query.searchText,
+        filters: query.filters,
+        selectFields: query.selectFields,
+        ...context,
+        limit: bestProductsOptions.value.limit ?? DEFAULT_BEST_PRODUCTS_LIMIT,
+        modifiers: withAiSearchModifier(undefined, true)
+      },
+      options: props.options.options,
+      autoLoad: !isClickToTriggerMode.value
+    })
+  } else {
+    aiSearchStore.resetBestProducts()
+  }
+  if (precheckEnabled.value) {
+    aiSearchStore.precheck({
+      requestId,
+      queryKey: props.options.queryKey,
+      query,
+      options: props.options.options
+    })
+  } else {
+    aiSearchStore.resetPrecheck()
+  }
   lupaSearchSdk
     .query(props.options.queryKey, query, props.options.options)
     .then((res) => {
       if (res.success) {
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
+        if (isRegularMode.value && searchResultStore.lastRequestId === requestId) {
+          aiSearchStore.saveAiSearchResultToUrl({
+            query,
+            result: res,
+            sortOptions: props.options.sort
+          })
+        }
         searchResultStore.setRelatedQueriesApiEnabled(res.hasRelatedQueries ?? false)
         if (res.hasRelatedQueries && Boolean(props.options.relatedQueries)) {
           searchResultStore.queryRelatedQueries(props.options.queryKey, publicQuery, res, {
@@ -234,7 +292,11 @@ const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
   }
   loadingFacets.value = true
   const context = getLupaTrackingContext()
-  const query = { ...publicQuery, ...context, modifiers: { facets: true, refiners: false } }
+  const query = {
+    ...publicQuery,
+    ...context,
+    modifiers: withAiSearchModifier({ facets: true, refiners: false }, aiSearchModifier.value)
+  }
   lupaSearchSdk
     .queryFacets(props.options.queryKey, query, props.options.options)
     .then((res) => {
@@ -257,7 +319,11 @@ const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
   }
   loadingRefiners.value = true
   const context = getLupaTrackingContext()
-  const query = { ...publicQuery, ...context, modifiers: { facets: false, refiners: true } }
+  const query = {
+    ...publicQuery,
+    ...context,
+    modifiers: withAiSearchModifier({ facets: false, refiners: true }, aiSearchModifier.value)
+  }
   lupaSearchSdk
     .queryRefiners(props.options.queryKey, query, props.options.options)
     .then((res) => {
@@ -324,7 +390,12 @@ const handleMounted = (): void => {
   paramStore.setDefaultLimit(defaultSearchResultPageSize.value)
 }
 
-watch(searchString, () => handleParamsChange())
+watch(searchString, (value) => {
+  if (paramStore.consumeSilentSearchString(value)) {
+    return
+  }
+  handleParamsChange()
+})
 
 const handleParamsChange = (): void => {
   // Skip first change detection if there are query params on ssr
@@ -388,6 +459,7 @@ defineExpose({ handleMounted, handleUrlChange })
       @filter="handleParamsChange"
     />
     <SortDrawer v-if="options.sort" />
+    <AiSearchLoadingDialog />
     <SearchResultsBreadcrumbs
       v-if="currentQueryText || isProductList"
       :breadcrumbs="options.breadcrumbs"

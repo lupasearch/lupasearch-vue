@@ -4,14 +4,16 @@ export const QUERY_PARAMS: Record<LupaQueryParamName, LupaQueryParamValue> = {
   QUERY: 'q',
   PAGE: 'p',
   LIMIT: 'l',
-  SORT: 's'
+  SORT: 's',
+  ADJUSTED: 'adj'
 }
 
 export const QUERY_PARAMS_PARSED = {
   QUERY: 'query',
   PAGE: 'page',
   LIMIT: 'limit',
-  SORT: 'sort'
+  SORT: 'sort',
+  ADJUSTED: 'adjusted'
 }
 
 export const FACET_PARAMS_TYPE = {
@@ -35,3 +37,6 @@ export const FACET_RANGE_SEPARATOR = ':'
 export const HIERARCHY_SEPARATOR = '>'
 
 export const FACET_TERM_RANGE_SEPARATOR = '-'
+
+export const SORT_FIELD_SEPARATOR = ','
+export const SORT_DIRECTION_SEPARATOR = ':'
