@@ -10,7 +10,7 @@ import { FilterGroup, SearchQueryResult } from '@getlupa/client-sdk/Types'
 import { DataExtraction } from '../DataExtraction'
 import { FilterTranslationOptions } from './FilterTranslationOptions'
 import type { MultiCurrencyConfig } from '@/utils/price.utils'
-import type { AiSearchOptions } from './AiSearchOptions'
+import type { DeepSearchOptions } from './DeepSearchOptions'
 
 export type SearchResultsOptions = SearchResultsProductOptions &
   SearchResultsAdditionalPanels & {
@@ -28,7 +28,7 @@ export type SearchResultsOptions = SearchResultsProductOptions &
     zeroResults?: ZeroResultsOptions
     selectFields?: string[]
     autoEscapeDocumentData?: boolean
-    aiSearch?: AiSearchOptions
+    deepSearch?: DeepSearchOptions
     loadingSkeleton?: {
       enabled: boolean
       showOnEveryFetch?: {
@@ -109,7 +109,7 @@ export type SearchResultsOptionLabels = SearchResultsPaginationLabels &
   SearchResultsSimilarQueriesLabels &
   SearchResultsSimilarResultsLabels & {
     sortBy: string
-    /** Sort dropdown label for a sort from the URL that matches no `sort[].config` (e.g. AI suggested sort) */
+    /** Sort dropdown label for a sort from the URL that matches no `sort[].config` (e.g. sort suggested by deep search) */
     suggestedSort?: string
     currency?: string
     currencyTemplate?: string

@@ -7,7 +7,7 @@ import type { SearchResultsSortOptions } from '@/types/search-results/SearchResu
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import { isFacetKey } from '@/utils/filter.utils'
 import { getPageUrl } from '@/utils/routing.utils'
-import { areAiSearchFiltersApplied, getAiSearchFilterParams } from '@/utils/aiSearch.utils'
+import { areDeepSearchFiltersApplied, getDeepSearchFilterParams } from '@/utils/deepSearch.utils'
 import { getSortParamValue } from '@/utils/sort.utils'
 import { useSearchResultStore } from './searchResult'
 import { useParamsStore } from './params'
@@ -33,7 +33,7 @@ const hasFilterValue = (filter: unknown): boolean => {
   return false
 }
 
-export const useAiSearchStore = defineStore('aiSearch', () => {
+export const useDeepSearchStore = defineStore('deepSearch', () => {
   const precheckAssisted = ref(false)
   const lastPrecheckRequestId = ref('')
   const explanation = ref<string | undefined>(undefined)
@@ -54,11 +54,11 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
 
   const { loading } = storeToRefs(searchResultStore)
 
-  const aiSearchLoading = computed(() => precheckAssisted.value && loading.value)
+  const deepSearchLoading = computed(() => precheckAssisted.value && loading.value)
 
   const { adjustedSearchText, filters, query: searchText } = storeToRefs(paramsStore)
 
-  const aiSearchActive = computed(() => {
+  const deepSearchActive = computed(() => {
     return (
       adjustedSearchText.value !== undefined &&
       Object.values(filters.value).some((filter) => hasFilterValue(filter))
@@ -69,37 +69,40 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     return explanationSearchText.value === searchText.value ? explanation.value : undefined
   })
 
-  const bestProductsAiSearch = computed(() => {
-    const aiSearch = bestProductsResult.value?.executionMetadata?.aiSearch
-    return aiSearch?.applied ? aiSearch : undefined
+  const bestProductsDeepSearch = computed(() => {
+    const deepSearch = bestProductsResult.value?.executionMetadata?.deepSearch
+    return deepSearch?.applied ? deepSearch : undefined
   })
 
   const bestProductsHasSuggestions = computed(() => {
-    const aiSearch = bestProductsAiSearch.value
-    return Boolean(Object.keys(aiSearch?.filters ?? {}).length || aiSearch?.sort?.length)
+    const deepSearch = bestProductsDeepSearch.value
+    return Boolean(Object.keys(deepSearch?.filters ?? {}).length || deepSearch?.sort?.length)
   })
 
   const bestProductsSuggestedSearchText = computed(() => {
-    const aiSearchText = bestProductsAiSearch.value?.searchText
-    if (aiSearchText === '' && optionsStore.searchResultOptions?.disallowEmptyQuery) {
+    const deepSearchText = bestProductsDeepSearch.value?.searchText
+    if (deepSearchText === '' && optionsStore.searchResultOptions?.disallowEmptyQuery) {
       return undefined
     }
-    return aiSearchText
+    return deepSearchText
   })
 
   const bestProductsSuggestionsApplied = computed(() => {
-    const aiSearch = bestProductsAiSearch.value
-    if (!aiSearch) {
+    const deepSearch = bestProductsDeepSearch.value
+    if (!deepSearch) {
       return false
     }
     const suggestedSearchText = bestProductsSuggestedSearchText.value
     const searchTextApplied =
       suggestedSearchText === undefined || (searchText.value ?? '') === suggestedSearchText
     const sortApplied =
-      !aiSearch.sort?.length ||
-      paramsStore.sort === getSortParamValue(optionsStore.searchResultOptions?.sort, aiSearch.sort)
+      !deepSearch.sort?.length ||
+      paramsStore.sort ===
+        getSortParamValue(optionsStore.searchResultOptions?.sort, deepSearch.sort)
     return (
-      searchTextApplied && sortApplied && areAiSearchFiltersApplied(aiSearch.filters, filters.value)
+      searchTextApplied &&
+      sortApplied &&
+      areDeepSearchFiltersApplied(deepSearch.filters, filters.value)
     )
   })
 
@@ -136,8 +139,8 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     }
   }
 
-  /** Following requests send `adj` from the URL, so they keep the AI search result */
-  const saveAiSearchResultToUrl = ({
+  /** Following requests send `adj` from the URL, so they keep the deep search result */
+  const saveDeepSearchResultToUrl = ({
     query,
     result,
     sortOptions
@@ -149,30 +152,30 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     if (query.adjustedSearchText !== undefined) {
       return
     }
-    const aiSearch = result.executionMetadata?.aiSearch
-    if (!aiSearch?.applied) {
+    const deepSearch = result.executionMetadata?.deepSearch
+    if (!deepSearch?.applied) {
       explanation.value = undefined
       explanationSearchText.value = undefined
       return
     }
-    explanation.value = aiSearch.explanation
+    explanation.value = deepSearch.explanation
     explanationSearchText.value = query.searchText
     const getQueryParamName = optionsStore.getQueryParamName
     const params = [
-      { name: getQueryParamName(QUERY_PARAMS.ADJUSTED), value: aiSearch.searchText ?? '' },
-      ...getAiSearchFilterParams(aiSearch.filters, paramsStore.filters)
+      { name: getQueryParamName(QUERY_PARAMS.ADJUSTED), value: deepSearch.searchText ?? '' },
+      ...getDeepSearchFilterParams(deepSearch.filters, paramsStore.filters)
     ]
-    if (aiSearch.sort?.length) {
+    if (deepSearch.sort?.length) {
       params.push({
         name: getQueryParamName(QUERY_PARAMS.SORT),
-        value: getSortParamValue(sortOptions, aiSearch.sort)
+        value: getSortParamValue(sortOptions, deepSearch.sort)
       })
     }
     paramsStore.replaceParams({ params })
   }
 
-  /** Keeps `adj`, so AI search does not run again */
-  const clearAiSearch = (): void => {
+  /** Keeps `adj`, so deep search does not run again */
+  const clearDeepSearch = (): void => {
     const getQueryParamName = optionsStore.getQueryParamName
     const facetParams = Array.from(getPageUrl().searchParams.keys()).filter(isFacetKey)
     paramsStore.removeParameters({
@@ -252,21 +255,21 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
 
   /** Best products are kept for the suggested search text and collapsed, so updated results are visible */
   const applyBestProductsSuggestions = (): void => {
-    const aiSearch = bestProductsAiSearch.value
-    if (!aiSearch) {
+    const deepSearch = bestProductsDeepSearch.value
+    if (!deepSearch) {
       return
     }
     const getQueryParamName = optionsStore.getQueryParamName
-    const params = getAiSearchFilterParams(aiSearch.filters, filters.value)
+    const params = getDeepSearchFilterParams(deepSearch.filters, filters.value)
     const suggestedSearchText = bestProductsSuggestedSearchText.value
     if (suggestedSearchText !== undefined) {
       bestProductsAppliedSearchText.value = suggestedSearchText
       params.unshift({ name: getQueryParamName(QUERY_PARAMS.QUERY), value: suggestedSearchText })
     }
-    if (aiSearch.sort?.length) {
+    if (deepSearch.sort?.length) {
       params.push({
         name: getQueryParamName(QUERY_PARAMS.SORT),
-        value: getSortParamValue(optionsStore.searchResultOptions?.sort, aiSearch.sort)
+        value: getSortParamValue(optionsStore.searchResultOptions?.sort, deepSearch.sort)
       })
     }
     bestProductsExpanded.value = false
@@ -283,7 +286,7 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     bestProductsAppliedSearchText,
     bestProductsExpanded,
     toggleBestProductsExpanded,
-    bestProductsAiSearch,
+    bestProductsDeepSearch,
     bestProductsSuggestedSearchText,
     bestProductsHasSuggestions,
     bestProductsSuggestionsApplied,
@@ -292,14 +295,14 @@ export const useAiSearchStore = defineStore('aiSearch', () => {
     resetBestProducts,
     applyBestProductsSuggestions,
     precheckAssisted,
-    aiSearchLoading,
-    aiSearchActive,
+    deepSearchLoading,
+    deepSearchActive,
     explanation,
     explanationSearchText,
     currentExplanation,
-    clearAiSearch,
+    clearDeepSearch,
     precheck,
     resetPrecheck,
-    saveAiSearchResultToUrl
+    saveDeepSearchResultToUrl
   }
 })

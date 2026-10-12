@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AnchorPosition } from '@/types/search-results/SearchResultsProductCardOptions'
 import type { FacetStyle } from '@/types/search-results/SearchResultsOptions'
-import type { AiSearchOptions } from '@/types/search-results/AiSearchOptions'
+import type { DeepSearchOptions } from '@/types/search-results/DeepSearchOptions'
 
 export const DEFAULT_OPTIONS_RESULTS = {
   options: {
@@ -27,7 +27,7 @@ export const DEFAULT_OPTIONS_RESULTS = {
     didYouMean: 'Did you mean to search: {1}',
     similarQuery: 'Search results for phrase {1}',
     similarQueries: 'Similar queries:',
-    similarResultsLabel: "Related to your query:"
+    similarResultsLabel: 'Related to your query:'
   },
   grid: {
     columns: {
@@ -110,7 +110,7 @@ export const DEFAULT_OPTIONS_RESULTS = {
 
 export const DEFAULT_BEST_PRODUCTS_LIMIT = 3
 
-export const DEFAULT_AI_SEARCH_OPTIONS: AiSearchOptions = {
+export const DEFAULT_DEEP_SEARCH_OPTIONS: DeepSearchOptions = {
   enabled: false,
   mode: 'regular',
   regular: {
@@ -118,8 +118,8 @@ export const DEFAULT_AI_SEARCH_OPTIONS: AiSearchOptions = {
     loader: 'dialog',
     showExplanation: true,
     labels: {
-      loading: 'Searching with AI',
-      explanationFallback: 'Results refined by AI',
+      loading: 'Running deep search',
+      explanationFallback: 'Results refined by deep search',
       clear: 'Show all results'
     }
   },
@@ -129,11 +129,11 @@ export const DEFAULT_AI_SEARCH_OPTIONS: AiSearchOptions = {
     showExplanation: true,
     showSuggestedFilters: true,
     labels: {
-      title: 'Best matches for your search',
-      loading: 'Finding best matches',
-      trigger: 'Find best matches with AI',
+      title: 'Best matches from deep search',
+      loading: 'Finding best matches with deep search',
+      trigger: 'Find best matches with deep search',
       explanationFallback: '',
-      suggestedFiltersTitle: 'Suggested filters',
+      suggestedFiltersTitle: 'Filters suggested by deep search',
       applyFilters: 'Apply suggested filters',
       expandProducts: 'Show products',
       collapseProducts: 'Hide products'

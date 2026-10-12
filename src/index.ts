@@ -64,14 +64,14 @@ import type {
 } from './types/search-results/SearchResultsOptions'
 import type { AnchorPosition } from './types/search-results/SearchResultsProductCardOptions'
 import type {
-  AiSearchLoaderType,
-  AiSearchMode,
-  AiSearchOptions,
-  AiSearchRegularOptions,
-  AiSearchRegularLabels,
-  AiSearchBestProductsOptions,
-  AiSearchBestProductsLabels
-} from './types/search-results/AiSearchOptions'
+  DeepSearchLoaderType,
+  DeepSearchMode,
+  DeepSearchOptions,
+  DeepSearchRegularOptions,
+  DeepSearchRegularLabels,
+  DeepSearchBestProductsOptions,
+  DeepSearchBestProductsLabels
+} from './types/search-results/DeepSearchOptions'
 import type {
   SortOptions,
   SearchResultsSortOptions
@@ -191,11 +191,11 @@ export type {
   PluginElementsConfiguration,
   PluginConfiguration,
   BadgeElement,
-  AiSearchLoaderType,
-  AiSearchMode,
-  AiSearchOptions,
-  AiSearchRegularOptions,
-  AiSearchRegularLabels,
-  AiSearchBestProductsOptions,
-  AiSearchBestProductsLabels
+  DeepSearchLoaderType,
+  DeepSearchMode,
+  DeepSearchOptions,
+  DeepSearchRegularOptions,
+  DeepSearchRegularLabels,
+  DeepSearchBestProductsOptions,
+  DeepSearchBestProductsLabels
 }

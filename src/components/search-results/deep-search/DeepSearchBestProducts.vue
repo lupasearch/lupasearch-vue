@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useAiSearchOptions } from '@/composables/useAiSearchOptions'
+import { useDeepSearchOptions } from '@/composables/useDeepSearchOptions'
 import { DEFAULT_OPTIONS_RESULTS } from '@/constants/searchResults.const'
-import { useAiSearchStore } from '@/stores/aiSearch'
+import { useDeepSearchStore } from '@/stores/deepSearch'
 import { useOptionsStore } from '@/stores/options'
 import { useSearchResultStore } from '@/stores/searchResult'
 import type { SearchResultsProductCardOptions } from '@/types/search-results/SearchResultsProductCardOptions'
@@ -12,17 +12,17 @@ import { getProductKey } from '@/utils/string.utils'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import SearchResultsProductCard from '../products/product-card/SearchResultsProductCard.vue'
-import AiSearchIcon from './AiSearchIcon.vue'
-import AiSearchLoadingIndicator from './AiSearchLoadingIndicator.vue'
+import DeepSearchIcon from './DeepSearchIcon.vue'
+import DeepSearchLoadingIndicator from './DeepSearchLoadingIndicator.vue'
 
 const props = defineProps<{
   productCardOptions: SearchResultsProductCardOptions
   ssr?: boolean
 }>()
 
-const AI_SEARCH_CLICK_METADATA = { aiSearch: true }
+const DEEP_SEARCH_CLICK_METADATA = { deepSearch: true }
 
-const aiSearchStore = useAiSearchStore()
+const deepSearchStore = useDeepSearchStore()
 const optionsStore = useOptionsStore()
 const searchResultStore = useSearchResultStore()
 
@@ -30,13 +30,13 @@ const {
   bestProductsRequest,
   bestProductsResult,
   bestProductsLoading,
-  bestProductsAiSearch,
+  bestProductsDeepSearch,
   bestProductsSuggestionsApplied,
   bestProductsExpanded
-} = storeToRefs(aiSearchStore)
+} = storeToRefs(deepSearchStore)
 const { searchResultOptions, multiCurrency } = storeToRefs(optionsStore)
 const { searchResult, columnCount } = storeToRefs(searchResultStore)
-const { isBestProductsMode, isClickToTriggerMode, bestProductsOptions } = useAiSearchOptions()
+const { isBestProductsMode, isClickToTriggerMode, bestProductsOptions } = useDeepSearchOptions()
 
 const labels = computed(() => bestProductsOptions.value.labels ?? {})
 
@@ -47,17 +47,17 @@ const items = computed(() => {
 })
 
 const explanation = computed(() => {
-  if (!bestProductsAiSearch.value) {
+  if (!bestProductsDeepSearch.value) {
     return undefined
   }
   const aiExplanation = bestProductsOptions.value.showExplanation
-    ? bestProductsAiSearch.value.explanation
+    ? bestProductsDeepSearch.value.explanation
     : undefined
   return aiExplanation || labels.value.explanationFallback
 })
 
 const suggestedFilters = computed(() => {
-  const filters = bestProductsAiSearch.value?.filters
+  const filters = bestProductsDeepSearch.value?.filters
   if (!bestProductsOptions.value.showSuggestedFilters || !filters) {
     return []
   }
@@ -76,7 +76,7 @@ const suggestedFilters = computed(() => {
 })
 
 const suggestedSortLabel = computed(() => {
-  const sort = bestProductsAiSearch.value?.sort
+  const sort = bestProductsDeepSearch.value?.sort
   if (!bestProductsOptions.value.showSuggestedFilters || !sort?.length) {
     return undefined
   }
@@ -138,67 +138,71 @@ const columnSize = computed((): Record<string, string> => {
 </script>
 
 <template>
-  <div v-if="visible" class="lupa-ai-search-best-products" data-cy="lupa-ai-search-best-products">
+  <div
+    v-if="visible"
+    class="lupa-deep-search-best-products"
+    data-cy="lupa-deep-search-best-products"
+  >
     <button
       v-if="showTrigger"
       type="button"
-      class="lupa-ai-search-best-products-trigger"
-      data-cy="lupa-ai-search-best-products-trigger"
-      @click="aiSearchStore.loadBestProducts()"
+      class="lupa-deep-search-best-products-trigger"
+      data-cy="lupa-deep-search-best-products-trigger"
+      @click="deepSearchStore.loadBestProducts()"
     >
-      <AiSearchIcon />
-      <span class="lupa-ai-search-best-products-trigger-label">{{ labels.trigger }}</span>
+      <DeepSearchIcon />
+      <span class="lupa-deep-search-best-products-trigger-label">{{ labels.trigger }}</span>
     </button>
     <template v-else>
-      <div class="lupa-ai-search-best-products-header">
-        <AiSearchIcon />
-        <span class="lupa-ai-search-best-products-title">{{ labels.title }}</span>
+      <div class="lupa-deep-search-best-products-header">
+        <DeepSearchIcon />
+        <span class="lupa-deep-search-best-products-title">{{ labels.title }}</span>
         <button
           v-if="showProductsToggle"
           type="button"
-          class="lupa-ai-search-best-products-toggle"
-          :class="{ 'lupa-ai-search-best-products-toggle-expanded': bestProductsExpanded }"
+          class="lupa-deep-search-best-products-toggle"
+          :class="{ 'lupa-deep-search-best-products-toggle-expanded': bestProductsExpanded }"
           :aria-expanded="bestProductsExpanded"
-          aria-controls="lupa-ai-search-best-products-items"
-          data-cy="lupa-ai-search-best-products-toggle"
-          @click="aiSearchStore.toggleBestProductsExpanded()"
+          aria-controls="lupa-deep-search-best-products-items"
+          data-cy="lupa-deep-search-best-products-toggle"
+          @click="deepSearchStore.toggleBestProductsExpanded()"
         >
           {{ productsToggleLabel }}
         </button>
       </div>
-      <AiSearchLoadingIndicator
+      <DeepSearchLoadingIndicator
         v-if="bestProductsLoading"
         :label="labels.loading"
         :show-icon="false"
       />
       <template v-else>
-        <p v-if="explanation" class="lupa-ai-search-best-products-explanation">
+        <p v-if="explanation" class="lupa-deep-search-best-products-explanation">
           {{ explanation }}
         </p>
         <div
           v-if="hasSuggestions"
-          class="lupa-ai-search-best-products-suggestions"
-          data-cy="lupa-ai-search-best-products-suggestions"
+          class="lupa-deep-search-best-products-suggestions"
+          data-cy="lupa-deep-search-best-products-suggestions"
         >
           <span
             v-if="labels.suggestedFiltersTitle"
-            class="lupa-ai-search-best-products-suggestions-title"
+            class="lupa-deep-search-best-products-suggestions-title"
           >
             {{ labels.suggestedFiltersTitle }}
           </span>
           <span
             v-for="filter in suggestedFilters"
             :key="`${filter.key}-${filter.originalValue ?? filter.value}`"
-            class="lupa-ai-search-best-products-suggestion"
+            class="lupa-deep-search-best-products-suggestion"
           >
-            <span class="lupa-ai-search-best-products-suggestion-label">{{ filter.label }}:</span>
+            <span class="lupa-deep-search-best-products-suggestion-label">{{ filter.label }}:</span>
             {{ filter.value }}
           </span>
           <span
             v-if="suggestedSortLabel"
-            class="lupa-ai-search-best-products-suggestion lupa-ai-search-best-products-suggestion-sort"
+            class="lupa-deep-search-best-products-suggestion lupa-deep-search-best-products-suggestion-sort"
           >
-            <span v-if="sortByLabel" class="lupa-ai-search-best-products-suggestion-label">
+            <span v-if="sortByLabel" class="lupa-deep-search-best-products-suggestion-label">
               {{ sortByLabel }}
             </span>
             {{ suggestedSortLabel }}
@@ -206,18 +210,18 @@ const columnSize = computed((): Record<string, string> => {
           <button
             v-if="labels.applyFilters && !bestProductsSuggestionsApplied"
             type="button"
-            class="lupa-ai-search-best-products-apply"
-            data-cy="lupa-ai-search-best-products-apply"
-            @click="aiSearchStore.applyBestProductsSuggestions()"
+            class="lupa-deep-search-best-products-apply"
+            data-cy="lupa-deep-search-best-products-apply"
+            @click="deepSearchStore.applyBestProductsSuggestions()"
           >
             {{ labels.applyFilters }}
           </button>
         </div>
         <div
           v-if="items.length && bestProductsExpanded"
-          id="lupa-ai-search-best-products-items"
-          class="lupa-ai-search-best-products-items"
-          data-cy="lupa-ai-search-best-products-items"
+          id="lupa-deep-search-best-products-items"
+          class="lupa-deep-search-best-products-items"
+          data-cy="lupa-deep-search-best-products-items"
         >
           <SearchResultsProductCard
             v-for="(product, index) in items"
@@ -225,7 +229,7 @@ const columnSize = computed((): Record<string, string> => {
             :style="columnSize"
             :product="product"
             :options="cardOptions"
-            :analytics-metadata="AI_SEARCH_CLICK_METADATA"
+            :analytics-metadata="DEEP_SEARCH_CLICK_METADATA"
           />
         </div>
       </template>
