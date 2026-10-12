@@ -8,9 +8,9 @@ import { useParamsStore } from '@/stores/params'
 import { useSearchResultStore } from '@/stores/searchResult'
 import { useTrackingStore } from '@/stores/tracking'
 import { useRedirectionStore } from '@/stores/redirections'
-import { useAiSearchStore } from '@/stores/aiSearch'
-import { useAiSearchOptions } from '@/composables/useAiSearchOptions'
-import { withAiSearchModifier } from '@/utils/aiSearch.utils'
+import { useDeepSearchStore } from '@/stores/deepSearch'
+import { useDeepSearchOptions } from '@/composables/useDeepSearchOptions'
+import { withDeepSearchModifier } from '@/utils/deepSearch.utils'
 import { DEFAULT_BEST_PRODUCTS_LIMIT } from '@/constants/searchResults.const'
 import type {
   SearchResultsDidYouMeanLabels,
@@ -40,7 +40,7 @@ import CategoryTopFilters from '../product-list/CategoryTopFilters.vue'
 import { processExtractionObject } from '@/utils/extraction.utils'
 import { ResultsLayoutEnum } from '@/types/search-results/ResultsLayout'
 import SortDrawer from './filters/SortDrawer.vue'
-import AiSearchLoadingDialog from './ai-search/AiSearchLoadingDialog.vue'
+import DeepSearchLoadingDialog from './deep-search/DeepSearchLoadingDialog.vue'
 import { SdkOptions } from '@/types/General'
 
 const props = defineProps<{
@@ -58,7 +58,7 @@ const trackingStore = useTrackingStore()
 const dynamicDataStore = useDynamicDataStore()
 const screenStore = useScreenStore()
 const redirectionStore = useRedirectionStore()
-const aiSearchStore = useAiSearchStore()
+const deepSearchStore = useDeepSearchStore()
 
 const {
   precheckEnabled,
@@ -66,11 +66,11 @@ const {
   isBestProductsMode,
   isClickToTriggerMode,
   bestProductsOptions
-} = useAiSearchOptions()
+} = useDeepSearchOptions()
 
 // Regular mode: sent with every search request, backend configuration may require it.
-// Best products modes: AI search runs only in the separate best products request
-const aiSearchModifier = computed(() => {
+// Best products modes: deep search runs only in the separate best products request
+const deepSearchModifier = computed(() => {
   if (isRegularMode.value) {
     return true
   }
@@ -203,9 +203,9 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
   })
   const context = getLupaTrackingContext()
   const limit = publicQuery.limit || defaultSearchResultPageSize.value
-  const modifiers = withAiSearchModifier(
+  const modifiers = withDeepSearchModifier(
     props.options.splitExpensiveRequests ? { facets: false, refiners: false } : undefined,
-    aiSearchModifier.value
+    deepSearchModifier.value
   )
   const query = { ...publicQuery, ...context, limit, modifiers }
 
@@ -222,7 +222,7 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
     return
   }
   if (isBestProductsMode.value) {
-    aiSearchStore.prepareBestProducts({
+    deepSearchStore.prepareBestProducts({
       queryKey: bestProductsOptions.value.queryKey || props.options.queryKey,
       query: {
         searchText: query.searchText,
@@ -230,23 +230,23 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
         selectFields: query.selectFields,
         ...context,
         limit: bestProductsOptions.value.limit ?? DEFAULT_BEST_PRODUCTS_LIMIT,
-        modifiers: withAiSearchModifier(undefined, true)
+        modifiers: withDeepSearchModifier(undefined, true)
       },
       options: props.options.options,
       autoLoad: !isClickToTriggerMode.value
     })
   } else {
-    aiSearchStore.resetBestProducts()
+    deepSearchStore.resetBestProducts()
   }
   if (precheckEnabled.value) {
-    aiSearchStore.precheck({
+    deepSearchStore.precheck({
       requestId,
       queryKey: props.options.queryKey,
       query,
       options: props.options.options
     })
   } else {
-    aiSearchStore.resetPrecheck()
+    deepSearchStore.resetPrecheck()
   }
   lupaSearchSdk
     .query(props.options.queryKey, query, props.options.options)
@@ -255,7 +255,7 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
         if (isRegularMode.value && searchResultStore.lastRequestId === requestId) {
-          aiSearchStore.saveAiSearchResultToUrl({
+          deepSearchStore.saveDeepSearchResultToUrl({
             query,
             result: res,
             sortOptions: props.options.sort
@@ -295,7 +295,7 @@ const queryFacets = (requestId: string, publicQuery: PublicQuery): void => {
   const query = {
     ...publicQuery,
     ...context,
-    modifiers: withAiSearchModifier({ facets: true, refiners: false }, aiSearchModifier.value)
+    modifiers: withDeepSearchModifier({ facets: true, refiners: false }, deepSearchModifier.value)
   }
   lupaSearchSdk
     .queryFacets(props.options.queryKey, query, props.options.options)
@@ -322,7 +322,7 @@ const queryRefiners = (requestId: string, publicQuery: PublicQuery): void => {
   const query = {
     ...publicQuery,
     ...context,
-    modifiers: withAiSearchModifier({ facets: false, refiners: true }, aiSearchModifier.value)
+    modifiers: withDeepSearchModifier({ facets: false, refiners: true }, deepSearchModifier.value)
   }
   lupaSearchSdk
     .queryRefiners(props.options.queryKey, query, props.options.options)
@@ -459,7 +459,7 @@ defineExpose({ handleMounted, handleUrlChange })
       @filter="handleParamsChange"
     />
     <SortDrawer v-if="options.sort" />
-    <AiSearchLoadingDialog />
+    <DeepSearchLoadingDialog />
     <SearchResultsBreadcrumbs
       v-if="currentQueryText || isProductList"
       :breadcrumbs="options.breadcrumbs"

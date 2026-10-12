@@ -42,7 +42,7 @@ const getRangeParam = (key: string, range: FilterGroupItemTypeRange): UrlParam |
   )
 }
 
-export const getAiSearchFilterParams = (
+export const getDeepSearchFilterParams = (
   aiFilters: FilterGroup = {},
   currentFilters: FilterGroup = {}
 ): UrlParam[] => {
@@ -73,31 +73,31 @@ export const getAiSearchFilterParams = (
   return params
 }
 
-// SDK types do not include `aiSearch` yet; the SDK sends modifiers as they are
-export type QueryModifiers = NonNullable<PublicQuery['modifiers']> & { aiSearch?: boolean }
+// SDK types do not include `deepSearch` yet; the SDK sends modifiers as they are
+export type QueryModifiers = NonNullable<PublicQuery['modifiers']> & { deepSearch?: boolean }
 
-export const withAiSearchModifier = (
+export const withDeepSearchModifier = (
   modifiers?: QueryModifiers,
-  aiSearch?: boolean
+  deepSearch?: boolean
 ): QueryModifiers | undefined => {
-  if (aiSearch === undefined) {
+  if (deepSearch === undefined) {
     return modifiers
   }
-  return { ...modifiers, aiSearch }
+  return { ...modifiers, deepSearch }
 }
 
-export const withAiSearchMetadata = (
+export const withDeepSearchMetadata = (
   metadata: Record<string, unknown> | undefined,
-  aiSearch: boolean
+  deepSearch: boolean
 ): Record<string, unknown> | undefined => {
-  return aiSearch ? { ...metadata, aiSearch: true } : metadata
+  return deepSearch ? { ...metadata, deepSearch: true } : metadata
 }
 
-export const areAiSearchFiltersApplied = (
+export const areDeepSearchFiltersApplied = (
   aiFilters: FilterGroup = {},
   currentFilters: FilterGroup = {}
 ): boolean => {
-  return getAiSearchFilterParams(aiFilters).every((param) => {
+  return getDeepSearchFilterParams(aiFilters).every((param) => {
     const key = param.name.slice(param.name.indexOf('.') + 1)
     const current = currentFilters[key]
     if (Array.isArray(param.value)) {

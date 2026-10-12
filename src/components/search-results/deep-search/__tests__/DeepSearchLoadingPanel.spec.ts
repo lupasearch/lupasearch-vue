@@ -2,78 +2,78 @@ import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useOptionsStore } from '@/stores/options'
 import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
-import AiSearchLoadingPanel from '../AiSearchLoadingPanel.vue'
-import type { AiSearchOptions } from '@/types/search-results/AiSearchOptions'
+import DeepSearchLoadingPanel from '../DeepSearchLoadingPanel.vue'
+import type { DeepSearchOptions } from '@/types/search-results/DeepSearchOptions'
 
 const mountPanel = ({
-  aiSearch,
+  deepSearch,
   precheckAssisted = true,
   loading = true
 }: {
-  aiSearch?: AiSearchOptions
+  deepSearch?: DeepSearchOptions
   precheckAssisted?: boolean
   loading?: boolean
 }) => {
   const pinia = createTestingPinia({
     stubActions: false,
     initialState: {
-      aiSearch: { precheckAssisted },
+      deepSearch: { precheckAssisted },
       searchResult: { loading }
     }
   })
   // Set options with the action: initialState would deep-merge into the shared DEFAULT_OPTIONS_RESULTS
   useOptionsStore(pinia).setSearchResultOptions({
-    options: { aiSearch } as unknown as SearchResultsOptions
+    options: { deepSearch } as unknown as SearchResultsOptions
   })
-  return mount(AiSearchLoadingPanel, {
+  return mount(DeepSearchLoadingPanel, {
     global: {
       plugins: [pinia]
     }
   })
 }
 
-describe('AiSearchLoadingPanel', () => {
+describe('DeepSearchLoadingPanel', () => {
   it('should show panel with loading label when loader type is panel', () => {
     const wrapper = mountPanel({
-      aiSearch: {
+      deepSearch: {
         enabled: true,
         regular: { loader: 'panel', labels: { loading: 'Ieškome su DI' } }
       }
     })
 
-    expect(wrapper.find('.lupa-ai-search-loading-panel').exists()).toBe(true)
-    expect(wrapper.find('.lupa-ai-search-loading-label').text()).toBe('Ieškome su DI')
+    expect(wrapper.find('.lupa-deep-search-loading-panel').exists()).toBe(true)
+    expect(wrapper.find('.lupa-deep-search-loading-label').text()).toBe('Ieškome su DI')
   })
 
   it('should not show panel with default dialog loader type', () => {
-    const wrapper = mountPanel({ aiSearch: { enabled: true } })
+    const wrapper = mountPanel({ deepSearch: { enabled: true } })
 
-    expect(wrapper.find('.lupa-ai-search-loading-panel').exists()).toBe(false)
+    expect(wrapper.find('.lupa-deep-search-loading-panel').exists()).toBe(false)
   })
 
   it('should not show panel when precheck is not assisted', () => {
     const wrapper = mountPanel({
-      aiSearch: { enabled: true, regular: { loader: 'panel' } },
+      deepSearch: { enabled: true, regular: { loader: 'panel' } },
       precheckAssisted: false
     })
 
-    expect(wrapper.find('.lupa-ai-search-loading-panel').exists()).toBe(false)
+    expect(wrapper.find('.lupa-deep-search-loading-panel').exists()).toBe(false)
   })
 
   it('should not show panel when results are not loading', () => {
     const wrapper = mountPanel({
-      aiSearch: { enabled: true, regular: { loader: 'panel' } },
+      deepSearch: { enabled: true, regular: { loader: 'panel' } },
       loading: false
     })
 
-    expect(wrapper.find('.lupa-ai-search-loading-panel').exists()).toBe(false)
+    expect(wrapper.find('.lupa-deep-search-loading-panel').exists()).toBe(false)
   })
 
   it('should not show panel outside regular mode', () => {
     const wrapper = mountPanel({
-      aiSearch: { enabled: true, mode: 'bestProducts', regular: { loader: 'panel' } }
+      deepSearch: { enabled: true, mode: 'bestProducts', regular: { loader: 'panel' } }
     })
 
-    expect(wrapper.find('.lupa-ai-search-loading-panel').exists()).toBe(false)
+    expect(wrapper.find('.lupa-deep-search-loading-panel').exists()).toBe(false)
   })
 })

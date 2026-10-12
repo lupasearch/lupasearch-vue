@@ -377,10 +377,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promise-retry/-/promise-retry-1.0.3.tgz#65e726428e794bc4453948e0a41e6de4215ce8b0"
   integrity sha512-GmzA9ckNokPypTg10pgpeHNQe7ph+iIKKmhKu3Ob9ANkswreCx7R3cKmY781K8QK3AqVL3xVh9A42JvIAbkkSA==
 
-"@getlupa/client-sdk@^1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@getlupa/client-sdk/-/client-sdk-1.12.0.tgz#b1c28ca533f67052919e24b4c9dfa0c00712b42c"
-  integrity sha512-1hav4HHQSThooyWRxCkRlvnaDOXKPSc4aVdVow1cii0QG7Hqf078Qv/tthWq553gGcYcjs0n6y/mAD3IPL9/Qw==
+"@getlupa/client-sdk@^1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@getlupa/client-sdk/-/client-sdk-1.12.1.tgz#a91d6199f9a3789fbfb5453e8d9f1b7ce06df92b"
+  integrity sha512-QnDNUKdOyzItx9D+UlLx6HyEXfzsWoF/eH3EC/AmCnLUqG0++db4SIvkjXHMVl/igrykW9ZMk1STHklHevpjPQ==
   dependencies:
     jquery-param "^1.2.9"
     ts-loader "^9.6.2"

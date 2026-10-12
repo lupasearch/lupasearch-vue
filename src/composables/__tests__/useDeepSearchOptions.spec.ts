@@ -1,56 +1,56 @@
 import { createPinia, setActivePinia } from 'pinia'
-import { useAiSearchOptions } from '../useAiSearchOptions'
+import { useDeepSearchOptions } from '../useDeepSearchOptions'
 import { useOptionsStore } from '@/stores/options'
-import { DEFAULT_AI_SEARCH_OPTIONS } from '@/constants/searchResults.const'
-import type { AiSearchOptions } from '@/types/search-results/AiSearchOptions'
+import { DEFAULT_DEEP_SEARCH_OPTIONS } from '@/constants/searchResults.const'
+import type { DeepSearchOptions } from '@/types/search-results/DeepSearchOptions'
 import type { SearchResultsOptions } from '@/types/search-results/SearchResultsOptions'
 
-const setAiSearchOptions = (aiSearch?: AiSearchOptions) => {
+const setDeepSearchOptions = (deepSearch?: DeepSearchOptions) => {
   const optionsStore = useOptionsStore()
   optionsStore.setSearchResultOptions({
-    options: { aiSearch } as unknown as SearchResultsOptions
+    options: { deepSearch } as unknown as SearchResultsOptions
   })
 }
 
-describe('useAiSearchOptions', () => {
+describe('useDeepSearchOptions', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
 
-  it('should be disabled with default options when aiSearch is not set', () => {
-    setAiSearchOptions(undefined)
-    const { enabled, mode, isRegularMode, isBestProductsMode, precheckEnabled, aiSearchOptions } =
-      useAiSearchOptions()
+  it('should be disabled with default options when deepSearch is not set', () => {
+    setDeepSearchOptions(undefined)
+    const { enabled, mode, isRegularMode, isBestProductsMode, precheckEnabled, deepSearchOptions } =
+      useDeepSearchOptions()
 
     expect(enabled.value).toBe(false)
     expect(mode.value).toBe('regular')
     expect(isRegularMode.value).toBe(false)
     expect(isBestProductsMode.value).toBe(false)
     expect(precheckEnabled.value).toBe(false)
-    expect(aiSearchOptions.value).toEqual(DEFAULT_AI_SEARCH_OPTIONS)
+    expect(deepSearchOptions.value).toEqual(DEFAULT_DEEP_SEARCH_OPTIONS)
   })
 
   it('should merge user options with defaults', () => {
-    setAiSearchOptions({
+    setDeepSearchOptions({
       enabled: true,
       regular: { precheck: true, labels: { clear: 'Rodyti visus rezultatus' } }
     })
     const { isRegularMode, precheckEnabled, regularOptions, bestProductsOptions } =
-      useAiSearchOptions()
+      useDeepSearchOptions()
 
     expect(isRegularMode.value).toBe(true)
     expect(precheckEnabled.value).toBe(true)
     expect(regularOptions.value.labels?.clear).toBe('Rodyti visus rezultatus')
     expect(regularOptions.value.labels?.loading).toBe(
-      DEFAULT_AI_SEARCH_OPTIONS.regular?.labels?.loading
+      DEFAULT_DEEP_SEARCH_OPTIONS.regular?.labels?.loading
     )
     expect(bestProductsOptions.value.limit).toBe(3)
   })
 
   it('should treat clickToTrigger as a best products mode', () => {
-    setAiSearchOptions({ enabled: true, mode: 'clickToTrigger', regular: { precheck: true } })
+    setDeepSearchOptions({ enabled: true, mode: 'clickToTrigger', regular: { precheck: true } })
     const { isRegularMode, isBestProductsMode, isClickToTriggerMode, precheckEnabled } =
-      useAiSearchOptions()
+      useDeepSearchOptions()
 
     expect(isRegularMode.value).toBe(false)
     expect(isBestProductsMode.value).toBe(true)
@@ -59,8 +59,8 @@ describe('useAiSearchOptions', () => {
   })
 
   it('should not enable any mode when disabled', () => {
-    setAiSearchOptions({ enabled: false, mode: 'bestProducts' })
-    const { isBestProductsMode } = useAiSearchOptions()
+    setDeepSearchOptions({ enabled: false, mode: 'bestProducts' })
+    const { isBestProductsMode } = useDeepSearchOptions()
 
     expect(isBestProductsMode.value).toBe(false)
   })

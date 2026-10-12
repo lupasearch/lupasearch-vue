@@ -35,18 +35,18 @@ const mountProducts = (params: QueryParams, result: Partial<SearchQueryResult> =
   return wrapper.findComponent(SearchResultsProductCard)
 }
 
-describe('SearchResultsProducts AI search click metadata', () => {
-  it('should add aiSearch metadata when AI search result is active', () => {
+describe('SearchResultsProducts deep search click metadata', () => {
+  it('should add deepSearch metadata when deep search result is active', () => {
     const card = mountProducts({
       query: 'tv',
       adjusted: '',
       filters: { brand: ['LG'] }
     } as unknown as QueryParams)
 
-    expect(card.props('analyticsMetadata')).toEqual({ aiSearch: true })
+    expect(card.props('analyticsMetadata')).toEqual({ deepSearch: true })
   })
 
-  it('should combine aiSearch with did you mean metadata', () => {
+  it('should combine deepSearch with did you mean metadata', () => {
     const card = mountProducts(
       { query: 'tv', adjusted: '', filters: { brand: ['LG'] } } as unknown as QueryParams,
       { suggestedSearchText: 'tvs' }
@@ -55,11 +55,11 @@ describe('SearchResultsProducts AI search click metadata', () => {
     expect(card.props('analyticsMetadata')).toEqual({
       _lupaEventSource: 'didYouMean',
       _lupaUpdatedQuery: 'tvs',
-      aiSearch: true
+      deepSearch: true
     })
   })
 
-  it('should not add aiSearch metadata without adjusted search text', () => {
+  it('should not add deepSearch metadata without adjusted search text', () => {
     const card = mountProducts({
       query: 'tv',
       filters: { brand: ['LG'] }
@@ -68,7 +68,7 @@ describe('SearchResultsProducts AI search click metadata', () => {
     expect(card.props('analyticsMetadata')).toBeUndefined()
   })
 
-  it('should not add aiSearch metadata without filters', () => {
+  it('should not add deepSearch metadata without filters', () => {
     const card = mountProducts({ query: 'tv', adjusted: '', filters: {} } as unknown as QueryParams)
 
     expect(card.props('analyticsMetadata')).toBeUndefined()

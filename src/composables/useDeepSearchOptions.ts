@@ -1,30 +1,30 @@
-import { DEFAULT_AI_SEARCH_OPTIONS } from '@/constants/searchResults.const'
+import { DEFAULT_DEEP_SEARCH_OPTIONS } from '@/constants/searchResults.const'
 import { useOptionsStore } from '@/stores/options'
 import type {
-  AiSearchBestProductsOptions,
-  AiSearchLoaderType,
-  AiSearchOptions,
-  AiSearchRegularOptions
-} from '@/types/search-results/AiSearchOptions'
+  DeepSearchBestProductsOptions,
+  DeepSearchLoaderType,
+  DeepSearchOptions,
+  DeepSearchRegularOptions
+} from '@/types/search-results/DeepSearchOptions'
 import { merge } from '@/utils/merger.utils'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 
-export const useAiSearchOptions = () => {
+export const useDeepSearchOptions = () => {
   const optionsStore = useOptionsStore()
 
   const { searchResultOptions } = storeToRefs(optionsStore)
 
-  const aiSearchOptions = computed((): AiSearchOptions => {
-    return merge(DEFAULT_AI_SEARCH_OPTIONS, searchResultOptions.value?.aiSearch ?? {})
+  const deepSearchOptions = computed((): DeepSearchOptions => {
+    return merge(DEFAULT_DEEP_SEARCH_OPTIONS, searchResultOptions.value?.deepSearch ?? {})
   })
 
   const enabled = computed(() => {
-    return Boolean(aiSearchOptions.value.enabled)
+    return Boolean(deepSearchOptions.value.enabled)
   })
 
   const mode = computed(() => {
-    return aiSearchOptions.value.mode ?? 'regular'
+    return deepSearchOptions.value.mode ?? 'regular'
   })
 
   const isRegularMode = computed(() => {
@@ -39,24 +39,24 @@ export const useAiSearchOptions = () => {
     return enabled.value && mode.value === 'clickToTrigger'
   })
 
-  const regularOptions = computed((): AiSearchRegularOptions => {
-    return aiSearchOptions.value.regular ?? {}
+  const regularOptions = computed((): DeepSearchRegularOptions => {
+    return deepSearchOptions.value.regular ?? {}
   })
 
-  const bestProductsOptions = computed((): AiSearchBestProductsOptions => {
-    return aiSearchOptions.value.bestProducts ?? {}
+  const bestProductsOptions = computed((): DeepSearchBestProductsOptions => {
+    return deepSearchOptions.value.bestProducts ?? {}
   })
 
   const precheckEnabled = computed(() => {
     return isRegularMode.value && Boolean(regularOptions.value.precheck)
   })
 
-  const loaderType = computed((): AiSearchLoaderType => {
+  const loaderType = computed((): DeepSearchLoaderType => {
     return regularOptions.value.loader ?? 'dialog'
   })
 
   return {
-    aiSearchOptions,
+    deepSearchOptions,
     enabled,
     mode,
     isRegularMode,
