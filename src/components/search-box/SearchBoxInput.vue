@@ -52,6 +52,8 @@ const showHint = computed(
 )
 
 const inputAttributes = computed(() => ({
+  enterkeyhint: 'search' as const,
+  inputmode: 'search' as const,
   ...(props.options.inputAttributes ?? {})
 }))
 
