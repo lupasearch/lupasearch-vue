@@ -120,33 +120,40 @@ describe('areDeepSearchFiltersApplied', () => {
   })
 
   it('should check term values', () => {
-    const aiFilters = { brand: ['Samsung'], categories: ['Fridges'] }
+    const deepSearchFilters = { brand: ['Samsung'], categories: ['Fridges'] }
     expect(
-      areDeepSearchFiltersApplied(aiFilters, { brand: ['Samsung', 'LG'], categories: ['Fridges'] })
+      areDeepSearchFiltersApplied(deepSearchFilters, {
+        brand: ['Samsung', 'LG'],
+        categories: ['Fridges']
+      })
     ).toBe(true)
-    expect(areDeepSearchFiltersApplied(aiFilters, { brand: ['Samsung'] })).toBe(false)
-    expect(areDeepSearchFiltersApplied(aiFilters, { brand: ['LG'], categories: ['Fridges'] })).toBe(
-      false
-    )
+    expect(areDeepSearchFiltersApplied(deepSearchFilters, { brand: ['Samsung'] })).toBe(false)
+    expect(
+      areDeepSearchFiltersApplied(deepSearchFilters, { brand: ['LG'], categories: ['Fridges'] })
+    ).toBe(false)
   })
 
   it('should check hierarchy values', () => {
-    const aiFilters = { category: { level: 1, terms: ['TV > OLED'] } }
+    const deepSearchFilters = { category: { level: 1, terms: ['TV > OLED'] } }
     expect(
-      areDeepSearchFiltersApplied(aiFilters, { category: { level: 0, terms: ['TV > OLED'] } })
+      areDeepSearchFiltersApplied(deepSearchFilters, {
+        category: { level: 0, terms: ['TV > OLED'] }
+      })
     ).toBe(true)
-    expect(areDeepSearchFiltersApplied(aiFilters, { category: { level: 0, terms: ['TV'] } })).toBe(
-      false
-    )
+    expect(
+      areDeepSearchFiltersApplied(deepSearchFilters, { category: { level: 0, terms: ['TV'] } })
+    ).toBe(false)
   })
 
   it('should compare ranges parsed from URL', () => {
-    const aiFilters = { price: { gte: 100, lte: 500 } }
-    expect(areDeepSearchFiltersApplied(aiFilters, { price: { gte: '100', lte: '500' } })).toBe(true)
-    expect(areDeepSearchFiltersApplied(aiFilters, { price: { gte: '100', lte: '600' } })).toBe(
-      false
-    )
-    expect(areDeepSearchFiltersApplied(aiFilters, {})).toBe(false)
+    const deepSearchFilters = { price: { gte: 100, lte: 500 } }
+    expect(
+      areDeepSearchFiltersApplied(deepSearchFilters, { price: { gte: '100', lte: '500' } })
+    ).toBe(true)
+    expect(
+      areDeepSearchFiltersApplied(deepSearchFilters, { price: { gte: '100', lte: '600' } })
+    ).toBe(false)
+    expect(areDeepSearchFiltersApplied(deepSearchFilters, {})).toBe(false)
   })
 
   it('should compare open and partial ranges', () => {
