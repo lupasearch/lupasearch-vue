@@ -50,10 +50,10 @@ const explanation = computed(() => {
   if (!bestProductsDeepSearch.value) {
     return undefined
   }
-  const aiExplanation = bestProductsOptions.value.showExplanation
+  const deepSearchExplanation = bestProductsOptions.value.showExplanation
     ? bestProductsDeepSearch.value.explanation
     : undefined
-  return aiExplanation || labels.value.explanationFallback
+  return deepSearchExplanation || labels.value.explanationFallback
 })
 
 const suggestedFilters = computed(() => {
