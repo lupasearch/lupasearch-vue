@@ -158,10 +158,10 @@ const trackItemListView = (title: string, items: Record<string, unknown>[] = [])
         label: title,
         listLabel: title,
         items,
-        additionalParams: {
+        additionalParams: trackingStore.withSearchDimensions({
           previousSortKey: sortParams.value?.previousSortKey,
           newSortKey: sortParams.value?.selectedSortKey
-        }
+        })
       },
       options: { allowEmptySearchQuery: true }
     }
@@ -252,6 +252,9 @@ const query = (requestId: string, publicQuery: PublicQuery): void => {
     .query(props.options.queryKey, query, props.options.options)
     .then((res) => {
       if (res.success) {
+        if (searchResultStore.lastRequestId === requestId) {
+          trackingStore.trackSearchDimensions({ query, results: res })
+        }
         handleResults({ queryKey: props.options.queryKey, results: res })
         searchResultStore.add(requestId, { ...res })
         if (isRegularMode.value && searchResultStore.lastRequestId === requestId) {

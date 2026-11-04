@@ -19,6 +19,31 @@ export type AnalyticsOptions = {
   parentEventName: string
   ignoreEvents?: AnalyticsEventType[]
   itemMap?: (item: Record<string, unknown>) => Record<string, unknown>
+  searchDimensions?: AnalyticsSearchDimensions
+}
+
+export type AnalyticsSearchDimensions = {
+  enabled?: boolean
+  eventName?: string
+  attachToEvents?: boolean
+  keys?: AnalyticsSearchDimensionKeys
+}
+
+export type AnalyticsSearchDimensionKeys = {
+  abTestTriggered?: string | false
+  abTestVariant?: string | false
+  deepSearch?: string | false
+}
+
+export type AbTestDecision = {
+  abTestTriggered: boolean
+  selectedQueryKey?: string
+}
+
+export type SearchDimensionValues = {
+  abTestTriggered: boolean
+  abTestVariant?: string
+  deepSearch: boolean
 }
 
 export type ProductClickTrackingSettings = {

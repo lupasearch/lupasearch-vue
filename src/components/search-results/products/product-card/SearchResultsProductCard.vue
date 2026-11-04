@@ -150,6 +150,13 @@ onMounted((): void => {
   checkIfIsInStock()
 })
 
+/** Recommendations reuse this card, but their events don't come from a search */
+const getSearchDimensions = (): Record<string, unknown> | undefined => {
+  return props.lupaClickTrackingType === 'recommendedItemClick'
+    ? undefined
+    : trackingStore.withSearchDimensions()
+}
+
 const handleClick = (): void => {
   const event = {
     queryKey: props.options.queryKey,
@@ -162,7 +169,8 @@ const handleClick = (): void => {
         label: trackingLabel.value ?? '',
         listLabel: trackingListLabel.value,
         items: [props.product],
-        itemId: id.value
+        itemId: id.value,
+        additionalParams: getSearchDimensions()
       },
       options: { allowEmptySearchQuery: true },
       filters: searchResultStore.hasAnyFilter ? searchResultStore.filters : undefined,
@@ -198,7 +206,8 @@ const handleProductEvent = (item: { type: ReportableEventType }): void => {
         item.type === 'addToCart'
           ? {
               type: 'search_add_to_cart',
-              label: title.value || id.value || link.value
+              label: title.value || id.value || link.value,
+              additionalParams: getSearchDimensions()
             }
           : undefined
     }

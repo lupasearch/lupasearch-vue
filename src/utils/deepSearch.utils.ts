@@ -10,6 +10,19 @@ import { getFacetParam } from './filter.toggle.utils'
 
 type UrlParam = { name: string; value: string | string[] }
 
+export const hasFilterValue = (filter: unknown): boolean => {
+  if (Array.isArray(filter)) {
+    return filter.length > 0
+  }
+  if (filter && typeof filter === 'object') {
+    const hierarchyTerms = (filter as { terms?: unknown[] }).terms
+    return Array.isArray(hierarchyTerms)
+      ? hierarchyTerms.length > 0
+      : Object.values(filter).some((v) => v !== undefined && v !== '')
+  }
+  return false
+}
+
 const isHierarchyFilter = (filter: FilterGroupItem): filter is FilterGroupItemTypeHierarchy => {
   return !Array.isArray(filter) && Array.isArray((filter as FilterGroupItemTypeHierarchy).terms)
 }
