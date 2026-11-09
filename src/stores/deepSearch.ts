@@ -7,7 +7,11 @@ import type { SearchResultsSortOptions } from '@/types/search-results/SearchResu
 import { QUERY_PARAMS } from '@/constants/queryParams.const'
 import { isFacetKey } from '@/utils/filter.utils'
 import { getPageUrl } from '@/utils/routing.utils'
-import { areDeepSearchFiltersApplied, getDeepSearchFilterParams } from '@/utils/deepSearch.utils'
+import {
+  areDeepSearchFiltersApplied,
+  getDeepSearchFilterParams,
+  hasFilterValue
+} from '@/utils/deepSearch.utils'
 import { getSortParamValue } from '@/utils/sort.utils'
 import { useSearchResultStore } from './searchResult'
 import { useParamsStore } from './params'
@@ -18,19 +22,6 @@ type BestProductsRequest = {
   queryKey: string
   query: PublicQuery
   options?: SdkOptions
-}
-
-const hasFilterValue = (filter: unknown): boolean => {
-  if (Array.isArray(filter)) {
-    return filter.length > 0
-  }
-  if (filter && typeof filter === 'object') {
-    const hierarchyTerms = (filter as { terms?: unknown[] }).terms
-    return Array.isArray(hierarchyTerms)
-      ? hierarchyTerms.length > 0
-      : Object.values(filter).some((v) => v !== undefined && v !== '')
-  }
-  return false
 }
 
 export const useDeepSearchStore = defineStore('deepSearch', () => {

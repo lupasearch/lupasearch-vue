@@ -6,7 +6,7 @@ import {
   TRACKING_STORAGE_KEY,
   TRACKING_STORAGE_KEY_BASE
 } from '@/constants/global.const'
-import type { AnalyticsOptions } from '@/types/AnalyticsOptions'
+import type { AnalyticsOptions, AnalyticsSearchDimensions } from '@/types/AnalyticsOptions'
 import type { TrackingOptions } from '@/types/General'
 import type { TrackableEventData } from '@/types/search-box/Common'
 import lupaSearchSdk from '@getlupa/client-sdk'
@@ -269,6 +269,44 @@ const processDebugEvent = (data: TrackableEventData) => {
     ecommerce: parseEcommerceData(data, data.analytics?.listLabel)
   }
   console.debug('Analytics debug event:', params)
+}
+
+const getAnalyticsOptions = (): Partial<AnalyticsOptions> => {
+  try {
+    return JSON.parse(window.sessionStorage.getItem(TRACKING_ANALYTICS_KEY) ?? '{}')
+  } catch {
+    return {}
+  }
+}
+
+/** Search dimensions work only with `ga4` analytics (or `debug`, which logs them) */
+export const getSearchDimensionsOptions = (): AnalyticsSearchDimensions | undefined => {
+  const options = getAnalyticsOptions()
+  if (
+    !isTrackingEnabled() ||
+    !options.enabled ||
+    (options.type !== 'ga4' && options.type !== 'debug') ||
+    !options.searchDimensions?.enabled
+  ) {
+    return undefined
+  }
+  return options.searchDimensions
+}
+
+export const pushDataLayerEvent = (event: string, params: Record<string, unknown>): void => {
+  const options = getAnalyticsOptions()
+  if (!isTrackingEnabled() || !options.enabled) {
+    return
+  }
+  if (options.type === 'debug') {
+    console.debug('Analytics debug event:', { event, ...params })
+    return
+  }
+  if (options.type !== 'ga4') {
+    return
+  }
+  window.dataLayer = window.dataLayer || []
+  window.dataLayer.push({ event, ...params })
 }
 
 export const getDelayedEventsCache = (): Record<
